@@ -421,8 +421,8 @@ public class SystemService extends BaseService implements InitializingBean {
 		sb.append("...．．∵ ∴★．∴∵∴ ╭ ╯╭ ╯╭ ╯╭ ╯∴∵∴∵∴ \r\n ");
 		sb.append("．☆．∵∴∵．∴∵∴▍▍ ▍▍ ▍▍ ▍▍☆ ★∵∴ \r\n ");
 		sb.append("▍．∴∵∴∵．∴▅███████████☆ ★∵ \r\n ");
-		sb.append("◥█▅▅▅▅███▅█▅█▅█▅█▅█▅███◤          欢迎使用 "+Global.getConfig("productName")+Global.getConfig("version")+"\r\n ");
-		sb.append("． ◥███████████████████◤                    http://www.jeeplus.org\r\n ");
+		sb.append("◥█▅▅▅▅███▅█▅█▅█▅█▅█▅███◤          "+Global.getConfig("productName")+Global.getConfig("version")+"\r\n ");
+		sb.append("． ◥███████████████████◤                 ");
 		sb.append(".．.．◥████████████████■◤\r\n ");
 		System.out.println(sb.toString());
 		return true;
