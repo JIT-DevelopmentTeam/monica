@@ -113,7 +113,7 @@
 								<span class="lbl"> 记住我</span>
 						</label>
 					</div>
-					<input type="submit" class="btn btn-white btn-outline btn-lg btn-rounded progress-login"  value="登录">
+					<input type="submit" id="login" class="btn btn-white btn-outline btn-lg btn-rounded progress-login"  value="登录">
 					&nbsp;
 					<a href="${ctx}/sys/register" class="btn btn-white btn-outline btn-lg btn-rounded progress-login">注册</a>
 				</form>
@@ -129,6 +129,12 @@ $(function(){
 			changeTheme($(this).attr('data-theme'));
 		}); 	
 	
+});
+
+$(document).keydown(function (e) {
+	if (e.keyCode == 13) {
+		$("#login").trigger("click");
+	}
 });
 
 function changeTheme(theme) {
