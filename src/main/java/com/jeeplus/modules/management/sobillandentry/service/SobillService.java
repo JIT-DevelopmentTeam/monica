@@ -28,6 +28,9 @@ public class SobillService extends CrudService<SobillMapper, Sobill> {
 
 	@Autowired
 	private SobillentryMapper sobillentryMapper;
+
+	@Autowired
+	private SobillMapper sobillMapper;
 	
 	public Sobill get(String id) {
 		Sobill sobill = super.get(id);
@@ -69,6 +72,10 @@ public class SobillService extends CrudService<SobillMapper, Sobill> {
 	public void delete(Sobill sobill) {
 		super.delete(sobill);
 		sobillentryMapper.delete(new Sobillentry(sobill));
+	}
+
+	public void check(Sobill sobill) {
+		sobillMapper.check(sobill);
 	}
 	
 }

@@ -136,10 +136,10 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'deptName',
+		        field: 'deptId',
 		        title: '订单归属部门',
 		        sortable: true,
-		        sortName: 'deptName'
+		        sortName: 'deptId'
 
 		    }
 			,{
@@ -161,16 +161,18 @@ $(document).ready(function() {
 		        field: 'status',
 		        title: '订单状态',
 		        sortable: true,
-		        sortName: 'status'
-
+		        sortName: 'status',
+			    formatter:function(value, row , index){
+			 	   return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_status'))}, value, "-");
+			    }
 		    }
 			,{
 		        field: 'cancellation',
-		        title: '订单是否已经取消',
+		        title: '订单是否取消',
 		        sortable: true,
 		        sortName: 'cancellation',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_cancellation'))}, value, "-");
 		        }
 
 		    }
@@ -194,10 +196,20 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'checkStatus',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_checkStatus'))}, value, "-");
 		        }
 
 		    }
+		   ,{
+			   field: 'currencyId',
+			   title: '币别',
+			   sortable: true,
+			   sortName: 'currencyId',
+			   formatter:function(value, row , index){
+				   return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_currency'))}, value, "-");
+			   }
+
+		   }
 			,{
 		        field: 'amount',
 		        title: '订单总金额',
@@ -225,7 +237,7 @@ $(document).ready(function() {
 	  $('#sobillTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
+            $('#view,#edit,#check').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
         });
 
 		$("#btnImport").click(function(){
@@ -341,8 +353,6 @@ $(document).ready(function() {
 
 
 
-
-
   function detailFormatter(index, row) {
 	  var htmltpl =  $("#sobillChildrenTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
 	  var html = Mustache.render(htmltpl, {
@@ -370,11 +380,17 @@ $(document).ready(function() {
 		}));
 	}
 
+	function check(){
+  		jp.post("${ctx}/management/sobillandentry/sobill/check?id="+getIdSelections(),function (data) {
+            jp.alert(data.msg);
+        });
+	}
+
 </script>
 <script type="text/template" id="sobillChildrenTpl">//<!--
 	<div class="tabs-container">
 		<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#tab-{{idx}}-1" aria-expanded="true">子订单管理表</a></li>
+				<li class="active"><a data-toggle="tab" href="#tab-{{idx}}-1" aria-expanded="true">订单明细</a></li>
 		</ul>
 		<div class="tab-content">
 				 <div id="tab-{{idx}}-1" class="tab-pane fade in active">
@@ -387,10 +403,7 @@ $(document).ready(function() {
 								<th>单价</th>
 								<th>数量</th>
 								<th>总额</th>
-								<th>行序号</th>
-								<th>订单同步状态</th>
-								<th>订单同步时间</th>
-    							<th>备注信息</th>
+    							<th>备注</th>
 							</tr>
 						</thead>
 						<tbody id="sobillChild-{{idx}}-1-List">
@@ -418,15 +431,6 @@ $(document).ready(function() {
 					</td>
 					<td>
 						{{row.amount}}
-					</td>
-					<td>
-						{{row.rowId}}
-					</td>
-					<td>
-						{{row.dict.synStatus}}
-					</td>
-					<td>
-						{{row.synTime}}
 					</td>
 					<td>
 						{{row.remarks}}

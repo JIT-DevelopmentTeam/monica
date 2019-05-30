@@ -135,7 +135,6 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			f_sobillid = #{sobillId.id},
 			f_itemid = #{itemId},
 			f_unit = #{unit},
 			f_auxpropid = #{auxpropid},

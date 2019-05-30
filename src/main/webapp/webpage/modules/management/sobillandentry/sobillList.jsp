@@ -29,11 +29,11 @@
 				<label class="label-item single-overflow pull-left" title="订单同步状态：">订单同步状态：</label>
 				<form:select path="synStatus"  class="form-control m-b">
 					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<form:options items="${fns:getDictList('syn_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="客户id：">客户id：</label>
+				<label class="label-item single-overflow pull-left" title="客户：">客户：</label>
 				<form:input path="custId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -74,7 +74,7 @@
 				<label class="label-item single-overflow pull-left" title="订单是否已经取消：">订单是否已经取消：</label>
 				<form:select path="cancellation"  class="form-control m-b">
 					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<form:options items="${fns:getDictList('sobill_cancellation')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -119,11 +119,18 @@
 					<i class="fa fa-file-excel-o"></i> 导出
 				</button>
 			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="management:sobillandentry:sobill:view">
+
+             <shiro:hasPermission name="management:sobillandentry:sobill:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>
 			</shiro:hasPermission>
+
+            <shiro:hasPermission name="management:sobillandentry:sobill:check">
+                <button id="check" class="btn btn-primary" onclick="check()">
+                    <i class="glyphicon glyphicon-search"></i> 审核
+                </button>
+            </shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->

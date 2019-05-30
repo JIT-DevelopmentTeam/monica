@@ -73,19 +73,21 @@
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="sobill" action="${ctx}/management/sobillandentry/sobill/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
+		<form:hidden path="emplId" value="${fns:getUser().id}"/>
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
-					<td class="width-35">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单类型：</label></td>
 					<td class="width-35">
 						<form:select path="type" class="form-control required">
 							<form:option value="" label=""/>
 							<form:options items="${fns:getDictList('sobill_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
+					</td>
+
+					<td class="width-15 active"><label class="pull-right">订单状态：</label></td>
+					<td class="width-35">
+						<input type="text" readonly class="form-control" value="<c:if test="${sobill.status == 0}">草稿</c:if><c:if test="${sobill.status == 1}">审核提交</c:if>"/>
 					</td>
 				</tr>
 				<tr>
@@ -95,18 +97,15 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">订单同步状态：</label></td>
 					<td class="width-35">
-						<form:select path="synStatus" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('syn_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
+						<input type="text" readonly class="form-control" value="<c:if test="${sobill.synStatus == 0}">未同步</c:if><c:if test="${sobill.synStatus == 1}">已同步</c:if>"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">订单同步时间：</label></td>
 					<td class="width-35">
-						<form:input path="synTime" htmlEscape="false"    class="form-control "/>
+						<form:input path="synTime" htmlEscape="false"  readonly="true"  class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户id：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
 					<td class="width-35">
 						<form:input path="custId" htmlEscape="false"    class="form-control required"/>
 					</td>
@@ -114,17 +113,20 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单归属部门：</label></td>
 					<td class="width-35">
-						<form:input path="deptId" htmlEscape="false"    class="form-control required"/>
+						<form:input path="deptId" htmlEscape="false" readonly="true" value="${fns:getOfficeList()}"  class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单归属员工：</label></td>
 					<td class="width-35">
-						<form:input path="emplId" htmlEscape="false"    class="form-control required"/>
+						<form:input path="" htmlEscape="false" readonly="true" value="${fns:getUser().name}"  class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">订单币别：</label></td>
 					<td class="width-35">
-						<form:input path="currencyId" htmlEscape="false"    class="form-control "/>
+                        <form:select path="currencyId" class="form-control required">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_currency')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单发货时间：</label></td>
 					<td class="width-35">
@@ -137,26 +139,13 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">订单状态：</label></td>
-					<td class="width-35">
-						<form:input path="status" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right">订单是否已经取消：</label></td>
-					<td class="width-35">
-						<form:select path="cancellation" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">订单审核人：</label></td>
 					<td class="width-35">
-						<form:input path="checkerId" htmlEscape="false"    class="form-control "/>
+						<form:input path="checkerId" htmlEscape="false"  readonly="true"  class="form-control "/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">订单审核时间：</label></td>
 					<td class="width-35">
-						<form:input path="checkTime" htmlEscape="false"    class="form-control "/>
+						<form:input path="checkTime" htmlEscape="false"  readonly="true"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
@@ -164,7 +153,7 @@
 					<td class="width-35">
 						<form:select path="checkStatus" class="form-control ">
 							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							<form:options items="${fns:getDictList('sobill_checkStatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单总金额：</label></td>
@@ -172,11 +161,18 @@
 						<form:input path="amount" htmlEscape="false"    class="form-control required isFloatGteZero"/>
 					</td>
 				</tr>
+
+		   		<tr>
+					<td class="width-15 active"><label class="pull-right">备注：</label></td>
+					<td class="width-35">
+						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+					</td>
+				</tr>
 		 	</tbody>
 		</table>
 		<div class="tabs-container">
             <ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">子订单管理表：</a>
+				<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">订单明细</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -186,16 +182,14 @@
 				<thead>
 					<tr>
 						<th class="hide"></th>
-						<th>备注信息</th>
-						<th><font color="red">*</font>商品id</th>
+						<th><font color="red">*</font>商品</th>
 						<th><font color="red">*</font>商品单位</th>
 						<th>批号</th>
 						<th><font color="red">*</font>单价</th>
 						<th><font color="red">*</font>数量</th>
 						<th><font color="red">*</font>总额</th>
 						<th><font color="red">*</font>行序号</th>
-						<th>订单同步状态</th>
-						<th>订单同步时间</th>
+						<th>备注</th>
 						<th width="10">&nbsp;</th>
 					</tr>
 				</thead>
@@ -208,12 +202,7 @@
 						<input id="sobillentryList{{idx}}_id" name="sobillentryList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 						<input id="sobillentryList{{idx}}_delFlag" name="sobillentryList[{{idx}}].delFlag" type="hidden" value="0"/>
 					</td>
-					
-					<td>
-						<textarea id="sobillentryList{{idx}}_remarks" name="sobillentryList[{{idx}}].remarks" rows="4"    class="form-control ">{{row.remarks}}</textarea>
-					</td>
-					
-					
+
 					<td>
 						<input id="sobillentryList{{idx}}_itemId" name="sobillentryList[{{idx}}].itemId" type="text" value="{{row.itemId}}"    class="form-control required"/>
 					</td>
@@ -247,25 +236,15 @@
 					<td>
 						<input id="sobillentryList{{idx}}_rowId" name="sobillentryList[{{idx}}].rowId" type="text" value="{{row.rowId}}"    class="form-control required isIntGteZero"/>
 					</td>
-					
-					
-					<td>
-						<select id="sobillentryList{{idx}}_synStatus" name="sobillentryList[{{idx}}].synStatus" data-value="{{row.synStatus}}" class="form-control m-b  ">
-							<option value=""></option>
-							<c:forEach items="${fns:getDictList('')}" var="dict">
-								<option value="${dict.value}">${dict.label}</option>
-							</c:forEach>
-						</select>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_synTime" name="sobillentryList[{{idx}}].synTime" type="text" value="{{row.synTime}}"    class="form-control "/>
-					</td>
 
+					<td>
+						<input id="sobillentryList{{idx}}_remarks" name="sobillentryList[{{idx}}].remarks" rows="4" value="{{row.remarks}}" class="form-control "/>
+					</td>
+					
 					<td class="text-center" width="10">
 						{{#delBtn}}<span class="close" onclick="delRow(this, '#sobillentryList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
 					</td>
+
 				</tr>//-->
 			</script>
 			<script type="text/javascript">

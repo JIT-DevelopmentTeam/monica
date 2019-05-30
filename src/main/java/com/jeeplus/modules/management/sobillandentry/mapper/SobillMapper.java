@@ -14,5 +14,11 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
  */
 @MyBatisMapper
 public interface SobillMapper extends BaseMapper<Sobill> {
-	
+
+    /**
+     * 审核
+     * @param sobill
+     */
+    public void check(Sobill sobill);
+
 }

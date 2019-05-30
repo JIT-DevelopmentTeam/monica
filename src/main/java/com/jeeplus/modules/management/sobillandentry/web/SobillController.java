@@ -3,6 +3,7 @@
  */
 package com.jeeplus.modules.management.sobillandentry.web;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.common.utils.time.DateFormatUtil;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +109,11 @@ public class SobillController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
+		// 默认
+		sobill.setStatus(0); // 草稿
+		sobill.setSynStatus(0);	// 未同步
+		sobill.setCancellation(0);	// 正常
+        sobill.setCheckStatus(0);   // 待审核
 		//新增或编辑表单保存
 		sobillService.save(sobill);//保存
 		j.setSuccess(true);
@@ -226,6 +234,25 @@ public class SobillController extends BaseController {
 		}
 		return j;
     }
+
+    @RequestMapping(value = "check")
+	@ResponseBody
+	public AjaxJson check(String id,Sobill sobill){
+		AjaxJson aj = new AjaxJson();
+		sobill = sobillService.get(id);
+		if ("1".equals(sobill.getCheckStatus())){
+			aj.setSuccess(false);
+			aj.setMsg("审核失败(请检查该订单是否已审核)!");
+		} else {
+			sobill.setCheckerId(UserUtils.getUser().getId());
+			sobill.setCheckStatus(1);
+			sobill.setCheckTime(new Date());
+			sobillService.check(sobill);
+			aj.setSuccess(true);
+			aj.setMsg("审核成功!");
+		}
+		return aj;
+	}
 	
 
 }

@@ -25,11 +25,12 @@
 		a.f_checkerid AS "checkerId",
 		a.f_checktime AS "checkTime",
 		a.f_checkstatus AS "checkStatus",
-		a.f_amount AS "amount"
+		a.f_amount AS "amount",
+		b.name AS "emplName"
 	</sql>
 	
 	<sql id="sobillJoins">
-		
+		LEFT JOIN sys_user AS b ON a.f_emplid = b.id
 	</sql>
 	
     
@@ -207,5 +208,14 @@
 	<select id="findUniqueByProperty" resultType="Sobill" statementType="STATEMENT">
 		select * FROM ic_sobill  where ${propertyName} = '${value}'
 	</select>
+
+    <update id="check">
+        UPDATE ic_sobill SET
+            f_checkerid = #{checkerId},
+            f_checktime = #{checkTime},
+            f_checkstatus = #{checkStatus}
+        WHERE
+            id = #{id}
+    </update>
 	
 </mapper>

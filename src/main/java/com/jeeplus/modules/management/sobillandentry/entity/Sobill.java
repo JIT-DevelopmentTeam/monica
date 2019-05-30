@@ -39,6 +39,7 @@ public class Sobill extends DataEntity<Sobill> {
 	private Date beginNeedTime;		// 开始 订单发货时间
 	private Date endNeedTime;		// 结束 订单发货时间
 	private List<Sobillentry> sobillentryList = Lists.newArrayList();		// 子表列表
+	private String emplName;	// 员工名称
 	
 	public Sobill() {
 		super();
@@ -113,7 +114,6 @@ public class Sobill extends DataEntity<Sobill> {
 		this.deptId = deptId;
 	}
 	
-	@ExcelField(title="订单归属员工", align=2, sort=14)
 	public String getEmplId() {
 		return emplId;
 	}
@@ -220,5 +220,14 @@ public class Sobill extends DataEntity<Sobill> {
 
 	public void setSobillentryList(List<Sobillentry> sobillentryList) {
 		this.sobillentryList = sobillentryList;
+	}
+
+	@ExcelField(title="订单归属员工", align=2, sort=14)
+	public String getEmplName() {
+		return emplName;
+	}
+
+	public void setEmplName(String emplName) {
+		this.emplName = emplName;
 	}
 }
