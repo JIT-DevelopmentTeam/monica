@@ -37,7 +37,7 @@ import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 /**
  * 订单模块Controller
  * @author KicoChan
- * @version 2019-05-29
+ * @version 2019-05-30
  */
 @Controller
 @RequestMapping(value = "${adminPath}/management/sobillandentry/sobill")

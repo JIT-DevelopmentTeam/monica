@@ -11,7 +11,7 @@ import com.jeeplus.common.utils.excel.annotation.ExcelField;
 /**
  * 子订单管理表Entity
  * @author KicoChan
- * @version 2019-05-29
+ * @version 2019-05-30
  */
 public class Sobillentry extends DataEntity<Sobillentry> {
 	
