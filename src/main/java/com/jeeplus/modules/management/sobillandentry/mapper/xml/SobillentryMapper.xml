@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper">
+    
+	<sql id="sobillentryColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.f_sobillid AS "sobillId",
+		a.f_itemid AS "itemId",
+		a.f_unit AS "unit",
+		a.f_auxpropid AS "auxpropId",
+		a.f_batchno AS "batchno",
+		a.f_price AS "price",
+		a.f_auxqty AS "auxqty",
+		a.f_amount AS "amount",
+		a.f_rowid AS "rowId",
+		a.f_synstatus AS "synStatus",
+		a.f_syntime AS "synTime",
+		a.f_custid AS "custId",
+		a.f_deptid AS "deptId",
+		a.f_emplid AS "emplId"
+	</sql>
+	
+	<sql id="sobillentryJoins">
+		
+			LEFT JOIN ic_sobill b ON b.id = a.f_sobillid
+	</sql>
+	
+    
+	<select id="get" resultType="Sobillentry" >
+		SELECT 
+			<include refid="sobillentryColumns"/>
+		FROM ic_sobillentry a
+		<include refid="sobillentryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Sobillentry" >
+		SELECT 
+			<include refid="sobillentryColumns"/>
+		FROM ic_sobillentry a
+		<include refid="sobillentryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="sobillId != null and sobillId != ''">
+				AND a.f_sobillid = #{sobillId}
+			</if>
+			<if test="itemId != null and itemId != ''">
+				AND a.f_itemid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{itemId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{itemId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{itemId},'%')</if>
+			</if>
+			<if test="synStatus != null and synStatus != ''">
+				AND a.f_synstatus = #{synStatus}
+			</if>
+			<if test="custId != null and custId != ''">
+				AND a.f_custid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{custId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{custId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{custId},'%')</if>
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND a.f_deptid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{deptId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{deptId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{deptId},'%')</if>
+			</if>
+			<if test="emplId != null and emplId != ''">
+				AND a.f_emplid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{emplId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{emplId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{emplId},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Sobillentry" >
+		SELECT 
+			<include refid="sobillentryColumns"/>
+		FROM ic_sobillentry a
+		<include refid="sobillentryJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ic_sobillentry(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			f_sobillid,
+			f_itemid,
+			f_unit,
+			f_auxpropid,
+			f_batchno,
+			f_price,
+			f_auxqty,
+			f_amount,
+			f_rowid,
+			f_synstatus,
+			f_syntime,
+			f_custid,
+			f_deptid,
+			f_emplid
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{sobillId},
+			#{itemId},
+			#{unit},
+			#{auxpropId},
+			#{batchno},
+			#{price},
+			#{auxqty},
+			#{amount},
+			#{rowId},
+			#{synStatus},
+			#{synTime},
+			#{custId},
+			#{deptId},
+			#{emplId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ic_sobillentry SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			f_sobillid = #{sobillId},
+			f_itemid = #{itemId},
+			f_unit = #{unit},
+			f_auxpropid = #{auxpropId},
+			f_batchno = #{batchno},
+			f_price = #{price},
+			f_auxqty = #{auxqty},
+			f_amount = #{amount},
+			f_rowid = #{rowId},
+			f_synstatus = #{synStatus},
+			f_syntime = #{synTime},
+			f_custid = #{custId},
+			f_deptid = #{deptId},
+			f_emplid = #{emplId}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM ic_sobillentry
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE f_sobillid = #{sobillId}
+			</otherwise>
+		</choose>
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE ic_sobillentry SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE f_sobillid = #{sobillId}
+			</otherwise>
+		</choose>
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Sobillentry" statementType="STATEMENT">
+		select * FROM ic_sobillentry  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
