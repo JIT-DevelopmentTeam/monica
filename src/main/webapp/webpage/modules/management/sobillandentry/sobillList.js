@@ -152,6 +152,7 @@ $(document).ready(function() {
 			,{
 		        field: 'needTime',
 		        title: '订单发货时间',
+				class: 'text-nowrap',
 		        sortable: true,
 		        sortName: 'needTime'
 
