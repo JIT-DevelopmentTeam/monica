@@ -22,15 +22,8 @@
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="sobill" class="form form-horizontal well clearfix">
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单类型：">订单类型：</label>
-				<form:select path="type"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="订单编码：">订单编码：</label>
-				<form:input path="billno" htmlEscape="false" maxlength="100"  class=" form-control"/>
+				<form:input path="billNo" htmlEscape="false" maxlength="100"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="订单同步状态：">订单同步状态：</label>
@@ -76,13 +69,6 @@
 					        </div>
 					</div>
 				</div>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单状态：">订单状态：</label>
-				<form:select path="status"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="订单是否已经取消：">订单是否已经取消：</label>

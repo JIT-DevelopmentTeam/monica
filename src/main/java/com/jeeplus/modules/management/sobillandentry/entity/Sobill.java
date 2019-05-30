@@ -3,9 +3,9 @@
  */
 package com.jeeplus.modules.management.sobillandentry.entity;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import com.google.common.collect.Lists;
 
@@ -22,22 +22,22 @@ public class Sobill extends DataEntity<Sobill> {
 	private static final long serialVersionUID = 1L;
 	private String erpId;		// erpid
 	private Integer type;		// 订单类型
-	private String billno;		// 订单编码
+	private String billNo;		// 订单编码
 	private Integer synStatus;		// 订单同步状态
 	private Date synTime;		// 订单同步时间
 	private String custId;		// 客户id
 	private String deptId;		// 订单归属部门
 	private String emplId;		// 订单归属员工
-	private String currencyId;		// 订单币别
-	private String needTime;		// 订单发货时间
+	private Integer currencyId;		// 订单币别
+	private Date needTime;		// 订单发货时间
 	private Integer status;		// 订单状态
 	private Integer cancellation;		// 订单是否已经取消
 	private String checkerId;		// 订单审核人
 	private Date checkTime;		// 订单审核时间
 	private Integer checkStatus;		// 订单审核状态
 	private Double amount;		// 订单总金额
-	private String beginNeedTime;		// 开始 订单发货时间
-	private String endNeedTime;		// 结束 订单发货时间
+	private Date beginNeedTime;		// 开始 订单发货时间
+	private Date endNeedTime;		// 结束 订单发货时间
 	private List<Sobillentry> sobillentryList = Lists.newArrayList();		// 子表列表
 	
 	public Sobill() {
@@ -57,6 +57,7 @@ public class Sobill extends DataEntity<Sobill> {
 		this.erpId = erpId;
 	}
 	
+	@NotNull(message="订单类型不能为空")
 	@ExcelField(title="订单类型", dictType="", align=2, sort=8)
 	public Integer getType() {
 		return type;
@@ -67,12 +68,12 @@ public class Sobill extends DataEntity<Sobill> {
 	}
 	
 	@ExcelField(title="订单编码", align=2, sort=9)
-	public String getBillno() {
-		return billno;
+	public String getBillNo() {
+		return billNo;
 	}
 
-	public void setBillno(String billno) {
-		this.billno = billno;
+	public void setBillNo(String billNo) {
+		this.billNo = billNo;
 	}
 	
 	@ExcelField(title="订单同步状态", dictType="", align=2, sort=10)
@@ -121,25 +122,27 @@ public class Sobill extends DataEntity<Sobill> {
 		this.emplId = emplId;
 	}
 	
-	@ExcelField(title="订单币别", dictType="", align=2, sort=15)
-	public String getCurrencyId() {
+	@ExcelField(title="订单币别", align=2, sort=15)
+	public Integer getCurrencyId() {
 		return currencyId;
 	}
 
-	public void setCurrencyId(String currencyId) {
+	public void setCurrencyId(Integer currencyId) {
 		this.currencyId = currencyId;
 	}
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@NotNull(message="订单发货时间不能为空")
 	@ExcelField(title="订单发货时间", align=2, sort=16)
-	public String getNeedTime() {
+	public Date getNeedTime() {
 		return needTime;
 	}
 
-	public void setNeedTime(String needTime) {
+	public void setNeedTime(Date needTime) {
 		this.needTime = needTime;
 	}
 	
-	@ExcelField(title="订单状态", dictType="", align=2, sort=17)
+	@ExcelField(title="订单状态", align=2, sort=17)
 	public Integer getStatus() {
 		return status;
 	}
@@ -195,19 +198,19 @@ public class Sobill extends DataEntity<Sobill> {
 		this.amount = amount;
 	}
 	
-	public String getBeginNeedTime() {
+	public Date getBeginNeedTime() {
 		return beginNeedTime;
 	}
 
-	public void setBeginNeedTime(String beginNeedTime) {
+	public void setBeginNeedTime(Date beginNeedTime) {
 		this.beginNeedTime = beginNeedTime;
 	}
 	
-	public String getEndNeedTime() {
+	public Date getEndNeedTime() {
 		return endNeedTime;
 	}
 
-	public void setEndNeedTime(String endNeedTime) {
+	public void setEndNeedTime(Date endNeedTime) {
 		this.endNeedTime = endNeedTime;
 	}
 		

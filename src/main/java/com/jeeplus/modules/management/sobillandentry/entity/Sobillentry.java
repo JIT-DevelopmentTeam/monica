@@ -4,6 +4,8 @@
 package com.jeeplus.modules.management.sobillandentry.entity;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
@@ -19,14 +21,14 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	private Sobill sobillId;		// 父订单id 父类
 	private String itemId;		// 商品id
 	private String unit;		// 商品单位
-	private String auxpropId;		// 辅助属性id
-	private String batchno;		// 批号
+	private String auxpropid;		// 辅助属性id
+	private String batchNo;		// 批号
 	private Double price;		// 单价
 	private Double auxqty;		// 数量
 	private Double amount;		// 总额
 	private Integer rowId;		// 行序号
 	private Integer synStatus;		// 订单同步状态
-	private String synTime;		// 订单同步时间
+	private Date synTime;		// 订单同步时间
 	private String custId;		// 客户id
 	private String deptId;		// 订单归属部门
 	private String emplId;		// 订单归属员工
@@ -70,21 +72,21 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	}
 	
 	@ExcelField(title="辅助属性id", align=2, sort=10)
-	public String getAuxpropId() {
-		return auxpropId;
+	public String getAuxpropid() {
+		return auxpropid;
 	}
 
-	public void setAuxpropId(String auxpropId) {
-		this.auxpropId = auxpropId;
+	public void setAuxpropid(String auxpropid) {
+		this.auxpropid = auxpropid;
 	}
 	
 	@ExcelField(title="批号", align=2, sort=11)
-	public String getBatchno() {
-		return batchno;
+	public String getBatchNo() {
+		return batchNo;
 	}
 
-	public void setBatchno(String batchno) {
-		this.batchno = batchno;
+	public void setBatchNo(String batchNo) {
+		this.batchNo = batchNo;
 	}
 	
 	@NotNull(message="单价不能为空")
@@ -136,12 +138,13 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 		this.synStatus = synStatus;
 	}
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@ExcelField(title="订单同步时间", align=2, sort=17)
-	public String getSynTime() {
+	public Date getSynTime() {
 		return synTime;
 	}
 
-	public void setSynTime(String synTime) {
+	public void setSynTime(Date synTime) {
 		this.synTime = synTime;
 	}
 	

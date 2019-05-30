@@ -120,10 +120,10 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'billno',
+		        field: 'billNo',
 		        title: '订单编码',
 		        sortable: true,
-		        sortName: 'billno'
+		        sortName: 'billNo'
 		       
 		    }
 			,{
@@ -168,10 +168,7 @@ $(document).ready(function() {
 		        field: 'status',
 		        title: '订单状态',
 		        sortable: true,
-		        sortName: 'status',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
-		        }
+		        sortName: 'status'
 		       
 		    }
 			,{
@@ -182,6 +179,13 @@ $(document).ready(function() {
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
 		        }
+		       
+		    }
+			,{
+		        field: 'checkerId',
+		        title: '订单审核人',
+		        sortable: true,
+		        sortName: 'checkerId'
 		       
 		    }
 			,{
@@ -387,6 +391,7 @@ $(document).ready(function() {
 								<th>总额</th>
 								<th>行序号</th>
 								<th>订单同步状态</th>
+								<th>订单同步时间</th>
 								<th>客户id</th>
 								<th>订单归属部门</th>
 								<th>订单归属员工</th>
@@ -410,7 +415,7 @@ $(document).ready(function() {
 						{{row.unit}}
 					</td>
 					<td>
-						{{row.batchno}}
+						{{row.batchNo}}
 					</td>
 					<td>
 						{{row.price}}
@@ -426,6 +431,9 @@ $(document).ready(function() {
 					</td>
 					<td>
 						{{row.dict.synStatus}}
+					</td>
+					<td>
+						{{row.synTime}}
 					</td>
 					<td>
 						{{row.custId}}

@@ -13,8 +13,8 @@
 		a.f_sobillid AS "sobillId",
 		a.f_itemid AS "itemId",
 		a.f_unit AS "unit",
-		a.f_auxpropid AS "auxpropId",
-		a.f_batchno AS "batchno",
+		a.f_auxpropid AS "auxpropid",
+		a.f_batchno AS "batchNo",
 		a.f_price AS "price",
 		a.f_auxqty AS "auxqty",
 		a.f_amount AS "amount",
@@ -50,33 +50,6 @@
 			${dataScope}
 			<if test="sobillId != null and sobillId != ''">
 				AND a.f_sobillid = #{sobillId}
-			</if>
-			<if test="itemId != null and itemId != ''">
-				AND a.f_itemid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{itemId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{itemId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{itemId},'%')</if>
-			</if>
-			<if test="synStatus != null and synStatus != ''">
-				AND a.f_synstatus = #{synStatus}
-			</if>
-			<if test="custId != null and custId != ''">
-				AND a.f_custid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{custId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{custId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{custId},'%')</if>
-			</if>
-			<if test="deptId != null and deptId != ''">
-				AND a.f_deptid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{deptId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{deptId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{deptId},'%')</if>
-			</if>
-			<if test="emplId != null and emplId != ''">
-				AND a.f_emplid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{emplId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{emplId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{emplId},'%')</if>
 			</if>
 		</where>
 		<choose>
@@ -142,8 +115,8 @@
 			#{sobillId},
 			#{itemId},
 			#{unit},
-			#{auxpropId},
-			#{batchno},
+			#{auxpropid},
+			#{batchNo},
 			#{price},
 			#{auxqty},
 			#{amount},
@@ -164,8 +137,8 @@
 			f_sobillid = #{sobillId},
 			f_itemid = #{itemId},
 			f_unit = #{unit},
-			f_auxpropid = #{auxpropId},
-			f_batchno = #{batchno},
+			f_auxpropid = #{auxpropid},
+			f_batchno = #{batchNo},
 			f_price = #{price},
 			f_auxqty = #{auxqty},
 			f_amount = #{amount},

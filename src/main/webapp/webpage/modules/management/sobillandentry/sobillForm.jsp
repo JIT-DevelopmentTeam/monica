@@ -80,9 +80,9 @@
 					<td class="width-35">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">订单类型：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单类型：</label></td>
 					<td class="width-35">
-						<form:select path="type" class="form-control ">
+						<form:select path="type" class="form-control required">
 							<form:option value="" label=""/>
 							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
@@ -91,7 +91,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单编码：</label></td>
 					<td class="width-35">
-						<form:input path="billno" htmlEscape="false"    class="form-control required"/>
+						<form:input path="billNo" htmlEscape="false"    class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">订单同步状态：</label></td>
 					<td class="width-35">
@@ -124,10 +124,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">订单币别：</label></td>
 					<td class="width-35">
-						<form:select path="currencyId" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
+						<form:input path="currencyId" htmlEscape="false"    class="form-control "/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单发货时间：</label></td>
 					<td class="width-35">
@@ -142,10 +139,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">订单状态：</label></td>
 					<td class="width-35">
-						<form:select path="status" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
+						<form:input path="status" htmlEscape="false"    class="form-control "/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">订单是否已经取消：</label></td>
 					<td class="width-35">
@@ -234,7 +228,7 @@
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_batchno" name="sobillentryList[{{idx}}].batchno" type="text" value="{{row.batchno}}"    class="form-control "/>
+						<input id="sobillentryList{{idx}}_batchNo" name="sobillentryList[{{idx}}].batchNo" type="text" value="{{row.batchNo}}"    class="form-control "/>
 					</td>
 					
 					

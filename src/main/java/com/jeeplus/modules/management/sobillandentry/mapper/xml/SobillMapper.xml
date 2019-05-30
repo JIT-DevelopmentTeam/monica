@@ -12,7 +12,7 @@
 		a.del_flag AS "delFlag",
 		a.f_erpid AS "erpId",
 		a.f_type AS "type",
-		a.f_billno AS "billno",
+		a.f_billno AS "billNo",
 		a.f_synstatus AS "synStatus",
 		a.f_syntime AS "synTime",
 		a.f_custid AS "custId",
@@ -49,11 +49,8 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="type != null and type != ''">
-				AND a.f_type = #{type}
-			</if>
-			<if test="billno != null and billno != ''">
-				AND a.f_billno = #{billno}
+			<if test="billNo != null and billNo != ''">
+				AND a.f_billno = #{billNo}
 			</if>
 			<if test="synStatus != null and synStatus != ''">
 				AND a.f_synstatus = #{synStatus}
@@ -78,9 +75,6 @@
 			</if>
 			<if test="beginNeedTime != null and endNeedTime != null ">
 				AND a.f_needtime BETWEEN #{beginNeedTime} AND #{endNeedTime}
-			</if>
-			<if test="status != null and status != ''">
-				AND a.f_status = #{status}
 			</if>
 			<if test="cancellation != null and cancellation != ''">
 				AND a.f_cancellation = #{cancellation}
@@ -153,7 +147,7 @@
 			#{delFlag},
 			#{erpId},
 			#{type},
-			#{billno},
+			#{billNo},
 			#{synStatus},
 			#{synTime},
 			#{custId},
@@ -177,7 +171,7 @@
 			remarks = #{remarks},
 			f_erpid = #{erpId},
 			f_type = #{type},
-			f_billno = #{billno},
+			f_billno = #{billNo},
 			f_synstatus = #{synStatus},
 			f_syntime = #{synTime},
 			f_custid = #{custId},
