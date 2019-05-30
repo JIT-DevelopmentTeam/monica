@@ -84,7 +84,7 @@
 					<td class="width-35">
 						<form:select path="type" class="form-control required">
 							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							<form:options items="${fns:getDictList('sobill_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</td>
 				</tr>
@@ -97,7 +97,7 @@
 					<td class="width-35">
 						<form:select path="synStatus" class="form-control ">
 							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							<form:options items="${fns:getDictList('syn_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</td>
 				</tr>
@@ -196,9 +196,6 @@
 						<th><font color="red">*</font>行序号</th>
 						<th>订单同步状态</th>
 						<th>订单同步时间</th>
-						<th><font color="red">*</font>客户id</th>
-						<th><font color="red">*</font>订单归属部门</th>
-						<th><font color="red">*</font>订单归属员工</th>
 						<th width="10">&nbsp;</th>
 					</tr>
 				</thead>
@@ -265,22 +262,7 @@
 					<td>
 						<input id="sobillentryList{{idx}}_synTime" name="sobillentryList[{{idx}}].synTime" type="text" value="{{row.synTime}}"    class="form-control "/>
 					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_custId" name="sobillentryList[{{idx}}].custId" type="text" value="{{row.custId}}"    class="form-control required"/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_deptId" name="sobillentryList[{{idx}}].deptId" type="text" value="{{row.deptId}}"    class="form-control required"/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_emplId" name="sobillentryList[{{idx}}].emplId" type="text" value="{{row.emplId}}"    class="form-control required"/>
-					</td>
-					
+
 					<td class="text-center" width="10">
 						{{#delBtn}}<span class="close" onclick="delRow(this, '#sobillentryList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
 					</td>

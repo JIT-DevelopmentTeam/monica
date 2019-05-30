@@ -32,6 +32,7 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	private String custId;		// 客户id
 	private String deptId;		// 订单归属部门
 	private String emplId;		// 订单归属员工
+	private String itemName;	// 商品名称
 	
 	public Sobillentry() {
 		super();
@@ -53,7 +54,6 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 		this.sobillId = sobillId;
 	}
 	
-	@ExcelField(title="商品id", align=2, sort=8)
 	public String getItemId() {
 		return itemId;
 	}
@@ -174,5 +174,13 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	public void setEmplId(String emplId) {
 		this.emplId = emplId;
 	}
-	
+
+	@ExcelField(title="商品", align=2, sort=8)
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 }

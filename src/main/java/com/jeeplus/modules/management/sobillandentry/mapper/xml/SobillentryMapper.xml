@@ -23,12 +23,13 @@
 		a.f_syntime AS "synTime",
 		a.f_custid AS "custId",
 		a.f_deptid AS "deptId",
-		a.f_emplid AS "emplId"
+		a.f_emplid AS "emplId",
+		c.f_name AS "itemName"
 	</sql>
 	
 	<sql id="sobillentryJoins">
-		
-			LEFT JOIN ic_sobill b ON b.id = a.f_sobillid
+		LEFT JOIN ic_sobill b ON b.id = a.f_sobillid
+		LEFT JOIN tb_icitem c ON a.f_itemid = c.id
 	</sql>
 	
     
@@ -49,7 +50,7 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
 			<if test="sobillId != null and sobillId != ''">
-				AND a.f_sobillid = #{sobillId}
+				AND a.f_sobillid = #{sobillId.id}
 			</if>
 		</where>
 		<choose>
@@ -112,7 +113,7 @@
 			#{updateDate},
 			#{remarks},
 			#{delFlag},
-			#{sobillId},
+			#{sobillId.id},
 			#{itemId},
 			#{unit},
 			#{auxpropid},
@@ -134,7 +135,7 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			f_sobillid = #{sobillId},
+			f_sobillid = #{sobillId.id},
 			f_itemid = #{itemId},
 			f_unit = #{unit},
 			f_auxpropid = #{auxpropid},
@@ -160,7 +161,7 @@
 				WHERE id = #{id}
 			</when>
 			<otherwise>
-				WHERE f_sobillid = #{sobillId}
+				WHERE f_sobillid = #{sobillId.id}
 			</otherwise>
 		</choose>
 	</update>
@@ -174,7 +175,7 @@
 				WHERE id = #{id}
 			</when>
 			<otherwise>
-				WHERE f_sobillid = #{sobillId}
+				WHERE f_sobillid = #{sobillId.id}
 			</otherwise>
 		</choose>
 	</update>

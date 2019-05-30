@@ -2,7 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#sobillTable').bootstrapTable({
-		 
+
 		  //请求方法
                method: 'post',
                //类型json
@@ -28,23 +28,23 @@ $(document).ready(function() {
     	       minimumCountColumns: 2,
                //是否显示行间隔色
                striped: true,
-               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
-               cache: false,    
-               //是否显示分页（*）  
-               pagination: true,   
-                //排序方式 
-               sortOrder: "asc",  
+               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+               cache: false,
+               //是否显示分页（*）
+               pagination: true,
+                //排序方式
+               sortOrder: "asc",
                //初始化加载第一页，默认第一页
-               pageNumber:1,   
-               //每页的记录行数（*）   
-               pageSize: 10,  
-               //可供选择的每页的行数（*）    
+               pageNumber:1,
+               //每页的记录行数（*）
+               pageSize: 10,
+               //可供选择的每页的行数（*）
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
                url: "${ctx}/management/sobillandentry/sobill/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
-               //queryParamsType:'',   
-               ////查询参数,每次调用是会带上这个参数，可自定义                         
+               //queryParamsType:'',
+               ////查询参数,每次调用是会带上这个参数，可自定义
                queryParams : function(params) {
                	var searchParam = $("#searchForm").serializeJSON();
                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -73,12 +73,12 @@ $(document).ready(function() {
                    	  			jp.error(data.msg);
                    	  		}
                    	  	})
-                   	   
+
                    	});
-                      
-                   } 
+
+                   }
                },
-              
+
                onClickRow: function(row, $el){
                },
                	onShowSearch: function () {
@@ -86,45 +86,37 @@ $(document).ready(function() {
 		},
                columns: [{
 		        checkbox: true
-		       
+
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:sobillandentry:sobill:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('management:sobillandentry:sobill:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
+                   ,{
+                       field: 'billNo',
+                       title: '订单编码',
+                       sortable: true,
+                       sortName: 'billNo'
+                       ,formatter:function(value, row , index){
+                           value = jp.unescapeHTML(value);
+                       <c:choose>
+                           <c:when test="${fns:hasPermission('management:sobillandentry:sobill:edit')}">
+                           return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+                       </c:when>
+                           <c:when test="${fns:hasPermission('management:sobillandentry:sobill:view')}">
+                           return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+                       </c:when>
+                           <c:otherwise>
+                           return value;
+                       </c:otherwise>
+                           </c:choose>
+                       }
+                   }
 			,{
 		        field: 'type',
 		        title: '订单类型',
 		        sortable: true,
 		        sortName: 'type',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_type'))}, value, "-");
 		        }
-		       
-		    }
-			,{
-		        field: 'billNo',
-		        title: '订单编码',
-		        sortable: true,
-		        sortName: 'billNo'
-		       
+
 		    }
 			,{
 		        field: 'synStatus',
@@ -132,44 +124,44 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'synStatus',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('syn_status'))}, value, "-");
 		        }
-		       
+
 		    }
 			,{
-		        field: 'custId',
-		        title: '客户id',
+		        field: 'custName',
+		        title: '客户',
 		        sortable: true,
-		        sortName: 'custId'
-		       
+		        sortName: 'custName'
+
 		    }
 			,{
-		        field: 'deptId',
+		        field: 'deptName',
 		        title: '订单归属部门',
 		        sortable: true,
-		        sortName: 'deptId'
-		       
+		        sortName: 'deptName'
+
 		    }
 			,{
-		        field: 'emplId',
+		        field: 'emplName',
 		        title: '订单归属员工',
 		        sortable: true,
-		        sortName: 'emplId'
-		       
+		        sortName: 'emplName'
+
 		    }
 			,{
 		        field: 'needTime',
 		        title: '订单发货时间',
 		        sortable: true,
 		        sortName: 'needTime'
-		       
+
 		    }
 			,{
 		        field: 'status',
 		        title: '订单状态',
 		        sortable: true,
 		        sortName: 'status'
-		       
+
 		    }
 			,{
 		        field: 'cancellation',
@@ -179,21 +171,21 @@ $(document).ready(function() {
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
 		        }
-		       
+
 		    }
 			,{
 		        field: 'checkerId',
 		        title: '订单审核人',
 		        sortable: true,
 		        sortName: 'checkerId'
-		       
+
 		    }
 			,{
 		        field: 'checkTime',
 		        title: '订单审核时间',
 		        sortable: true,
 		        sortName: 'checkTime'
-		       
+
 		    }
 			,{
 		        field: 'checkStatus',
@@ -203,32 +195,38 @@ $(document).ready(function() {
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
 		        }
-		       
+
 		    }
 			,{
 		        field: 'amount',
 		        title: '订单总金额',
 		        sortable: true,
 		        sortName: 'amount'
-		       
+
 		    }
+                   ,{
+                       field: 'remarks',
+                       title: '备注',
+                       sortable: true,
+                       sortName: 'remarks'
+                   }
 		     ]
-		
+
 		});
-		
-		  
+
+
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
-		 
+
 		  $('#sobillTable').bootstrapTable("toggleView");
 		}
-	  
+
 	  $('#sobillTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
             $('#view,#edit').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
         });
-		  
+
 		$("#btnImport").click(function(){
 			jp.open({
 			    type: 2,
@@ -253,11 +251,11 @@ $(document).ready(function() {
 						});//调用保存事件
 						return false;
 				  },
-				 
-				  btn3: function(index){ 
+
+				  btn3: function(index){
 					  jp.close(index);
 	    	       }
-			}); 
+			});
 		});
 	  $("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
@@ -278,33 +276,33 @@ $(document).ready(function() {
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#sobillTable').bootstrapTable('refresh');
 		});
-	 
+
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		   $("#searchForm  .select-item").html("");
 		  $('#sobillTable').bootstrapTable('refresh');
 		});
-		
+
 				$('#beginNeedTime').datetimepicker({
 					 format: "YYYY-MM-DD HH:mm:ss"
 				});
 				$('#endNeedTime').datetimepicker({
 					 format: "YYYY-MM-DD HH:mm:ss"
 				});
-		
+
 	});
-		
+
   function getIdSelections() {
         return $.map($("#sobillTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
-  
+
   function deleteAll(){
 
 		jp.confirm('确认要删除该订单记录吗？', function(){
-			jp.loading();  	
+			jp.loading();
 			jp.get("${ctx}/management/sobillandentry/sobill/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
          	  			$('#sobillTable').bootstrapTable('refresh');
@@ -313,10 +311,10 @@ $(document).ready(function() {
          	  			jp.error(data.msg);
          	  		}
          	  	})
-          	   
+
 		})
   }
-  
+
     //刷新列表
   function refresh() {
       $('#sobillTable').bootstrapTable('refresh');
@@ -324,7 +322,7 @@ $(document).ready(function() {
   function add(){
 	  jp.openSaveDialog('新增订单', "${ctx}/management/sobillandentry/sobill/form",'800px', '500px');
   }
-  
+
    function edit(id){//没有权限时，不显示确定按钮
        if(id == undefined){
 	      id = getIdSelections();
@@ -332,18 +330,18 @@ $(document).ready(function() {
 	jp.openSaveDialog('编辑订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, '800px', '500px');
   }
 
-  
+
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
         jp.openViewDialog('查看订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, '800px', '500px');
  }
-  
-  
-  
-  
-		   
+
+
+
+
+
   function detailFormatter(index, row) {
 	  var htmltpl =  $("#sobillChildrenTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
 	  var html = Mustache.render(htmltpl, {
@@ -358,19 +356,19 @@ $(document).ready(function() {
 			addRow('#sobillChild-'+row.id+'-1-List', sobillChild1RowIdx, sobillChild1Tpl, data1[i]);
 			sobillChild1RowIdx = sobillChild1RowIdx + 1;
 		}
-				
-      	  			
+
+
       })
-     
+
         return html;
     }
-  
+
 	function addRow(list, idx, tpl, row){
 		$(list).append(Mustache.render(tpl, {
 			idx: idx, delBtn: true, row: row
 		}));
 	}
-			
+
 </script>
 <script type="text/template" id="sobillChildrenTpl">//<!--
 	<div class="tabs-container">
@@ -382,8 +380,7 @@ $(document).ready(function() {
 						<table class="ani table">
 						<thead>
 							<tr>
-								<th>备注信息</th>
-								<th>商品id</th>
+								<th>商品</th>
 								<th>商品单位</th>
 								<th>批号</th>
 								<th>单价</th>
@@ -392,9 +389,7 @@ $(document).ready(function() {
 								<th>行序号</th>
 								<th>订单同步状态</th>
 								<th>订单同步时间</th>
-								<th>客户id</th>
-								<th>订单归属部门</th>
-								<th>订单归属员工</th>
+    							<th>备注信息</th>
 							</tr>
 						</thead>
 						<tbody id="sobillChild-{{idx}}-1-List">
@@ -406,10 +401,7 @@ $(document).ready(function() {
 	<script type="text/template" id="sobillChild1Tpl">//<!--
 				<tr>
 					<td>
-						{{row.remarks}}
-					</td>
-					<td>
-						{{row.itemId}}
+						{{row.itemName}}
 					</td>
 					<td>
 						{{row.unit}}
@@ -436,13 +428,7 @@ $(document).ready(function() {
 						{{row.synTime}}
 					</td>
 					<td>
-						{{row.custId}}
-					</td>
-					<td>
-						{{row.deptId}}
-					</td>
-					<td>
-						{{row.emplId}}
+						{{row.remarks}}
 					</td>
 				</tr>//-->
 	</script>
