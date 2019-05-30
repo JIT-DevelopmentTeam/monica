@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.stockandentry.mapper.StockMapper">
+    
+	<sql id="stockColumns">
+		a.id AS "id",
+		a.f_warehouseid AS "warehouseId",
+		a.f_warehouseposition AS "warehousePosition",
+		a.f_commoditynumber AS "commodityNumber",
+		a.f_commodityname AS "commodityName",
+		a.f_specification AS "specification",
+		a.f_unit AS "unit",
+		a.f_total AS "total",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="stockJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="Stock" >
+		SELECT 
+			<include refid="stockColumns"/>
+		FROM tb_stock a
+		<include refid="stockJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Stock" >
+		SELECT 
+			<include refid="stockColumns"/>
+		FROM tb_stock a
+		<include refid="stockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Stock" >
+		SELECT 
+			<include refid="stockColumns"/>
+		FROM tb_stock a
+		<include refid="stockJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_stock(
+			id,
+			f_warehouseid,
+			f_warehouseposition,
+			f_commoditynumber,
+			f_commodityname,
+			f_specification,
+			f_unit,
+			f_total,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{warehouseId},
+			#{warehousePosition},
+			#{commodityNumber},
+			#{commodityName},
+			#{specification},
+			#{unit},
+			#{total},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_stock SET 	
+			f_warehouseid = #{warehouseId},
+			f_warehouseposition = #{warehousePosition},
+			f_commoditynumber = #{commodityNumber},
+			f_commodityname = #{commodityName},
+			f_specification = #{specification},
+			f_unit = #{unit},
+			f_total = #{total},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_stock
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_stock SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Stock" statementType="STATEMENT">
+		select * FROM tb_stock  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
