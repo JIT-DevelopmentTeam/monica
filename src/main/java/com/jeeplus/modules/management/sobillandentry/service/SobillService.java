@@ -20,7 +20,7 @@ import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 /**
  * 订单模块Service
  * @author KicoChan
- * @version 2019-05-29
+ * @version 2019-05-30
  */
 @Service
 @Transactional(readOnly = true)

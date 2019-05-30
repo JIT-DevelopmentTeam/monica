@@ -15,7 +15,7 @@ import com.jeeplus.common.utils.excel.annotation.ExcelField;
 /**
  * 订单模块Entity
  * @author KicoChan
- * @version 2019-05-29
+ * @version 2019-05-30
  */
 public class Sobill extends DataEntity<Sobill> {
 	
