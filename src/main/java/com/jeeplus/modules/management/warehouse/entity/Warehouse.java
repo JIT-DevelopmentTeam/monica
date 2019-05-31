@@ -3,17 +3,16 @@
  */
 package com.jeeplus.modules.management.warehouse.entity;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import java.util.List;
 import com.google.common.collect.Lists;
-
 import com.jeeplus.core.persistence.TreeEntity;
 
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
+
 /**
- * 仓库管理表Entity
+ * 库存管理Entity
  * @author Vigny
  * @version 2019-05-31
  */

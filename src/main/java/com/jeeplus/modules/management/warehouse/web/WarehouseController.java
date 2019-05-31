@@ -29,7 +29,7 @@ import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 import com.jeeplus.modules.management.warehouse.service.WarehouseService;
 
 /**
- * 仓库管理表Controller
+ * 库存管理Controller
  * @author Vigny
  * @version 2019-05-31
  */
@@ -53,7 +53,7 @@ public class WarehouseController extends BaseController {
 	}
 	
 	/**
-	 * 仓库管理表列表页面
+	 * 库存管理列表页面
 	 */
 	@RequestMapping(value = {"list", ""})
 	public String list(Warehouse warehouse,  HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -62,7 +62,7 @@ public class WarehouseController extends BaseController {
 	}
 
 	/**
-	 * 查看，增加，编辑仓库管理表表单页面
+	 * 查看，增加，编辑库存管理表单页面
 	 */
 	@RequestMapping(value = "form")
 	public String form(Warehouse warehouse, Model model) {
@@ -89,7 +89,7 @@ public class WarehouseController extends BaseController {
 	}
 
 	/**
-	 * 保存仓库管理表
+	 * 保存库存管理
 	 */
 	@ResponseBody
 	@RequestMapping(value = "save")
@@ -109,7 +109,7 @@ public class WarehouseController extends BaseController {
 		warehouseService.save(warehouse);//保存
 		j.setSuccess(true);
 		j.put("warehouse", warehouse);
-		j.setMsg("保存仓库管理表成功");
+		j.setMsg("保存库存管理成功");
 		return j;
 	}
 	
@@ -123,7 +123,7 @@ public class WarehouseController extends BaseController {
 	}
 	
 	/**
-	 * 删除仓库管理表
+	 * 删除库存管理
 	 */
 	@ResponseBody
 	@RequestMapping(value = "delete")
@@ -131,7 +131,7 @@ public class WarehouseController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		warehouseService.delete(warehouse);
 		j.setSuccess(true);
-		j.setMsg("删除仓库管理表成功");
+		j.setMsg("删除库存管理成功");
 		return j;
 	}
 

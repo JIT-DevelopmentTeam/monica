@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>仓库管理表管理</title>
+	<title>库存管理管理</title>
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
@@ -62,30 +62,21 @@
 					<td class="width-35">
 						<form:input path="status" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
-					<td class="width-35">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">父级编号：</label></td>
 					<td class="width-35">
 						<sys:treeselect id="parent" name="parent.id" value="${warehouse.parent.id}" labelName="parent.name" labelValue="${warehouse.parent.name}"
 						title="父级编号" url="/management/warehouse/warehouse/treeData" extId="${warehouse.id}" cssClass="form-control " allowClear="true"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
-					<td class="width-35">
-						<form:input path="name" htmlEscape="false"    class="form-control required"/>
-					</td>
-				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>排序：</label></td>
 					<td class="width-35">
 						<form:input path="sort" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
-		  		</tr>
+					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+					<td class="width-35">
+						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+					</td>
+				</tr>
 		 	</tbody>
 		</table>
 		</form:form>

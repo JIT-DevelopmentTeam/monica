@@ -1,10 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 	<script>
 		$(document).ready(function() {
-			$('i[class="fa fa-plus"]').attr('class', 'fa fa-exchange');
+			$('div[class="col-sm-10"]').attr('class', 'col-sm-8');
+			$('i[class="fa fa-plus"]').attr('class', 'glyphicon glyphicon-refresh');
+			$('i[class="glyphicon glyphicon-refresh"]').text('同步仓库');
 			$('button[class="btn btn-default btn-sm"]').removeAttr('onclick');
 			$('button[class="btn btn-default btn-sm"]').click(function () {
-				alert("同步按钮");
+				alert('同步按钮');
 			});
 
 			var to = false;
@@ -36,19 +38,19 @@
 						delete tmp.rename.action;
 						tmp.rename = null;
 						tmp.create = {
-							"label": "添加下级仓库管理表",
+							"label": "添加下级库存管理",
 							"action": function (data) {
 								var inst = jQuery.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
-								jp.openSaveDialog('添加下级仓库管理表', '${ctx}/management/warehouse/warehouse/form?parent.id=' + obj.id + "&parent.name=" + obj.text, '800px', '500px');
+								jp.openSaveDialog('添加下级库存管理', '${ctx}/management/warehouse/warehouse/form?parent.id=' + obj.id + "&parent.name=" + obj.text, '800px', '500px');
 							}
 						};
 						tmp.remove = {
-							"label": "删除仓库管理表",
+							"label": "删除库存管理",
 							"action": function (data) {
 								var inst = jQuery.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
-								jp.confirm('确认要删除仓库管理表吗？', function(){
+								jp.confirm('确认要删除库存管理吗？', function(){
 									jp.loading();
 									$.get("${ctx}/management/warehouse/warehouse/delete?id="+obj.id, function(data){
 										if(data.success){
@@ -63,13 +65,13 @@
 							}
 						}
 						tmp.ccp = {
-							"label": "编辑仓库管理表",
+							"label": "编辑库存管理",
 							"action": function (data) {
 								var inst = jQuery.jstree.reference(data.reference),
 									obj = inst.get_node(data.reference);
 								var parentId = inst.get_parent(data.reference);
 								var parent = inst.get_node(parentId);
-								jp.openSaveDialog('编辑仓库管理表', '${ctx}/management/warehouse/warehouse/form?id=' + obj.id, '800px', '500px');
+								jp.openSaveDialog('编辑库存管理', '${ctx}/management/warehouse/warehouse/form?id=' + obj.id, '800px', '500px');
 							}
 						}
 						return tmp;

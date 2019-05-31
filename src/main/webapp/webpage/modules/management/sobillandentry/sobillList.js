@@ -237,7 +237,7 @@ $(document).ready(function() {
 	  $('#sobillTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
-            $('#view,#edit,#check').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
+            $('#view,#edit,#check,#cancelCheck,#synchronization').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
         });
 
 		$("#btnImport").click(function(){
@@ -381,10 +381,30 @@ $(document).ready(function() {
 	}
 
 	function checkOrder(){
-  		jp.post("${ctx}/management/sobillandentry/sobill/checkOrder?id="+getIdSelections(),function (data) {
-            jp.alert("test!");
+        jp.confirm('您确定要审核该订单吗？', function(){
+            jp.post("${ctx}/management/sobillandentry/sobill/checkOrder?id="+getIdSelections(),null, function(data){
+                if(data.success){
+                    jp.success(data.msg);
+                    refresh();
+                }else{
+                    jp.error(data.msg);
+                }
+            });
         });
 	}
+
+function cancelCheckOrder(){
+    jp.confirm('您确定要反审核该订单吗？', function(){
+        jp.post("${ctx}/management/sobillandentry/sobill/cancelCheckOrder?id="+getIdSelections(),null, function(data){
+            if(data.success){
+                jp.success(data.msg);
+                refresh();
+            }else{
+                jp.error(data.msg);
+            }
+        });
+    });
+}
 </script>
 <script type="text/template" id="sobillChildrenTpl">//<!--
 	<div class="tabs-container">
