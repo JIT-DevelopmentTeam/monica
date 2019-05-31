@@ -3,16 +3,6 @@
  */
 package com.jeeplus.modules.sys.service;
 
-import java.util.*;
-
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.apache.shiro.session.Session;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.Encodes;
@@ -22,16 +12,21 @@ import com.jeeplus.core.security.Digests;
 import com.jeeplus.core.security.shiro.session.SessionDAO;
 import com.jeeplus.core.service.BaseService;
 import com.jeeplus.core.service.ServiceException;
-import com.jeeplus.modules.sys.entity.DataRule;
-import com.jeeplus.modules.sys.entity.Menu;
-import com.jeeplus.modules.sys.entity.Office;
-import com.jeeplus.modules.sys.entity.Role;
-import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.entity.*;
 import com.jeeplus.modules.sys.mapper.MenuMapper;
 import com.jeeplus.modules.sys.mapper.RoleMapper;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.utils.LogUtils;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
@@ -422,7 +417,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		sb.append("．☆．∵∴∵．∴∵∴▍▍ ▍▍ ▍▍ ▍▍☆ ★∵∴ \r\n ");
 		sb.append("▍．∴∵∴∵．∴▅███████████☆ ★∵ \r\n ");
 		sb.append("◥█▅▅▅▅███▅█▅█▅█▅█▅█▅███◤          "+Global.getConfig("productName")+Global.getConfig("version")+"\r\n ");
-		sb.append("． ◥███████████████████◤                 ");
+		sb.append("． ◥███████████████████◤                \r\n ");
 		sb.append(".．.．◥████████████████■◤\r\n ");
 		System.out.println(sb.toString());
 		return true;
