@@ -235,19 +235,19 @@ public class SobillController extends BaseController {
 		return j;
     }
 
-    @RequestMapping(value = "check")
+    @RequestMapping(value = "checkOrder")
 	@ResponseBody
-	public AjaxJson check(String id,Sobill sobill){
+	public AjaxJson checkOrder(String id,Sobill sobill){
 		AjaxJson aj = new AjaxJson();
 		sobill = sobillService.get(id);
-		if ("1".equals(sobill.getCheckStatus())){
+		if ("1".equals(sobill.getCheckStatus().toString())){
 			aj.setSuccess(false);
 			aj.setMsg("审核失败(请检查该订单是否已审核)!");
 		} else {
 			sobill.setCheckerId(UserUtils.getUser().getId());
 			sobill.setCheckStatus(1);
 			sobill.setCheckTime(new Date());
-			sobillService.check(sobill);
+			sobillService.checkOrder(sobill);
 			aj.setSuccess(true);
 			aj.setMsg("审核成功!");
 		}

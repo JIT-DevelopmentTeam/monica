@@ -25,7 +25,7 @@ public class SwaggerConfig {
     }
     //api接口作者相关信息
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("刘高峰", "http://www.jeeplus.org", "jeeplus@126.com");
+        Contact contact = new Contact("捷特科技", "http://www.jeeplus.org", "jeeplus@126.com");
         ApiInfo apiInfo = new ApiInfoBuilder().license("GPL").title("jeeplus快速开发平台").description("接口文档").contact(contact).version("3.0").build();
         return apiInfo;
     }

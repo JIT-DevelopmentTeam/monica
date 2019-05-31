@@ -26,11 +26,15 @@
 		a.f_checktime AS "checkTime",
 		a.f_checkstatus AS "checkStatus",
 		a.f_amount AS "amount",
-		b.name AS "emplName"
+		emp.name AS "emplName",
+		checker.name AS "checkerName",
+		dept.name AS "deptName"
 	</sql>
 	
 	<sql id="sobillJoins">
-		LEFT JOIN sys_user AS b ON a.f_emplid = b.id
+		LEFT JOIN sys_user AS emp ON a.f_emplid = emp.id
+		LEFT JOIN sys_user AS checker ON a.f_checkerid = checker.id
+		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
 	</sql>
 	
     
@@ -209,7 +213,8 @@
 		select * FROM ic_sobill  where ${propertyName} = '${value}'
 	</select>
 
-    <update id="check">
+	<!-- 审核订单 -->
+    <update id="checkOrder" parameterType="Sobill">
         UPDATE ic_sobill SET
             f_checkerid = #{checkerId},
             f_checktime = #{checkTime},

@@ -90,7 +90,7 @@ $(document).ready(function() {
 		    }
                    ,{
                        field: 'billNo',
-                       title: '订单编码',
+                       title: '编码',
                        sortable: true,
                        sortName: 'billNo'
                        ,formatter:function(value, row , index){
@@ -110,7 +110,7 @@ $(document).ready(function() {
                    }
 			,{
 		        field: 'type',
-		        title: '订单类型',
+		        title: '类型',
 		        sortable: true,
 		        sortName: 'type',
 		        formatter:function(value, row , index){
@@ -120,7 +120,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'synStatus',
-		        title: '订单同步状态',
+		        title: '同步状态',
 		        sortable: true,
 		        sortName: 'synStatus',
 		        formatter:function(value, row , index){
@@ -136,22 +136,22 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'deptId',
-		        title: '订单归属部门',
+		        field: 'deptName',
+		        title: '归属部门',
 		        sortable: true,
-		        sortName: 'deptId'
+		        sortName: 'deptName'
 
 		    }
 			,{
 		        field: 'emplName',
-		        title: '订单归属员工',
+		        title: '归属员工',
 		        sortable: true,
 		        sortName: 'emplName'
 
 		    }
 			,{
 		        field: 'needTime',
-		        title: '订单发货时间',
+		        title: '发货时间',
 				class: 'text-nowrap',
 		        sortable: true,
 		        sortName: 'needTime'
@@ -159,7 +159,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'status',
-		        title: '订单状态',
+		        title: '状态',
 		        sortable: true,
 		        sortName: 'status',
 			    formatter:function(value, row , index){
@@ -168,7 +168,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'cancellation',
-		        title: '订单是否取消',
+		        title: '是否取消',
 		        sortable: true,
 		        sortName: 'cancellation',
 		        formatter:function(value, row , index){
@@ -177,22 +177,22 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'checkerId',
-		        title: '订单审核人',
+		        field: 'checkerName',
+		        title: '审核人',
 		        sortable: true,
-		        sortName: 'checkerId'
+		        sortName: 'checkerName'
 
 		    }
 			,{
 		        field: 'checkTime',
-		        title: '订单审核时间',
+		        title: '审核时间',
 		        sortable: true,
 		        sortName: 'checkTime'
 
 		    }
 			,{
 		        field: 'checkStatus',
-		        title: '订单审核状态',
+		        title: '审核状态',
 		        sortable: true,
 		        sortName: 'checkStatus',
 		        formatter:function(value, row , index){
@@ -212,7 +212,7 @@ $(document).ready(function() {
 		   }
 			,{
 		        field: 'amount',
-		        title: '订单总金额',
+		        title: '总金额',
 		        sortable: true,
 		        sortName: 'amount'
 
@@ -333,14 +333,14 @@ $(document).ready(function() {
       $('#sobillTable').bootstrapTable('refresh');
   }
   function add(){
-	  jp.openSaveDialog('新增订单', "${ctx}/management/sobillandentry/sobill/form",'800px', '500px');
+	  jp.openSaveDialog('新增订单', "${ctx}/management/sobillandentry/sobill/form", window.innerWidth * 0.9+'px', window.innerWidth * 0.8+'px');
   }
 
    function edit(id){//没有权限时，不显示确定按钮
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, window.innerWidth * 0.9+'px', window.innerWidth * 0.8+'px');
   }
 
 
@@ -348,7 +348,7 @@ $(document).ready(function() {
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看订单', "${ctx}/management/sobillandentry/sobill/form?id=" + id, window.innerWidth * 0.9+'px', window.innerWidth * 0.8+'px');
  }
 
 
@@ -380,12 +380,11 @@ $(document).ready(function() {
 		}));
 	}
 
-	function check(){
-  		jp.post("${ctx}/management/sobillandentry/sobill/check?id="+getIdSelections(),function (data) {
-            jp.alert(data.msg);
+	function checkOrder(){
+  		jp.post("${ctx}/management/sobillandentry/sobill/checkOrder?id="+getIdSelections(),function (data) {
+            jp.alert("test!");
         });
 	}
-
 </script>
 <script type="text/template" id="sobillChildrenTpl">//<!--
 	<div class="tabs-container">

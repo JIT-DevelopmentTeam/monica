@@ -22,11 +22,11 @@
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="sobill" class="form form-horizontal well clearfix">
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单编码：">订单编码：</label>
+				<label class="label-item single-overflow pull-left" title="编码：">编码：</label>
 				<form:input path="billNo" htmlEscape="false" maxlength="100"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单同步状态：">订单同步状态：</label>
+				<label class="label-item single-overflow pull-left" title="同步状态：">同步状态：</label>
 				<form:select path="synStatus"  class="form-control m-b">
 					<form:option value="" label=""/>
 					<form:options items="${fns:getDictList('syn_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -37,16 +37,16 @@
 				<form:input path="custId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单归属部门：">订单归属部门：</label>
+				<label class="label-item single-overflow pull-left" title="归属部门：">归属部门：</label>
 				<form:input path="deptId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单归属员工：">订单归属员工：</label>
+				<label class="label-item single-overflow pull-left" title="归属员工：">归属员工：</label>
 				<form:input path="emplId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				 <div class="form-group">
-					<label class="label-item single-overflow pull-left" title="订单发货时间：">&nbsp;订单发货时间：</label>
+					<label class="label-item single-overflow pull-left" title="发货时间：">&nbsp;发货时间：</label>
 					<div class="col-xs-12">
 						   <div class="col-xs-12 col-sm-5">
 					        	  <div class='input-group date' id='beginNeedTime' style="left: -10px;" >
@@ -71,14 +71,14 @@
 				</div>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单是否已经取消：">订单是否已经取消：</label>
+				<label class="label-item single-overflow pull-left" title="是否已经取消：">是否已经取消：</label>
 				<form:select path="cancellation"  class="form-control m-b">
 					<form:option value="" label=""/>
 					<form:options items="${fns:getDictList('sobill_cancellation')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="订单审核状态：">订单审核状态：</label>
+				<label class="label-item single-overflow pull-left" title="审核状态：">审核状态：</label>
 				<form:select path="checkStatus"  class="form-control m-b">
 					<form:option value="" label=""/>
 					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
@@ -127,7 +127,7 @@
 			</shiro:hasPermission>
 
             <shiro:hasPermission name="management:sobillandentry:sobill:check">
-                <button id="check" class="btn btn-primary" onclick="check()">
+                <button id="check" class="btn btn-primary" onclick="checkOrder()">
                     <i class="glyphicon glyphicon-search"></i> 审核
                 </button>
             </shiro:hasPermission>

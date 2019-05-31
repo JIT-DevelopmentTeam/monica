@@ -77,7 +77,7 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单类型：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>类型：</label></td>
 					<td class="width-35">
 						<form:select path="type" class="form-control required">
 							<form:option value="" label=""/>
@@ -85,50 +85,51 @@
 						</form:select>
 					</td>
 
-					<td class="width-15 active"><label class="pull-right">订单状态：</label></td>
+					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
 						<input type="text" readonly class="form-control" value="<c:if test="${sobill.status == 0}">草稿</c:if><c:if test="${sobill.status == 1}">审核提交</c:if>"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单编码：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>编码：</label></td>
 					<td class="width-35">
 						<form:input path="billNo" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">订单同步状态：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
+					<td class="width-35">
+						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
+										title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">同步状态：</label></td>
 					<td class="width-35">
 						<input type="text" readonly class="form-control" value="<c:if test="${sobill.synStatus == 0}">未同步</c:if><c:if test="${sobill.synStatus == 1}">已同步</c:if>"/>
 					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right">订单同步时间：</label></td>
+					<td class="width-15 active"><label class="pull-right">同步时间：</label></td>
 					<td class="width-35">
 						<form:input path="synTime" htmlEscape="false"  readonly="true"  class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
-					<td class="width-35">
-						<form:input path="custId" htmlEscape="false"    class="form-control required"/>
-					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单归属部门：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>归属部门：</label></td>
 					<td class="width-35">
-						<form:input path="deptId" htmlEscape="false" readonly="true" value="${fns:getOfficeList()}"  class="form-control required"/>
+						<form:input path="deptName" htmlEscape="false" readonly="true" class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单归属员工：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>归属员工：</label></td>
 					<td class="width-35">
 						<form:input path="" htmlEscape="false" readonly="true" value="${fns:getUser().name}"  class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">订单币别：</label></td>
+					<td class="width-15 active"><label class="pull-right">币别：</label></td>
 					<td class="width-35">
                         <form:select path="currencyId" class="form-control required">
                             <form:option value="" label=""/>
                             <form:options items="${fns:getDictList('sobill_currency')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
                         </form:select>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单发货时间：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发货时间：</label></td>
 					<td class="width-35">
 						<div class='input-group form_datetime' id='needTime'>
 							<input type='text'  name="needTime" class="form-control required"  value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
@@ -139,26 +140,23 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">订单审核人：</label></td>
+					<td class="width-15 active"><label class="pull-right">审核人：</label></td>
 					<td class="width-35">
-						<form:input path="checkerId" htmlEscape="false"  readonly="true"  class="form-control "/>
+						<form:input path="checkerName" htmlEscape="false"  readonly="true" class="form-control"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">订单审核时间：</label></td>
+					<td class="width-15 active"><label class="pull-right">审核时间：</label></td>
 					<td class="width-35">
-						<form:input path="checkTime" htmlEscape="false"  readonly="true"  class="form-control "/>
+						<input type="text" readonly value="<fmt:formatDate value="${sobill.checkTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">订单审核状态：</label></td>
+					<td class="width-15 active"><label class="pull-right">审核状态：</label></td>
 					<td class="width-35">
-						<form:select path="checkStatus" class="form-control ">
-							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('sobill_checkStatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-						</form:select>
+						<input type="text" value="<c:if test="${sobill.checkStatus == 0}">未审核</c:if><c:if test="${sobill.checkStatus == 1}">已审核</c:if>" readonly class="form-control"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>订单总金额：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>总金额：</label></td>
 					<td class="width-35">
-						<form:input path="amount" htmlEscape="false"    class="form-control required isFloatGteZero"/>
+						<form:input path="amount" htmlEscape="false" class="form-control required isFloatGteZero"/>
 					</td>
 				</tr>
 
@@ -204,7 +202,8 @@
 					</td>
 
 					<td>
-						<input id="sobillentryList{{idx}}_itemId" name="sobillentryList[{{idx}}].itemId" type="text" value="{{row.itemId}}"    class="form-control required"/>
+						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
+											title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
 					</td>
 					
 					

@@ -19,6 +19,6 @@ public interface SobillMapper extends BaseMapper<Sobill> {
      * 审核
      * @param sobill
      */
-    public void check(Sobill sobill);
+    public void checkOrder(Sobill sobill);
 
 }

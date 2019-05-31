@@ -3,12 +3,15 @@
  */
 package com.jeeplus.modules.management.icitemclass.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeeplus.modules.monitor.utils.Common;
+import net.sf.json.JSONArray;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,18 @@ public class IcitemClassController extends BaseController {
 			entity = new IcitemClass();
 		}
 		return entity;
+	}
+
+	/**
+	 * 同步物料分类
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synIcitemClass")
+	public Map<String,Object>  synIcitemClass(String parentId){
+		Map<String,Object> json = new HashMap<>();
+		JSONArray jsonarr = Common.executeInter("http://www.phonegap100.com/appapi.php?a=getPortalList&catid=20&page=1","POST");
+		json.put("result",jsonarr);
+		return json;
 	}
 	
 	/**
