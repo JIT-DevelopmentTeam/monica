@@ -1,7 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 	<script>
 		$(document).ready(function() {
-			$('i[class="fa fa-plus"]').attr('class', 'fa fa-exchange');
+			$('div[class="col-sm-10"]').attr('class', 'col-sm-8');
+			$('i[class="fa fa-plus"]').attr('class', 'glyphicon glyphicon-refresh');
+			$('i[class="glyphicon glyphicon-refresh"]').text('同步仓库');
 			$('button[class="btn btn-default btn-sm"]').removeAttr('onclick');
 			$('button[class="btn btn-default btn-sm"]').click(function () {
 				alert('同步按钮');
