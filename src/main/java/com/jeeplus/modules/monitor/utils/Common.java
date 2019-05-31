@@ -669,7 +669,7 @@ public class Common {
 
 			String htmlText = new String(data, "UTF-8");
 			JSONObject jsStr = JSONObject.fromObject(htmlText);
-			jsonarr = jsStr.getJSONArray("result"); // erp数据
+			jsonarr = jsStr.getJSONArray("Data"); // erp数据
 		}catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

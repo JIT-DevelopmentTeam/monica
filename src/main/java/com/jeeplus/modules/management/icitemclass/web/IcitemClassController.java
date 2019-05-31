@@ -6,12 +6,16 @@ package com.jeeplus.modules.management.icitemclass.web;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.modules.monitor.utils.Common;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +64,28 @@ public class IcitemClassController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "synIcitemClass")
-	public Map<String,Object>  synIcitemClass(String parentId){
+	public Map<String,Object>  synIcitemClass(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr = Common.executeInter("http://www.phonegap100.com/appapi.php?a=getPortalList&catid=20&page=1","POST");
-		json.put("result",jsonarr);
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_icitem_class?token_value=122331111","POST");
+
+		JSONObject jsonObject = new JSONObject();
+		for (int i = 0; i < jsonarr.size(); i++) {
+			jsonObject = jsonarr.getJSONObject(i);
+			IcitemClass icitemClass = new IcitemClass();
+			IcitemClass parent = new IcitemClass();
+			parent.setId(jsonObject.getString("f_parentid"));
+			parent.setName(jsonObject.getString("f_name"));
+			icitemClass.setParent(parent);
+			icitemClass.setErpId(jsonObject.getString("f_itemid"));
+			icitemClass.setId(jsonObject.getString("f_itemid"));
+			icitemClass.setNumber(jsonObject.getString("f_number"));
+			icitemClass.setName(jsonObject.getString("f_name"));
+
+			icitemClassService.save(icitemClass,true);
+		}
+		System.out.println("================插入成功================");
+		json.put("Data",jsonarr);
 		return json;
 	}
 	
