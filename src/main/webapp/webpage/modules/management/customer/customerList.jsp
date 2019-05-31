@@ -77,7 +77,7 @@
                 </shiro:hasPermission>
                 <shiro:hasPermission name="management:customer:customer:synch">
                     <button id="add" class="btn btn-primary" onclick="synch()">
-                        <i class="fa fa-retweet"></i> 同步
+                        <i class="glyphicon glyphicon-refresh"></i> 同步
                     </button>
                 </shiro:hasPermission>
             </div>

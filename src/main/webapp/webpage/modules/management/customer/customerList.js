@@ -86,7 +86,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'erpId',
-		        title: 'ERPId',
+		        title: 'ERPID',
 		        sortable: true,
 		        sortName: 'erpId'
 		        ,formatter:function(value, row , index){
@@ -121,14 +121,14 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'deptId',
-		        title: '部门归属id',
+		        title: '部门归属',
 		        sortable: true,
 		        sortName: 'deptId'
-		       
+
 		    }
 			,{
 		        field: 'emplId',
-		        title: '员工所属id',
+		        title: '员工所属',
 		        sortable: true,
 		        sortName: 'emplId'
 		       
@@ -141,23 +141,28 @@ $(document).ready(function() {
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_currency'))}, value, "-");
 		        }
-		       
 		    }
+            ,{
+                field: 'status',
+                title: '状态',
+                sortable: true,
+                sortName: 'status',
+                formatter:function(value, row , index){
+                    if(value == 0)
+                        return "停用";
+                    else if(value == 1)
+                        return "使用";
+                    else
+                        return "-";
+                }
+            }
 			,{
 		        field: 'erpNote',
 		        title: 'ERP备注',
 		        sortable: true,
 		        sortName: 'erpNote'
 		       
-		    }
-			,{
-		        field: 'status',
-		        title: '状态',
-		        sortable: true,
-		        sortName: 'status'
-		       
-		    }
-			,{
+		    },{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true,
@@ -273,7 +278,7 @@ $(document).ready(function() {
   }
   
    function add(){
-	  jp.openSaveDialog('新增客户信息', "${ctx}/management/customer/customer/form",'800px', '500px');
+	  jp.openSaveDialog('新增客户信息', "${ctx}/management/customer/customer/form",'800px', '600px');
   }
 
 
@@ -282,27 +287,24 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑客户信息', "${ctx}/management/customer/customer/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑客户信息', "${ctx}/management/customer/customer/form?id=" + id, '800px', '600px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看客户信息', "${ctx}/management/customer/customer/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看客户信息', "${ctx}/management/customer/customer/form?id=" + id, '800px 	', '600px');
  }
  //同步客户信息
 function synch() {
     jp.confirm('确认要同步客户信息记录吗？', function(){
         jp.loading();
-        /*jp.get("${ctx}/management/customer/customer/deleteAll?ids=" + getIdSelections(), function(data){
-            if(data.success){
-                $('#customerTable').bootstrapTable('refresh');
-                jp.success(data.msg);
-            }else{
-                jp.error(data.msg);
-            }
-        })*/
+        jp.post("${ctx}/management/customer/customer/synchCustomerInfo", function(data){
+        	$('#customerTable').bootstrapTable('refresh');
+        	console.log("")
+			jp.success("同步成功");
+        })
     })
 }
 

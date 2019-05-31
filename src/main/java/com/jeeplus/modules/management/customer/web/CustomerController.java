@@ -3,6 +3,7 @@
  */
 package com.jeeplus.modules.management.customer.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.modules.monitor.utils.Common;
+import net.sf.json.JSONArray;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +166,19 @@ public class CustomerController extends BaseController {
 		}
 			return j;
     }
+
+	/**
+	 * 远程同步客户信息
+	 * @return
+	 */
+	@ResponseBody
+    @RequestMapping(value = "synchCustomerInfo")
+	public Map<String ,Object> synchCustomer(){
+		Map<String,Object> result=new HashMap<>();
+		//JSONArray jsonArray=Common.executeInter("http://127.0.0.1:8080/a?login","GET");
+		//result.put("jsonArray",jsonArray);
+		return result;
+	}
 
 	/**
 	 * 导入Excel数据
