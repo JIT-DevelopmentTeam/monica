@@ -45,12 +45,13 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 	@Override
 	public void preInsert(){
 		if (!this.isNewRecord){
-			if(this.getIdType().equals(IDTYPE_UUID)){
-				setId(IdGen.uuid());
-			}else if(this.getIdType().equals(IDTYPE_AUTO)){
-				//使用自增长不需要设置主键
+			if(this.getId()==null){
+				if(this.getIdType().equals(IDTYPE_UUID)){
+					setId(IdGen.uuid());
+				}else if(this.getIdType().equals(IDTYPE_AUTO)){
+					//使用自增长不需要设置主键
+				}
 			}
-
 		}
 		User user = UserUtils.getUser();
 		if (StringUtils.isNotBlank(user.getId())){

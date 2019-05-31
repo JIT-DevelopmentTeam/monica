@@ -9,7 +9,6 @@
 		<result property="parentIds" column="parentIds" />
 		<result property="erpid" column="erpid" />
 		<result property="number" column="number" />
-		<result property="warehouseName" column="warehouseName" />
 		<result property="modifytime" column="modifytime" />
 		<result property="status" column="status" />
 		<association property="hasChildren" column="id" select="hasChildren" />
@@ -19,19 +18,18 @@
 		a.id AS "id",
 		a.f_erpid AS "erpid",
 		a.f_number AS "number",
-		a.f_warehousename AS "warehouseName",
+		a.name AS "name",
 		a.f_modifytime AS "modifytime",
 		a.f_status AS "status",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.sort AS "sort",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		a.parent_id AS "parent.id",
-		a.parent_ids AS "parentIds",
-		a.name AS "name",
-		a.sort AS "sort"
+		a.del_flag AS "delFlag"
 	</sql>
 	
 
@@ -62,8 +60,11 @@
 			<if test="number != null and number != ''">
 				AND a.f_number = #{number}
 			</if>
-			<if test="warehouseName != null and warehouseName != ''">
-				AND a.f_warehousename = #{warehouseName}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
 			<if test="parent != null and parent.id != null and parent.id != ''">
 				AND a.parent_id = #{parent.id}
@@ -73,12 +74,6 @@
 					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
-			</if>
-			<if test="name != null and name != ''">
-				AND a.name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
 		</where>
 		ORDER BY a.sort ASC
@@ -123,36 +118,34 @@
 			id,
 			f_erpid,
 			f_number,
-			f_warehousename,
+			name,
 			f_modifytime,
 			f_status,
+			parent_id,
+			parent_ids,
+			sort,
 			create_by,
 			create_date,
 			update_by,
 			update_date,
 			remarks,
-			del_flag,
-			parent_id,
-			parent_ids,
-			name,
-			sort
+			del_flag
 		) VALUES (
 			#{id},
 			#{erpid},
 			#{number},
-			#{warehouseName},
+			#{name},
 			#{modifytime},
 			#{status},
+			#{parent.id},
+			#{parentIds},
+			#{sort},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag},
-			#{parent.id},
-			#{parentIds},
-			#{name},
-			#{sort}
+			#{delFlag}
 		)
 	</insert>
 	
@@ -160,16 +153,15 @@
 		UPDATE tb_warehouse SET 	
 			f_erpid = #{erpid},
 			f_number = #{number},
-			f_warehousename = #{warehouseName},
+			name = #{name},
 			f_modifytime = #{modifytime},
 			f_status = #{status},
-			update_by = #{updateBy.id},
-			update_date = #{updateDate},
-			remarks = #{remarks},
 			parent_id = #{parent.id},
 			parent_ids = #{parentIds},
-			name = #{name},
-			sort = #{sort}
+			sort = #{sort},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
 		WHERE id = #{id}
 	</update>
 	

@@ -58,6 +58,7 @@
 			var delFlag = $(prefix+"_delFlag");
 			if (id.val() == ""){
 				$(obj).parent().parent().remove();
+				count();
 			}else if(delFlag.val() == "0"){
 				delFlag.val("1");
 				$(obj).html("&divide;").attr("title", "撤销删除");
@@ -87,7 +88,7 @@
 
 					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
-						<input type="text" readonly class="form-control" value="<c:if test="${sobill.status == 0}">草稿</c:if><c:if test="${sobill.status == 1}">审核提交</c:if>"/>
+						<input type="text" readonly class="form-control" value="<c:if test="${sobill.status == 0 || sobill.status == null}">草稿</c:if><c:if test="${sobill.status == 1}">审核提交</c:if>"/>
 					</td>
 				</tr>
 				<tr>
@@ -104,7 +105,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">同步状态：</label></td>
 					<td class="width-35">
-						<input type="text" readonly class="form-control" value="<c:if test="${sobill.synStatus == 0}">未同步</c:if><c:if test="${sobill.synStatus == 1}">已同步</c:if>"/>
+						<input type="text" readonly class="form-control" value="<c:if test="${sobill.synStatus == 0 || sobill.synStatus == null}">未同步</c:if><c:if test="${sobill.synStatus == 1}">已同步</c:if>"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">同步时间：</label></td>
 					<td class="width-35">
@@ -112,17 +113,17 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>归属部门：</label></td>
+					<td class="width-15 active"><label class="pull-right">归属部门：</label></td>
 					<td class="width-35">
-						<form:input path="deptName" htmlEscape="false" readonly="true" class="form-control required"/>
+                        <form:input path="deptName" htmlEscape="false" readonly="true" class="form-control"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>归属员工：</label></td>
+					<td class="width-15 active"><label class="pull-right">归属员工：</label></td>
 					<td class="width-35">
-						<form:input path="" htmlEscape="false" readonly="true" value="${fns:getUser().name}"  class="form-control required"/>
+                        <form:input path="emplName" htmlEscape="false" readonly="true" class="form-control"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">币别：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>币别：</label></td>
 					<td class="width-35">
                         <form:select path="currencyId" class="form-control required">
                             <form:option value="" label=""/>
@@ -144,15 +145,15 @@
 					<td class="width-35">
 						<form:input path="checkerName" htmlEscape="false"  readonly="true" class="form-control"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">审核时间：</label></td>
+					<td class="width-15 active"><label class="pull-right">审核状态：</label></td>
 					<td class="width-35">
-						<input type="text" readonly value="<fmt:formatDate value="${sobill.checkTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="form-control required"/>
+						<input type="text" value="<c:if test="${sobill.checkStatus == 0 || sobill.checkStatus == null}">待审核</c:if><c:if test="${sobill.checkStatus == 1}">已审核</c:if>" readonly class="form-control"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">审核状态：</label></td>
+					<td class="width-15 active"><label class="pull-right">审核时间：</label></td>
 					<td class="width-35">
-						<input type="text" value="<c:if test="${sobill.checkStatus == 0}">未审核</c:if><c:if test="${sobill.checkStatus == 1}">已审核</c:if>" readonly class="form-control"/>
+						<input type="text" readonly value="<fmt:formatDate value="${sobill.checkTime}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="form-control"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>总金额：</label></td>
 					<td class="width-35">
@@ -218,17 +219,17 @@
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_price" name="sobillentryList[{{idx}}].price" type="text" value="{{row.price}}"    class="form-control required isFloatGteZero"/>
+						<input id="sobillentryList{{idx}}_price" name="sobillentryList[{{idx}}].price" type="text" value="{{row.price}}" onchange="countItemsAmount('sobillentryList{{idx}}');"  class="form-control required isFloatGteZero"/>
 					</td>
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_auxqty" name="sobillentryList[{{idx}}].auxqty" type="text" value="{{row.auxqty}}"    class="form-control required isFloatGteZero"/>
+						<input id="sobillentryList{{idx}}_auxqty" name="sobillentryList[{{idx}}].auxqty" type="text" value="{{row.auxqty}}" onchange="countItemsAmount('sobillentryList{{idx}}');" class="form-control required isFloatGteZero"/>
 					</td>
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_amount" name="sobillentryList[{{idx}}].amount" type="text" value="{{row.amount}}"    class="form-control required isFloatGteZero"/>
+						<input id="sobillentryList{{idx}}_amount" name="amount" type="text" value="{{row.amount}}"  onchange="countItemsAmount('sobillentryList{{idx}}');"  class="form-control required isFloatGteZero"/>
 					</td>
 					
 					
@@ -255,6 +256,21 @@
 						sobillentryRowIdx = sobillentryRowIdx + 1;
 					}
 				});
+
+                function countItemsAmount(Id) {
+                    var price = ($("#"+Id+"_price").val() != null && $("#"+Id+"_price").val() != '' ? parseFloat($("#"+Id+"_price").val()) : 0);
+                    var auxqty = ($("#"+Id+"_auxqty").val() != null && $("#"+Id+"_auxqty").val() != '' ? parseFloat($("#"+Id+"_auxqty").val()) : 0);
+                    $("#"+Id+"_amount").val((price * auxqty).toFixed(2));
+                    count();
+                }
+
+                function count() {
+                    var itemsAmount = 0;
+					$("#sobillentryList").children('tr').each(function (i) {
+                        itemsAmount += ($(this).find("input[name='amount']").val() != null && $(this).find("input[name='amount']").val() != '' ? parseFloat($(this).find("input[name='amount']").val()) : 0);
+                    });
+					$("#amount").val(itemsAmount.toFixed(2));
+                }
 			</script>
 			</div>
 		</div>

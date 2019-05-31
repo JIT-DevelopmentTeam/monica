@@ -16,7 +16,6 @@
 		a.f_synstatus AS "synStatus",
 		a.f_syntime AS "synTime",
 		a.f_custid AS "custId",
-		a.f_deptid AS "deptId",
 		a.f_emplid AS "emplId",
 		a.f_currencyid AS "currencyId",
 		a.f_needtime AS "needTime",
@@ -65,12 +64,6 @@
 					<if test="dbName == 'oracle'">'%'||#{custId}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{custId}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{custId},'%')</if>
-			</if>
-			<if test="deptId != null and deptId != ''">
-				AND a.f_deptid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{deptId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{deptId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{deptId},'%')</if>
 			</if>
 			<if test="emplId != null and emplId != ''">
 				AND a.f_emplid LIKE 
@@ -132,7 +125,6 @@
 			f_synstatus,
 			f_syntime,
 			f_custid,
-			f_deptid,
 			f_emplid,
 			f_currencyid,
 			f_needtime,
@@ -156,7 +148,6 @@
 			#{synStatus},
 			#{synTime},
 			#{custId},
-			#{deptId},
 			#{emplId},
 			#{currencyId},
 			#{needTime},
@@ -180,7 +171,6 @@
 			f_synstatus = #{synStatus},
 			f_syntime = #{synTime},
 			f_custid = #{custId},
-			f_deptid = #{deptId},
 			f_emplid = #{emplId},
 			f_currencyid = #{currencyId},
 			f_needtime = #{needTime},

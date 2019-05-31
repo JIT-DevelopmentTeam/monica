@@ -21,7 +21,6 @@ public class Warehouse extends TreeEntity<Warehouse> {
 	private static final long serialVersionUID = 1L;
 	private String erpid;		// erpid
 	private String number;		// 编码
-	private String warehouseName;		// 仓库名称
 	private Date modifytime;		// 同步时间戳
 	private Integer status;		// 状态
 	
@@ -49,14 +48,6 @@ public class Warehouse extends TreeEntity<Warehouse> {
 
 	public void setNumber(String number) {
 		this.number = number;
-	}
-	
-	public String getWarehouseName() {
-		return warehouseName;
-	}
-
-	public void setWarehouseName(String warehouseName) {
-		this.warehouseName = warehouseName;
 	}
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

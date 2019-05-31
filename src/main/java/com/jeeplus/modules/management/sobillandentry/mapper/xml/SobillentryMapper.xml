@@ -19,11 +19,6 @@
 		a.f_auxqty AS "auxqty",
 		a.f_amount AS "amount",
 		a.f_rowid AS "rowId",
-		a.f_synstatus AS "synStatus",
-		a.f_syntime AS "synTime",
-		a.f_custid AS "custId",
-		a.f_deptid AS "deptId",
-		a.f_emplid AS "emplId",
 		c.f_name AS "itemName"
 	</sql>
 	
@@ -99,12 +94,7 @@
 			f_price,
 			f_auxqty,
 			f_amount,
-			f_rowid,
-			f_synstatus,
-			f_syntime,
-			f_custid,
-			f_deptid,
-			f_emplid
+			f_rowid
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -121,12 +111,7 @@
 			#{price},
 			#{auxqty},
 			#{amount},
-			#{rowId},
-			#{synStatus},
-			#{synTime},
-			#{custId},
-			#{deptId},
-			#{emplId}
+			#{rowId}
 		)
 	</insert>
 	
@@ -142,12 +127,7 @@
 			f_price = #{price},
 			f_auxqty = #{auxqty},
 			f_amount = #{amount},
-			f_rowid = #{rowId},
-			f_synstatus = #{synStatus},
-			f_syntime = #{synTime},
-			f_custid = #{custId},
-			f_deptid = #{deptId},
-			f_emplid = #{emplId}
+			f_rowid = #{rowId}
 		WHERE id = #{id}
 	</update>
 	

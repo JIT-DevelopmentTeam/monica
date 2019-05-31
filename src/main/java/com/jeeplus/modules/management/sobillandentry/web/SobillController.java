@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.jeeplus.common.utils.time.DateFormatUtil;
+import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -88,6 +89,12 @@ public class SobillController extends BaseController {
 	@RequiresPermissions(value={"management:sobillandentry:sobill:view","management:sobillandentry:sobill:add","management:sobillandentry:sobill:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(Sobill sobill, Model model) {
+		if (sobill.getId() == null || "".equals(sobill.getId())){
+			User user = UserUtils.getUser();
+			sobill.setEmplId(user.getId());
+			sobill.setEmplName(user.getName());
+			sobill.setDeptName(user.getOffice().getName());
+		}
 		model.addAttribute("sobill", sobill);
 		return "modules/management/sobillandentry/sobillForm";
 	}
@@ -235,6 +242,12 @@ public class SobillController extends BaseController {
 		return j;
     }
 
+	/**
+	 * 审核订单
+	 * @param id
+	 * @param sobill
+	 * @return
+	 */
     @RequestMapping(value = "checkOrder")
 	@ResponseBody
 	public AjaxJson checkOrder(String id,Sobill sobill){
@@ -253,6 +266,27 @@ public class SobillController extends BaseController {
 		}
 		return aj;
 	}
-	
+
+	/**
+	 * 反审核订单
+	 */
+	@RequestMapping(value = "cancelCheckOrder")
+	@ResponseBody
+	public AjaxJson cancelCheckOrder(String id,Sobill sobill){
+		AjaxJson aj = new AjaxJson();
+		sobill = sobillService.get(id);
+		if ("0".equals(sobill.getCheckStatus().toString())){
+			aj.setSuccess(false);
+			aj.setMsg("反审核失败(请检查该订单是否待审核)!");
+		} else {
+			sobill.setCheckerId(null);
+			sobill.setCheckStatus(0);
+			sobill.setCheckTime(null);
+			sobillService.checkOrder(sobill);
+			aj.setSuccess(true);
+			aj.setMsg("反审核成功!");
+		}
+		return aj;
+	}
 
 }

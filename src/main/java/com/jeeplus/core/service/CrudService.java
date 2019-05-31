@@ -95,6 +95,25 @@ public abstract class CrudService<M extends BaseMapper<T>, T extends DataEntity<
 		}
 	}
 
+	/**
+	 * 保存数据（插入或更新）
+	 * @param entity
+	 */
+	@Transactional(readOnly = false)
+	public void save(T entity,Boolean isId) {
+		if(isId){
+			entity.preInsert();
+			mapper.insert(entity);
+		}else {
+			if (entity.getIsNewRecord()){
+				entity.preInsert();
+				mapper.insert(entity);
+			}else{
+				entity.preUpdate();
+				mapper.update(entity);
+			}
+		}
+	}
 
 	/**
 	 * 删除数据
