@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>仓库管理表管理</title>
+	<title>库存管理管理</title>
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
@@ -48,9 +48,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>仓库名称：</label></td>
 					<td class="width-35">
-						<form:input path="name" htmlEscape="false"    class="form-control required"/>
+						<form:input path="warehouseName" htmlEscape="false"    class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">同步时间戳：</label></td>
 					<td class="width-35">

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#icitemTable').bootstrapTable({
+	$('#apiUrlTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -9,7 +9,7 @@ $(document).ready(function() {
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
                //显示检索按钮
-	       showSearch: true,
+	           showSearch: true,
                //显示刷新按钮
                showRefresh: true,
                //显示切换手机试图按钮
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/management/icitemclass/icitem/data",
+               url: "${ctx}/management/apiurl/apiUrl/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该商品资料记录吗？', function(){
+                        jp.confirm('确认要删除该接口管理记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/icitemclass/icitem/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/apiurl/apiUrl/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#icitemTable').bootstrapTable('refresh');
+                   	  			$('#apiUrlTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -85,17 +85,17 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'erpId',
-		        title: 'erp端id',
+		        field: 'name',
+		        title: '接口名称',
 		        sortable: true,
-		        sortName: 'erpId'
+		        sortName: 'name'
 		        ,formatter:function(value, row , index){
 		        	value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:icitemclass:icitem:edit')}">
+					   <c:when test="${fns:hasPermission('management:apiurl:apiUrl:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
-					  <c:when test="${fns:hasPermission('management:icitemclass:icitem:view')}">
+					  <c:when test="${fns:hasPermission('management:apiurl:apiUrl:view')}">
 					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
 					  <c:otherwise>
@@ -106,66 +106,65 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: '',
-		        title: '分类id',
-		        sortable: true,
-		        sortName: ''
-		       
-		    }
-			,{
 		        field: 'number',
-		        title: '编号',
+		        title: '端口编码',
 		        sortable: true,
 		        sortName: 'number'
 		       
 		    }
 			,{
-		        field: 'name',
-		        title: '商品名称',
+		        field: 'domain',
+		        title: '接口域名',
 		        sortable: true,
-		        sortName: 'name'
+		        sortName: 'domain'
 		       
 		    }
 			,{
-		        field: 'model',
-		        title: '商品型号',
+		        field: 'port',
+		        title: '接口端口',
 		        sortable: true,
-		        sortName: 'model'
+		        sortName: 'port'
 		       
 		    }
 			,{
-		        field: 'unit',
-		        title: '商品计算单位',
+		        field: 'url',
+		        title: '接口url',
 		        sortable: true,
-		        sortName: 'unit'
+		        sortName: 'url'
 		       
 		    }
 			,{
-		        field: 'erpclassId',
-		        title: 'erp端分类id',
+		        field: 'protocol',
+		        title: '端口协议',
 		        sortable: true,
-		        sortName: 'erpclassId'
+		        sortName: 'protocol'
 		       
 		    }
 			,{
-		        field: 'modifyTime',
-		        title: '同步时间戳',
+		        field: 'describe',
+		        title: '接口描述',
 		        sortable: true,
-		        sortName: 'modifyTime'
-		       
-		    }
-			,{
-		        field: 'erpNote',
-		        title: 'erp备注',
-		        sortable: true,
-		        sortName: 'erpNote'
+		        sortName: 'describe'
 		       
 		    }
 			,{
 		        field: 'status',
-		        title: '状态',
+		        title: '接口状态',
 		        sortable: true,
-		        sortName: 'status'
+		        sortName: 'status',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
+		       
+		    }
+			,{
+		        field: 'isToken',
+		        title: '是否需要token',
+		        sortable: true,
+		        sortName: 'isToken',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
 		       
 		    }
 			,{
@@ -183,13 +182,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#icitemTable').bootstrapTable("toggleView");
+		  $('#apiUrlTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#icitemTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#apiUrlTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#icitemTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#icitemTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#apiUrlTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#apiUrlTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -201,18 +200,18 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/icitemclass/icitem/import/template');
+					  jp.downloadFile('${ctx}/management/apiurl/apiUrl/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/icitemclass/icitem/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/management/apiurl/apiUrl/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
 							}else{
 								jp.error(data.msg);
 							}
-						   jp.close(index);
+					   		jp.close(index);
 						});//调用保存事件
 						return false;
 				  },
@@ -224,13 +223,12 @@ $(document).ready(function() {
 		});
 		
 		
-
-	$("#export").click(function(){//导出Excel文件
+	 $("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#icitemTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#icitemTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -239,42 +237,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/icitemclass/icitem/export?'+values);
+			jp.downloadFile('${ctx}/management/apiurl/apiUrl/export?'+values);
 	  })
+
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#icitemTable').bootstrapTable('refresh');
+		  $('#apiUrlTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#icitemTable').bootstrapTable('refresh');
+		  $('#apiUrlTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
-
-	function synIcitemClass() {
-		jp.post("${ctx}/management/icitemclass/icitemClass/synIcitemClass",null,function (callbackData) {
-			console.log(callbackData);
-        });
-    }
 		
   function getIdSelections() {
-        return $.map($("#icitemTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#apiUrlTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该商品资料记录吗？', function(){
+		jp.confirm('确认要删除该接口管理记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/icitemclass/icitem/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/apiurl/apiUrl/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#icitemTable').bootstrapTable('refresh');
+         	  			$('#apiUrlTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -286,11 +279,11 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#icitemTable').bootstrapTable('refresh');
+  	$('#apiUrlTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增商品资料', "${ctx}/management/icitemclass/icitem/form",'800px', '500px');
+	  jp.openSaveDialog('新增接口管理', "${ctx}/management/apiurl/apiUrl/form",'800px', '500px');
   }
 
 
@@ -299,14 +292,16 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑商品资料', "${ctx}/management/icitemclass/icitem/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑接口管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看商品资料', "${ctx}/management/icitemclass/icitem/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看接口管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
  }
+
+
 
 </script>

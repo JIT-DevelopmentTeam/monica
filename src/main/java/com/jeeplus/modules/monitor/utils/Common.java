@@ -9,10 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +27,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -644,5 +643,38 @@ public class Common {
 				}
 			}
 		}
+	}
+
+	public static JSONArray executeInter(String url, String type){
+		JSONArray jsonarr = null;
+		try {
+			URL httpclient =new URL(url);
+			HttpURLConnection conn =(HttpURLConnection) httpclient.openConnection();
+			conn.setConnectTimeout(5000);
+			conn.setReadTimeout(20000);
+			conn.setRequestMethod(type);
+			conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			conn.connect();
+			InputStream is =conn.getInputStream();
+			//int size =is.available();
+			ByteArrayOutputStream buff = new ByteArrayOutputStream();
+			int c;
+			while((c = is.read()) >= 0){
+				buff.write(c);
+			}
+			byte[] data = buff.toByteArray();
+			buff.close();
+
+			String htmlText = new String(data, "UTF-8");
+			JSONObject jsStr = JSONObject.fromObject(htmlText);
+			jsonarr = jsStr.getJSONArray("result"); // erp数据
+		}catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonarr;
 	}
 }

@@ -8,7 +8,7 @@ import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 
 /**
- * 仓库管理表MAPPER接口
+ * 库存管理MAPPER接口
  * @author Vigny
  * @version 2019-05-31
  */

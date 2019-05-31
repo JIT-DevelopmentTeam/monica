@@ -3,17 +3,16 @@
  */
 package com.jeeplus.modules.management.warehouse.entity;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import java.util.List;
 import com.google.common.collect.Lists;
-
 import com.jeeplus.core.persistence.TreeEntity;
 
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
+
 /**
- * 仓库管理表Entity
+ * 库存管理Entity
  * @author Vigny
  * @version 2019-05-31
  */
@@ -22,6 +21,7 @@ public class Warehouse extends TreeEntity<Warehouse> {
 	private static final long serialVersionUID = 1L;
 	private String erpid;		// erpid
 	private String number;		// 编码
+	private String warehouseName;		// 仓库名称
 	private Date modifytime;		// 同步时间戳
 	private Integer status;		// 状态
 	
@@ -49,6 +49,14 @@ public class Warehouse extends TreeEntity<Warehouse> {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+	
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
 	}
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

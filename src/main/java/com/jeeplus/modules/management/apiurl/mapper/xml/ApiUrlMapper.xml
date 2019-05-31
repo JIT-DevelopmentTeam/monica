@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.apiurl.mapper.ApiUrlMapper">
+    
+	<sql id="apiUrlColumns">
+		a.id AS "id",
+		a.f_name AS "name",
+		a.f_number AS "number",
+		a.f_domain AS "domain",
+		a.f_port AS "port",
+		a.f_url AS "url",
+		a.f_protocol AS "protocol",
+		a.f_describe AS "describe",
+		a.f_status AS "status",
+		a.f_istoken AS "isToken",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="apiUrlJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="ApiUrl" >
+		SELECT 
+			<include refid="apiUrlColumns"/>
+		FROM tb_apiurl a
+		<include refid="apiUrlJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ApiUrl" >
+		SELECT 
+			<include refid="apiUrlColumns"/>
+		FROM tb_apiurl a
+		<include refid="apiUrlJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="name != null and name != ''">
+				AND a.f_name = #{name}
+			</if>
+			<if test="number != null and number != ''">
+				AND a.f_number = #{number}
+			</if>
+			<if test="domain != null and domain != ''">
+				AND a.f_domain = #{domain}
+			</if>
+			<if test="port != null and port != ''">
+				AND a.f_port = #{port}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.f_status = #{status}
+			</if>
+			<if test="isToken != null and isToken != ''">
+				AND a.f_istoken = #{isToken}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ApiUrl" >
+		SELECT 
+			<include refid="apiUrlColumns"/>
+		FROM tb_apiurl a
+		<include refid="apiUrlJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_apiurl(
+			id,
+			f_name,
+			f_number,
+			f_domain,
+			f_port,
+			f_url,
+			f_protocol,
+			f_describe,
+			f_status,
+			f_istoken,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{number},
+			#{domain},
+			#{port},
+			#{url},
+			#{protocol},
+			#{describe},
+			#{status},
+			#{isToken},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_apiurl SET 	
+			f_name = #{name},
+			f_number = #{number},
+			f_domain = #{domain},
+			f_port = #{port},
+			f_url = #{url},
+			f_protocol = #{protocol},
+			f_describe = #{describe},
+			f_status = #{status},
+			f_istoken = #{isToken},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_apiurl
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_apiurl SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ApiUrl" statementType="STATEMENT">
+		select * FROM tb_apiurl  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

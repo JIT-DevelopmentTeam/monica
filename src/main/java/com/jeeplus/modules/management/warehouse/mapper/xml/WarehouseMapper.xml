@@ -9,6 +9,7 @@
 		<result property="parentIds" column="parentIds" />
 		<result property="erpid" column="erpid" />
 		<result property="number" column="number" />
+		<result property="warehouseName" column="warehouseName" />
 		<result property="modifytime" column="modifytime" />
 		<result property="status" column="status" />
 		<association property="hasChildren" column="id" select="hasChildren" />
@@ -18,7 +19,7 @@
 		a.id AS "id",
 		a.f_erpid AS "erpid",
 		a.f_number AS "number",
-		a.f_name AS "name",
+		a.f_warehousename AS "warehouseName",
 		a.f_modifytime AS "modifytime",
 		a.f_status AS "status",
 		a.create_by AS "createBy.id",
@@ -61,8 +62,8 @@
 			<if test="number != null and number != ''">
 				AND a.f_number = #{number}
 			</if>
-			<if test="name != null and name != ''">
-				AND a.f_name = #{name}
+			<if test="warehouseName != null and warehouseName != ''">
+				AND a.f_warehousename = #{warehouseName}
 			</if>
 			<if test="parent != null and parent.id != null and parent.id != ''">
 				AND a.parent_id = #{parent.id}
@@ -122,7 +123,7 @@
 			id,
 			f_erpid,
 			f_number,
-			f_name,
+			f_warehousename,
 			f_modifytime,
 			f_status,
 			create_by,
@@ -139,7 +140,7 @@
 			#{id},
 			#{erpid},
 			#{number},
-			#{name},
+			#{warehouseName},
 			#{modifytime},
 			#{status},
 			#{createBy.id},
@@ -159,7 +160,7 @@
 		UPDATE tb_warehouse SET 	
 			f_erpid = #{erpid},
 			f_number = #{number},
-			f_name = #{name},
+			f_warehousename = #{warehouseName},
 			f_modifytime = #{modifytime},
 			f_status = #{status},
 			update_by = #{updateBy.id},

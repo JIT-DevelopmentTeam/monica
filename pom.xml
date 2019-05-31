@@ -33,6 +33,7 @@
         <commons-beanutils.version>1.9.1</commons-beanutils.version>
         <jackson.version>2.8.6</jackson.version>
         <fastjson.version>1.2.45</fastjson.version>
+        <json-lib.version>2.1</json-lib.version>
         <xstream.version>1.4.9</xstream.version>
         <dozer.version>5.5.1</dozer.version>
         <poi.version>3.9</poi.version>
@@ -589,6 +590,13 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>${json-lib.version}</version>
+            <classifier>jdk15</classifier>
         </dependency>
         <!-- jackson json -->
         <dependency>
