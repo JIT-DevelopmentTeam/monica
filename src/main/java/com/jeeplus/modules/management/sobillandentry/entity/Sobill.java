@@ -26,7 +26,6 @@ public class Sobill extends DataEntity<Sobill> {
 	private Integer synStatus;		// 订单同步状态
 	private Date synTime;		// 订单同步时间
 	private String custId;		// 客户id
-	private String deptId;		// 订单归属部门
 	private String emplId;		// 订单归属员工
 	private Integer currencyId;		// 订单币别
 	private Date needTime;		// 订单发货时间
@@ -105,14 +104,6 @@ public class Sobill extends DataEntity<Sobill> {
 
 	public void setCustId(String custId) {
 		this.custId = custId;
-	}
-	
-	public String getDeptId() {
-		return deptId;
-	}
-
-	public void setDeptId(String deptId) {
-		this.deptId = deptId;
 	}
 	
 	public String getEmplId() {

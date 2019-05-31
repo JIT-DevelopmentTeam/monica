@@ -37,10 +37,6 @@
 				<form:input path="custId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="归属部门：">归属部门：</label>
-				<form:input path="deptId" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="归属员工：">归属员工：</label>
 				<form:input path="emplId" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
@@ -81,7 +77,7 @@
 				<label class="label-item single-overflow pull-left" title="审核状态：">审核状态：</label>
 				<form:select path="checkStatus"  class="form-control m-b">
 					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					<form:options items="${fns:getDictList('sobill_checkStatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -130,7 +126,17 @@
                 <button id="check" class="btn btn-primary" onclick="checkOrder()">
                     <i class="glyphicon glyphicon-search"></i> 审核
                 </button>
+
+				<button id="cancelCheck" class="btn btn-danger" onclick="cancelCheckOrder()">
+					<i class="glyphicon glyphicon-remove"></i> 反审核
+				</button>
             </shiro:hasPermission>
+
+			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
+				<button id="synchronization" class="btn btn-success" onclick="">
+					<i class="glyphicon glyphicon-refresh"></i> 同步
+				</button>
+			</shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->

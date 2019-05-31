@@ -27,11 +27,6 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	private Double auxqty;		// 数量
 	private Double amount;		// 总额
 	private Integer rowId;		// 行序号
-	private Integer synStatus;		// 订单同步状态
-	private Date synTime;		// 订单同步时间
-	private String custId;		// 客户id
-	private String deptId;		// 订单归属部门
-	private String emplId;		// 订单归属员工
 	private String itemName;	// 商品名称
 	
 	public Sobillentry() {
@@ -129,52 +124,6 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 		this.rowId = rowId;
 	}
 	
-	@ExcelField(title="订单同步状态", dictType="", align=2, sort=16)
-	public Integer getSynStatus() {
-		return synStatus;
-	}
-
-	public void setSynStatus(Integer synStatus) {
-		this.synStatus = synStatus;
-	}
-	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@ExcelField(title="订单同步时间", align=2, sort=17)
-	public Date getSynTime() {
-		return synTime;
-	}
-
-	public void setSynTime(Date synTime) {
-		this.synTime = synTime;
-	}
-	
-	@ExcelField(title="客户id", align=2, sort=18)
-	public String getCustId() {
-		return custId;
-	}
-
-	public void setCustId(String custId) {
-		this.custId = custId;
-	}
-	
-	@ExcelField(title="订单归属部门", align=2, sort=19)
-	public String getDeptId() {
-		return deptId;
-	}
-
-	public void setDeptId(String deptId) {
-		this.deptId = deptId;
-	}
-	
-	@ExcelField(title="订单归属员工", align=2, sort=20)
-	public String getEmplId() {
-		return emplId;
-	}
-
-	public void setEmplId(String emplId) {
-		this.emplId = emplId;
-	}
-
 	@ExcelField(title="商品", align=2, sort=8)
 	public String getItemName() {
 		return itemName;
