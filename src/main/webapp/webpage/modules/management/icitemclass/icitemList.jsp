@@ -22,7 +22,7 @@
 				<div class="col-sm-4 col-md-3" >
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-10" >
+							<div class="col-sm-8" >
 								<div class="input-search">
 									<button type="submit" class="input-search-btn">
 										<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -30,11 +30,16 @@
 
 								</div>
 							</div>
-							<div class="col-sm-2" >
+							<div class="col-sm-4" >
+								<button  class="btn btn-default btn-sm"  onclick="synIcitemClass()">
+									<i class="glyphicon glyphicon-refresh">同步分类</i>
+								</button>
+							</div>
+							<%--<div class="col-sm-2" >
 								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建商品分类', '${ctx}/management/icitemclass/icitemClass/form','800px', '500px')">
 									<i class="fa fa-plus"></i>
 								</button>
-							</div>
+							</div>--%>
 						</div>
 					</div>
 					<div id="icitemClassjsTree" style="overflow-x:auto; border:0px;"></div>

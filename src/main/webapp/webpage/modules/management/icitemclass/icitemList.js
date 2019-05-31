@@ -255,6 +255,12 @@ $(document).ready(function() {
 		
 		
 	});
+
+	function synIcitemClass() {
+		jp.post("${ctx}/management/icitemclass/icitemClass/synIcitemClass",null,function (callbackData) {
+			console.log(callbackData);
+        });
+    }
 		
   function getIdSelections() {
         return $.map($("#icitemTable").bootstrapTable('getSelections'), function (row) {

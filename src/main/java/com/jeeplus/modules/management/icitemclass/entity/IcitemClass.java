@@ -22,9 +22,9 @@ public class IcitemClass extends TreeEntity<IcitemClass> {
 	private String number;		// 编码
 	private String modifyTime;		// 同步时间戳
 	private String erpNote;		// erp备注
-	
+
 	private List<Icitem> icitemList = Lists.newArrayList();		// 子表列表
-	
+
 	public IcitemClass() {
 		super();
 	}
@@ -68,7 +68,7 @@ public class IcitemClass extends TreeEntity<IcitemClass> {
 	public  IcitemClass getParent() {
 			return parent;
 	}
-	
+
 	@Override
 	public void setParent(IcitemClass parent) {
 		this.parent = parent;
