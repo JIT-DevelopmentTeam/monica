@@ -14,7 +14,7 @@ import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 import com.jeeplus.modules.management.warehouse.mapper.WarehouseMapper;
 
 /**
- * 仓库管理表Service
+ * 库存管理Service
  * @author Vigny
  * @version 2019-05-31
  */
