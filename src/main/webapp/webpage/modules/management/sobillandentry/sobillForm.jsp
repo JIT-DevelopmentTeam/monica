@@ -58,6 +58,7 @@
 			var delFlag = $(prefix+"_delFlag");
 			if (id.val() == ""){
 				$(obj).parent().parent().remove();
+				count();
 			}else if(delFlag.val() == "0"){
 				delFlag.val("1");
 				$(obj).html("&divide;").attr("title", "撤销删除");
@@ -228,7 +229,7 @@
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_amount" name="sobillentryList[{{idx}}].amount" type="text" value="{{row.amount}}"    class="form-control required isFloatGteZero"/>
+						<input id="sobillentryList{{idx}}_amount" name="amount" type="text" value="{{row.amount}}"  onchange="countItemsAmount('sobillentryList{{idx}}');"  class="form-control required isFloatGteZero"/>
 					</td>
 					
 					
@@ -260,6 +261,15 @@
                     var price = ($("#"+Id+"_price").val() != null && $("#"+Id+"_price").val() != '' ? parseFloat($("#"+Id+"_price").val()) : 0);
                     var auxqty = ($("#"+Id+"_auxqty").val() != null && $("#"+Id+"_auxqty").val() != '' ? parseFloat($("#"+Id+"_auxqty").val()) : 0);
                     $("#"+Id+"_amount").val((price * auxqty).toFixed(2));
+                    count();
+                }
+
+                function count() {
+                    var itemsAmount = 0;
+					$("#sobillentryList").children('tr').each(function (i) {
+                        itemsAmount += ($(this).find("input[name='amount']").val() != null && $(this).find("input[name='amount']").val() != '' ? parseFloat($(this).find("input[name='amount']").val()) : 0);
+                    });
+					$("#amount").val(itemsAmount.toFixed(2));
                 }
 			</script>
 			</div>
