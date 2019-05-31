@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jeeplus.modules.management.warehouse.mapper.WarehouseMapper">
+
+    <resultMap id="warehouseResult" type="Warehouse">
+   		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sort" column="sort" />
+		<result property="parentIds" column="parentIds" />
+		<result property="erpid" column="erpid" />
+		<result property="number" column="number" />
+		<result property="modifytime" column="modifytime" />
+		<result property="status" column="status" />
+		<association property="hasChildren" column="id" select="hasChildren" />
+    </resultMap>
     
 	<sql id="warehouseColumns">
 		a.id AS "id",
@@ -14,15 +26,23 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.sort AS "sort"
 	</sql>
 	
+
+	
+
 	<sql id="warehouseJoins">
 		
 	</sql>
 	
+
     
-	<select id="get" resultType="Warehouse" >
+	<select id="get" resultType="Warehouse">
 		SELECT 
 			<include refid="warehouseColumns"/>
 		FROM tb_warehouse a
@@ -30,7 +50,40 @@
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="Warehouse" >
+	<select id="findList" resultType="Warehouse">
+		SELECT 
+			<include refid="warehouseColumns"/>
+		FROM tb_warehouse a
+		<include refid="warehouseJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="number != null and number != ''">
+				AND a.f_number = #{number}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.f_name = #{name}
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				AND a.parent_ids LIKE 
+					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="Warehouse">
 		SELECT 
 			<include refid="warehouseColumns"/>
 		FROM tb_warehouse a
@@ -39,33 +92,29 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
 		</where>
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.update_date DESC
-			</otherwise>
-		</choose>
+		ORDER BY a.sort ASC
 	</select>
 	
-	<select id="findAllList" resultType="Warehouse" >
-		SELECT 
-			<include refid="warehouseColumns"/>
+	<select id="getChildren" parameterType="String" resultMap="warehouseResult">  
+        select * from tb_warehouse where parent_id = #{id} ORDER BY sort 
+    </select> 
+     
+    <select id="hasChildren" parameterType="String" resultType="Boolean">  
+        select case when exists(select 1 from tb_warehouse where parent_id = #{id}) then 1 else 0 end ${dual}
+    </select>
+    
+	<select id="findByParentIdsLike" resultType="Warehouse">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
 		FROM tb_warehouse a
 		<include refid="warehouseJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
-			${dataScope}
-		</where>		
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.update_date DESC
-			</otherwise>
-		</choose>
+			AND a.parent_ids LIKE #{parentIds}
+		</where>
+		ORDER BY a.sort ASC
 	</select>
 	
 	<insert id="insert">
@@ -81,7 +130,11 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			parent_id,
+			parent_ids,
+			name,
+			sort
 		) VALUES (
 			#{id},
 			#{erpid},
@@ -94,7 +147,11 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{parent.id},
+			#{parentIds},
+			#{name},
+			#{sort}
 		)
 	</insert>
 	
@@ -107,28 +164,38 @@
 			f_status = #{status},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			remarks = #{remarks}
+			remarks = #{remarks},
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			name = #{name},
+			sort = #{sort}
 		WHERE id = #{id}
 	</update>
 	
+	<update id="updateParentIds">
+		UPDATE tb_warehouse SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
 	
 	<!--物理删除-->
 	<update id="delete">
 		DELETE FROM tb_warehouse
-		WHERE id = #{id}
+		WHERE id = #{id} OR parent_ids LIKE 
+		<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
+        <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
 	
 	<!--逻辑删除-->
 	<update id="deleteByLogic">
 		UPDATE tb_warehouse SET 
 			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id}
+		WHERE id = #{id} OR parent_ids LIKE 
+		<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
+		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
+        <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
-	
-	
-	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
-	<select id="findUniqueByProperty" resultType="Warehouse" statementType="STATEMENT">
-		select * FROM tb_warehouse  where ${propertyName} = '${value}'
-	</select>
 	
 </mapper>

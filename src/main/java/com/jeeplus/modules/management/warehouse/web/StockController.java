@@ -1,18 +1,15 @@
 /**
  * Copyright &copy; 2015-2020 <a href="http://www.jeeplus.org/">JeePlus</a> All rights reserved.
  */
-package com.jeeplus.modules.management.stockandentry.web;
+package com.jeeplus.modules.management.warehouse.web;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.management.stockandentry.entity.Stock;
-import com.jeeplus.modules.management.stockandentry.service.StockService;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +17,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.modules.management.warehouse.entity.Stock;
+import com.jeeplus.modules.management.warehouse.service.StockService;
 
 /**
  * 库存查询Controller
  * @author Vigny
- * @version 2019-05-30
+ * @version 2019-05-31
  */
 @Controller
-@RequestMapping(value = "${adminPath}/management/stockandentry/stock")
+@RequestMapping(value = "${adminPath}/management/warehouse/stock")
 public class StockController extends BaseController {
 
 	@Autowired
@@ -57,18 +61,18 @@ public class StockController extends BaseController {
 	/**
 	 * 库存查询列表页面
 	 */
-	@RequiresPermissions("management:stockandentry:stock:list")
+	@RequiresPermissions("management:warehouse:stock:list")
 	@RequestMapping(value = {"list", ""})
 	public String list(Stock stock, Model model) {
 		model.addAttribute("stock", stock);
-		return "modules/management/stockandentry/stockList";
+		return "modules/management/warehouse/stockList";
 	}
 	
 		/**
 	 * 库存查询列表数据
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:list")
+	@RequiresPermissions("management:warehouse:stock:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<Stock> page = stockService.findPage(new Page<Stock>(request, response), stock); 
@@ -78,18 +82,18 @@ public class StockController extends BaseController {
 	/**
 	 * 查看，增加，编辑库存查询表单页面
 	 */
-	@RequiresPermissions(value={"management:stockandentry:stock:view","management:stockandentry:stock:add","management:stockandentry:stock:edit"},logical=Logical.OR)
+	@RequiresPermissions(value={"management:warehouse:stock:view","management:warehouse:stock:add","management:warehouse:stock:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(Stock stock, Model model) {
 		model.addAttribute("stock", stock);
-		return "modules/management/stockandentry/stockForm";
+		return "modules/management/warehouse/stockForm";
 	}
 
 	/**
 	 * 保存库存查询
 	 */
 	@ResponseBody
-	@RequiresPermissions(value={"management:stockandentry:stock:add","management:stockandentry:stock:edit"},logical=Logical.OR)
+	@RequiresPermissions(value={"management:warehouse:stock:add","management:warehouse:stock:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(Stock stock, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -113,7 +117,7 @@ public class StockController extends BaseController {
 	 * 删除库存查询
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:del")
+	@RequiresPermissions("management:warehouse:stock:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(Stock stock) {
 		AjaxJson j = new AjaxJson();
@@ -126,7 +130,7 @@ public class StockController extends BaseController {
 	 * 批量删除库存查询
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:del")
+	@RequiresPermissions("management:warehouse:stock:del")
 	@RequestMapping(value = "deleteAll")
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
@@ -142,7 +146,7 @@ public class StockController extends BaseController {
 	 * 导出excel文件
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:export")
+	@RequiresPermissions("management:warehouse:stock:export")
     @RequestMapping(value = "export")
     public AjaxJson exportFile(Stock stock, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
@@ -159,20 +163,13 @@ public class StockController extends BaseController {
 		}
 			return j;
     }
-    
-    @ResponseBody
-    @RequestMapping(value = "detail")
-	public Stock detail(String id) {
-		return stockService.get(id);
-	}
-	
 
 	/**
 	 * 导入Excel数据
 
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:import")
+	@RequiresPermissions("management:warehouse:stock:import")
     @RequestMapping(value = "import")
    	public AjaxJson importFile(@RequestParam("file")MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
@@ -207,7 +204,7 @@ public class StockController extends BaseController {
 	 * 下载导入库存查询数据模板
 	 */
 	@ResponseBody
-	@RequiresPermissions("management:stockandentry:stock:import")
+	@RequiresPermissions("management:warehouse:stock:import")
     @RequestMapping(value = "import/template")
      public AjaxJson importFileTemplate(HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
@@ -222,6 +219,5 @@ public class StockController extends BaseController {
 		}
 		return j;
     }
-	
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeeplus.modules.management.stockandentry.mapper.StockMapper">
+<mapper namespace="com.jeeplus.modules.management.warehouse.mapper.StockMapper">
     
 	<sql id="stockColumns">
 		a.id AS "id",
@@ -20,7 +20,7 @@
 	</sql>
 	
 	<sql id="stockJoins">
-		
+			LEFT JOIN tb_warehouse b ON b.id = a.f_warehouseid
 	</sql>
 	
     
@@ -40,13 +40,19 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+                    <if test="warehouseId != null  and warehouseId.id != null and warehouseId.id != ''">
+                        AND (b.id = #{warehouseId.id} OR b.parent_ids LIKE
+                        <if test="dbName == 'oracle'">'%,'||#{warehouseId.id}||',%')</if>
+                        <if test="dbName == 'mysql'">CONCAT('%,', #{warehouseId.id}, ',%'))</if>
+                        <if test="dbName == 'mssql'">'%'+#{warehouseId.id}+'%')</if>
+                    </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -65,7 +71,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
 	</select>
@@ -123,14 +129,28 @@
 	<!--物理删除-->
 	<update id="delete">
 		DELETE FROM tb_stock
-		WHERE id = #{id}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE f_warehouseid = #{warehouseId}
+			</otherwise>
+		</choose>
 	</update>
 	
 	<!--逻辑删除-->
 	<update id="deleteByLogic">
 		UPDATE tb_stock SET 
 			del_flag = #{DEL_FLAG_DELETE}
-		WHERE id = #{id}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE f_warehouseid = #{warehouseId}
+			</otherwise>
+		</choose>
 	</update>
 	
 	

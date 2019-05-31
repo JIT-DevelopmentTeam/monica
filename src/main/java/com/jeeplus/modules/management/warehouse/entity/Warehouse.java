@@ -5,23 +5,27 @@ package com.jeeplus.modules.management.warehouse.entity;
 
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.List;
+import com.google.common.collect.Lists;
 
-import com.jeeplus.core.persistence.DataEntity;
-import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.core.persistence.TreeEntity;
 
 /**
  * 仓库管理表Entity
  * @author Vigny
- * @version 2019-05-30
+ * @version 2019-05-31
  */
-public class Warehouse extends DataEntity<Warehouse> {
+public class Warehouse extends TreeEntity<Warehouse> {
 	
 	private static final long serialVersionUID = 1L;
 	private String erpid;		// erpid
 	private String number;		// 编码
-	private String name;		// 名称
 	private Date modifytime;		// 同步时间戳
 	private Integer status;		// 状态
+	
+	private List<Stock> stockList = Lists.newArrayList();		// 子表列表
 	
 	public Warehouse() {
 		super();
@@ -31,7 +35,6 @@ public class Warehouse extends DataEntity<Warehouse> {
 		super(id);
 	}
 
-	@ExcelField(title="erpid", align=2, sort=1)
 	public String getErpid() {
 		return erpid;
 	}
@@ -40,7 +43,6 @@ public class Warehouse extends DataEntity<Warehouse> {
 		this.erpid = erpid;
 	}
 	
-	@ExcelField(title="编码", align=2, sort=2)
 	public String getNumber() {
 		return number;
 	}
@@ -49,17 +51,7 @@ public class Warehouse extends DataEntity<Warehouse> {
 		this.number = number;
 	}
 	
-	@ExcelField(title="名称", align=2, sort=3)
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@ExcelField(title="同步时间戳", align=2, sort=4)
 	public Date getModifytime() {
 		return modifytime;
 	}
@@ -68,7 +60,7 @@ public class Warehouse extends DataEntity<Warehouse> {
 		this.modifytime = modifytime;
 	}
 	
-	@ExcelField(title="状态", align=2, sort=5)
+	@NotNull(message="状态不能为空")
 	public Integer getStatus() {
 		return status;
 	}
@@ -77,4 +69,24 @@ public class Warehouse extends DataEntity<Warehouse> {
 		this.status = status;
 	}
 	
+	public  Warehouse getParent() {
+			return parent;
+	}
+	
+	@Override
+	public void setParent(Warehouse parent) {
+		this.parent = parent;
+		
+	}
+	
+	public List<Stock> getStockList() {
+		return stockList;
+	}
+
+	public void setStockList(List<Stock> stockList) {
+		this.stockList = stockList;
+	}
+	public String getParentId() {
+		return parent != null && parent.getId() != null ? parent.getId() : "0";
+	}
 }

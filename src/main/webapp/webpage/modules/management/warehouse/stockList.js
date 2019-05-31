@@ -20,10 +20,6 @@ $(document).ready(function() {
     	       showExport: true,
     	       //显示切换分页按钮
     	       showPaginationSwitch: true,
-    	       //显示详情按钮
-    	       detailView: true,
-    	       	//显示详细内容函数
-	           detailFormatter: "detailFormatter",
     	       //最低显示2行
     	       minimumCountColumns: 2,
                //是否显示行间隔色
@@ -41,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/management/stockandentry/stock/data",
+               url: "${ctx}/management/warehouse/stock/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -65,7 +61,7 @@ $(document).ready(function() {
                    } else if($el.data("item") == "delete"){
                         jp.confirm('确认要删除该库存查询记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/stockandentry/stock/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/warehouse/stock/delete?id="+row.id, function(data){
                    	  		if(data.success){
                    	  			$('#stockTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
@@ -89,24 +85,27 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'warehouseId',
+		        field: '',
 		        title: '仓库id',
 		        sortable: true,
-		        sortName: 'warehouseId'
+		        sortName: ''
 		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:stockandentry:stock:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('management:stockandentry:stock:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
+			   if(value == null || value ==""){
+				   value = "-";
+			   }
+			   <c:choose>
+				   <c:when test="${fns:hasPermission('management:warehouse:stock:edit')}">
+				      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+			      </c:when>
+				  <c:when test="${fns:hasPermission('management:warehouse:stock:view')}">
+				      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+			      </c:when>
+				  <c:otherwise>
+				      return value;
+			      </c:otherwise>
+			   </c:choose>
+
+		        }
 		       
 		    }
 			,{
@@ -183,12 +182,12 @@ $(document).ready(function() {
 			    title:"导入数据",
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
-				btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/stockandentry/stock/import/template');
+				    btn1: function(index, layero){
+					  jp.downloadFile('${ctx}/management/warehouse/stock/import/template');
 				  },
 			    btn2: function(index, layero){
-						var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/stockandentry/stock/import', function (data) {
+				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+						iframeWin.contentWindow.importExcel('${ctx}/management/warehouse/stock/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -205,7 +204,10 @@ $(document).ready(function() {
 	    	       }
 			}); 
 		});
-	  $("#export").click(function(){//导出Excel文件
+		
+		
+
+	$("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
@@ -219,8 +221,9 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/stockandentry/stock/export?'+values);
+			jp.downloadFile('${ctx}/management/warehouse/stock/export?'+values);
 	  })
+		    
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#stockTable').bootstrapTable('refresh');
 		});
@@ -228,7 +231,7 @@ $(document).ready(function() {
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
-		   $("#searchForm  .select-item").html("");
+		  $("#searchForm  .select-item").html("");
 		  $('#stockTable').bootstrapTable('refresh');
 		});
 		
@@ -245,7 +248,7 @@ $(document).ready(function() {
 
 		jp.confirm('确认要删除该库存查询记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/stockandentry/stock/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/warehouse/stock/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
          	  			$('#stockTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
@@ -256,104 +259,30 @@ $(document).ready(function() {
           	   
 		})
   }
-  
+
     //刷新列表
-  function refresh() {
-      $('#stockTable').bootstrapTable('refresh');
+  function refresh(){
+  	$('#stockTable').bootstrapTable('refresh');
   }
-  function add(){
-	  jp.openSaveDialog('新增库存查询', "${ctx}/management/stockandentry/stock/form",'800px', '500px');
+  
+   function add(){
+	  jp.openSaveDialog('新增库存查询', "${ctx}/management/warehouse/stock/form",'800px', '500px');
   }
+
+
   
    function edit(id){//没有权限时，不显示确定按钮
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑库存查询', "${ctx}/management/stockandentry/stock/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
   }
-
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看库存查询', "${ctx}/management/stockandentry/stock/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
  }
-  
-  
-  
-  
-		   
-  function detailFormatter(index, row) {
-	  var htmltpl =  $("#stockChildrenTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
-	  var html = Mustache.render(htmltpl, {
-			idx:row.id
-		});
-	  $.get("${ctx}/management/stockandentry/stock/detail?id="+row.id, function(stock){
-    	var stockChild1RowIdx = 0, stockChild1Tpl = $("#stockChild1Tpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
-		var data1 =  stock.stockentryList;
-		for (var i=0; i<data1.length; i++){
-			data1[i].dict = {};
-			addRow('#stockChild-'+row.id+'-1-List', stockChild1RowIdx, stockChild1Tpl, data1[i]);
-			stockChild1RowIdx = stockChild1RowIdx + 1;
-		}
-				
-      	  			
-      })
-     
-        return html;
-    }
-  
-	function addRow(list, idx, tpl, row){
-		$(list).append(Mustache.render(tpl, {
-			idx: idx, delBtn: true, row: row
-		}));
-	}
-			
+
 </script>
-<script type="text/template" id="stockChildrenTpl">//<!--
-	<div class="tabs-container">
-		<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#tab-{{idx}}-1" aria-expanded="true">子库存查询表</a></li>
-		</ul>
-		<div class="tab-content">
-				 <div id="tab-{{idx}}-1" class="tab-pane fade in active">
-						<table class="ani table">
-						<thead>
-							<tr>
-								<th>父库存查询表id</th>
-								<th>批号</th>
-								<th>等级</th>
-								<th>色号</th>
-								<th>库存数量</th>
-								<th>备注信息</th>
-							</tr>
-						</thead>
-						<tbody id="stockChild-{{idx}}-1-List">
-						</tbody>
-					</table>
-				</div>
-		</div>//-->
-	</script>
-	<script type="text/template" id="stockChild1Tpl">//<!--
-				<tr>
-					<td>
-						{{row.stockid}}
-					</td>
-					<td>
-						{{row.batchNumber}}
-					</td>
-					<td>
-						{{row.level}}
-					</td>
-					<td>
-						{{row.colorNumber}}
-					</td>
-					<td>
-						{{row.number}}
-					</td>
-					<td>
-						{{row.remarks}}
-					</td>
-				</tr>//-->
-	</script>
