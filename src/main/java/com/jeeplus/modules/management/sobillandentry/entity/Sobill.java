@@ -40,6 +40,8 @@ public class Sobill extends DataEntity<Sobill> {
 	private Date endNeedTime;		// 结束 订单发货时间
 	private List<Sobillentry> sobillentryList = Lists.newArrayList();		// 子表列表
 	private String emplName;	// 员工名称
+	private String checkerName;	// 审核人
+	private String deptName;	// 部门名称
 	
 	public Sobill() {
 		super();
@@ -105,7 +107,6 @@ public class Sobill extends DataEntity<Sobill> {
 		this.custId = custId;
 	}
 	
-	@ExcelField(title="订单归属部门", align=2, sort=13)
 	public String getDeptId() {
 		return deptId;
 	}
@@ -160,7 +161,6 @@ public class Sobill extends DataEntity<Sobill> {
 		this.cancellation = cancellation;
 	}
 	
-	@ExcelField(title="订单审核人", align=2, sort=19)
 	public String getCheckerId() {
 		return checkerId;
 	}
@@ -229,5 +229,23 @@ public class Sobill extends DataEntity<Sobill> {
 
 	public void setEmplName(String emplName) {
 		this.emplName = emplName;
+	}
+
+	@ExcelField(title="订单审核人", align=2, sort=19)
+	public String getCheckerName() {
+		return checkerName;
+	}
+
+	public void setCheckerName(String checkerName) {
+		this.checkerName = checkerName;
+	}
+
+	@ExcelField(title="订单归属部门", align=2, sort=13)
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
 }
