@@ -72,7 +72,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">ERP备注：</label></td>
 					<td class="width-35">
-						<form:input path="erpNote" htmlEscape="false"    class="form-control "/
+						<form:input path="erpNote" htmlEscape="false"    class="form-control "/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
