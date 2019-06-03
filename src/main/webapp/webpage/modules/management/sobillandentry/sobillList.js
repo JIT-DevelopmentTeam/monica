@@ -129,10 +129,10 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'custName',
+		        field: 'cusName',
 		        title: '客户',
 		        sortable: true,
-		        sortName: 'custName'
+		        sortName: 'cusName'
 
 		    }
 			,{
@@ -143,10 +143,10 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'emplName',
+		        field: 'empName',
 		        title: '归属员工',
 		        sortable: true,
-		        sortName: 'emplName'
+		        sortName: 'empName'
 
 		    }
 			,{

@@ -25,15 +25,17 @@
 		a.f_checktime AS "checkTime",
 		a.f_checkstatus AS "checkStatus",
 		a.f_amount AS "amount",
-		emp.name AS "emplName",
+		emp.name AS "empName",
 		checker.name AS "checkerName",
-		dept.name AS "deptName"
+		dept.name AS "deptName",
+		cus.f_name AS "cusName"
 	</sql>
 	
 	<sql id="sobillJoins">
 		LEFT JOIN sys_user AS emp ON a.f_emplid = emp.id
 		LEFT JOIN sys_user AS checker ON a.f_checkerid = checker.id
 		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
+		LEFT JOIN tb_customer AS cus ON a.f_custid = cus.id
 	</sql>
 	
     
@@ -59,17 +61,17 @@
 			<if test="synStatus != null and synStatus != ''">
 				AND a.f_synstatus = #{synStatus}
 			</if>
-			<if test="custId != null and custId != ''">
-				AND a.f_custid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{custId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{custId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{custId},'%')</if>
+			<if test="cusName != null and cusName != ''">
+				AND cus.f_name LIKE
+					<if test="dbName == 'oracle'">'%'||#{cusName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{cusName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{cusName},'%')</if>
 			</if>
-			<if test="emplId != null and emplId != ''">
-				AND a.f_emplid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{emplId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{emplId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{emplId},'%')</if>
+			<if test="empName != null and empName != ''">
+				AND emp.name LIKE
+					<if test="dbName == 'oracle'">'%'||#{empName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{empName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{empName},'%')</if>
 			</if>
 			<if test="beginNeedTime != null and endNeedTime != null ">
 				AND a.f_needtime BETWEEN #{beginNeedTime} AND #{endNeedTime}

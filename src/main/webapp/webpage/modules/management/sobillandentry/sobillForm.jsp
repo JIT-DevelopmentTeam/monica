@@ -74,7 +74,7 @@
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="sobill" action="${ctx}/management/sobillandentry/sobill/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<form:hidden path="emplId" value="${fns:getUser().id}"/>
+		<form:hidden path="emplId" value="${sobill.emplId}"/>
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
@@ -98,8 +98,9 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
 					<td class="width-35">
-						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
-										title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+						<sys:gridselect id="customer" title="选择客户" url="${ctx}/management/customer/customer/data"
+						cssClass="form-control required" fieldKeys="number|name" fieldLabels="编号|名称" labelName="customer.name"
+						labelValue="${sobill.cusName}"  name="custId" searchKeys="number|name" searchLabels="编号|名称" value="${customer.id}"/>
 					</td>
 				</tr>
 				<tr>
@@ -119,7 +120,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">归属员工：</label></td>
 					<td class="width-35">
-                        <form:input path="emplName" htmlEscape="false" readonly="true" class="form-control"/>
+                        <form:input path="empName" htmlEscape="false" readonly="true" class="form-control"/>
 					</td>
 				</tr>
 				<tr>
@@ -203,8 +204,9 @@
 					</td>
 
 					<td>
-						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
-											title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+						<sys:gridselect id="item" title="选择商品" url="${ctx}/management/icitemclass/icitem/data"
+						cssClass="form-control" fieldKeys="number|name" fieldLabels="编号|名称" labelName="item.name"
+						labelValue="${item.name}"  name="sobillentryList[{{idx}}].itemId" searchKeys="number|name" searchLabels="编号|名称" value="${item.id}"/>
 					</td>
 					
 					

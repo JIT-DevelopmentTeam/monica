@@ -34,11 +34,11 @@
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="客户：">客户：</label>
-				<form:input path="custId" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				<form:input path="cusName" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="归属员工：">归属员工：</label>
-				<form:input path="emplId" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				<form:input path="empName" htmlEscape="false" maxlength="64"  class=" form-control"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				 <div class="form-group">

@@ -92,7 +92,7 @@ public class SobillController extends BaseController {
 		if (sobill.getId() == null || "".equals(sobill.getId())){
 			User user = UserUtils.getUser();
 			sobill.setEmplId(user.getId());
-			sobill.setEmplName(user.getName());
+			sobill.setEmpName(user.getName());
 			sobill.setDeptName(user.getOffice().getName());
 		}
 		model.addAttribute("sobill", sobill);
