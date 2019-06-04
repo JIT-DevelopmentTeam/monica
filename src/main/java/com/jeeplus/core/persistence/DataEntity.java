@@ -45,7 +45,7 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 	@Override
 	public void preInsert(){
 		if (!this.isNewRecord){
-			if(this.getId()==null){
+			if(this.getId()==null || "".equals(this.getId())){
 				if(this.getIdType().equals(IDTYPE_UUID)){
 					setId(IdGen.uuid());
 				}else if(this.getIdType().equals(IDTYPE_AUTO)){

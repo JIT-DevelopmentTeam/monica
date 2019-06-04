@@ -3,6 +3,7 @@
  */
 package com.jeeplus.modules.management.icitemclass.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
+import com.jeeplus.modules.monitor.utils.Common;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +61,34 @@ public class IcitemController extends BaseController {
 			entity = new Icitem();
 		}
 		return entity;
+	}
+
+	/**
+	 * 同步物料分类
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synIcitem")
+	public Map<String,Object>  synIcitem(String parentId) throws Exception{
+		Map<String,Object> json = new HashMap<>();
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_icitem_class?token_value=122331111","POST");
+		Icitem icitem = new Icitem();
+		JSONObject jsonObject = new JSONObject();
+		for (int i = 0; i < jsonarr.size(); i++) {
+			jsonObject = jsonarr.getJSONObject(i);
+			icitem.setName(jsonObject.getString("f_name"));
+			icitem.setErpId(jsonObject.getString("id"));
+			icitem.setNumber(jsonObject.getString("f_number"));
+			icitem.setUnit(jsonObject.getString("f_unitname"));
+			icitem.setModel(jsonObject.getString("f_model"));
+			IcitemClass icitemClass = new IcitemClass();
+			icitemClass.setId(jsonObject.getString("f_classid"));
+			icitem.setClassId(icitemClass);
+			icitemService.save(icitem,true);
+		}
+		System.out.println("================插入成功================");
+		json.put("Data",jsonarr);
+		return json;
 	}
 	
 	/**

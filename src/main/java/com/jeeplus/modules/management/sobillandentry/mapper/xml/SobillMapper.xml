@@ -214,5 +214,13 @@
         WHERE
             id = #{id}
     </update>
+
+	<update id="updateAmount" parameterType="Sobill">
+		UPDATE ic_sobill SET
+            f_checkstatus = #{checkStatus}
+        WHERE
+            id = #{id}
+	</update>
+
 	
 </mapper>
