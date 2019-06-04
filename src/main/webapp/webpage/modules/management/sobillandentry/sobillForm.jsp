@@ -58,6 +58,7 @@
 			var delFlag = $(prefix+"_delFlag");
 			if (id.val() == ""){
 				$(obj).parent().parent().remove();
+				count();
 			}else if(delFlag.val() == "0"){
 				delFlag.val("1");
 				$(obj).html("&divide;").attr("title", "撤销删除");
@@ -73,7 +74,7 @@
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="sobill" action="${ctx}/management/sobillandentry/sobill/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<form:hidden path="emplId" value="${fns:getUser().id}"/>
+		<form:hidden path="emplId" value="${sobill.emplId}"/>
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
@@ -97,8 +98,9 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
 					<td class="width-35">
-						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
-										title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+						<sys:gridselect id="customer" title="选择客户" url="${ctx}/management/customer/customer/data"
+						cssClass="form-control" fieldKeys="number|name" fieldLabels="编号|名称" labelName="customer.name"
+						labelValue="${sobill.cusName}"  name="custId" searchKeys="number|name" searchLabels="编号|名称" value="${customer.id}"/>
 					</td>
 				</tr>
 				<tr>
@@ -118,7 +120,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">归属员工：</label></td>
 					<td class="width-35">
-                        <form:input path="emplName" htmlEscape="false" readonly="true" class="form-control"/>
+                        <form:input path="empName" htmlEscape="false" readonly="true" class="form-control"/>
 					</td>
 				</tr>
 				<tr>
@@ -202,8 +204,9 @@
 					</td>
 
 					<td>
-						<sys:treeselect id="custId" name="custId.id" value="${role.office.id}" labelName="custId.name" labelValue="${role.office.name}"
-											title="客户" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+						<sys:gridselect id="sobillentryList{{idx}}_item" title="选择商品" url="${ctx}/management/icitemclass/icitem/data"
+						cssClass="form-control" fieldKeys="number|name" fieldLabels="编号|名称" labelName="sobillentryList[{{idx}}].itemId"
+						labelValue="${row.itemName}"  name="sobillentryList[{{idx}}].itemId" searchKeys="number|name" searchLabels="编号|名称" value="${row.id}"/>
 					</td>
 					
 					
@@ -228,7 +231,7 @@
 					
 					
 					<td>
-						<input id="sobillentryList{{idx}}_amount" name="sobillentryList[{{idx}}].amount" type="text" value="{{row.amount}}"    class="form-control required isFloatGteZero"/>
+						<input id="sobillentryList{{idx}}_amount" name="sobillentryList[{{idx}}].amount" type="text" value="{{row.amount}}"  onchange="count();"  class="form-control required isFloatGteZero"/>
 					</td>
 					
 					
@@ -260,6 +263,15 @@
                     var price = ($("#"+Id+"_price").val() != null && $("#"+Id+"_price").val() != '' ? parseFloat($("#"+Id+"_price").val()) : 0);
                     var auxqty = ($("#"+Id+"_auxqty").val() != null && $("#"+Id+"_auxqty").val() != '' ? parseFloat($("#"+Id+"_auxqty").val()) : 0);
                     $("#"+Id+"_amount").val((price * auxqty).toFixed(2));
+                    count();
+                }
+
+                function count() {
+                    var itemsAmount = 0;
+                    for (var i = 0; i < sobillentryRowIdx; i++) {
+                        itemsAmount += ($("#sobillentryList"+i+"_amount").val() != null && $("#sobillentryList"+i+"_amount").val() != '' ? parseFloat($("#sobillentryList"+i+"_amount").val()) : 0);
+                    }
+					$("#amount").val(itemsAmount.toFixed(2));
                 }
 			</script>
 			</div>

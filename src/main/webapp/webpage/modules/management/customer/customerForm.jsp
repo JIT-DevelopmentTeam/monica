@@ -7,7 +7,7 @@
 	<script type="text/javascript">
 
 		$(document).ready(function() {
-
+		    $("textarea").css("resize","none");
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
@@ -20,8 +20,7 @@
                         jp.getParent().refresh();
                         var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
                         parent.layer.close(dialogIndex);
-                        jp.success(data.msg)
-
+                        jp.success(data.msg);
                     }else{
                         jp.error(data.msg);
                     }
@@ -51,13 +50,17 @@
 					<td class="width-35">
 						<form:input path="name" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>部门归属id：</label></td>
+					<td class="width-15 active">
+						<label class="pull-right"><font color="red">*</font>部门归属：</label>
+					</td>
 					<td class="width-35">
-						<form:input path="deptId" htmlEscape="false"    class="form-control required"/>
+						<%--<form:input path="deptId" htmlEscape="false"    class="form-control required"/>--%>
+							<sys:treeselect id="deptId" name="deptId" value="${role.office.id}" labelName="office.name" labelValue="${role.office.name}"
+											title="机构" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>员工所属id：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>员工所属：</label></td>
 					<td class="width-35">
 						<form:input path="emplId" htmlEscape="false"    class="form-control required"/>
 					</td>
@@ -70,22 +73,25 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">ERP备注：</label></td>
-					<td class="width-35">
-						<form:input path="erpNote" htmlEscape="false"    class="form-control "/>
-					</td>
 					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
-						<form:input path="status" htmlEscape="false"    class="form-control "/>
+						<form:radiobutton path="status" value="0" class="i-checks "/>停用
+						<form:radiobutton path="status" value="1" class="i-checks "/>使用
+					</td>
+					<td class="width-15 active"></td>
+					<td class="width-35"></td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">ERP备注：</label></td>
+					<td colspan="3">
+						<form:textarea path="erpNote" htmlEscape="false" rows="4"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
-					<td class="width-35">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+					<td colspan="3">
+						<form:textarea path="remarks" htmlEscape="false" rows="4"  class="form-control "/>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
 		  		</tr>
 		 	</tbody>
 		</table>

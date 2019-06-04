@@ -92,7 +92,7 @@ public class SobillController extends BaseController {
 		if (sobill.getId() == null || "".equals(sobill.getId())){
 			User user = UserUtils.getUser();
 			sobill.setEmplId(user.getId());
-			sobill.setEmplName(user.getName());
+			sobill.setEmpName(user.getName());
 			sobill.setDeptName(user.getOffice().getName());
 		}
 		model.addAttribute("sobill", sobill);
@@ -116,11 +116,6 @@ public class SobillController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
-		// 默认
-		sobill.setStatus(0); // 草稿
-		sobill.setSynStatus(0);	// 未同步
-		sobill.setCancellation(0);	// 正常
-        sobill.setCheckStatus(0);   // 待审核
 		//新增或编辑表单保存
 		sobillService.save(sobill);//保存
 		j.setSuccess(true);
