@@ -67,8 +67,8 @@ public class OfficeController extends BaseController {
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
 
 		Office officeName = officeService.getByName("莫尔卡");
-		Area area = areaService.findByName("中国");
-		Area area1 = new Area();
+		Area areaChina = areaService.findByName("中国");
+		Area area = new Area();
 		List<Office> officeList = officeService.findList(new Office());
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
@@ -91,11 +91,11 @@ public class OfficeController extends BaseController {
 			}
 
 			office.setParent(parent);
-//			office.setId(jsonObject.getString("FItemID"));
+			office.setId(jsonObject.getString("FItemID"));
 			office.setName(jsonObject.getString("FName"));
 			office.setCode(jsonObject.getString("FNumber"));
-			area1.setId(area.getId());
-			office.setArea(area1);
+			area.setId(areaChina.getId());
+			office.setArea(area);
 			office.setGrade("1");
 
 			officeService.save(office);
