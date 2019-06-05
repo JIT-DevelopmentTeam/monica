@@ -68,7 +68,11 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 		super.delete(office);
 		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
 	}
-	
-	
+
+	@Transactional(readOnly = false)
+	public void deleteByParentId(String id) {
+		officeMapper.deleteByParentId(id);
+		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
+	}
 	
 }

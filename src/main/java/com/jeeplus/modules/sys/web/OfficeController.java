@@ -66,10 +66,11 @@ public class OfficeController extends BaseController {
 		JSONArray jsonarr =
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
 
-		Office officeName = officeService.getByName("莫尔卡");
-		Area areaChina = areaService.findByName("中国");
+		Office officeName = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
+		Area areaChina = areaService.findByName("中国");					// 按地域名查询地域信息
 		Area area = new Area();
 		List<Office> officeList = officeService.findList(new Office());
+		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			System.out.println(jsonarr.get(i));

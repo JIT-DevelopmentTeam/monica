@@ -235,5 +235,10 @@
 					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 					<if test="dbName == 'mssql'">'%'+#{id}+'%'</if>
 	</update>
+
+    <update id="deleteByParentId">
+        DELETE FROM sys_office
+        WHERE parent_ids LIKE CONCAT('%,', #{id}, ',%')
+    </update>
 	
 </mapper>
