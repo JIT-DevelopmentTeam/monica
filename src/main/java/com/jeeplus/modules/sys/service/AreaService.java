@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.sys.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.service.TreeService;
 import com.jeeplus.modules.sys.entity.Area;
 import com.jeeplus.modules.sys.mapper.AreaMapper;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 区域Service
@@ -22,9 +22,15 @@ import com.jeeplus.modules.sys.utils.UserUtils;
 @Transactional(readOnly = true)
 public class AreaService extends TreeService<AreaMapper, Area> {
 
-	
+	@Autowired
+	private AreaMapper areaMapper;
+
 	public List<Area> findAll(){
 		return UserUtils.getAreaList();
+	}
+
+	public Area findByName(String name) {
+		return areaMapper.findByName(name);
 	}
 
 	@Transactional(readOnly = false)

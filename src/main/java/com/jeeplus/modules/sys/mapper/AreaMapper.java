@@ -14,5 +14,7 @@ import com.jeeplus.modules.sys.entity.Area;
  */
 @MyBatisMapper
 public interface AreaMapper extends TreeMapper<Area> {
-	
+
+    Area findByName(String name);
+
 }

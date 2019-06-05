@@ -9,11 +9,16 @@ import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.Area;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.service.AreaService;
 import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +28,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 机构Controller
@@ -42,6 +43,9 @@ public class OfficeController extends BaseController {
 
 	@Autowired
 	private OfficeService officeService;
+
+	@Autowired
+	private AreaService areaService;
 	
 	@ModelAttribute("office")
 	public Office get(@RequestParam(required=false) String id) {
@@ -50,6 +54,55 @@ public class OfficeController extends BaseController {
 		}else{
 			return new Office();
 		}
+	}
+
+	/**
+	 * 同步部门
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synDept")
+	public Map<String,Object>  synDept(String parentId) throws Exception{
+		Map<String,Object> json = new HashMap<>();
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
+
+		Office officeName = officeService.getByName("莫尔卡");
+		Area area = areaService.findByName("中国");
+		Area area1 = new Area();
+		List<Office> officeList = officeService.findList(new Office());
+		JSONObject jsonObject = new JSONObject();
+		for (int i = 0; i < jsonarr.size(); i++) {
+			System.out.println(jsonarr.get(i));
+			jsonObject = jsonarr.getJSONObject(i);
+			Office office = new Office();
+			Office parent = new Office();
+			String parentID = jsonObject.getString("FParentID");
+			if ("0".equals(parentID)) {
+				parent.setId(officeName.getId());
+				parent.setName(officeName.getName());
+			} else {
+				parent.setId(parentID);
+				for (Office office1 : officeList) {
+					if (office1.getId().equals(parentID)) {
+						parent.setName(office1.getName());
+						break;
+					}
+				}
+			}
+
+			office.setParent(parent);
+//			office.setId(jsonObject.getString("FItemID"));
+			office.setName(jsonObject.getString("FName"));
+			office.setCode(jsonObject.getString("FNumber"));
+			area1.setId(area.getId());
+			office.setArea(area1);
+			office.setGrade("1");
+
+			officeService.save(office);
+		}
+		System.out.println("================插入成功================");
+		json.put("Data",jsonarr);
+		return json;
 	}
 
 	@RequiresPermissions("sys:office:list")
