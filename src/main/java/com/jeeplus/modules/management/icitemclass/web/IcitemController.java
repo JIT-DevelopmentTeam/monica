@@ -71,11 +71,12 @@ public class IcitemController extends BaseController {
 	public Map<String,Object>  synIcitem(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_icitem_class?token_value=122331111","POST");
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_icitem?token_value=122331111","POST");
 		Icitem icitem = new Icitem();
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			jsonObject = jsonarr.getJSONObject(i);
+			icitem = new Icitem();
 			icitem.setName(jsonObject.getString("f_name"));
 			icitem.setErpId(jsonObject.getString("id"));
 			icitem.setNumber(jsonObject.getString("f_number"));
@@ -85,6 +86,7 @@ public class IcitemController extends BaseController {
 			icitemClass.setId(jsonObject.getString("f_classid"));
 			icitem.setClassId(icitemClass);
 			icitemService.save(icitem,true);
+			System.out.println("================已同步物料:"+jsonObject.getString("f_name")+"================");
 		}
 		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);
