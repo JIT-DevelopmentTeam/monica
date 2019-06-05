@@ -6,7 +6,9 @@
 			$('i[class="glyphicon glyphicon-refresh"]').text('同步仓库');
 			$('button[class="btn btn-default btn-sm"]').removeAttr('onclick');
 			$('button[class="btn btn-default btn-sm"]').click(function () {
-				alert('同步按钮');
+				jp.post("${ctx}/management/warehouse/warehouse/synWareHouse", {}, function (data) {
+					refreshTree();
+				});
 			});
 
 			var to = false;

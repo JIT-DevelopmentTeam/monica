@@ -3,13 +3,16 @@
  */
 package com.jeeplus.modules.management.warehouse.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.shiro.authz.annotation.Logical;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.warehouse.entity.Warehouse;
+import com.jeeplus.modules.management.warehouse.service.WarehouseService;
+import com.jeeplus.modules.monitor.utils.Common;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,14 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.modules.management.warehouse.entity.Warehouse;
-import com.jeeplus.modules.management.warehouse.service.WarehouseService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 库存管理Controller
@@ -50,6 +50,42 @@ public class WarehouseController extends BaseController {
 			entity = new Warehouse();
 		}
 		return entity;
+	}
+
+	/**
+	 * 同步仓库
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synWareHouse")
+	public Map<String,Object>  synWareHouse(String parentId) throws Exception{
+		Map<String,Object> json = new HashMap<>();
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_stock?token_value=20190603","POST");
+
+		JSONObject jsonObject = new JSONObject();
+		for (int i = 0; i < jsonarr.size(); i++) {
+			System.out.println(jsonarr.get(i));
+			jsonObject = jsonarr.getJSONObject(i);
+			Warehouse warehouse = new Warehouse();
+			Warehouse parent = new Warehouse();
+			parent.setId(jsonObject.getString("FParentID"));
+			warehouse.setParent(parent);
+			warehouse.setId(jsonObject.getString("FItemID"));
+			warehouse.setErpid(jsonObject.getString("FItemID"));
+			warehouse.setNumber(jsonObject.getString("FNumber"));
+			warehouse.setName(jsonObject.getString("FName"));
+			String status = jsonObject.getString("FMRPAvail");
+			if (status == "true") {
+				warehouse.setStatus(1);
+			} else if (status == "false") {
+				warehouse.setStatus(0);
+			}
+
+			warehouseService.save(warehouse, true);
+		}
+		System.out.println("================插入成功================");
+		json.put("Data",jsonarr);
+		return json;
 	}
 	
 	/**
