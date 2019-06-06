@@ -79,14 +79,21 @@ public class StockController extends BaseController {
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) {
 		String warehouseId = request.getParameter("warehouseId.id");
+		String pageNo = request.getParameter("pageNo");
 		if (warehouseId == null) {
 			warehouseId = "";
 		}
 		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId,"POST");
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId + "&currentPage=" + pageNo,"POST");
+		JSONArray jsonarrTotal =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock_total?token_value=20190603&warehouseId=" + warehouseId,"POST");
+
 		JSONObject jsonObject = new JSONObject();
 		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
         Page<Stock> page = findPage(new Page<Stock>(request, response), stock, stockList);
+		for (int i = 0; i < jsonarrTotal.size(); i++) {
+			page.setCount((Integer) jsonarrTotal.get(i));
+		}
 //		Page<Stock> page = stockService.findPage(new Page<Stock>(request, response), stock);
 		return getBootstrapData(page);
 	}
