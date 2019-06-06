@@ -5,6 +5,7 @@
 	<title>商品资料管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
+
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
 	<%@include file="/webpage/include/treeview.jsp" %>
 	<%@include file="icitemClassTreeList.js" %>
@@ -20,7 +21,7 @@
 	<div class="panel-body">
 		<input type="hidden" id="ids"/>
 		<div class="row">
-				<div class="col-sm-4 col-md-3" >
+				<div class="col-sm-3 col-md-2" >
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-8" >
@@ -36,14 +37,14 @@
 									<i class="glyphicon glyphicon-refresh">同步分类</i>
 								</button>
 							</div>
-							<div class="col-sm-2" >
+							<%--<div class="col-sm-2" >
 								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建商品分类', '${ctx}/management/icitemclass/icitemClass/form','800px', '500px')">
 									<i class="fa fa-plus"></i>
 								</button>
-							</div>
+							</div>--%>
 						</div>
 					</div>
-					<div id="icitemClassjsTree" style="overflow-x:auto; border:0px;"></div>
+					<div id="icitemClassjsTree" style="border:0px;overflow-y: scroll;height: 500px;"></div>
 				</div>
 				<div  class="col-sm-8 col-md-9">
 	
@@ -103,6 +104,9 @@
 					<i class="fa fa-search-plus"></i> 查看
 				</button>
 			</shiro:hasPermission>
+		<button  class="btn btn-default btn-sm"  onclick="synIcitem()">
+			<i class="glyphicon glyphicon-refresh">同步物料</i>
+		</button>
 		    </div>
 		
 	<!-- 表格 -->

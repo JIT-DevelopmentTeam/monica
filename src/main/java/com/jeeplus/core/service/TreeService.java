@@ -3,14 +3,13 @@
  */
 package com.jeeplus.core.service;
 
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.common.utils.Reflections;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.TreeEntity;
 import com.jeeplus.core.persistence.TreeMapper;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Service基类
@@ -51,7 +50,7 @@ public abstract class TreeService<D extends TreeMapper<T>, T extends TreeEntity<
 		entity.setParentIds(entity.getParent().getParentIds()+entity.getParent().getId()+",");
 		
 		// 保存或更新实体
-		super.save(entity);
+		super.save(entity, true);
 		
 		// 更新子节点 parentIds
 		T o = null;

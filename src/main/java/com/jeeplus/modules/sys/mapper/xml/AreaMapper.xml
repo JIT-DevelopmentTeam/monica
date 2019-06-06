@@ -79,6 +79,14 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE #{parentIds}
 		ORDER BY a.code
 	</select>
+
+	<select id="findByName" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		WHERE a.name = #{name}
+	</select>
 	
 	<insert id="insert">
 		INSERT INTO sys_area(

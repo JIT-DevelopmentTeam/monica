@@ -44,7 +44,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">分类id：</label></td>
 					<td class="width-35">
-						<sys:treeselect id="classId" name="classId" value="${icitem.classId}" labelName="" labelValue="${icitem.}"
+						<sys:treeselect id="classId" name="classId" value="${icitem.classId}" labelName="" labelValue="${icitem.classId}"
 							title="分类id" url="/management/icitemclass/icitemClass/treeData" extId="${icitem.id}" cssClass="form-control " allowClear="true"/>
 					</td>
 				</tr>

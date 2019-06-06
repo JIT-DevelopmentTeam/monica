@@ -3,18 +3,15 @@
  */
 package com.jeeplus.modules.sys.service;
 
-import java.util.List;
-
+import com.jeeplus.core.service.TreeService;
+import com.jeeplus.modules.sys.entity.Office;
+import com.jeeplus.modules.sys.mapper.OfficeMapper;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeeplus.core.service.TreeService;
-import com.jeeplus.modules.sys.entity.Area;
-import com.jeeplus.modules.sys.entity.Office;
-import com.jeeplus.modules.sys.mapper.AreaMapper;
-import com.jeeplus.modules.sys.mapper.OfficeMapper;
-import com.jeeplus.modules.sys.utils.UserUtils;
+import java.util.List;
 
 /**
  * 机构Service
@@ -50,6 +47,11 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 	public Office getByCode(String code){
 		return officeMapper.getByCode(code);
 	}
+
+	@Transactional(readOnly = true)
+	public Office getByName(String name){
+		return officeMapper.getByName(name);
+	}
 	
 	public List<Office> getChildren(String parentId){
 		return officeMapper.getChildren(parentId);
@@ -66,7 +68,11 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 		super.delete(office);
 		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
 	}
-	
-	
+
+	@Transactional(readOnly = false)
+	public void deleteByParentId(String id) {
+		officeMapper.deleteByParentId(id);
+		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
+	}
 	
 }

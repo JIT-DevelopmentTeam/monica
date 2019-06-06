@@ -90,6 +90,16 @@
 		
 		WHERE a.code = #{code}
 	</select>
+
+	<select id="getByName" resultType="Office">
+		SELECT
+		<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+
+		WHERE a.name = #{name}
+	</select>
+
 	<select id="findList" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
@@ -225,5 +235,10 @@
 					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 					<if test="dbName == 'mssql'">'%'+#{id}+'%'</if>
 	</update>
+
+    <update id="deleteByParentId">
+        DELETE FROM sys_office
+        WHERE parent_ids LIKE CONCAT('%,', #{id}, ',%')
+    </update>
 	
 </mapper>
