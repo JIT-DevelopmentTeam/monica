@@ -497,9 +497,34 @@
             });
 
         },
-        //打开子对话框(仅仅用作 父子layer弹窗之间交互数据使用)
 
-         openChildDialog: function(title,url,width,height, parentObj){
+        //打开子对话框(仅仅用作 父子layer弹窗之间交互数据使用)
+        openDialog: function(title,url,width,height, parentObj,callback){
+            var auto = true;//是否使用响应式，使用百分比时，应设置为false
+            if(width.indexOf("%")>=0 || height.indexOf("%")>=0 ){
+                auto =false;
+            }
+            top.layer.open({
+                type: 2,
+                area: [width, height],
+                title: title,
+                auto:auto,
+                maxmin: true, //开启最大化最小化按钮
+                content: url ,
+                btn: ['确定', '关闭'],
+                yes: function(index, layero){
+                    var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                    iframeWin.contentWindow.save(parentObj);//在子窗口定义save方法，负责实际业务逻辑的执行
+                    callback(iframeWin);
+                    parent.layer.close(index);
+                },
+                cancel: function(index){
+                }
+            });
+        },
+
+        //打开子对话框(仅仅用作 父子layer弹窗之间交互数据使用)
+        openChildDialog: function(title,url,width,height, parentObj){
         var auto = true;//是否使用响应式，使用百分比时，应设置为false
         if(width.indexOf("%")>=0 || height.indexOf("%")>=0 ){
         	auto =false;

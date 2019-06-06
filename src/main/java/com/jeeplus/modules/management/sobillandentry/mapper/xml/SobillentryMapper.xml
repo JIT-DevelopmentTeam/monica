@@ -12,19 +12,20 @@
 		a.del_flag AS "delFlag",
 		a.f_sobillid AS "sobillId",
 		a.f_itemid AS "itemId",
-		a.f_unit AS "unit",
 		a.f_auxpropid AS "auxpropid",
 		a.f_batchno AS "batchNo",
 		a.f_price AS "price",
 		a.f_auxqty AS "auxqty",
 		a.f_amount AS "amount",
 		a.f_rowid AS "rowId",
-		c.f_name AS "itemName"
+		item.f_name AS "itemName",
+		item.f_model AS "model",
+		item.f_unit AS "unit"
 	</sql>
 	
 	<sql id="sobillentryJoins">
-		LEFT JOIN ic_sobill b ON b.id = a.f_sobillid
-		LEFT JOIN tb_icitem c ON a.f_itemid = c.id
+		LEFT JOIN ic_sobill bill ON a.f_sobillid = bill.id
+		LEFT JOIN tb_icitem item ON a.f_itemid = item.id
 	</sql>
 	
     
@@ -88,7 +89,6 @@
 			del_flag,
 			f_sobillid,
 			f_itemid,
-			f_unit,
 			f_auxpropid,
 			f_batchno,
 			f_price,
@@ -105,7 +105,6 @@
 			#{delFlag},
 			#{sobillId.id},
 			#{itemId},
-			#{unit},
 			#{auxpropid},
 			#{batchNo},
 			#{price},
@@ -121,7 +120,6 @@
 			update_date = #{updateDate},
 			remarks = #{remarks},
 			f_itemid = #{itemId},
-			f_unit = #{unit},
 			f_auxpropid = #{auxpropid},
 			f_batchno = #{batchNo},
 			f_price = #{price},

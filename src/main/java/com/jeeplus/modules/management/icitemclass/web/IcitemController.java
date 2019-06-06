@@ -220,4 +220,13 @@ public class IcitemController extends BaseController {
 		return j;
     }
 
+    @RequestMapping(value = "getById")
+	@ResponseBody
+	public AjaxJson getById(Icitem icitem){
+		AjaxJson aj = new AjaxJson();
+		icitem = icitemService.get(icitem.getId());
+		aj.put("icitem",icitem);
+		return aj;
+	}
+
 }
