@@ -33,6 +33,7 @@
 
         }
 		function addRow(list, idx, tpl, row){
+		    /* TODO 选择商品后生成 */
 			$(list).append(Mustache.render(tpl, {
 				idx: idx, delBtn: true, row: row
 			}));
@@ -99,8 +100,8 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
 					<td class="width-35">
 						<sys:gridselect id="customer" title="选择客户" url="${ctx}/management/customer/customer/data"
-						cssClass="form-control" fieldKeys="number|name" fieldLabels="编号|名称" labelName="customer.name"
-						labelValue="${sobill.cusName}"  name="custId" searchKeys="number|name" searchLabels="编号|名称" value="${customer.id}"/>
+						cssClass="form-control required" fieldKeys="number|name" fieldLabels="编号|名称" labelName="customer.name"
+						labelValue="${sobill.cusName}"  name="custId" searchKeys="number|name" searchLabels="编号|名称" value="${sobill.custId}"/>
 					</td>
 				</tr>
 				<tr>
@@ -183,7 +184,6 @@
 					<tr>
 						<th class="hide"></th>
 						<th><font color="red">*</font>商品</th>
-						<th><font color="red">*</font>商品单位</th>
 						<th>批号</th>
 						<th><font color="red">*</font>单价</th>
 						<th><font color="red">*</font>数量</th>
@@ -205,16 +205,10 @@
 
 					<td>
 						<sys:gridselect id="sobillentryList{{idx}}_item" title="选择商品" url="${ctx}/management/icitemclass/icitem/data"
-						cssClass="form-control" fieldKeys="number|name" fieldLabels="编号|名称" labelName="sobillentryList[{{idx}}].itemId"
-						labelValue="${row.itemName}"  name="sobillentryList[{{idx}}].itemId" searchKeys="number|name" searchLabels="编号|名称" value="${row.id}"/>
+						cssClass="form-control required" fieldKeys="number|name|unit|model" fieldLabels="编号|名称|单位|型号" labelName="sobillentryList{{idx}}_item.name"
+						labelValue="{{row.itemName}}"  name="sobillentryList[{{idx}}].itemId" searchKeys="number|name" searchLabels="编号|名称" value="{{row.itemId}}"/>
 					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_unit" name="sobillentryList[{{idx}}].unit" type="text" value="{{row.unit}}"    class="form-control required"/>
-					</td>
-					
-					
+
 					<td>
 						<input id="sobillentryList{{idx}}_batchNo" name="sobillentryList[{{idx}}].batchNo" type="text" value="{{row.batchNo}}"    class="form-control "/>
 					</td>

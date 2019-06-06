@@ -285,4 +285,11 @@ $(document).ready(function() {
         jp.openViewDialog('查看库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
  }
 
+ /*同步仓库*/
+ function synWareHouse() {
+	 jp.post("${ctx}/management/warehouse/warehouse/synWareHouse", {}, function (data) {
+		 refreshTree();
+	 });
+ }
+
 </script>

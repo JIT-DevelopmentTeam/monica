@@ -69,6 +69,13 @@
             $treeTable.initParents(current_parent_ids, "0");
         }
     }
+
+    /*同步*/
+    function synDept() {
+		jp.post("${ctx}/sys/office/synDept", {}, function (data) {
+			refresh();
+		});
+	}
 </script>
 <script type="text/html" id="officeItemTpl">
 <td><a  href="#" onclick="jp.openViewDialog('查看机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')">{{d.name}}</a></td>
