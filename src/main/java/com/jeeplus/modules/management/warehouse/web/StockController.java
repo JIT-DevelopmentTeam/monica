@@ -87,10 +87,6 @@ public class StockController extends BaseController {
 		JSONObject jsonObject = new JSONObject();
 		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
         Page<Stock> page = findPage(new Page<Stock>(request, response), stock, stockList);
-//		for (int i = 0; i < jsonarr.size(); i++) {
-//			System.out.println(jsonarr.get(i));
-//			jsonObject = jsonarr.getJSONObject(i);
-//		}
 //		Page<Stock> page = stockService.findPage(new Page<Stock>(request, response), stock);
 		return getBootstrapData(page);
 	}
