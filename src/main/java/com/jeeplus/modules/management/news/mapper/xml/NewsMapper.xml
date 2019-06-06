@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.news.mapper.NewsMapper">
+    
+	<sql id="newsColumns">
+		a.id AS "id",
+		a.f_title AS "title",
+		a.f_describe AS "describe",
+		a.f_content AS "content",
+		a.f_authorid AS "authorid",
+		a.f_mainpic AS "mainpic",
+		a.f_ispublic AS "isPublic",
+		a.f_headline AS "headline",
+		a.f_deptid AS "deptid",
+		a.f_starttime AS "starttime",
+		a.f_endtime AS "endtime",
+		a.f_ispush AS "isPush",
+		a.f_push AS "push",
+		a.f_pushrule AS "pushrule",
+		a.f_readcount AS "readCount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="newsJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="News" >
+		SELECT 
+			<include refid="newsColumns"/>
+		FROM tb_news a
+		<include refid="newsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="News" >
+		SELECT 
+			<include refid="newsColumns"/>
+		FROM tb_news a
+		<include refid="newsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="News" >
+		SELECT 
+			<include refid="newsColumns"/>
+		FROM tb_news a
+		<include refid="newsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_news(
+			id,
+			f_title,
+			f_describe,
+			f_content,
+			f_authorid,
+			f_mainpic,
+			f_ispublic,
+			f_headline,
+			f_deptid,
+			f_starttime,
+			f_endtime,
+			f_ispush,
+			f_push,
+			f_pushrule,
+			f_readcount,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{title},
+			#{describe},
+			#{content},
+			#{authorid},
+			#{mainpic},
+			#{isPublic},
+			#{headline},
+			#{deptid},
+			#{starttime},
+			#{endtime},
+			#{isPush},
+			#{push},
+			#{pushrule},
+			#{readCount},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_news SET 	
+			f_title = #{title},
+			f_describe = #{describe},
+			f_content = #{content},
+			f_authorid = #{authorid},
+			f_mainpic = #{mainpic},
+			f_ispublic = #{isPublic},
+			f_headline = #{headline},
+			f_deptid = #{deptid},
+			f_starttime = #{starttime},
+			f_endtime = #{endtime},
+			f_ispush = #{isPush},
+			f_push = #{push},
+			f_pushrule = #{pushrule},
+			f_readcount = #{readCount},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_news
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_news SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="News" statementType="STATEMENT">
+		select * FROM tb_news  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
