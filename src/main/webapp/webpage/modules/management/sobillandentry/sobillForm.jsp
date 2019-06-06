@@ -33,6 +33,7 @@
 
         }
 		function addRow(list, idx, tpl, row){
+		    /* TODO 选择商品后生成 */
 			$(list).append(Mustache.render(tpl, {
 				idx: idx, delBtn: true, row: row
 			}));
