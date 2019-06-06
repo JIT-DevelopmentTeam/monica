@@ -117,6 +117,13 @@ public class SobillController extends BaseController {
 			return j;
 		}
 		//新增或编辑表单保存
+		if (sobill.getId() == null || "".equals(sobill.getId())){
+			// 新增默认
+			sobill.setSynStatus(0);
+			sobill.setStatus(0);
+			sobill.setCancellation(0);
+			sobill.setCheckStatus(0);
+		}
 		sobillService.save(sobill);//保存
 		j.setSuccess(true);
 		j.setMsg("保存订单成功");

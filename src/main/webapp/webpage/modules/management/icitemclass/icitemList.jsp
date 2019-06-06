@@ -19,6 +19,7 @@
 		<h3 class="panel-title">商品资料列表</h3>
 	</div>
 	<div class="panel-body">
+		<input type="hidden" id="ids"/>
 		<div class="row">
 				<div class="col-sm-3 col-md-2" >
 					<div class="form-group">

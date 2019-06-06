@@ -418,6 +418,7 @@ function cancelCheckOrder(){
 							<tr>
 								<th>商品</th>
 								<th>商品单位</th>
+    							<th>型号</th>
 								<th>批号</th>
 								<th>单价</th>
 								<th>数量</th>
@@ -438,6 +439,9 @@ function cancelCheckOrder(){
 					</td>
 					<td>
 						{{row.unit}}
+					</td>
+					<td>
+						{{row.model}}
 					</td>
 					<td>
 						{{row.batchNo}}

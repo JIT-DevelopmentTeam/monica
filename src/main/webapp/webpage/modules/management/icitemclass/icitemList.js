@@ -318,4 +318,8 @@ function view(id){//没有权限时，不显示确定按钮
     jp.openViewDialog('查看商品资料', "${ctx}/management/icitemclass/icitem/form?id=" + id, '800px', '500px');
 }
 
+ function save(parentObject) {
+	 $("#ids").val(getIdSelections());
+ }
+
 </script>
