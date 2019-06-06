@@ -415,5 +415,37 @@
 					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
 		</if>
 	</select>
+
+	<!-- 根据部门查询用户信息 -->
+	<select id="findListByUserOfficeList" resultMap="userResult">
+		SELECT
+		<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		<if test="company != null and company.id != null and company.id != ''">
+			AND c.id = #{company.id}
+		</if>
+		<if test="office != null and office.id != null and office.id != ''">
+			AND o.id = #{office.id}
+		</if>
+		<if test="loginName != null and loginName != ''">
+			AND a.login_name like
+			<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+			<if test="dbName == 'mssql'">'%'+#{loginName}+'%'</if>
+		</if>
+		<if test="name != null and name != ''">
+			AND a.name like
+			<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+			<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+			<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+		</if>
+		<!-- 数据范围过滤 -->
+		${dataScope}
+		<!-- 排序 -->
+		ORDER BY  a.name
+	</select>
 	
 </mapper>

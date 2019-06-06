@@ -55,8 +55,8 @@
 					</td>
 					<td class="width-35">
 						<%--<form:input path="deptId" htmlEscape="false"    class="form-control required"/>--%>
-							<sys:treeselect id="deptId" name="deptId" value="${role.office.id}" labelName="office.name" labelValue="${role.office.name}"
-											title="机构" url="/sys/office/treeData" allowClear="true" cssClass="form-control required"/>
+							<sys:treeselect id="deptId" name="deptId" value="${user.id}" labelName="user.name" labelValue="${user.name}"
+											title="部门" url="/sys/office/treeData?type=2" allowClear="true" cssClass="form-control required"/>
 					</td>
 				</tr>
 				<tr>
