@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#stockTable').bootstrapTable({
+	$('#plaUrlTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -9,7 +9,7 @@ $(document).ready(function() {
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
                //显示检索按钮
-	       showSearch: true,
+	           showSearch: true,
                //显示刷新按钮
                showRefresh: true,
                //显示切换手机试图按钮
@@ -36,11 +36,11 @@ $(document).ready(function() {
                pageSize: 10,  
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
-               url: "${ctx}/management/warehouse/stock/data",
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               url: "${ctx}/management/plaurl/plaUrl/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
-               ////查询参数,每次调用是会带上这个参数，可自定义
+               ////查询参数,每次调用是会带上这个参数，可自定义                         
                queryParams : function(params) {
                	var searchParam = $("#searchForm").serializeJSON();
                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该库存查询记录吗？', function(){
+                        jp.confirm('确认要删除该平台链接管理记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/warehouse/stock/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/plaurl/plaUrl/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#stockTable').bootstrapTable('refresh');
+                   	  			$('#plaUrlTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -85,78 +85,60 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'warehouse',
-		        title: '仓库',
+		        field: 'name',
+		        title: '模块名称',
 		        sortable: true,
-		        sortName: 'warehouse'
+		        sortName: 'name'
 		        ,formatter:function(value, row , index){
-			   if(value == null || value ==""){
-				   value = "-";
-			   }
-			   <c:choose>
-				   <c:when test="${fns:hasPermission('management:warehouse:stock:edit')}">
-				      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-			      </c:when>
-				  <c:when test="${fns:hasPermission('management:warehouse:stock:view')}">
-				      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-			      </c:when>
-				  <c:otherwise>
-				      return value;
-			      </c:otherwise>
-			   </c:choose>
-
+		        	value = jp.unescapeHTML(value);
+				   <c:choose>
+					   <c:when test="${fns:hasPermission('management:plaurl:plaUrl:edit')}">
+					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:when test="${fns:hasPermission('management:plaurl:plaUrl:view')}">
+					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+				      </c:when>
+					  <c:otherwise>
+					      return value;
+				      </c:otherwise>
+				   </c:choose>
+		         }
+		       
+		    }
+			,{
+		        field: 'url',
+		        title: '模块url',
+		        sortable: true,
+		        sortName: 'url'
+		       
+		    }
+			,{
+		        field: 'status',
+		        title: '模块状态',
+		        sortable: true,
+		        sortName: 'status',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-");
 		        }
 		       
 		    }
 			,{
-		        field: 'warehousePosition',
-		        title: '仓位',
+		        field: 'app',
+		        title: '模块所属',
 		        sortable: true,
-		        sortName: 'warehousePosition'
+		        sortName: 'app',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('app_type'))}, value, "-");
+		        }
 		       
 		    }
 			,{
-		        field: 'commodityNumber',
-		        title: '商品代码',
-		        sortable: true,
-		        sortName: 'commodityNumber'
-		       
-		    }
-			,{
-		        field: 'commodityName',
-		        title: '商品名称',
-		        sortable: true,
-		        sortName: 'commodityName'
-		       
-		    }
-			,{
-		        field: 'specification',
-		        title: '规格型号',
-		        sortable: true,
-		        sortName: 'specification'
-		       
-		    }
-			,{
-		        field: 'unit',
-		        title: '单位',
-		        sortable: true,
-		        sortName: 'unit'
-		       
-		    }
-			,{
-		        field: 'total',
-		        title: '库存总数',
-		        sortable: true,
-		        sortName: 'total'
-		       
-		    }
-			/*,{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true,
 		        sortName: 'remarks'
 		       
-		    }*/
+		    }
 		     ]
 		
 		});
@@ -165,13 +147,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#stockTable').bootstrapTable("toggleView");
+		  $('#plaUrlTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#stockTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#plaUrlTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#stockTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#stockTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#plaUrlTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#plaUrlTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -183,18 +165,18 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/warehouse/stock/import/template');
+					  jp.downloadFile('${ctx}/management/plaurl/plaUrl/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/warehouse/stock/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/management/plaurl/plaUrl/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
 							}else{
 								jp.error(data.msg);
 							}
-						   jp.close(index);
+					   		jp.close(index);
 						});//调用保存事件
 						return false;
 				  },
@@ -206,13 +188,12 @@ $(document).ready(function() {
 		});
 		
 		
-
-	$("#export").click(function(){//导出Excel文件
+	 $("#export").click(function(){//导出Excel文件
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#stockTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#stockTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#plaUrlTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#plaUrlTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -221,36 +202,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/warehouse/stock/export?'+values);
+			jp.downloadFile('${ctx}/management/plaurl/plaUrl/export?'+values);
 	  })
+
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#stockTable').bootstrapTable('refresh');
+		  $('#plaUrlTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#stockTable').bootstrapTable('refresh');
+		  $('#plaUrlTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#stockTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#plaUrlTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该库存查询记录吗？', function(){
+		jp.confirm('确认要删除该平台链接管理记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/warehouse/stock/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/plaurl/plaUrl/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#stockTable').bootstrapTable('refresh');
+         	  			$('#plaUrlTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -262,11 +244,11 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#stockTable').bootstrapTable('refresh');
+  	$('#plaUrlTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增库存查询', "${ctx}/management/warehouse/stock/form",'800px', '500px');
+	  jp.openSaveDialog('新增平台链接管理', "${ctx}/management/plaurl/plaUrl/form",'800px', '500px');
   }
 
 
@@ -275,21 +257,16 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑平台链接管理', "${ctx}/management/plaurl/plaUrl/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看平台链接管理', "${ctx}/management/plaurl/plaUrl/form?id=" + id, '800px', '500px');
  }
 
- /*同步仓库*/
- function synWareHouse() {
-	 jp.post("${ctx}/management/warehouse/warehouse/synWareHouse", {}, function (data) {
-		 refreshTree();
-	 });
- }
+
 
 </script>
