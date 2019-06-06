@@ -81,10 +81,8 @@ public class IcitemClassController extends BaseController {
 			icitemClass.setId(jsonObject.getString("f_itemid"));
 			icitemClass.setNumber(jsonObject.getString("f_number"));
 			icitemClass.setName(jsonObject.getString("f_name"));
-
 			icitemClassService.save(icitemClass,true);
 		}
-		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);
 		return json;
 	}

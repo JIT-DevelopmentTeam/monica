@@ -3,13 +3,23 @@
  */
 package com.jeeplus.modules.management.warehouse.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.BaseEntity;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.warehouse.entity.Stock;
+import com.jeeplus.modules.management.warehouse.service.StockService;
+import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.DataRule;
+import com.jeeplus.modules.sys.utils.UserUtils;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +27,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.management.warehouse.entity.Stock;
-import com.jeeplus.modules.management.warehouse.service.StockService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 库存查询Controller
@@ -75,9 +78,60 @@ public class StockController extends BaseController {
 	@RequiresPermissions("management:warehouse:stock:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<Stock> page = stockService.findPage(new Page<Stock>(request, response), stock); 
+		String warehouseId = request.getParameter("warehouseId.id");
+		if (warehouseId == null) {
+			warehouseId = "";
+		}
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId,"POST");
+		JSONObject jsonObject = new JSONObject();
+		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
+        Page<Stock> page = findPage(new Page<Stock>(request, response), stock, stockList);
+//		Page<Stock> page = stockService.findPage(new Page<Stock>(request, response), stock);
 		return getBootstrapData(page);
 	}
+
+    /**
+     * 数据范围过滤
+     * @param entity 当前过滤的实体类
+     */
+    public static void dataRuleFilter(BaseEntity<?> entity) {
+
+        entity.setCurrentUser(UserUtils.getUser());
+        List<DataRule> dataRuleList = UserUtils.getDataRuleList();
+
+        // 如果是超级管理员，则不过滤数据
+        if (dataRuleList.size() == 0) {
+            return;
+        }
+
+        // 数据范围
+        StringBuilder sqlString = new StringBuilder();
+
+
+        for(DataRule dataRule : dataRuleList){
+            if(entity.getClass().getSimpleName().equals(dataRule.getClassName())){
+                sqlString.append(dataRule.getDataScopeSql());
+            }
+
+        }
+
+        entity.setDataScope(sqlString.toString());
+
+    }
+
+    /**
+     * 查询分页数据
+     * @param page 分页对象
+     * @param stock
+     * @return
+     */
+    public Page<Stock> findPage(Page<Stock> page, Stock stock, List<Stock> list) {
+        dataRuleFilter(stock);
+        stock.setPage(page);
+        page.setList(list);
+        return page;
+    }
 
 	/**
 	 * 查看，增加，编辑库存查询表单页面

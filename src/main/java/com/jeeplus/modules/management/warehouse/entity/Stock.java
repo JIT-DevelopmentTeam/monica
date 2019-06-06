@@ -22,6 +22,7 @@ public class Stock extends DataEntity<Stock> {
 	private String specification;		// 规格型号
 	private String unit;		// 单位
 	private Double total;		// 库存总数
+	private String warehouse;	// 仓库
 	
 	public Stock() {
 		super();
@@ -96,5 +97,12 @@ public class Stock extends DataEntity<Stock> {
 	public void setTotal(Double total) {
 		this.total = total;
 	}
-	
+
+	public String getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(String warehouse) {
+		this.warehouse = warehouse;
+	}
 }

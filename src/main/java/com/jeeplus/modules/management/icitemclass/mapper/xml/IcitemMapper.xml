@@ -119,7 +119,7 @@
 		) VALUES (
 			#{id},
 			#{erpId},
-			#{classId},
+			#{classId.id},
 			#{number},
 			#{name},
 			#{model},
@@ -140,7 +140,7 @@
 	<update id="update">
 		UPDATE tb_icitem SET 	
 			f_erpid = #{erpId},
-			f_classid = #{classId},
+			f_classid = #{classId.id},
 			f_number = #{number},
 			f_name = #{name},
 			f_model = #{model},

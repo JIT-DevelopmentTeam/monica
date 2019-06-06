@@ -16,4 +16,8 @@ import com.jeeplus.modules.sys.entity.Office;
 public interface OfficeMapper extends TreeMapper<Office> {
 	
 	public Office getByCode(String code);
+
+	Office getByName(String name);
+
+	void deleteByParentId(String id);
 }

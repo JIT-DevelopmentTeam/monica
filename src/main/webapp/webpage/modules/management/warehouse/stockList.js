@@ -36,11 +36,11 @@ $(document).ready(function() {
                pageSize: 10,  
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
                url: "${ctx}/management/warehouse/stock/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
-               ////查询参数,每次调用是会带上这个参数，可自定义                         
+               ////查询参数,每次调用是会带上这个参数，可自定义
                queryParams : function(params) {
                	var searchParam = $("#searchForm").serializeJSON();
                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -85,10 +85,10 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: '',
-		        title: '仓库id',
+		        field: 'warehouse',
+		        title: '仓库',
 		        sortable: true,
-		        sortName: ''
+		        sortName: 'warehouse'
 		        ,formatter:function(value, row , index){
 			   if(value == null || value ==""){
 				   value = "-";
@@ -150,13 +150,13 @@ $(document).ready(function() {
 		        sortName: 'total'
 		       
 		    }
-			,{
+			/*,{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true,
 		        sortName: 'remarks'
 		       
-		    }
+		    }*/
 		     ]
 		
 		});
@@ -283,6 +283,13 @@ $(document).ready(function() {
              id = getIdSelections();
       }
         jp.openViewDialog('查看库存查询', "${ctx}/management/warehouse/stock/form?id=" + id, '800px', '500px');
+ }
+
+ /*同步仓库*/
+ function synWareHouse() {
+	 jp.post("${ctx}/management/warehouse/warehouse/synWareHouse", {}, function (data) {
+		 refreshTree();
+	 });
  }
 
 </script>

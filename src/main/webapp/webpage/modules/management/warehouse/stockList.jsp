@@ -22,7 +22,7 @@
 				<div class="col-sm-4 col-md-3" >
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-10" >
+							<div class="col-sm-8" >
 								<div class="input-search">
 									<button type="submit" class="input-search-btn">
 										<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -30,11 +30,16 @@
 
 								</div>
 							</div>
-							<div class="col-sm-2" >
+							<div class="col-sm-4" >
+								<button  class="btn btn-default btn-sm"  onclick="synWareHouse()">
+									<i class="glyphicon glyphicon-refresh">同步仓库</i>
+								</button>
+							</div>
+							<%--<div class="col-sm-2" >
 								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建仓库管理表', '${ctx}/management/warehouse/warehouse/form','800px', '500px')">
 									<i class="fa fa-plus"></i>
 								</button>
-							</div>
+							</div>--%>
 						</div>
 					</div>
 					<div id="warehousejsTree" style="overflow-x:auto; border:0px;"></div>
