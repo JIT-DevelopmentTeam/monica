@@ -10,7 +10,7 @@ import com.jeeplus.modules.management.news.entity.News;
 /**
  * 新闻公告MAPPER接口
  * @author Vigny
- * @version 2019-06-06
+ * @version 2019-06-10
  */
 @MyBatisMapper
 public interface NewsMapper extends BaseMapper<News> {

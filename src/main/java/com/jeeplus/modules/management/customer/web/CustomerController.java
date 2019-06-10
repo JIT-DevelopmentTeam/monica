@@ -192,7 +192,10 @@ public class CustomerController extends BaseController {
             for (int i = 0; i < jsonArray.size(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 customer=new Customer();
-                String emplId=jsonObject.getString("B_FName");
+				String emplId="";
+                if(jsonObject.getString("B_FName") != null || jsonObject.getString("B_FName") != ""){
+					 emplId=jsonObject.getString("B_FName");
+				}
                 customer.setId(jsonObject.getString("FEmpID"));
                 customer.setErpId(jsonObject.getString("FItemID"));
                 customer.setName(jsonObject.getString("A_FName"));
