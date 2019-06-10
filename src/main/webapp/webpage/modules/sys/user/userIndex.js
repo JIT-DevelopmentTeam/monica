@@ -228,4 +228,12 @@
 		  function refresh() {
               $('#table').bootstrapTable('refresh');
           }
+
+          /*同步用户*/
+			function synUser() {
+				alert("同步");
+				// jp.post("${ctx}/sys/user/synUser", {}, function (data) {
+				// 	refresh();
+				// });
+			}
 	</script>

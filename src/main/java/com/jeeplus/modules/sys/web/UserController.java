@@ -3,29 +3,6 @@
  */
 package com.jeeplus.modules.sys.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.aspectj.weaver.loadtime.Aj;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.beanvalidator.BeanValidators;
@@ -38,15 +15,32 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.sys.entity.Office;
-import com.jeeplus.modules.sys.entity.Role;
-import com.jeeplus.modules.sys.entity.SystemConfig;
-import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.*;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.SystemConfigService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import com.jeeplus.modules.tools.utils.TwoDimensionCode;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户Controller
@@ -72,6 +66,26 @@ public class UserController extends BaseController {
 		}else{
 			return new User();
 		}
+	}
+
+	/**
+	 * 同步用户
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synUser")
+	public Map<String,Object>  synUser(String parentId) throws Exception{
+		Map<String,Object> json = new HashMap<>();
+		JSONArray jsonarr =
+				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_empl?token_value=20190603","POST");
+
+		JSONObject jsonObject = new JSONObject();
+		for (int i = 0; i < jsonarr.size(); i++) {
+			System.out.println(jsonarr.get(i));
+			jsonObject = jsonarr.getJSONObject(i);
+		}
+		System.out.println("================插入成功================");
+		json.put("Data",jsonarr);
+		return json;
 	}
 
 	@RequiresPermissions("sys:user:index")
