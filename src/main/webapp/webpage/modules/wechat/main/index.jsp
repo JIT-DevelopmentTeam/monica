@@ -19,7 +19,7 @@
             </div>
             <p class="weui-grid__label">新闻公告</p>
         </a>
-        <a href="javascript:;" class="weui-grid">
+        <a href="${ctx}/wechat/sobill/list" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/paste_plain.png" alt="">
             </div>
