@@ -16,7 +16,7 @@ import com.jeeplus.modules.management.news.mapper.NewsMapper;
 /**
  * 新闻公告Service
  * @author Vigny
- * @version 2019-06-06
+ * @version 2019-06-10
  */
 @Service
 @Transactional(readOnly = true)

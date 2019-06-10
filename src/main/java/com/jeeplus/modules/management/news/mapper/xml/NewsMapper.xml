@@ -30,8 +30,11 @@
 		
 	</sql>
 	
+    <resultMap type="News" id="NewsResult" autoMapping="true">
+    	<result column="f_content" property="content"   typeHandler="com.jeeplus.core.mapper.ConvertBlobTypeHandler"/>
+    </resultMap>
     
-	<select id="get" resultType="News" >
+	<select id="get" resultMap="NewsResult" >
 		SELECT 
 			<include refid="newsColumns"/>
 		FROM tb_news a
@@ -39,7 +42,7 @@
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="News" >
+	<select id="findList" resultMap="NewsResult" >
 		SELECT 
 			<include refid="newsColumns"/>
 		FROM tb_news a
@@ -58,7 +61,7 @@
 		</choose>
 	</select>
 	
-	<select id="findAllList" resultType="News" >
+	<select id="findAllList" resultMap="NewsResult" >
 		SELECT 
 			<include refid="newsColumns"/>
 		FROM tb_news a

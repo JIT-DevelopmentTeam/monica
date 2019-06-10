@@ -4,10 +4,31 @@
 <head>
 	<title>新闻公告管理</title>
 	<meta name="decorator" content="ani"/>
+	<!-- SUMMERNOTE -->
+	<%@include file="/webpage/include/summernote.jsp" %>
 	<script type="text/javascript">
 
 		$(document).ready(function() {
 
+					//富文本初始化
+			$('#content').summernote({
+				height: 300,
+                lang: 'zh-CN',
+                callbacks: {
+                    onChange: function(contents, $editable) {
+                        $("input[name='content']").val($('#content').summernote('code'));//取富文本的值
+                    }
+                }
+            });
+	        $('#starttime').datetimepicker({
+				 format: "YYYY-MM-DD HH:mm:ss"
+		    });
+	        $('#endtime').datetimepicker({
+				 format: "YYYY-MM-DD HH:mm:ss"
+		    });
+	        $('#push').datetimepicker({
+				 format: "YYYY-MM-DD HH:mm:ss"
+		    });
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
@@ -37,23 +58,26 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">标题：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>标题：</label></td>
 					<td class="width-35">
-						<form:input path="title" htmlEscape="false"    class="form-control "/>
+						<form:input path="title" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">摘要：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>摘要：</label></td>
 					<td class="width-35">
-						<form:input path="describe" htmlEscape="false"    class="form-control "/>
+						<form:textarea path="describe" htmlEscape="false" rows="4"    class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">内容：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>内容：</label></td>
 					<td class="width-35">
-						<form:input path="content" htmlEscape="false"    class="form-control "/>
+                        <input type="hidden" name="content" value=" ${news.content}"/>
+						<div id="content">
+                          ${fns:unescapeHtml(news.content)}
+                        </div>
 					</td>
-					<td class="width-15 active"><label class="pull-right">发布人：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发布人：</label></td>
 					<td class="width-35">
-						<form:input path="authorid" htmlEscape="false"    class="form-control "/>
+						<form:input path="authorid" htmlEscape="false"    class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
@@ -61,15 +85,15 @@
 					<td class="width-35">
 						<form:input path="mainpic" htmlEscape="false"    class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">是否发布：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否发布：</label></td>
 					<td class="width-35">
-						<form:input path="isPublic" htmlEscape="false"    class="form-control "/>
+						<form:radiobuttons path="isPublic" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">是否设置为头条：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
-						<form:input path="headline" htmlEscape="false"    class="form-control "/>
+						<form:radiobuttons path="headline" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">发布人部门：</label></td>
 					<td class="width-35">
@@ -79,21 +103,36 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">显示时间开始：</label></td>
 					<td class="width-35">
-						<form:input path="starttime" htmlEscape="false"    class="form-control "/>
+						<div class='input-group form_datetime' id='starttime'>
+							<input type='text'  name="starttime" class="form-control "  value="<fmt:formatDate value="${news.starttime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
 					</td>
 					<td class="width-15 active"><label class="pull-right">显示结束时间：</label></td>
 					<td class="width-35">
-						<form:input path="endtime" htmlEscape="false"    class="form-control "/>
+						<div class='input-group form_datetime' id='endtime'>
+							<input type='text'  name="endtime" class="form-control "  value="<fmt:formatDate value="${news.endtime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">是否推送：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否推送：</label></td>
 					<td class="width-35">
-						<form:input path="isPush" htmlEscape="false"    class="form-control "/>
+						<form:radiobuttons path="isPush" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
-						<form:input path="push" htmlEscape="false"    class="form-control "/>
+						<div class='input-group form_datetime' id='push'>
+							<input type='text'  name="push" class="form-control "  value="<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
 					</td>
 				</tr>
 				<tr>

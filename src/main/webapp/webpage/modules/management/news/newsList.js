@@ -112,11 +112,14 @@ $(document).ready(function() {
 		        sortName: 'describe'
 		       
 		    }
-			,{
+		    ,{
 		        field: 'content',
 		        title: '内容',
 		        sortable: true,
-		        sortName: 'content'
+		        sortName: 'content',
+		        formatter:function(value, row , index){
+		        	return jp.unescapeHTML(value);
+		        }
 		       
 		    }
 			,{
@@ -137,14 +140,20 @@ $(document).ready(function() {
 		        field: 'isPublic',
 		        title: '是否发布',
 		        sortable: true,
-		        sortName: 'isPublic'
+		        sortName: 'isPublic',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
 		       
 		    }
 			,{
 		        field: 'headline',
 		        title: '是否设置为头条',
 		        sortable: true,
-		        sortName: 'headline'
+		        sortName: 'headline',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
 		       
 		    }
 			,{
@@ -172,7 +181,10 @@ $(document).ready(function() {
 		        field: 'isPush',
 		        title: '是否推送',
 		        sortable: true,
-		        sortName: 'isPush'
+		        sortName: 'isPush',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        }
 		       
 		    }
 			,{
