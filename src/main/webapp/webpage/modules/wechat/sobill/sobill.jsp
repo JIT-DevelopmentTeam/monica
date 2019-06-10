@@ -7,15 +7,15 @@
           content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="UTF-8">
     <title>订单管理</title>
-    <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
-    <script src="${ctxStatic}/js/jquery-weui.js"></script>
+    <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
+    <script src="${ctxStatic}/css/jquery-weui.css"></script>
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 </head>
 <body>
 <div class="page">
     <div class="page__bd" style="height: 100%;">
         <div class="weui-tab">
-            <div class="weui-navbar">
+            <div class="weui-navbar" style="position: fixed;top: 0px;">
                 <div id="toAudit" class="weui-navbar__item weui-bar__item_on" onclick="changeStyle('toAudit');">
                     待审核订单
                 </div>
@@ -26,78 +26,82 @@
             <div class="weui-tab__panel">
                 <div id="toAuditDetail">
                     <c:forEach items="${toAuditList}" var="var" varStatus="vs">
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>编号:</p>
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>编号:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.billNo}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.billNo}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>订单发货时间:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>订单发货时间:</p>
+                                </div>
+                                <div class="weui-cell__ft"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${var.needTime}"/></div>
                             </div>
-                            <div class="weui-cell__ft"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${var.needTime}"/></div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>客户:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>客户:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.cusName}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.cusName}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>销售员:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>销售员:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.empName}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.empName}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>状态:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>状态:</p>
+                                </div>
+                                <div class="weui-cell__ft"><c:if test="${var.status == 0}">草稿</c:if><c:if test="${var.status == 1}">提交</c:if></div>
                             </div>
-                            <div class="weui-cell__ft"><c:if test="${var.status == 0}">草稿</c:if><c:if test="${var.status == 1}">提交</c:if></div>
                         </div>
                     </c:forEach>
                 </div>
 
                 <div id="historyDetail" style="display: none;">
                     <c:forEach items="${historyList}" var="var" varStatus="vs">
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>编号:</p>
+                        <div class="weui-cells">
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>编号:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.billNo}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.billNo}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>订单发货时间:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>订单发货时间:</p>
+                                </div>
+                                <div class="weui-cell__ft"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${var.needTime}"/></div>
                             </div>
-                            <div class="weui-cell__ft"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${var.needTime}"/></div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>客户:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>客户:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.cusName}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.cusName}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>销售员:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>销售员:</p>
+                                </div>
+                                <div class="weui-cell__ft">${var.empName}</div>
                             </div>
-                            <div class="weui-cell__ft">${var.empName}</div>
-                        </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>状态:</p>
+                            <div class="weui-cell">
+                                <div class="weui-cell__bd">
+                                    <p>状态:</p>
+                                </div>
+                                <div class="weui-cell__ft"><c:if test="${var.status == 0}">草稿</c:if><c:if test="${var.status == 1}">提交</c:if></div>
                             </div>
-                            <div class="weui-cell__ft"><c:if test="${var.status == 0}">草稿</c:if><c:if test="${var.status == 1}">提交</c:if></div>
                         </div>
                     </c:forEach>
                 </div>
@@ -105,15 +109,20 @@
         </div>
     </div>
 
-    <div class="weui-loadmore">
+
+    <div id="load" class="weui-loadmore">
         <i class="weui-loading"></i>
-        <span class="weui-loadmore__tips">正在加载</span>
+        <span class="weui-loadmore__tips">正在加载...</span>
+    </div>
+
+    <div id="end" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+        <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
     </div>
 
     <br><br><br>
 
     <div class="weui-tabbar" style="position:fixed;bottom: 0px;">
-        <a href="${ctx}/wechat/sobill" class="weui-tabbar__item weui-bar__item--on">
+        <a class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
             </div>
@@ -140,16 +149,37 @@
     </div>
 </div>
 
+<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
+<script src="${ctxStatic}/js/fastclick.js"></script>
+<script src="${ctxStatic}/js/jquery-weui.js"></script>
+
 <script type="text/javascript">
+    $(function() {
+        FastClick.attach(document.body);
+        $("#load").hide();
+        $("#end").hide();
+    });
+
+    // 滚动加载
+    var toAuditStartCount = ${toAuditSobill.startPage};
+    var toAuditEndCount = ${toAuditSobill.endPage};
+    var historyStartCount = ${historySobill.startPage};
+    var historyEndCount = ${historySobill.endPage};
     var loading = false;  //状态标记
     $(document.body).infinite().on("infinite", function() {
         if(loading) return;
         loading = true;
         setTimeout(function() {
-            $("#list").append("<p> 我是新加载的内容 </p>");
-            loading = false
+            $("#load").css("display","block");
+            loadDatas();
+            /* TODO 获取数据 */
         }, 1500);   //模拟延迟
     });
+
+    // 加载数据
+    function loadDatas() {
+
+    }
 
     function changeStyle(Id) {
         if (Id == 'toAudit') {
