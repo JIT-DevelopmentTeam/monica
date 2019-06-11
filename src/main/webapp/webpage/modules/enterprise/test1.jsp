@@ -10,8 +10,7 @@
 <body>
 <div id="app">
     <p>{{massage}}</p>
-    <button @click="goBD" >你好s</button>
-    <button @click="test" >test</button>
+
 </div>
 <script>
     function test() {
@@ -20,21 +19,21 @@
 
 
     var router = new VueRouter({
-        mode: 'history',
+
     })
 
     var vue = new Vue({
         el: '#app',
         router,
         data: {
-            massage:"测试引入vue"
+            massage:"跳转页面"
         },
         methods:{
             test() {
                 alert('${ctxStatic}');
             },
             goBD(){
-                this.$router.replace("http://www.baidu.com");
+                this.$router.replace('http://www.baidu.com');
             }
         }
     })

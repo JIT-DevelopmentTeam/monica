@@ -59,4 +59,9 @@ public class PlatformController extends BaseController {
 	public String testjsp(Model model) {
 		return "modules/enterprise/test";
 	}
+
+	@RequestMapping(value = "test1jsp")
+	public String test1jsp(Model model) {
+		return "modules/enterprise/test1";
+	}
 }
