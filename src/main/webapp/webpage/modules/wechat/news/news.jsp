@@ -17,7 +17,6 @@
 <div class="page">
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
-            <%--<div class="weui-panel__hd">图文组合列表</div>--%>
             <div class="weui-panel__bd">
                 <div v-for="item in items">
                     <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
