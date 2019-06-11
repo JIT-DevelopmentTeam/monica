@@ -13,7 +13,7 @@
 <body>
 <div class="page">
     <div class="weui-grids">
-        <a href="javascript:;" class="weui-grid">
+        <a href="${ctx}/wechat/news/list" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/newspaper.png" alt="">
             </div>
