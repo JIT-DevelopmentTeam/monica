@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,22 @@ public class NewsWechatController extends BaseController {
     }
 
     @RequestMapping(value = "form")
-    public String form(News news) {
-        return "modules/wechat/news/newsForm";
+    public ModelAndView form(HttpServletRequest request) {
+        ModelAndView mv = new ModelAndView();
+        String id = request.getParameter("id");
+        mv.addObject("id", id);
+        mv.setViewName("modules/wechat/news/newsForm");
+        return mv;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "formData")
+    public Map<String, Object> formData(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        String id = request.getParameter("id");
+        News news = newsService.get(id);
+        map.put("news", news);
+        return map;
     }
 
 }
