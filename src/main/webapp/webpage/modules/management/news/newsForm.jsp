@@ -9,6 +9,7 @@
 	<script type="text/javascript">
 
 		$(document).ready(function() {
+            $("textarea").css("resize","none");
 
 					//富文本初始化
 			$('#content').summernote({
@@ -41,14 +42,16 @@
                         jp.getParent().refresh();
                         var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
                         parent.layer.close(dialogIndex);
-                        jp.success(data.msg)
-
+                        jp.success(data.msg);
                     }else{
                         jp.error(data.msg);
                     }
                 })
 			}
-
+        }
+        // 上传附件
+        function upload() {
+            jp.openViewDialog('上传附件', "${ctx}/management/news/news/uploadFile/${projust.id}", '600px', '500px');
         }
 	</script>
 </head>
@@ -62,42 +65,37 @@
 					<td class="width-35">
 						<form:input path="title" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>摘要：</label></td>
+					<td class="width-15 active"><label class="pull-right">封面图片：</label></td>
 					<td class="width-35">
-						<form:textarea path="describe" htmlEscape="false" rows="4"    class="form-control required"/>
+						<button id="uploadFile" class="btn btn-primary" onclick="upload();return false;">
+							<i class="glyphicon glyphicon-upload"></i> 上传附件
+						</button>
+						<form:hidden path="mainpic" htmlEscape="false"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>内容：</label></td>
-					<td class="width-35">
-                        <input type="hidden" name="content" value=" ${news.content}"/>
-						<div id="content">
-                          ${fns:unescapeHtml(news.content)}
-                        </div>
-					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发布人：</label></td>
 					<td class="width-35">
-						<form:input path="authorid" htmlEscape="false"    class="form-control required"/>
-					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right">封面图片路径：</label></td>
-					<td class="width-35">
-						<form:input path="mainpic" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否发布：</label></td>
-					<td class="width-35">
-						<form:radiobuttons path="isPublic" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
-					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
-					<td class="width-35">
-						<form:radiobuttons path="headline" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
+						<input id="authorid" htmlEscape="false"  class="form-control required" value="${fns:getUser().name}" readonly="true"/>
+						<form:hidden path="authorid" value="${fns:getUser().id}"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">发布人部门：</label></td>
 					<td class="width-35">
-						<form:input path="deptid" htmlEscape="false"    class="form-control "/>
+						<input id="office.name" value="${fns:getUser().office.name}" class="form-control " readonly="readonly"/>
+						<form:hidden path="deptid" htmlEscape="false" class="form-control " value="${fns:getUser().office.id}"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否发布：</label></td>
+					<td class="width-35">
+						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPublic"   itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
+					</td>
+
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
+					<td class="width-35">
+						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
 					</td>
 				</tr>
 				<tr>
@@ -121,9 +119,25 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>摘要：</label></td>
+					<td colspan="3">
+						<form:textarea path="describe" htmlEscape="false" rows="4"    class="form-control required"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>内容：</label></td>
+					<td colspan="3">
+                        <input type="hidden" name="content" value=" ${news.content}"/>
+						<div id="content">
+                          ${fns:unescapeHtml(news.content)}
+                        </div>
+					</td>
+				</tr>
+				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否推送：</label></td>
 					<td class="width-35">
-						<form:radiobuttons path="isPush" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
+						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
 					</td>
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
@@ -147,11 +161,9 @@
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
-					<td class="width-35">
+					<td colspan="3">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
 		  		</tr>
 		 	</tbody>
 		</table>
