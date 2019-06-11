@@ -23,7 +23,9 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		(SELECT `name` FROM sys_user AS usr WHERE usr.id= a.f_authorid) AS "user.name",
+		(SELECT `name` FROM sys_office AS off WHERE off.id = a.f_deptid) AS "office.name"
 	</sql>
 	
 	<sql id="newsJoins">
