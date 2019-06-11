@@ -9,4 +9,5 @@
 <%@ taglib prefix="table" tagdir="/WEB-INF/tags/table" %>
 <%@ taglib prefix="t" uri="/menu-tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}${fns:getAdminPath()}"/>
+<c:set var="ctxf" value="${pageContext.request.contextPath}${fns:getFrontPath()}"/>
 <c:set var="ctxStatic" value="${pageContext.request.contextPath}/static"/>

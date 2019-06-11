@@ -6,10 +6,11 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="UTF-8">
-    <title>订单管理</title>
+    <title>新闻公告</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
+    <script src="${ctxStatic}/common/vue/js/vue.js"></script>
 </head>
 <body>
 <div class="page">

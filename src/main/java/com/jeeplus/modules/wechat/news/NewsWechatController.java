@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = "${adminPath}/wechat/news")
+@RequestMapping(value = "${frontPath}/wechat/news")
 public class NewsWechatController extends BaseController {
 
     @RequestMapping(value = "list")

@@ -71,9 +71,9 @@
         el: ".weui-grids",
         data: {
             news: "新闻公告",
-            newsHref: "${ctx}/wechat/news/list",
+            newsHref: "${ctxf}/wechat/news/list",
             order: "订单管理",
-            orderHref: "${ctx}/wechat/sobill/list",
+            orderHref: "${ctxf}/wechat/sobill/list",
             barCode: "条码追溯",
             barCodeHref: "",
             stock: "库存查询",
