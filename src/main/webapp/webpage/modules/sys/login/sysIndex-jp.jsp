@@ -343,7 +343,7 @@
 	</div>
 
 	<div class="footer">
-		<div class="pull-left"><a href="http://www.jeeplus.org">http://www.jeeplus.org</a> &copy; 2015-2025</div>
+		<div class="pull-left"  id="foot_ter"><%--<a href="http://www.jeeplus.org">http://www.jeeplus.org</a>--%></div>
 	</div>
 
 </section>
@@ -355,6 +355,8 @@
 
 
     $(function(){
+        var date=new Date();
+        $("#foot_ter").text(" © 2018-"+date.getFullYear());
         $.addtabs.drop();
         $('#showMenu').click(function() {
             $('body').toggleClass('push-right');

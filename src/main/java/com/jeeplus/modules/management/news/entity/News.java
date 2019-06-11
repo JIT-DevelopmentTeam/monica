@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.modules.sys.entity.Office;
+import com.jeeplus.modules.sys.entity.User;
 
 /**
  * 新闻公告Entity
@@ -32,6 +34,8 @@ public class News extends DataEntity<News> {
 	private Date push;		// 推送时间
 	private String pushrule;		// 推送规则
 	private Integer readCount;		// 阅读次数
+	private User user;
+	private Office office;
 	
 	public News() {
 		super();
@@ -172,5 +176,20 @@ public class News extends DataEntity<News> {
 	public void setReadCount(Integer readCount) {
 		this.readCount = readCount;
 	}
-	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Office getOffice() {
+		return office;
+	}
+
+	public void setOffice(Office office) {
+		this.office = office;
+	}
 }

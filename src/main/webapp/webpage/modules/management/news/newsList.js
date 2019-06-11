@@ -87,6 +87,7 @@ $(document).ready(function() {
 			,{
 		        field: 'title',
 		        title: '标题',
+                class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'title'
 		        ,formatter:function(value, row , index){
@@ -105,14 +106,61 @@ $(document).ready(function() {
 		         }
 		       
 		    }
+            ,{
+                field: 'user.name',
+                title: '发布人',
+                sortable: true,
+                sortName: 'authorid'
+
+            },{
+                       field: 'office.name',
+                       title: '发布人部门',
+                       sortable: true,
+                       sortName: 'deptid'
+
+                   }
+                   ,{
+                       field: 'isPublic',
+                       title: '是否发布',
+                       sortable: true,
+                       sortName: 'isPublic',
+                       formatter:function(value, row , index){
+                           var i = "-";
+                           if(value == 0){
+                               i = "否"
+                           }else if(value == 1){
+                               i = "是"
+                           }
+                           return i;
+                       }
+
+                   }
+                   ,{
+                       field: 'headline',
+                       title: '是否设置为头条',
+                       sortable: true,
+                       sortName: 'headline',
+                       formatter:function(value, row , index){
+                           var i = "-";
+                           if(value == 0){
+                               i = "否"
+                           }else if(value == 1){
+                               i = "是"
+                           }
+                           return i;
+                       }
+
+                   }
 			,{
 		        field: 'describe',
 		        title: '摘要',
+                class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'describe'
 		       
 		    }
-		    ,{
+
+		    /*,{
 		        field: 'content',
 		        title: '内容',
 		        sortable: true,
@@ -121,51 +169,12 @@ $(document).ready(function() {
 		        	return jp.unescapeHTML(value);
 		        }
 		       
-		    }
-			,{
-		        field: 'authorid',
-		        title: '发布人',
-		        sortable: true,
-		        sortName: 'authorid'
-		       
-		    }
-			,{
-		        field: 'mainpic',
-		        title: '封面图片路径',
-		        sortable: true,
-		        sortName: 'mainpic'
-		       
-		    }
-			,{
-		        field: 'isPublic',
-		        title: '是否发布',
-		        sortable: true,
-		        sortName: 'isPublic',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'headline',
-		        title: '是否设置为头条',
-		        sortable: true,
-		        sortName: 'headline',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'deptid',
-		        title: '发布人部门',
-		        sortable: true,
-		        sortName: 'deptid'
-		       
-		    }
+		    }*/
+
 			,{
 		        field: 'starttime',
 		        title: '显示时间开始',
+				class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'starttime'
 		       
@@ -173,6 +182,7 @@ $(document).ready(function() {
 			,{
 		        field: 'endtime',
 		        title: '显示结束时间',
+				class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'endtime'
 		       
@@ -183,18 +193,30 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'isPush',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+                    var i = "-";
+                    if(value == 0){
+                        i = "否"
+                    }else if(value == 1){
+                        i = "是"
+                    }
+                    return i;
 		        }
-		       
 		    }
 			,{
 		        field: 'push',
 		        title: '推送时间',
+                class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'push'
 		       
 		    }
-			,{
+            ,{
+                field: 'mainpic',
+                title: '封面图片',
+                sortable: true,
+                sortName: 'mainpic'
+            }
+			/*,{
 		        field: 'pushrule',
 		        title: '推送规则',
 		        sortable: true,
@@ -207,10 +229,11 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'readCount'
 		       
-		    }
+		    }*/
 			,{
 		        field: 'remarks',
 		        title: '备注信息',
+                class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'remarks'
 		       
@@ -324,7 +347,7 @@ $(document).ready(function() {
   }
   
    function add(){
-	  jp.openSaveDialog('新增新闻公告', "${ctx}/management/news/news/form",'800px', '500px');
+	  jp.openSaveDialog('新增新闻公告', "${ctx}/management/news/news/form",'1000px', '700px');
   }
 
 
@@ -333,14 +356,14 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑新闻公告', "${ctx}/management/news/news/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑新闻公告', "${ctx}/management/news/news/form?id=" + id, '1000px', '700px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看新闻公告', "${ctx}/management/news/news/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看新闻公告', "${ctx}/management/news/news/form?id=" + id, '1000px', '700px');
  }
 
 

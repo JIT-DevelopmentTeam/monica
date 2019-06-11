@@ -3,13 +3,18 @@
  */
 package com.jeeplus.modules.management.news.web;
 
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.utils.UserUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +38,7 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.modules.management.news.entity.News;
 import com.jeeplus.modules.management.news.service.NewsService;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 新闻公告Controller
@@ -68,7 +74,7 @@ public class NewsController extends BaseController {
 		return "modules/management/news/newsList";
 	}
 	
-		/**
+	/**
 	 * 新闻公告列表数据
 	 */
 	@ResponseBody
@@ -90,12 +96,23 @@ public class NewsController extends BaseController {
 	}
 
 	/**
+	 * 新闻图片封面上传跳转页面
+	 * @return
+	 */
+	@RequestMapping(value = "uploadFile")
+	public ModelAndView uploadFile(){
+		ModelAndView view=new ModelAndView();
+		view.setViewName("modules/management/news/upload");
+		return view;
+	}
+
+	/**
 	 * 保存新闻公告
 	 */
 	@ResponseBody
 	@RequiresPermissions(value={"management:news:news:add","management:news:news:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
-	public AjaxJson save(News news, Model model) throws Exception{
+	public AjaxJson save(News news,@RequestParam("file")MultipartFile file, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
 		/**
 		 * 后台hibernate-validation插件校验
@@ -135,9 +152,13 @@ public class NewsController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+		List<News> newsList=Lists.newArrayList();
+		News news=null;
 		for(String id : idArray){
-			newsService.delete(newsService.get(id));
+			news=newsService.get(id);
+			newsList.add(news);
 		}
+		newsService.deleteAllByLogic(newsList);
 		j.setMsg("删除新闻公告成功");
 		return j;
 	}
@@ -219,5 +240,45 @@ public class NewsController extends BaseController {
 		}
 		return j;
     }
+
+	/**
+	 * 上传图片封面
+	 * @param request
+	 * @param myFile
+	 * @return
+	 */
+	@RequestMapping("/upload")
+	@ResponseBody
+	public Map<String, Object> updatePhoto(HttpServletRequest request,@RequestParam("file") MultipartFile myFile){
+		Map<String, Object> json = new HashMap<String, Object>();
+		try {
+			//输出文件后缀名称
+			System.out.println(myFile.getOriginalFilename());
+			DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+			//图片名称
+			String name = df.format(new Date());
+
+			Random r = new Random();
+			for(int i = 0 ;i<3 ;i++){
+				name += r.nextInt(10);
+			}
+			//
+			String ext = FilenameUtils.getExtension(myFile.getOriginalFilename());
+			//保存图片       File位置 （全路径）   /upload/fileName.jpg
+			String url = request.getSession().getServletContext().getRealPath("/static/upload/news/images/");
+			//相对路径
+			String path = name + "." + ext;
+			//System.out.println(url+"++++++++++----------------"+path);
+			/*File file = new File(url);
+			if(!file.exists()){
+				file.mkdirs();
+			}
+			myFile.transferTo(new File(url+path));*/
+			json.put("success", "/static/upload/news/images/"+path);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json ;
+	}
 
 }
