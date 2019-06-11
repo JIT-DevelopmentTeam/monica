@@ -27,10 +27,10 @@
                 <p>
                     <span v-html="content">{{ content }}</span>
                 </p>
-                <p>
-                    <img src="./images/pic_article.png" alt="">
-                    <img src="./images/pic_article.png" alt="">
-                </p>
+                <%--<p>--%>
+                    <%--<img src="./images/pic_article.png" alt="">--%>
+                    <%--<img src="./images/pic_article.png" alt="">--%>
+                <%--</p>--%>
             </section>
         </section>
     </article>
