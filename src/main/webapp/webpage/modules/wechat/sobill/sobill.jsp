@@ -9,7 +9,8 @@
     <title>订单管理</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <script src="${ctxStatic}/css/jquery-weui.css"></script>
-    <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
+    <script src="${ctxStatic}/common/vue/js/vue.js"></script>
+    <script src="${ctxStatic}/common/vue/js/vue-router.min.js"></script>
 </head>
 <body>
 <div class="page">
@@ -25,7 +26,7 @@
             </div>
             <div class="weui-tab__panel">
                 <div id="toAuditDetail">
-                    <c:forEach items="${toAuditList}" var="var" varStatus="vs">
+                    <c:forEach items="${toAuditList}" varStatus="vs" var="var">
                         <div class="weui-cells">
                             <div class="weui-cell">
                                 <div class="weui-cell__bd">
@@ -121,12 +122,12 @@
 
     <br><br><br>
 
-    <div class="weui-tabbar" style="position:fixed;bottom: 0px;">
-        <a class="weui-tabbar__item">
+    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
+        <a v-bind:href="addHref" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
             </div>
-            <p class="weui-tabbar__label">新增</p>
+            <p class="weui-tabbar__label">{{add}}</p>
         </a>
         <a href="javascript:;" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
@@ -148,7 +149,6 @@
         </a>
     </div>
 </div>
-
 <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script src="${ctxStatic}/js/fastclick.js"></script>
 <script src="${ctxStatic}/js/jquery-weui.js"></script>
@@ -158,6 +158,14 @@
         FastClick.attach(document.body);
         $("#load").hide();
         $("#end").hide();
+    });
+
+    var func = new Vue({
+        el:'#function',
+        data:{
+            add:'新增',
+            addHref:'${ctxf}/wechat/sobill/goAdd'
+        }
     });
 
     // 滚动加载
