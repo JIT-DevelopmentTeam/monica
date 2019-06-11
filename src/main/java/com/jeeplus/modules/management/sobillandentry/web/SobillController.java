@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.jeeplus.common.utils.time.DateFormatUtil;
+import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
@@ -123,6 +124,14 @@ public class SobillController extends BaseController {
 			sobill.setStatus(0);
 			sobill.setCancellation(0);
 			sobill.setCheckStatus(0);
+		} else {
+			// 修改统计商品总额
+			List<Sobillentry> sobillentryList = sobill.getSobillentryList();
+			Double count = 0.0;
+			for (Sobillentry sobillentry : sobillentryList) {
+				count += sobillentry.getAmount();
+			}
+			sobill.setAmount(count);
 		}
 		sobillService.save(sobill);//保存
 		j.setSuccess(true);

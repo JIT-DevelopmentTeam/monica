@@ -81,6 +81,11 @@
 			<shiro:hasPermission name="sys:user:export">
 				<a id="export" class="btn btn-warning" href="${ctx}/sys/user/export"><i class="fa fa-file-excel-o"></i> 导出</a>
 	       </shiro:hasPermission>
+			<shiro:hasPermission name="sys:user:synch">
+				<a id="add" class="btn btn-success"
+				   onclick="synUser()"><i
+						class="glyphicon glyphicon-refresh"></i> 同步</a>
+			</shiro:hasPermission>
 	    </div><!-- 工具栏结束 -->
 	    
 	    

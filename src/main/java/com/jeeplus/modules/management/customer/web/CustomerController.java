@@ -11,8 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.google.common.collect.Maps;
 import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +52,12 @@ public class CustomerController extends BaseController {
 
 	@Autowired
 	private CustomerService customerService;
+
+
+	@Autowired
+	private UserMapper userMapper;
+
+
 	
 	@ModelAttribute
 	public Customer get(@RequestParam(required=false) String id) {
@@ -175,8 +185,29 @@ public class CustomerController extends BaseController {
     @RequestMapping(value = "synchCustomerInfo")
 	public Map<String ,Object> synchCustomer(){
 		Map<String,Object> result=new HashMap<>();
-		//JSONArray jsonArray=Common.executeInter("http://127.0.0.1:8080/a?login","GET");
-		//result.put("jsonArray",jsonArray);
+        JSONArray jsonArray = Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_cus?token_value=122331111","POST");
+        JSONObject jsonObject = new JSONObject();
+        Customer customer=null;
+        if(jsonArray != null && jsonArray.size() > 0){
+            for (int i = 0; i < jsonArray.size(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+                customer=new Customer();
+				String emplId="";
+                if(jsonObject.getString("B_FName") != null || jsonObject.getString("B_FName") != ""){
+					 emplId=jsonObject.getString("B_FName");
+				}
+                customer.setId(jsonObject.getString("FEmpID"));
+                customer.setErpId(jsonObject.getString("FItemID"));
+                customer.setName(jsonObject.getString("A_FName"));
+                customer.setNumber(jsonObject.getString("FNumber"));
+                customer.setEmplId(emplId);
+
+                System.out.println(customer);
+            }
+            result.put("jsonArray",jsonArray);
+        }else{
+            result.put("jsonArray",false);
+        }
 		return result;
 	}
 
@@ -235,5 +266,26 @@ public class CustomerController extends BaseController {
 		}
 		return j;
     }
+
+    @ResponseBody
+	@RequestMapping(value = "findUserList")
+    public List<Map<String,Object>> userList(){
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		User user=new User();
+		user.setDelFlag("0");
+		user.setCompany(null);
+		user.setOffice(null);
+		List<User> users = userMapper.findListByUserOfficeList(user);
+		for (int i=0; i<users.size(); i++){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", user.getOffice());
+				map.put("parent", "#");
+				map.put("name", user.getName());
+				map.put("text", user.getName());
+				map.put("type", user.getIdType());
+				mapList.add(map);
+		}
+		return mapList;
+	}
 
 }

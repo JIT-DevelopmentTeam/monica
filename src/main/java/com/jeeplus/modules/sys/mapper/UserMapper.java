@@ -107,6 +107,9 @@ public interface UserMapper extends BaseMapper<User> {
 	 */
 	
 	public List<User>  findListByOffice(User user);
-	
-	
+
+	/**
+	 *
+	 */
+	public List<User>  findListByUserOfficeList(User user);
 }

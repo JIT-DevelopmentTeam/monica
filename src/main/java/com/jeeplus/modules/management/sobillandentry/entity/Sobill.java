@@ -42,6 +42,8 @@ public class Sobill extends DataEntity<Sobill> {
 	private String checkerName;	// 审核人
 	private String deptName;	// 部门名称
 	private String cusName;		// 客户名称
+	private Integer startPage;		// 起始分页
+	private Integer endPage;	// 结束分页
 	
 	public Sobill() {
 		super();
@@ -248,4 +250,20 @@ public class Sobill extends DataEntity<Sobill> {
     public void setEmpName(String empName) {
         this.empName = empName;
     }
+
+	public Integer getStartPage() {
+		return startPage;
+	}
+
+	public void setStartPage(Integer startPage) {
+		this.startPage = startPage;
+	}
+
+	public Integer getEndPage() {
+		return endPage;
+	}
+
+	public void setEndPage(Integer endPage) {
+		this.endPage = endPage;
+	}
 }
