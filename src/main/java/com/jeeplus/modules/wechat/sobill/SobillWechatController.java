@@ -3,8 +3,11 @@ package com.jeeplus.modules.wechat.sobill;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.customer.entity.Customer;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
+import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +60,7 @@ public class SobillWechatController extends BaseController {
     public ModelAndView goAdd(Sobill sobill){
         ModelAndView mv = new ModelAndView();
         mv.addObject("sobill",sobill);
+        mv.addObject("msg","save");
         mv.setViewName("modules/wechat/sobill/sobillForm");
         return mv;
     }
