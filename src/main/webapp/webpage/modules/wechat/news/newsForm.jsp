@@ -23,9 +23,9 @@
         <section>
             <h5 class="title" style="color: grey;">{{ pushTime }}</h5>
             <section>
-                <h3>1.1 节标题</h3>
+                <%--<h3>1.1 节标题</h3>--%>
                 <p>
-                    <span v-html="content"></span>
+                    <span v-html="content">{{ content }}</span>
                 </p>
                 <p>
                     <img src="./images/pic_article.png" alt="">
