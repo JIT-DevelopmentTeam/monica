@@ -8,6 +8,7 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,31 +27,19 @@ public class SobillWechatController extends BaseController {
     @RequestMapping(value = "list")
     public ModelAndView list() {
         ModelAndView mv = new ModelAndView();
-        Sobill toAuditSobill = new Sobill();
-        toAuditSobill.setDelFlag("0");
-        toAuditSobill.setCheckStatus(0);
-        toAuditSobill.setStartPage(0);
-        toAuditSobill.setEndPage(2);
-        List<Sobill> toAuditList = sobillService.findList(toAuditSobill);
-        Sobill historySobill = new Sobill();
-        historySobill.setDelFlag("0");
-        historySobill.setStartPage(0);
-        historySobill.setEndPage(2);
-        historySobill.setCheckStatus(1);
-        List<Sobill> historyList = sobillService.findList(historySobill);
-        mv.addObject("toAuditList",toAuditList);
-        mv.addObject("historyList",historyList);
-        mv.addObject("toAuditSobill",toAuditSobill);
-        mv.addObject("historySobill",historySobill);
         mv.setViewName("modules/wechat/sobill/sobill");
         return mv;
     }
 
-    @RequestMapping(value = "getSobillListForPage")
+    @RequestMapping(value = "getSobillListByCheckStatus")
     @ResponseBody
-    public AjaxJson getSobillListForPage(Sobill sobill){
+    public AjaxJson getSobillListByCheckStatus(@Param("checkStatus") Integer checkStatus,@Param("startPage") Integer startPage,@Param("endPage") Integer endPage){
         AjaxJson aj = new AjaxJson();
+        Sobill sobill = new Sobill();
         sobill.setDelFlag("0");
+        sobill.setCheckStatus(checkStatus);
+        sobill.setStartPage(startPage);
+        sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
         aj.put("sobillList",sobillList);
         return aj;
