@@ -68,15 +68,24 @@
     <div style="position: fixed;bottom: 2%;width: 100%;">
         <a href="javascript:;" class="weui-btn weui-btn_primary">提交</a>
     </div>
+
+    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
+        <a v-bind:href="addHref" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{add}}</p>
+        </a>
+        <a href="javascript:;" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/icon-delete.png" alt="">
+            </div>
+            <p class="weui-tabbar__label">删除</p>
+        </a>
+    </div>
 </form>
 
 <script src="${ctxStatic}/js/jquery-weui.js"></script>
 <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
-<script type="text/javascript">
-    $(function () {
-        if (${msg == 'save'}) {
-        }
-    })
-</script>
 </body>
 </html>
