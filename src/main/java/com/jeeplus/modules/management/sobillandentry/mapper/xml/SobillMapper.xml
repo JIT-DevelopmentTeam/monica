@@ -91,6 +91,10 @@
 				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
+
+		<if test="(startPage != null and startPage != '') and (endPage != null and endPage != '')">
+			LIMIT #{startPage},#{endPage}
+		</if>
 	</select>
 	
 	<select id="findAllList" resultType="Sobill" >
