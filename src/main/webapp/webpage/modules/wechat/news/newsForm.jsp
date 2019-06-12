@@ -19,7 +19,7 @@
         <h2 class="demos-title">{{ title }}</h2>
     </header>
     <article class="weui-article">
-        <span style="color: grey; font-weight: bold; font-size: smaller;">—— {{ author }} {{ pushTime }} ——</span>
+        <span style="color: grey; font-weight: bold; font-size: smaller;">{{ author }} {{ pushTime }}</span>
         <section>
             <section>
                 <%--<h3>1.1 节标题</h3>--%>
@@ -71,8 +71,8 @@
                     success: function(data) {
                         console.log(data);
                         vm.title = data.news.title;
-                        vm.author = data.news.user.name;
-                        vm.pushTime = data.news.push;
+                        vm.author = "—— " + data.news.user.name;
+                        vm.pushTime = data.news.push + " ——";
                         vm.content = vm.decode(data.news.content);
                     }
                 });

@@ -46,11 +46,16 @@ public class SobillWechatController extends BaseController {
     }
 
     @RequestMapping(value = "goAdd")
-    public ModelAndView goAdd(Sobill sobill){
+    public ModelAndView goAdd(){
         ModelAndView mv = new ModelAndView();
-        mv.addObject("sobill",sobill);
-        mv.addObject("msg","save");
-        mv.setViewName("modules/wechat/sobill/sobillForm");
+        mv.setViewName("modules/wechat/sobill/addSobill");
+        return mv;
+    }
+
+    @RequestMapping(value = "selectItems")
+    public ModelAndView selectItems(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("modules/wechat/sobill/selectItems");
         return mv;
     }
 
