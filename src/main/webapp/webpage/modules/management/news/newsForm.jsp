@@ -76,12 +76,12 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发布人：</label></td>
 					<td class="width-35">
-						<input id="authorid" htmlEscape="false"  class="form-control required" value="${fns:getUser().name}" readonly="true"/>
+						<input htmlEscape="false" class="form-control required" value="${fns:getUser().name}" readonly="true"/>
 						<form:hidden path="authorid" value="${fns:getUser().id}"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">发布人部门：</label></td>
 					<td class="width-35">
-						<input id="office.name" value="${fns:getUser().office.name}" class="form-control " readonly="readonly"/>
+						<input  class="form-control " readonly="readonly"/>
 						<form:hidden path="deptid" htmlEscape="false" class="form-control " value="${fns:getUser().office.id}"/>
 					</td>
 				</tr>

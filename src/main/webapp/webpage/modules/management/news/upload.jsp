@@ -502,14 +502,13 @@
         updateTotalProgress();
         //
         uploader.on('uploadSuccess',function(file,response){
-            var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-            var name = "layui-layer-iframe" + (dialogIndex - 1);
+            var name = window.parent.getIframeId();
             console.log("===>" + name);
             var imgurl = response.success; //上传图片的路径
-            console.log("----> 上传图片的路径 "+response.success);
             // 获取iframe1，parent是index页面的window对象。
             var iframe = parent.frames[""+name];// 此时iframe1就是iframe1页面的window对象
-            iframe.document.getElementById('mainpic');
+            iframe.document.getElementById('mainpic').value=imgurl;
+
         });
     });
 </script>

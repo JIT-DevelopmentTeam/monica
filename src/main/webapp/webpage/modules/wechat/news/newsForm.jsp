@@ -19,9 +19,8 @@
         <h2 class="demos-title">{{ title }}</h2>
     </header>
     <article class="weui-article">
-        <h5 style="color: grey;">作者：{{ author }}</h5>
+        <span style="color: grey; font-weight: bold; font-size: smaller;">—— {{ author }} {{ pushTime }} ——</span>
         <section>
-            <h5 class="title" style="color: grey;">{{ pushTime }}</h5>
             <section>
                 <%--<h3>1.1 节标题</h3>--%>
                 <p>
@@ -74,9 +73,12 @@
                         vm.title = data.news.title;
                         vm.author = data.news.user.name;
                         vm.pushTime = data.news.push;
-                        vm.content = data.news.content;
+                        vm.content = vm.decode(data.news.content);
                     }
                 });
+            },
+            decode: function (text) {
+                return text.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
             }
         },
         mounted: function(){
