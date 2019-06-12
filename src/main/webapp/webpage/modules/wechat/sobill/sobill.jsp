@@ -14,7 +14,7 @@
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
 </head>
 <body>
-<div id="body" class="page">
+<div id="page" class="page">
     <div class="page__bd" style="height: 100%;">
         <div class="weui-tab">
             <div class="weui-navbar" style="position: fixed;top: 0px;">
@@ -60,7 +60,8 @@
                             <div class="weui-cell__bd">
                                 <p>状态:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft" v-if="toAudit.status === 0">草稿</div>
+                            <div class="weui-cell__ft" v-else>提交</div>
                         </div>
                     </div>
                 </div>
@@ -71,35 +72,36 @@
                             <div class="weui-cell__bd">
                                 <p>编号:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft">{{history.billNo}}</div>
                         </div>
 
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>订单发货时间:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft">{{history.needTime}}</div>
                         </div>
 
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>客户:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft">{{history.cusName}}</div>
                         </div>
 
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>销售员:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft">{{history.empName}}</div>
                         </div>
 
                         <div class="weui-cell">
                             <div class="weui-cell__bd">
                                 <p>状态:</p>
                             </div>
-                            <div class="weui-cell__ft"></div>
+                            <div class="weui-cell__ft" v-if="history.status === 0">草稿</div>
+                            <div class="weui-cell__ft" v-else>提交</div>
                         </div>
                     </div>
                 </div>
@@ -158,12 +160,14 @@
     });
 
     var vm = new Vue({
-        el: '#body',
+        el: '#page',
         created:function (){
+            // 待审核数据
             this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:0,startPage:0,endPage:2}}).then(function (res) {
                 this.toAuditList = res.data.body.sobillList;
             });
 
+            // 历史数据
             this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:1,startPage:0,endPage:2}}).then(function (res) {
                 this.historyList = res.data.body.sobillList;
             });
@@ -182,10 +186,6 @@
             toAuditList:[],
             historyList:[]
         }
-    });
-
-    var datas = new Vue({
-        
     });
 
     function delectById() {
