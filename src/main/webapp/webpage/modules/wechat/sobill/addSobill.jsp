@@ -41,39 +41,17 @@
                 <div class="weui-cell__bd">
                     <p>状态:</p>
                 </div>
-                <div class="weui-cell__ft">{{status}}</div>
+                <div class="weui-cell__ft">草稿</div>
             </div>
         </div>
 
-        <div class="weui-cells__title" id="itemDetail"></div>
-        <div class="weui-cells weui-cells_radio">
-            <label class="weui-cell weui-check__label" for="x11">
-                <div class="weui-cell__bd">
-                    <p>cell standard</p>
-                </div>
-                <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="radio1" id="x11"/>
-                    <span class="weui-icon-checked"></span>
-                </div>
-            </label>
-            <label class="weui-cell weui-check__label" for="x12">
-
-                <div class="weui-cell__bd">
-                    <p>cell standard</p>
-                </div>
-                <div class="weui-cell__ft">
-                    <input type="radio" name="radio1" class="weui-check" id="x12" checked="checked"/>
-                    <span class="weui-icon-checked"></span>
-                </div>
-            </label>
-        </div>
 
         <div style="position: fixed;bottom: 10%;width: 100%;">
             <a id="submit" href="javascript:;" class="weui-btn weui-btn_primary">{{submit}}</a>
         </div>
 
         <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a v-bind:href="addHref" class="weui-tabbar__item">
+            <a v-bind:href="selectItems" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
@@ -104,9 +82,9 @@
            itemDetail:'商品明细',
            submit:'提交订单',
            add:'新增商品',
-           addHref:'${ctxf}/wechat/sobill/selectItems',
+           selectItems:'${ctxf}/wechat/sobill/selectItems',
            del:'删除商品'
-       }
+       },
     });
 </script>
 </body>

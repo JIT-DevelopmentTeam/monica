@@ -19,7 +19,8 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		b.f_name AS "itemClassName"
 	</sql>
 	
 	<sql id="icitemJoins">
@@ -76,6 +77,9 @@
 				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
+		<if test="(startPage != null and startPage != '') and (endPage != null and endPage != '')">
+			LIMIT #{startPage},#{endPage}
+		</if>
 	</select>
 	
 	<select id="findAllList" resultType="Icitem" >

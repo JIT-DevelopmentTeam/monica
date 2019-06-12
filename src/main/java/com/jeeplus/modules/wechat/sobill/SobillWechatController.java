@@ -59,4 +59,22 @@ public class SobillWechatController extends BaseController {
         return mv;
     }
 
+    @RequestMapping(value = "delectById")
+    @ResponseBody
+    public AjaxJson delectById(@Param("id") String id){
+        AjaxJson aj = new AjaxJson();
+        Sobill sobill = new Sobill();
+        sobill.setId(id);
+        sobill = sobillService.get(sobill);
+        if (sobill.getStatus() == 1 || sobill.getCheckStatus() == 1){
+            aj.setSuccess(false);
+            aj.setMsg("删除失败!(已提交或已审核订单不允许删除)");
+        } else {
+            sobillService.delete(sobill);
+            aj.setSuccess(true);
+            aj.setMsg("删除数据成功!");
+        }
+        return aj;
+    }
+
 }
