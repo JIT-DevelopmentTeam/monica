@@ -22,8 +22,11 @@ public class NewsWechatController extends BaseController {
     private NewsService newsService;
 
     @RequestMapping(value = "list")
-    public ModelAndView list(News news) {
+    public ModelAndView list(News news, HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
+        String path = request.getContextPath();
+        String filePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
+        mv.addObject("path", filePath);
         mv.setViewName("modules/wechat/news/news");
         return mv;
     }

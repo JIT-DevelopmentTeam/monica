@@ -22,7 +22,7 @@
                     <span class="weui-badge" style="margin-left: 5px;" v-if="item.headline === 1">头条</span>
                     <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
                         <div class="weui-media-box__hd">
-                            <img class="weui-media-box__thumb" v-bind:src="item.mainpic" alt="">
+                            <img class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
                         </div>
                         <div class="weui-media-box__bd">
                             <h4 class="weui-media-box__title">{{ item.title }}</h4>
@@ -61,7 +61,9 @@
     var vm = new Vue({
         el: ".weui-panel__bd",
         data: {
-            items: []
+            items: [],
+            projectName: '${projectName}',
+            path: '${path}'
         },
         methods: {
             showData: function(){
