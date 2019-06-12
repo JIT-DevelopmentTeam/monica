@@ -28,40 +28,50 @@
             <div class="weui-tab__panel">
                 <div id="toAuditDetail">
                     <div class="weui-cells" v-for="toAudit in toAuditList">
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>编号:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{toAudit.billNo}}</div>
-                        </div>
+                        <div class="weui-cells_radio">
+                            <label class="weui-cell weui-check__label" :for="'toAudit'+toAudit.id">
+                                <div class="weui-cell__bd">
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>编号:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{toAudit.billNo}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>订单发货时间:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{toAudit.needTime}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>订单发货时间:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{toAudit.needTime}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>客户:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{toAudit.cusName}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>客户:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{toAudit.cusName}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>销售员:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{toAudit.empName}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>销售员:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{toAudit.empName}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>状态:</p>
-                            </div>
-                            <div class="weui-cell__ft" v-if="toAudit.status === 0">草稿</div>
-                            <div class="weui-cell__ft" v-else>提交</div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>状态:</p>
+                                        </div>
+                                        <div class="weui-cell__ft" v-if="toAudit.status === 0">草稿</div>
+                                        <div class="weui-cell__ft" v-else>提交</div>
+                                    </div>
+                                </div>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id" :value="toAudit.id"/>
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -140,7 +150,7 @@
             </div>
             <p class="weui-tabbar__label">{{del}}</p>
         </a>
-        <a v-bind:href="checkHref" class="weui-tabbar__item">
+        <a v-on:click="checkSobill" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/icon-search.png" alt="">
             </div>
@@ -148,6 +158,33 @@
         </a>
     </div>
 </div>
+
+<!--BEGIN dialog1-->
+<div class="js_dialog" id="iosDialog1" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">操作反馈</strong></div>
+        <div class="weui-dialog__bd">您确定要将该订单删除吗?</div>
+        <div class="weui-dialog__ft">
+            <a onclick="closeWindow('iosDialog1');" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a onclick="delect();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+    </div>
+</div>
+<!--END dialog1-->
+
+<!--BEGIN dialog2-->
+<div class="js_dialog" id="iosDialog2" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__bd" id="title"></div>
+        <div class="weui-dialog__ft">
+            <a onclick="closeWindow('iosDialog2');" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
+        </div>
+    </div>
+</div>
+<!--END dialog2-->
+
 <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script src="${ctxStatic}/js/fastclick.js"></script>
 <script src="${ctxStatic}/js/jquery-weui.js"></script>
@@ -179,17 +216,35 @@
             editHref: '${ctxf}/wechat/sobill/goEdit',
             del: '删除',
             delectById: function () {
-                alert("删除!");
+                showWindow();
             },
             check: '审核',
-            checkHref: '${ctxf}/wechat/sobill/check',
             toAuditList:[],
-            historyList:[]
+            historyList:[],
+            checkSobill:function () {
+                var Id = $("input[name='toAudit']:checked").val();
+                if (Id == null || Id == '') {
+                    $("#title").text('请至少选择一条数据!');
+                    $("#iosDialog2").fadeIn(200);
+                    return;
+                }
+            }
         }
     });
 
-    function delectById() {
-        alert("test!!");
+
+    function showWindow() {
+        var Id = $("input[name='toAudit']:checked").val();
+        if (Id == null || Id == '') {
+            $("#title").text('请至少选择一条数据!');
+            $("#iosDialog2").fadeIn(200);
+            return;
+        }
+        $('#iosDialog1').fadeIn(200);
+    }
+
+    function closeWindow(Id) {
+        $('#'+Id).fadeOut(200);
     }
 
     // 滚动加载
@@ -207,6 +262,29 @@
     // 加载数据
     function loadDatas() {
 
+    }
+
+    function delect() {
+        var Id = $("input[name='toAudit']:checked").val();
+        $.ajax({
+           async:false,
+           cache:false,
+           url:'${ctxf}/wechat/sobill/delectById',
+           data:{
+               id:Id
+           },
+           dataType:'json',
+           success:function (res){
+               if (res.success) {
+                   closeWindow('iosDialog1');
+                   window.location.reload();
+               } else {
+                   $("#title").text(res.msg);
+                   $("#iosDialog2").fadeIn(200);
+                   closeWindow('iosDialog1');
+               }
+           }
+        });
     }
 
     function changeStyle(Id) {
