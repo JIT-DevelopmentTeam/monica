@@ -20,7 +20,8 @@
     </header>
     <article class="weui-article">
         <span style="color: grey; font-weight: bold; font-size: smaller;">{{ author }} {{ pushTime }}</span>
-        <section>
+        <h5 style="float: right; color: grey; font-weight: bold; font-size: smaller;">{{ readCount }}</h5>
+        <section style="clear: both;">
             <section>
                 <%--<h3>1.1 节标题</h3>--%>
                 <p>
@@ -58,7 +59,8 @@
             title: "",
             author: "",
             pushTime: "",
-            content: ""
+            content: "",
+            readCount: ""
         },
         methods: {
             showData: function(){
@@ -74,6 +76,7 @@
                         vm.author = "—— " + data.news.user.name;
                         vm.pushTime = data.news.push + " ——";
                         vm.content = vm.decode(data.news.content);
+                        vm.readCount = "阅读次数：" + data.news.readCount;
                     }
                 });
             },

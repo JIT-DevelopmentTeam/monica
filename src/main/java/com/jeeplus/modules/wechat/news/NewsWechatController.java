@@ -44,6 +44,7 @@ public class NewsWechatController extends BaseController {
     public ModelAndView form(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
         String id = request.getParameter("id");
+        newsService.updateReadCount(id);
         mv.addObject("id", id);
         mv.setViewName("modules/wechat/news/newsForm");
         return mv;

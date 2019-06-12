@@ -14,5 +14,11 @@ import com.jeeplus.modules.management.news.entity.News;
  */
 @MyBatisMapper
 public interface NewsMapper extends BaseMapper<News> {
-	
+
+    /**
+     * 点击更新阅读次数
+     * @param id
+     */
+    void updateReadCount(String id);
+
 }

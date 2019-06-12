@@ -74,7 +74,6 @@
                     dataType: "json",
                     success: function(data) {
                         vm.items = data.newsList;
-                        console.log(vm.items);
                     }
                 });
             },

@@ -151,6 +151,13 @@
 			remarks = #{remarks}
 		WHERE id = #{id}
 	</update>
+
+	<!--点击更新阅读次数-->
+	<update id="updateReadCount">
+		UPDATE tb_news SET
+			f_readcount = f_readcount + 1
+		WHERE id = #{id}
+	</update>
 	
 	
 	<!--物理删除-->
