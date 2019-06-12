@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -156,7 +157,11 @@ public class NewsController extends BaseController {
 		News news=null;
 		for(String id : idArray){
 			news=newsService.get(id);
-			newsList.add(news);
+			if(news!=null){
+				String realPath = Global.getClasspath() +news.getMainpic();
+				FileUtils.deleteFile(realPath);
+				newsList.add(news);
+			}
 		}
 		newsService.deleteAllByLogic(newsList);
 		j.setMsg("删除新闻公告成功");
