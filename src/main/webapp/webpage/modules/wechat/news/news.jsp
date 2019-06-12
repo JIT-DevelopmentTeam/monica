@@ -19,6 +19,7 @@
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
                 <div v-for="item in items">
+                    <span class="weui-badge" style="margin-left: 5px;" v-if="item.headline === 1">头条</span>
                     <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
                         <div class="weui-media-box__hd">
                             <img class="weui-media-box__thumb" v-bind:src="item.mainpic" alt="">
