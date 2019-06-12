@@ -512,7 +512,21 @@
 
 
     });
-
+    /**
+     * 获取主页面包含的iframe，id属性值
+     * @returns {*}
+     */
+    function getIframeId() {
+        var _iframes = document.getElementsByTagName("iframe");
+        var _iframeId = null;
+        for (var i=0;i<_iframes.length;i++) {
+            if (_iframes[i].id.indexOf("layui-layer-iframe")!=-1) {
+                _iframeId=_iframes[i].id;
+                break;
+            }
+        }
+        return _iframeId
+    }
 
 </script>
 </body>

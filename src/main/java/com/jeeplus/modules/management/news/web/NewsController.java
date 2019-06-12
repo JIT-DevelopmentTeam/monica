@@ -112,7 +112,7 @@ public class NewsController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions(value={"management:news:news:add","management:news:news:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
-	public AjaxJson save(News news,@RequestParam("file")MultipartFile file, Model model) throws Exception{
+	public AjaxJson save(News news, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
 		/**
 		 * 后台hibernate-validation插件校验
@@ -269,11 +269,11 @@ public class NewsController extends BaseController {
 			//相对路径
 			String path = name + "." + ext;
 			//System.out.println(url+"++++++++++----------------"+path);
-			/*File file = new File(url);
+			File file = new File(url);
 			if(!file.exists()){
 				file.mkdirs();
 			}
-			myFile.transferTo(new File(url+path));*/
+			myFile.transferTo(new File(url+path));
 			json.put("success", "/static/upload/news/images/"+path);
 		} catch (Exception e) {
 			e.printStackTrace();
