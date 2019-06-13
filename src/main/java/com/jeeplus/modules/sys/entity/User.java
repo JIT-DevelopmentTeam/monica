@@ -48,19 +48,19 @@ public class User extends DataEntity<User> {
 	private String qyUserId;	// 企业微信id
 	private Integer synStatus;	// 同步状态
 	private Integer isSyntoent;	// 是否已经同步
-	
+
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
-	
+
 	private Role role;	// 根据角色查询用户条件
-	
+
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
 	public User() {
 		super();
 		this.loginFlag = Global.YES;
 	}
-	
+
 	public User(String id){
 		super(id);
 	}
@@ -74,7 +74,7 @@ public class User extends DataEntity<User> {
 		super();
 		this.role = role;
 	}
-	
+
 	public String getPhoto() {
 		if("".equals(photo)){
 			return SpringContextHolder.getStatic()+"/common/images/flat-avatar.png";
@@ -107,7 +107,7 @@ public class User extends DataEntity<User> {
 	public void setCompany(Office company) {
 		this.company = company;
 	}
-	
+
 	@NotNull(message="归属部门不能为空")
 	@ExcelField(title="归属部门", align=2, sort=25)
 	public Office getOffice() {
@@ -143,7 +143,7 @@ public class User extends DataEntity<User> {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Length(min=1, max=100, message="工号长度必须介于 1 和 100 之间")
 	@ExcelField(title="工号", align=2, sort=45)
 	public String getNo() {
@@ -168,7 +168,7 @@ public class User extends DataEntity<User> {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	@Length(min=0, max=200, message="电话长度必须介于 1 和 200 之间")
 	@ExcelField(title="电话", align=2, sort=60)
 	public String getPhone() {
@@ -193,7 +193,7 @@ public class User extends DataEntity<User> {
 	public String getRemarks() {
 		return remarks;
 	}
-	
+
 	@ExcelField(title="创建时间", type=0, align=1, sort=90)
 	public Date getCreateDate() {
 		return createDate;
@@ -270,7 +270,7 @@ public class User extends DataEntity<User> {
 	public List<Role> getRoleList() {
 		return roleList;
 	}
-	
+
 	public void setRoleList(List<Role> roleList) {
 		this.roleList = roleList;
 	}
@@ -292,22 +292,22 @@ public class User extends DataEntity<User> {
 			roleList.add(role);
 		}
 	}
-	
+
 	/**
 	 * 用户拥有的角色名称字符串, 多个角色名称用','分隔.
 	 */
 	public String getRoleNames() {
 		return Collections3.extractToString(roleList, "name", ",");
 	}
-	
+
 	public boolean isAdmin(){
 		return isAdmin(this.id);
 	}
-	
+
 	public static boolean isAdmin(String id){
 		return id != null && "1".equals(id);
 	}
-	
+
 	@Override
 	public String toString() {
 		return id;
