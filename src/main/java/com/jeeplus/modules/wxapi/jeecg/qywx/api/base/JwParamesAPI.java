@@ -10,9 +10,9 @@ public class JwParamesAPI {
 	// 随机戳
 	public static String encodingAESKey = "b2rxXq7GMymOskwpkMnwKPctb6ySWnmDQVIu7q0lKOW";  
 	 //你的企业号ID
-	public static String corpId = "wx967db4406788c64c";
+	public static String corpId = "ww49c384af1f4dac63";
 	// 管理组的凭证密钥，每个secret代表了对应用、通讯录、接口的不同权限；不同的管理组拥有不同的secret
-	public static String secret = "kIeWcG7xN-15Sy-VYymr6ZHeYsDRx28RCj7pfWwXEQQ0GHXdD518C1qxnO2kBjhb";
+	public static String secret = "GCB1HLm-Ii0lfACOjoZmW9qMdjPIKV0pOyBda-DPMec";
 	 //应用id
 	public static String agentid = "4";
 	
