@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <script src="${ctxStatic}/css/jquery-weui.css"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
-    <script src="${ctxStatic}/common/vue/js/vue-router.min.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
 </head>
 <body>

@@ -72,7 +72,7 @@
                  $("#searchInput").val('');
                },
                submit:function(){
-                   window.history.go(-1);
+                   window.history.back('111');
                },
                icitemList:[]
            }
