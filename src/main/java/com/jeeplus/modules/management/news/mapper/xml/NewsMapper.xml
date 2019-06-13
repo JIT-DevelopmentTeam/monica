@@ -62,6 +62,26 @@
 			</otherwise>
 		</choose>
 	</select>
+
+	<select id="findListWeChat" resultMap="NewsResult" >
+		SELECT
+		<include refid="newsColumns"/>
+		FROM tb_news a
+		<include refid="newsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			and a.f_ispublic = 1
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.f_headline DESC, a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
 	
 	<select id="findAllList" resultMap="NewsResult" >
 		SELECT 

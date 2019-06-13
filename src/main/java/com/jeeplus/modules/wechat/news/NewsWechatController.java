@@ -35,7 +35,7 @@ public class NewsWechatController extends BaseController {
     @RequestMapping(value = "data")
     public Map<String, Object> data(News news) {
         Map<String, Object> map = new HashMap<>();
-        List<News> newsList = newsService.findList(news);
+        List<News> newsList = newsService.findListWeChat(news);
         map.put("newsList", newsList);
         return map;
     }

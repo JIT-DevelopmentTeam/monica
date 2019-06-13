@@ -36,6 +36,10 @@ public class NewsService extends CrudService<NewsMapper, News> {
 	public Page<News> findPage(Page<News> page, News news) {
 		return super.findPage(page, news);
 	}
+
+	public List<News> findListWeChat(News news) {
+		return newsMapper.findListWeChat(news);
+	}
 	
 	@Transactional(readOnly = false)
 	public void save(News news) {
