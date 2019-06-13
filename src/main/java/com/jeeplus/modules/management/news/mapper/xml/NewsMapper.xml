@@ -23,7 +23,9 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		(SELECT `name` FROM sys_user AS usr WHERE usr.id= a.f_authorid) AS "user.name",
+		(SELECT `name` FROM sys_office AS off WHERE off.id = a.f_deptid) AS "office.name"
 	</sql>
 	
 	<sql id="newsJoins">
@@ -56,7 +58,27 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.f_headline DESC, a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListWeChat" resultMap="NewsResult" >
+		SELECT
+		<include refid="newsColumns"/>
+		FROM tb_news a
+		<include refid="newsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			and a.f_ispublic = 1
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.f_headline DESC, a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -147,6 +169,13 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+
+	<!--点击更新阅读次数-->
+	<update id="updateReadCount">
+		UPDATE tb_news SET
+			f_readcount = f_readcount + 1
 		WHERE id = #{id}
 	</update>
 	

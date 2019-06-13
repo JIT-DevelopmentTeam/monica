@@ -343,7 +343,7 @@
 	</div>
 
 	<div class="footer">
-		<div class="pull-left"><a href="http://www.jeeplus.org">http://www.jeeplus.org</a> &copy; 2015-2025</div>
+		<div class="pull-left"  id="foot_ter"><%--<a href="http://www.jeeplus.org">http://www.jeeplus.org</a>--%></div>
 	</div>
 
 </section>
@@ -355,6 +355,8 @@
 
 
     $(function(){
+        var date=new Date();
+        $("#foot_ter").text(" © 2018-"+date.getFullYear());
         $.addtabs.drop();
         $('#showMenu').click(function() {
             $('body').toggleClass('push-right');
@@ -510,7 +512,21 @@
 
 
     });
-
+    /**
+     * 获取主页面包含的iframe，id属性值
+     * @returns {*}
+     */
+    function getIframeId() {
+        var _iframes = document.getElementsByTagName("iframe");
+        var _iframeId = null;
+        for (var i=0;i<_iframes.length;i++) {
+            if (_iframes[i].id.indexOf("layui-layer-iframe")!=-1) {
+                _iframeId=_iframes[i].id;
+                break;
+            }
+        }
+        return _iframeId
+    }
 
 </script>
 </body>

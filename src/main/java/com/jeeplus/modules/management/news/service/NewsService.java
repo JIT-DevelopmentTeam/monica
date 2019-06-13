@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.management.news.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.service.CrudService;
 import com.jeeplus.modules.management.news.entity.News;
 import com.jeeplus.modules.management.news.mapper.NewsMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 新闻公告Service
@@ -21,6 +21,9 @@ import com.jeeplus.modules.management.news.mapper.NewsMapper;
 @Service
 @Transactional(readOnly = true)
 public class NewsService extends CrudService<NewsMapper, News> {
+
+	@Autowired
+	private NewsMapper newsMapper;
 
 	public News get(String id) {
 		return super.get(id);
@@ -33,6 +36,10 @@ public class NewsService extends CrudService<NewsMapper, News> {
 	public Page<News> findPage(Page<News> page, News news) {
 		return super.findPage(page, news);
 	}
+
+	public List<News> findListWeChat(News news) {
+		return newsMapper.findListWeChat(news);
+	}
 	
 	@Transactional(readOnly = false)
 	public void save(News news) {
@@ -42,6 +49,11 @@ public class NewsService extends CrudService<NewsMapper, News> {
 	@Transactional(readOnly = false)
 	public void delete(News news) {
 		super.delete(news);
+	}
+
+	@Transactional(readOnly = false)
+	public void updateReadCount(String id) {
+		newsMapper.updateReadCount(id);
 	}
 	
 }

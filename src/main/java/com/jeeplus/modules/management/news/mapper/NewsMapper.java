@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.news.entity.News;
 
+import java.util.List;
+
 /**
  * 新闻公告MAPPER接口
  * @author Vigny
@@ -14,5 +16,18 @@ import com.jeeplus.modules.management.news.entity.News;
  */
 @MyBatisMapper
 public interface NewsMapper extends BaseMapper<News> {
-	
+
+    /**
+     * 点击更新阅读次数
+     * @param id
+     */
+    void updateReadCount(String id);
+
+    /**
+     * 微信端 - 新闻列表
+     * @param news
+     * @return
+     */
+    List<News> findListWeChat(News news);
+
 }

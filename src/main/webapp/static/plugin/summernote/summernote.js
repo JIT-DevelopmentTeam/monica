@@ -4109,6 +4109,7 @@
      * @param {File[]} files
      */
     this.insertImages = function (files) {
+      debugger;
       $.each(files, function (idx, file) {
         var filename = file.name;
         if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {

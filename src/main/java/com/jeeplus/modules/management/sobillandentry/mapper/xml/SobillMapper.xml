@@ -73,7 +73,7 @@
 					<if test="dbName == 'mssql'">'%'+#{empName}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{empName},'%')</if>
 			</if>
-			<if test="beginNeedTime != null and endNeedTime != null ">
+			<if test="(beginNeedTime != null and beginNeedTime != '') and (endNeedTime != null and endNeedTime != '') ">
 				AND a.f_needtime BETWEEN #{beginNeedTime} AND #{endNeedTime}
 			</if>
 			<if test="cancellation != null and cancellation != ''">

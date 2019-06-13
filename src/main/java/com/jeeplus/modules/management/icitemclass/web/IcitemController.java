@@ -15,6 +15,7 @@ import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
 import com.jeeplus.modules.monitor.utils.Common;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,6 +262,18 @@ public class IcitemController extends BaseController {
 		AjaxJson aj = new AjaxJson();
 		icitem = icitemService.get(icitem.getId());
 		aj.put("icitem",icitem);
+		return aj;
+	}
+
+	@RequestMapping(value = "getItemsList")
+	@ResponseBody
+	public AjaxJson getItemsList(@Param("startPage") Integer startPage,@Param("endPage") Integer endPage, Icitem icitem){
+		AjaxJson aj = new AjaxJson();
+		icitem.setDelFlag("0");
+		icitem.setStartPage(startPage);
+		icitem.setEndPage(endPage);
+		List<Icitem> icitemList = icitemService.findList(icitem);
+		aj.put("icitemList",icitemList);
 		return aj;
 	}
 
