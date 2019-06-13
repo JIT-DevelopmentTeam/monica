@@ -18,7 +18,7 @@
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
-                <div style="max-height: 306px; min-height: auto; overflow-y: auto;">
+                <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none;">
                     <span class="weui-badge" style="margin-left: 5px;">头条</span>
                     <div v-for="item in items">
                         <div v-if="item.headline === 1">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="border-top: 1px solid lightgrey;">
+                <div id="newList">
                     <div v-for="item in items">
                         <div  v-if="item.headline === 0">
                             <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
@@ -99,10 +99,19 @@
             },
             detail: function (id) {
                 window.location = "${ctxf}/wechat/news/form?id=" + id;
+            },
+            init: function () {
+                if ($('#headLine').height() != 20) {
+                    $('#headLine').css("display", "inline-block");
+                    $('#newList').css("border-top", "1px solid lightgrey");
+                }
             }
         },
         mounted: function(){
             this.showData();
+        },
+        updated: function () {
+            this.init();
         }
     });
 
