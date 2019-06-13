@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="weui-media-box__bd">
                                     <h4 class="weui-media-box__title">{{ item.title }}</h4>
-                                    <%--<p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>--%>
+                                    <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
                                 </div>
                             </a>
                         </div>
@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="weui-media-box__bd">
                                     <h4 class="weui-media-box__title">{{ item.title }}</h4>
-                                    <%--<p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>--%>
+                                    <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
                                 </div>
                             </a>
                         </div>
