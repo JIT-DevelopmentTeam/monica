@@ -14,7 +14,7 @@
 <body>
     <div id="page">
         <div class="weui-search-bar" id="searchBar" style="position: fixed;top: 0px;width: 100%;z-index: 2;">
-            <form v-on:click="open" class="weui-search-bar__form">
+            <div v-on:click="open" class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
                     <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
@@ -24,26 +24,30 @@
                     <i class="weui-icon-search"></i>
                     <span>搜索</span>
                 </label>
-            </form>
+            </div>
             <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
 
-        <div class="weui-cells weui-cells_checkbox" v-for="item in icitemList" style="margin-top: 2%;">
-            <label class="weui-cell weui-check__label" :for="item.id">
-                <div class="weui-cell__hd">
-                    <input type="checkbox" class="weui-check" name="item" :id="item.id" :value="item.id">
-                    <i class="weui-icon-checked"></i>
-                </div>
-                <div class="weui-cell__bd">
-                    <span>名称:{{item.name}}&emsp;分类:{{item.itemClassName}}</span>
-                </div>
-            </label>
+        <br><br>
+
+        <div id="items">
+            <div class="weui-cells weui-cells_checkbox" v-for="item in icitemList">
+                <label class="weui-cell weui-check__label" :for="item.id">
+                    <div class="weui-cell__hd">
+                        <input type="checkbox" class="weui-check" name="item" :id="item.id" :value="item.id">
+                        <i class="weui-icon-checked"></i>
+                    </div>
+                    <div class="weui-cell__bd">
+                        <span>名称:{{item.name}}&emsp;分类:{{item.itemClassName}}&emsp;单位:{{item.unit}}</span>
+                    </div>
+                </label>
+            </div>
         </div>
 
         <br><br><br>
 
         <div style="position: fixed;bottom: 0px;z-index: 2;width: 100%;">
-            <a href="javascript:;" class="weui-btn weui-btn_primary">提交</a>
+            <a v-on:click="submit" class="weui-btn weui-btn_primary">提交</a>
         </div>
     </div>
 
@@ -53,7 +57,7 @@
         var vm = new Vue({
            el:'#page',
            created: function () {
-               this.$http.get('${ctx}/management/icitemclass/icitem/getItemsList',{params:{startPage:0,endPage:9}}).then(function (res) {
+               this.$http.get('${ctx}/management/icitemclass/icitem/getItemsList',{}).then(function (res) {
                    this.icitemList = res.data.body.icitemList;
                });
            },
@@ -67,9 +71,47 @@
                empty:function(){
                  $("#searchInput").val('');
                },
+               submit:function(){
+                   window.history.go(-1);
+               },
                icitemList:[]
            }
         });
+
+        document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) { //回车键的键值为13
+                var name = $("#searchInput").val();
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctx}/management/icitemclass/icitem/getListByName',
+                   data:{
+                       name:name
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                        var icitemList = res.body.icitemList;
+                        $("#items").empty();
+                        var temple = '';
+                       for (var i = 0; i < icitemList.length; i++) {
+                           temple += '<div class="weui-cells weui-cells_checkbox">';
+                           temple += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">';
+                           temple += '<div class="weui-cell__hd">';
+                           temple += '<input type="checkbox" class="weui-check" name="item" id="'+icitemList[i].id+'" value="'+icitemList[i].id+'">';
+                           temple += '<i class="weui-icon-checked"></i>';
+                           temple += '</div>';
+                           temple += '<div class="weui-cell__bd">';
+                           temple += '<span>名称:'+icitemList[i].name+'&emsp;分类:'+icitemList[i].itemClassName+'&emsp;单位:'+icitemList[i].unit+'</span>';
+                           temple += '</div>'
+                           temple += '</label>';
+                           temple += '</div>';
+                       }
+                       $("#items").append(temple);
+                   }
+                });
+            }
+        };
     </script>
 </body>
 </html>
