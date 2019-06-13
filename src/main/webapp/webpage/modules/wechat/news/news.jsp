@@ -102,7 +102,7 @@
             },
             init: function () {
                 if ($('#headLine').height() != 20) {
-                    $('#headLine').css("display", "inline-block");
+                    $('#headLine').css("display", "block");
                     $('#newList').css("border-top", "1px solid lightgrey");
                 }
             }
