@@ -83,7 +83,6 @@
         el: ".weui-panel__bd",
         data: {
             items: [],
-            projectName: '${projectName}',
             path: '${path}'
         },
         methods: {
