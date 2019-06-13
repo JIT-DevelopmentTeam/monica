@@ -84,7 +84,12 @@
 			<shiro:hasPermission name="sys:user:synch">
 				<a id="add" class="btn btn-success"
 				   onclick="synUser()"><i
-						class="glyphicon glyphicon-refresh"></i> 同步</a>
+						class="glyphicon glyphicon-refresh"></i> 同步ERP</a>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="sys:user:synch">
+				<a id="add" class="btn btn-default"
+				   onclick="synToQYWeChat()"><i
+						class="glyphicon glyphicon-refresh"></i> 同步到微信</a>
 			</shiro:hasPermission>
 	    </div><!-- 工具栏结束 -->
 	    

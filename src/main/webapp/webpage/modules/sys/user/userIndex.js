@@ -231,9 +231,14 @@
 
           /*同步用户*/
 			function synUser() {
-				alert("同步");
+				alert("同步ERP");
 				// jp.post("${ctx}/sys/user/synUser", {}, function (data) {
 				// 	refresh();
 				// });
+			}
+
+			/*同步到微信*/
+			function synToQYWeChat() {
+				alert("同步到微信");
 			}
 	</script>
