@@ -267,11 +267,21 @@ public class IcitemController extends BaseController {
 
 	@RequestMapping(value = "getItemsList")
 	@ResponseBody
-	public AjaxJson getItemsList(@Param("startPage") Integer startPage,@Param("endPage") Integer endPage, Icitem icitem){
+	public AjaxJson getItemsList(Icitem icitem){
 		AjaxJson aj = new AjaxJson();
 		icitem.setDelFlag("0");
-		icitem.setStartPage(startPage);
-		icitem.setEndPage(endPage);
+		List<Icitem> icitemList = icitemService.findList(icitem);
+		aj.put("icitemList",icitemList);
+		return aj;
+	}
+
+	@RequestMapping(value = "getListByName")
+	@ResponseBody
+	public AjaxJson getListByName(@Param("name") String name){
+		AjaxJson aj = new AjaxJson();
+		Icitem icitem = new Icitem();
+		icitem.setDelFlag("0");
+		icitem.setName(name.trim());
 		List<Icitem> icitemList = icitemService.findList(icitem);
 		aj.put("icitemList",icitemList);
 		return aj;
