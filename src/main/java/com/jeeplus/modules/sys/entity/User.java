@@ -3,24 +3,21 @@
  */
 package com.jeeplus.modules.sys.entity;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
-import com.jeeplus.common.utils.SpringContextHolder;
-import com.jeeplus.common.utils.StringUtils;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.utils.Collections3;
+import com.jeeplus.common.utils.SpringContextHolder;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
 import com.jeeplus.common.utils.excel.fieldtype.RoleListType;
 import com.jeeplus.core.persistence.DataEntity;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户Entity
@@ -47,6 +44,10 @@ public class User extends DataEntity<User> {
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
 	private String sign;//签名
+	private String openId;	// 公众号id
+	private String qyUserId;	// 企业微信id
+	private Integer synStatus;	// 同步状态
+	private Integer isSyntoent;	// 是否已经同步
 	
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
@@ -332,5 +333,37 @@ public class User extends DataEntity<User> {
 	 */
 	public String getSign() {
 		return sign;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	public String getQyUserId() {
+		return qyUserId;
+	}
+
+	public void setQyUserId(String qyUserId) {
+		this.qyUserId = qyUserId;
+	}
+
+	public Integer getSynStatus() {
+		return synStatus;
+	}
+
+	public void setSynStatus(Integer synStatus) {
+		this.synStatus = synStatus;
+	}
+
+	public Integer getIsSyntoent() {
+		return isSyntoent;
+	}
+
+	public void setIsSyntoent(Integer isSyntoent) {
+		this.isSyntoent = isSyntoent;
 	}
 }
