@@ -44,6 +44,10 @@ public class User extends DataEntity<User> {
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
 	private String sign;//签名
+	private String openId;	// 公众号id
+	private String qyUserId;	// 企业微信id
+	private Integer synStatus;	// 同步状态
+	private Integer isSyntoent;	// 是否已经同步
 
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
@@ -329,5 +333,37 @@ public class User extends DataEntity<User> {
 	 */
 	public String getSign() {
 		return sign;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+	public String getQyUserId() {
+		return qyUserId;
+	}
+
+	public void setQyUserId(String qyUserId) {
+		this.qyUserId = qyUserId;
+	}
+
+	public Integer getSynStatus() {
+		return synStatus;
+	}
+
+	public void setSynStatus(Integer synStatus) {
+		this.synStatus = synStatus;
+	}
+
+	public Integer getIsSyntoent() {
+		return isSyntoent;
+	}
+
+	public void setIsSyntoent(Integer isSyntoent) {
+		this.isSyntoent = isSyntoent;
 	}
 }
