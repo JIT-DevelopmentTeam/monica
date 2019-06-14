@@ -46,8 +46,8 @@ public class User extends DataEntity<User> {
 	private String sign;//签名
 	private String openId;	// 公众号id
 	private String qyUserId;	// 企业微信id
-	private Integer synStatus;	// 同步状态
-	private Integer isSyntoent;	// 是否已经同步
+	private Integer synStatus;	// 同步状态（0：未同步1：已同步2：待同步（修改过）3：删除）
+	private Integer isSyntoent;	// 是否需要同步（0：不要同步1：要同步）
 
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
