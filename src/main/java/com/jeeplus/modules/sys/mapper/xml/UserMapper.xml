@@ -245,6 +245,17 @@
 		FROM sys_user a
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
+
+	<!-- 根据同步状态查询用户信息 -->
+	<select id="findBySynStatus" resultMap="userResult">
+		SELECT
+			<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		AND a.synstatus = #{synStatus}
+		AND a.issyntoent = #{isSyntoent}
+	</select>
 	
 	<!-- 插入用户 -->
 	<insert id="insert">

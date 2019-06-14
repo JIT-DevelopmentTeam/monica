@@ -3,13 +3,12 @@
  */
 package com.jeeplus.modules.sys.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.sys.entity.User;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 用户MAPPER接口
@@ -112,6 +111,15 @@ public interface UserMapper extends BaseMapper<User> {
 	 *
 	 */
 	public List<User>  findListByUserOfficeList(User user);
+
+	/**
+	 * 根据同步状态查询用户信息
+	 * @param DEL_FLAG_NORMAL
+	 * @param synStatus
+	 * @param isSyntoent
+	 * @return
+	 */
+	List<User> findBySynStatus(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("synStatus") int synStatus, @Param("isSyntoent") int isSyntoent);
 
 
 }

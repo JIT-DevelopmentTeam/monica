@@ -86,6 +86,17 @@ public class SystemService extends BaseService implements InitializingBean {
 		page.setList(userMapper.findList(user));
 		return page;
 	}
+
+	/**
+	 * 根据同步状态查询用户信息
+	 * @param DEL_FLAG_NORMAL
+	 * @param synStatus
+	 * @param isSyntoent
+	 * @return
+	 */
+	public List<User> findBySynStatus(int DEL_FLAG_NORMAL, int synStatus, int isSyntoent) {
+		return userMapper.findBySynStatus(DEL_FLAG_NORMAL, synStatus, isSyntoent);
+	}
 	
 	/**
 	 * 无分页查询人员列表
