@@ -240,5 +240,8 @@
 			/*同步到微信*/
 			function synToQYWeChat() {
 				alert("同步到微信");
+				// jp.post("${ctx}/sys/user/synToQYWeChat", {}, function (data) {
+				//
+				// });
 			}
 	</script>

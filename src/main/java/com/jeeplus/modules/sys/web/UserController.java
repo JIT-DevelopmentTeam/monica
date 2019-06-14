@@ -88,6 +88,17 @@ public class UserController extends BaseController {
 		return json;
 	}
 
+	/**
+	 * 同步用户到企业微信
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synToQYWeChat")
+	public Map<String,Object>  synToQYWeChat() throws Exception{
+		Map<String,Object> json = new HashMap<>();
+
+		return json;
+	}
+
 	@RequiresPermissions("sys:user:index")
 	@RequestMapping(value = "index")
 	public String index(User user, Model model) {
