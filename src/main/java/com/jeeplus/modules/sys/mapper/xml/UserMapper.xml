@@ -13,6 +13,10 @@
 		<result property="phone" column="phone" />
 		<result property="mobile" column="mobile" />
 		<result property="photo" column="photo"/>
+		<result property="openId" column="openId"/>
+		<result property="qyUserId" column="qyUserId"/>
+		<result property="synStatus" column="synStatus"/>
+		<result property="isSyntoent" column="isSyntoent"/>
 		<result property="company.name" column="company.name" />
 		<result property="office.id" column="office.id" />
 		<result property="office.name" column="office.name" />
@@ -42,10 +46,10 @@
 		a.photo,
 		a.qrcode,
 		a.sign,
-		a.open_id,
-		a.qy_user_id,
-		a.synstatus,
-		a.issyntoent,
+		a.open_id as "openId",
+		a.qy_user_id as "qyUserId",
+		a.synstatus as "synStatus",
+		a.issyntoent as "isSyntoent",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -263,6 +267,10 @@
 			login_flag, 
 			photo, 
 			qrcode,
+			a.open_id,
+			a.qy_user_id,
+			a.synstatus,
+			a.issyntoent,
 			del_flag
 		) VALUES (
 			#{id}, 
@@ -283,6 +291,10 @@
 			#{loginFlag}, 
 			#{photo}, 
 			#{qrCode},
+			#{openId},
+			#{qyUserId},
+			#{synStatus},
+			#{isSyntoent},
 			#{delFlag}
 		)
 	</insert>
@@ -304,7 +316,11 @@
 			remarks = #{remarks},
 			login_flag = #{loginFlag},
 			photo = #{photo},
-			qrcode = #{qrCode}
+			qrcode = #{qrCode},
+			open_id = #{openId},
+			qy_user_id = #{qyUserId},
+			synstatus = #{synStatus},
+			issyntoent = #{isSyntoent}
 		WHERE id = #{id}
 	</update>
 	
@@ -333,7 +349,11 @@
 			remarks = #{remarks},
 			photo = #{photo},
 			qrcode = #{qrCode},
-			sign = #{sign}
+			sign = #{sign},
+			open_id = #{openId},
+			qy_user_id = #{qyUserId},
+			synstatus = #{synStatus},
+			issyntoent = #{isSyntoent}
 		WHERE id = #{id}
 	</update>
 	
