@@ -1,6 +1,7 @@
 package com.jeeplus.modules.wechat.sobill;
 
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.time.DateUtil;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.customer.entity.Customer;
@@ -8,6 +9,7 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.wxapi.api.core.util.DateUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -73,6 +76,27 @@ public class SobillWechatController extends BaseController {
             sobillService.delete(sobill);
             aj.setSuccess(true);
             aj.setMsg("删除数据成功!");
+        }
+        return aj;
+    }
+
+    @RequestMapping(value = "checkSobillById")
+    @ResponseBody
+    public AjaxJson checkSobill(@Param("id") String id){
+        AjaxJson aj = new AjaxJson();
+        User user = UserUtils.getUser();
+        Sobill sobill = sobillService.get(id);
+        if (sobill.getCheckStatus() != 1 || sobill.getStatus() != 1){
+            // 待审核和未提交状态允许审核
+            sobill.setCheckerId(user.getId());
+            sobill.setCheckTime(new Date());
+            sobill.setCheckStatus(1);
+            sobillService.checkOrder(sobill);
+            aj.setSuccess(true);
+            aj.setMsg("审核成功!");
+        } else {
+            aj.setSuccess(false);
+            aj.setMsg("审核失败!(请检查该订单是否已审核或已提交状态)");
         }
         return aj;
     }

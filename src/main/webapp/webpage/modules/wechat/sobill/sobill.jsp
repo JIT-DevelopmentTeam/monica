@@ -76,41 +76,51 @@
                 </div>
 
                 <div id="historyDetail" style="display: none;">
-                    <div class="weui-cells"  v-for="history in historyList">
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>编号:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{history.billNo}}</div>
-                        </div>
+                    <div class="weui-cells" v-for="history in historyList">
+                        <div class="weui-cells_radio">
+                            <label class="weui-cell weui-check__label" :for="'history'+history.id">
+                                <div class="weui-cell__bd">
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>编号:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{history.billNo}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>订单发货时间:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{history.needTime}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>订单发货时间:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{history.needTime}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>客户:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{history.cusName}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>客户:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{history.cusName}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>销售员:</p>
-                            </div>
-                            <div class="weui-cell__ft">{{history.empName}}</div>
-                        </div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>销售员:</p>
+                                        </div>
+                                        <div class="weui-cell__ft">{{history.empName}}</div>
+                                    </div>
 
-                        <div class="weui-cell">
-                            <div class="weui-cell__bd">
-                                <p>状态:</p>
-                            </div>
-                            <div class="weui-cell__ft" v-if="history.status === 0">草稿</div>
-                            <div class="weui-cell__ft" v-else>提交</div>
+                                    <div class="weui-cell">
+                                        <div class="weui-cell__bd">
+                                            <p>状态:</p>
+                                        </div>
+                                        <div class="weui-cell__ft" v-if="history.status === 0">草稿</div>
+                                        <div class="weui-cell__ft" v-else>提交</div>
+                                    </div>
+                                </div>
+                                <div class="weui-cell__ft">
+                                    <input type="radio" class="weui-check" name="history" :id="'history'+history.id" :value="history.id"/>
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -221,20 +231,54 @@
             toAuditList:[],
             historyList:[],
             checkSobill:function () {
-                var Id = $("input[name='toAudit']:checked").val();
-                if (Id == null || Id == '') {
+                var historyId = $("input[name='history']:checked").val();
+                if (historyId != null && historyId != '') {
+                    $("#title").text('该订单已审核,无需重复操作!');
+                    $("#iosDialog2").fadeIn(200);
+                    return;
+                }
+                var toAuditId = $("input[name='toAudit']:checked").val();
+                if (toAuditId == null || toAuditId == '') {
                     $("#title").text('请至少选择一条数据!');
                     $("#iosDialog2").fadeIn(200);
                     return;
                 }
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/sobill/checkSobillById',
+                   data:{
+                       id:toAuditId
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                       if (res.success){
+                           $("#title").text(res.msg);
+                           $("#iosDialog2").fadeIn(200);
+                           setTimeout(function () {
+                               window.location.reload();
+                           },3000);
+                       } else {
+                           $("#title").text(res.msg);
+                           $("#iosDialog2").fadeIn(200);
+                           return;
+                       }
+                   }
+                });
             }
         }
     });
 
 
     function showWindow() {
-        var Id = $("input[name='toAudit']:checked").val();
-        if (Id == null || Id == '') {
+        var toAuditId = $("input[name='toAudit']:checked").val();
+        var historyId = $("input[name='history']:checked").val();
+        if (historyId != null && historyId != '') {
+            $("#title").text('订单已审核或已提交不允许删除!');
+            $("#iosDialog2").fadeIn(200);
+            return;
+        }
+        if (toAuditId == null || toAuditId == '') {
             $("#title").text('请至少选择一条数据!');
             $("#iosDialog2").fadeIn(200);
             return;
@@ -275,8 +319,11 @@
            dataType:'json',
            success:function (res){
                if (res.success) {
-                   closeWindow('iosDialog1');
-                   window.location.reload();
+                   $("#title").text(res.msg);
+                   $("#iosDialog2").fadeIn(200);
+                   setTimeout(function () {
+                       window.location.reload();
+                   },3000);
                } else {
                    $("#title").text(res.msg);
                    $("#iosDialog2").fadeIn(200);
@@ -293,6 +340,7 @@
                 $("#history").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "block");
                 $("#historyDetail").css("display", "none");
+                $('input[type=radio][name="history"]:checked').prop("checked", false);
             }
         } else if (Id == 'history') {
             if (!$("#" + Id).hasClass("weui-bar__item_on")) {
@@ -300,6 +348,7 @@
                 $("#toAudit").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "none");
                 $("#historyDetail").css("display", "block");
+                $('input[type=radio][name="toAudit"]:checked').prop("checked", false);
             }
         }
     }
