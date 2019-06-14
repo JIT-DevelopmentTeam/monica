@@ -209,13 +209,21 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'push'
 		       
-		    }
+		    },{
+                field: 'readCount',
+                title: '阅读次数',
+                sortable: true,
+                sortName: 'readCount'
+            }
             ,{
                 field: 'mainpic',
                 title: '封面图片',
                 sortable: true,
-                sortName: 'mainpic'
+                sortName: 'mainpic',
+                events: operateEvents,
+                formatter: operateFormatter
             }
+
 			/*,{
 		        field: 'pushrule',
 		        title: '推送规则',
@@ -224,20 +232,13 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'readCount',
-		        title: '阅读次数',
-		        sortable: true,
-		        sortName: 'readCount'
-		       
-		    }*/
-			,{
 		        field: 'remarks',
 		        title: '备注信息',
                 class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'remarks'
 		       
-		    }
+		    }*/
 		     ]
 		
 		});
@@ -318,7 +319,18 @@ $(document).ready(function() {
 		
 		
 	});
-		
+
+    //绑定点击事件
+    window.operateEvents = { 'click .picMainpic': function (e, value, row, index) {
+        picMainpic(row.mainpic);
+    }
+    };
+        function operateFormatter(value, row, index) {
+        return [
+        '<button type="button" class="picMainpic btn btn-primary btn-sm"><i class="glyphicon glyphicon-file"></i>查看封面</button>'
+        ].join('');
+    }
+
   function getIdSelections() {
         return $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
             return row.id
@@ -347,7 +359,7 @@ $(document).ready(function() {
   }
   
    function add(){
-	  jp.openSaveDialog('新增新闻公告', "${ctx}/management/news/news/form",'1000px', '700px');
+	  jp.openSaveDialog('新增新闻公告', "${ctx}/management/news/news/form",'1050px', '850px');
   }
 
 
@@ -356,14 +368,17 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑新闻公告', "${ctx}/management/news/news/form?id=" + id, '1000px', '700px');
+	jp.openSaveDialog('编辑新闻公告', "${ctx}/management/news/news/form?id=" + id, '1050px', '850px');
   }
   
- function view(id){//没有权限时，不显示确定按钮
-      if(id == undefined){
-             id = getIdSelections();
-      }
-        jp.openViewDialog('查看新闻公告', "${ctx}/management/news/news/form?id=" + id, '1000px', '700px');
+ function view(id) {  //没有权限时，不显示确定按钮
+     if (id == undefined) {
+         id = getIdSelections();
+     }
+     jp.openViewDialog('查看新闻公告', "${ctx}/management/news/news/form?id=" + id, '1050px', '850px');
+ }
+ function picMainpic(mainpic) {
+     jp.openViewDialog('查看新闻公告', "${pageContext.request.contextPath}"+mainpic, '500px', '500px');
  }
 
 

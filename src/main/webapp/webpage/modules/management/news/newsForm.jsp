@@ -142,11 +142,15 @@
         function upload() {
             jp.openViewDialog('上传附件', "${ctx}/management/news/news/uploadFile/${projust.id}", '600px', '500px');
         }
+        function getUserName() {
+            console.log("获取发布人/作者");
+            jp.openSaveDialog('选择发布人', "${ctx}/management/news/news/newsUserList", '900px', '500px');
+        }
 	</script>
 </head>
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="news" class="form-horizontal">
-		<form:hidden path="id"/>	
+		<form:hidden path="id"/>
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
@@ -160,18 +164,26 @@
 							<i class="glyphicon glyphicon-upload"></i> 上传附件
 						</button>
 						<form:hidden path="mainpic" htmlEscape="false"  class="form-control "/>
+						<form:hidden path="smallnrl" htmlEscape="false"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发布人：</label></td>
 					<td class="width-35">
-						<input htmlEscape="false" class="form-control required" value="${fns:getUser().name}" readonly="true"/>
-						<form:hidden path="authorid" value="${fns:getUser().id}"/>
+                        <div class="input-group">
+                            <div class="input-icon-group">
+                                    <input type="text" class="form-control required" value="${fns:getUser().name}" data-clearbtn="true"/>
+                             </div>
+                            <span class="input-group-btn">
+                                 <button class="btn btn-primary" type="button" onclick="getUserName();"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </span>
+                        </div>
+						<form:hidden path="authorid" htmlEscape="false" class="form-control required"  value="${fns:getUser().id}"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">发布人部门：</label></td>
 					<td class="width-35">
-						<input  class="form-control " readonly="readonly"/>
-						<form:hidden path="deptid" htmlEscape="false" class="form-control " value="${fns:getUser().office.id}"/>
+						<input  class="form-control required" value="${fns:getUser().office.name}" id="officeName" readonly="true"/>
+						<form:hidden path="deptid" htmlEscape="false" class="form-control" value="${fns:getUser().office.id}"/>
 					</td>
 				</tr>
 				<tr>
@@ -179,12 +191,14 @@
 					<td class="width-35">
 						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
 						<form:radiobutton path="isPublic"   itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
+                        <label class="error" for="isPublic" id="isPublic"></label>
 					</td>
 
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
 						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
 						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
+                        <label class="error" for="isPublic" id="isPublic"></label>
 					</td>
 				</tr>
 				<tr>
@@ -227,6 +241,7 @@
 					<td class="width-35">
 						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
 						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
+                        <label class="error" for="isPush" id="isPush"></label>
 					</td>
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
@@ -245,7 +260,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
 					<td class="width-35">
-						<form:input path="readCount" htmlEscape="false"    class="form-control "/>
+						<form:input path="readCount" htmlEscape="false" type="number" min="1" step="1"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
@@ -257,5 +272,21 @@
 		 	</tbody>
 		</table>
 	</form:form>
+    <%
+        //获取application域中的count的值
+        Integer count = (Integer)application.getAttribute("count");
+        //判断count是否为空
+        if(count!=null){
+            //不等于空
+            count++;
+            //存入到application域中
+            application.setAttribute("count", count);
+        }else{
+            //等于空
+            count=1;
+            //存入到application域中
+            application.setAttribute("count", count);
+        }
+    %>
 </body>
 </html>
