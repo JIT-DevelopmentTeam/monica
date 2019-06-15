@@ -232,11 +232,11 @@ public class JwUserAPI {
 	
 	
 	public static void main(String[] args) {
-		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.secret);
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
 		/*JSONObject js = getUsersByDepartid("5", null,null,accessToken.getAccesstoken());
 		System.out.println(js.toJSONString());*/
 		//1:测试创建成员
-		/*User user=new User();
+		User user=new User();
 		user.setUserid("yangmoumou1");
 		user.setName("杨某某1");
 		user.setPosition("JAVA测试人员");
@@ -244,8 +244,6 @@ public class JwUserAPI {
 		user.setDepartment(new Integer[]{5});//设置部门
 		int result = createUser(user, accessToken.getAccesstoken());
 		System.out.println(result==0?"成功":"失败"+"----"+result);
-		*
-		*/
 		/*User user=new User();
 		user.setUserid("yangmoumou3");
 		user.setName("杨某某2");
@@ -267,8 +265,8 @@ public class JwUserAPI {
 		int result = updateUser(user, accessToken.getAccesstoken());
 		System.out.println(result==0?"修改成功":"失败"+"----"+result);*/
 		//3:deleteUser
-		/*int result=deleteUser("yangmoumou1", accessToken.getAccesstoken());//测试删除
-		System.out.println(result==0?"删除成功":"失败"+"----"+result);*/
+//		int result=deleteUser("yangmoumou1", accessToken.getAccesstoken());//测试删除
+//		System.out.println(result==0?"删除成功":"失败"+"----"+result);
 		/*
 		 * 4:batchDeleteUsers
 		 int result = batchDeleteUsers(new String[]{"yangmoumou3"}, accessToken.getAccesstoken());
@@ -276,8 +274,8 @@ public class JwUserAPI {
 		/**
 		 * 5:getUserByUserid
 		 */
-		User user = getUserByUserid("yangqj", accessToken.getAccesstoken());
-		System.out.println(JSONObject.toJSON(user));
+//		User user = getUserByUserid("yangqj", accessToken.getAccesstoken());
+//		System.out.println(JSONObject.toJSON(user));
 		
 		/**
 		 *6 getUsersByDepartid

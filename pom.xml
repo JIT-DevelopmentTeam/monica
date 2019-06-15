@@ -219,6 +219,12 @@
     </build>
     <!-- 依赖项定义 -->
     <dependencies>
+        <!-- 搜狗拼音 -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
         <!-- jeewx 依赖开始 -->
         <!-- baidubcs -->
         <dependency>
