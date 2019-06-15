@@ -50,8 +50,12 @@ public abstract class TreeService<D extends TreeMapper<T>, T extends TreeEntity<
 		entity.setParentIds(entity.getParent().getParentIds()+entity.getParent().getId()+",");
 		
 		// 保存或更新实体
-		super.save(entity, true);
-		
+		if (oldParentIds == null) {
+			super.save(entity, true);
+		} else {
+			super.save(entity, false);
+		}
+
 		// 更新子节点 parentIds
 		T o = null;
 		try {
