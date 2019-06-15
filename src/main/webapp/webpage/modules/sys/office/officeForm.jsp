@@ -94,12 +94,6 @@
 					<label id="isSyntoent" class="error" for="isSyntoent"></label>
 				</td>
 		      </tr>
-			  <tr>
-				  <td class="width-15 active"><label class="pull-right">企业微信部门父级id:</label></td>
-				  <td class="width-35"><form:input path="qyDeptParentId" htmlEscape="false" maxlength="4" cssClass="form-control" /></td>
-				  <td class="width-15 active"><label class="pull-right">企业微信部门id:</label></td>
-				  <td class="width-35"><form:input path="qyDeptId" htmlEscape="false" maxlength="4" cssClass="form-control" /></td>
-			  </tr>
 		      <tr>
 		         <td  class="width-15" class="active"><label class="pull-right">备注:</label></td>
 		         <td class="width-35" colspan="3"><form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="form-control"/></td>
