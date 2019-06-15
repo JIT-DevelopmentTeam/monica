@@ -3,13 +3,11 @@
  */
 package com.jeeplus.modules.sys.entity;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
+import com.jeeplus.core.persistence.TreeEntity;
 import org.hibernate.validator.constraints.Length;
 
-import com.jeeplus.core.persistence.TreeEntity;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 机构Entity
@@ -33,7 +31,11 @@ public class Office extends TreeEntity<Office> {
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
 	private List<String> childDeptList;//快速添加子部门
-	
+	private int qyDeptParentId;	// 企业微信部门父级id
+	private int qyDeptId;	// 企业微信部门id
+	private int synStatus;	// 同步状态（0：未同步1：已同步2：待同步（修改过）3：删除）
+	private int isSyntoent; // 是否需要同步（0：不要同步1：要同步）
+
 	public Office(){
 		super();
 		this.type = "2";
@@ -42,7 +44,7 @@ public class Office extends TreeEntity<Office> {
 	public Office(String id){
 		super(id);
 	}
-	
+
 	public List<String> getChildDeptList() {
 		return childDeptList;
 	}
@@ -175,5 +177,37 @@ public class Office extends TreeEntity<Office> {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public int getQyDeptParentId() {
+		return qyDeptParentId;
+	}
+
+	public void setQyDeptParentId(int qyDeptParentId) {
+		this.qyDeptParentId = qyDeptParentId;
+	}
+
+	public int getQyDeptId() {
+		return qyDeptId;
+	}
+
+	public void setQyDeptId(int qyDeptId) {
+		this.qyDeptId = qyDeptId;
+	}
+
+	public int getSynStatus() {
+		return synStatus;
+	}
+
+	public void setSynStatus(int synStatus) {
+		this.synStatus = synStatus;
+	}
+
+	public int getIsSyntoent() {
+		return isSyntoent;
+	}
+
+	public void setIsSyntoent(int isSyntoent) {
+		this.isSyntoent = isSyntoent;
 	}
 }
