@@ -112,8 +112,8 @@ public class JwDepartmentAPI {
 	 * @return
 	 */
 	public static int deleteDepart(String departId,String accessToken) {
-		 String url = department_delete_url.replace("ACCESS_TOKEN", accessToken).replace("ID", departId);
-		 JSONObject jsonObject = HttpUtil.sendPost(url);
+		 String url = "https://qyapi.weixin.qq.com/cgi-bin/department/delete?access_token=" + accessToken + "&id=" + departId;
+		 JSONObject jsonObject = HttpUtil.sendGet(url);
 		 if (null != jsonObject) { 
 		    	int errcode = jsonObject.getIntValue("errcode");
 		    	String errmsg = jsonObject.getString("errmsg");
@@ -145,32 +145,32 @@ public class JwDepartmentAPI {
 	
 	public static void main(String[] args){
 		try {
-			AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.secret);
+			AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
 			
 			//查询部门
-//			List<Department> ls = JwDepartmentAPI.getAllDepartment(accessToken.getAccesstoken());
-//			for(Department po:ls){
-//				System.out.println(po.toString());
-//			}
+			List<Department> ls = JwDepartmentAPI.getAllDepartment(accessToken.getAccesstoken());
+			for(Department po:ls){
+				System.out.println(po.toString());
+			}
 			
 			//删除部门
-//			JwDepartmentAPI.deleteDepart(7,accessToken.getAccesstoken());
+//			JwDepartmentAPI.deleteDepart("1223",accessToken.getAccesstoken());
 			
 			//创建部门
-			Department department = new Department();
-			department.setId("cccddd");
-			department.setName("cccddd");
+			/*Department department = new Department();
+			department.setId("1223");
+			department.setName("cccddd22");
 			department.setOrder("2");
-			department.setParentid("28A874914D2F4082AFCA1201E8B21E5B");
-			JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+			department.setParentid("5");
+			JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());*/
 			
 			
 			//修改部门
 //			Department department = new Department();
-//			department.setId(8);
-//			department.setName("人力资源1");
-//			department.setOrder(1);
-//			department.setParentid(1);
+//			department.setId("123");
+//			department.setName("人力资源2");
+//			department.setOrder("1");
+//			department.setParentid("1");
 //			JwDepartmentAPI.updateDepart(department, accessToken.getAccesstoken());
 			
 		} catch (Exception e) {

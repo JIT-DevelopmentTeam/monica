@@ -18,6 +18,10 @@
 		<result property="useable" column="useable" />
 		<result property="type" column="type" />
 		<result property="remarks" column="remarks" />
+		<result property="qyDeptParentId" column="qyDeptParentId" />
+		<result property="qyDeptId" column="qyDeptId" />
+		<result property="synStatus" column="synStatus" />
+		<result property="isSyntoent" column="isSyntoent" />
 		<association property="area" column="area_id" select="getArea" />
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
@@ -34,13 +38,17 @@
 		a.sort,
 		a.type,
 		a.grade,
-		a.address, 
-		a.zip_code, 
-		a.master, 
-		a.phone, 
-		a.fax, 
-		a.email, 
+		a.address,
+		a.zip_code,
+		a.master,
+		a.phone,
+		a.fax,
+		a.email,
 		a.remarks,
+		a.qy_dept_parent_id as "qyDeptParentId",
+		a.qy_dept_id as "qyDeptId",
+		a.synstatus as "synStatus",
+		a.issyntoent as "isSyntoent",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -55,25 +63,25 @@
 		pp.name AS "primaryPerson.name",
 		dp.name AS "deputyPerson.name"
 	</sql>
-	
+
 	<sql id="officeJoins">
 		LEFT JOIN sys_office p ON p.id = a.parent_id
 		LEFT JOIN sys_area ar ON ar.id = a.area_id
 		LEFT JOIN sys_user pp ON pp.id = a.primary_person
 		LEFT JOIN sys_user dp ON dp.id = a.deputy_person
     </sql>
-    
-	<select id="getChildren" parameterType="String" resultMap="officeResult">  
-        select * from sys_office where parent_id = #{id} ORDER BY sort 
-    </select> 
-    <select id="getArea" parameterType="String" resultType="Area">  
-        select * from sys_area where id = #{id} 
-    </select> 
-    
-	<select id="hasChildren" parameterType="String" resultType="Boolean">  
+
+	<select id="getChildren" parameterType="String" resultMap="officeResult">
+        select * from sys_office where parent_id = #{id} ORDER BY sort
+    </select>
+    <select id="getArea" parameterType="String" resultType="Area">
+        select * from sys_area where id = #{id}
+    </select>
+
+	<select id="hasChildren" parameterType="String" resultType="Boolean">
         select case when exists(select 1 from sys_office where parent_id = #{id}) then 1 else 0 end ${dual}
     </select>
-    
+
 	<select id="get" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
@@ -81,13 +89,13 @@
 		<include refid="officeJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
 	<select id="getByCode" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
 		FROM sys_office a
 		<include refid="officeJoins"/>
-		
+
 		WHERE a.code = #{code}
 	</select>
 
@@ -113,7 +121,7 @@
         </if>
 		ORDER BY a.code
 	</select>
-			
+
 	<select id="findAllList" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
@@ -124,7 +132,7 @@
 		${dataScope}
 		ORDER BY a.code
 	</select>
-	
+
 	<select id="findByParentIdsLike" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
@@ -133,82 +141,94 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE #{parentIds}
 		ORDER BY a.code
 	</select>
-	
+
 	<insert id="insert">
 		INSERT INTO sys_office(
-			id, 
-			parent_id, 
-			parent_ids, 
-			area_id, 
-			code, 
-			name, 
-			sort, 
-			type, 
-			grade, 
-			address, 
-			zip_code, 
-			master, 
-			phone, 
-			fax, 
-			email, 
-			create_by, 
-			create_date, 
-			update_by, 
-			update_date, 
-			remarks, 
+			id,
+			parent_id,
+			parent_ids,
+			area_id,
+			code,
+			name,
+			sort,
+			type,
+			grade,
+			address,
+			zip_code,
+			master,
+			phone,
+			fax,
+			email,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			qy_dept_parent_id,
+			qy_dept_id,
+			synstatus,
+			issyntoent,
 			del_flag,
 			useable,
 			primary_person,
 			deputy_person
 		) VALUES (
-			#{id}, 
-			#{parent.id}, 
-			#{parentIds}, 
-			#{area.id}, 
-			#{code}, 
-			#{name}, 
-			#{sort}, 
-			#{type}, 
-			#{grade}, 
-			#{address}, 
-			#{zipCode}, 
-			#{master}, 
-			#{phone}, 
-			#{fax}, 
-			#{email}, 
-			#{createBy.id}, 
-			#{createDate}, 
-			#{updateBy.id}, 
-			#{updateDate}, 
-			#{remarks}, 
+			#{id},
+			#{parent.id},
+			#{parentIds},
+			#{area.id},
+			#{code},
+			#{name},
+			#{sort},
+			#{type},
+			#{grade},
+			#{address},
+			#{zipCode},
+			#{master},
+			#{phone},
+			#{fax},
+			#{email},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{qyDeptParentId},
+			#{qyDeptId},
+			#{synStatus},
+			#{isSyntoent},
 			#{delFlag},
 			#{useable},
 			#{primaryPerson.id},
 			#{deputyPerson.id}
 		)
 	</insert>
-	
+
 	<update id="update">
-		UPDATE sys_office SET 
-			parent_id = #{parent.id}, 
-			parent_ids = #{parentIds}, 
-			area_id = #{area.id}, 
-			code = #{code}, 
-			name = #{name}, 
-			type = #{type}, 
-			grade = #{grade}, 
-			address = #{address}, 
-			zip_code = #{zipCode}, 
-			master = #{master}, 
-			phone = #{phone}, 
-			fax = #{fax}, 
-			email = #{email}, 
-			update_by = #{updateBy.id}, 
-			update_date = #{updateDate}, 
+		UPDATE sys_office SET
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			area_id = #{area.id},
+			code = #{code},
+			name = #{name},
+			type = #{type},
+			grade = #{grade},
+			address = #{address},
+			zip_code = #{zipCode},
+			master = #{master},
+			phone = #{phone},
+			fax = #{fax},
+			email = #{email},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
 			remarks = #{remarks},
 			useable=#{useable},
 			primary_person=#{primaryPerson.id},
-			deputy_person=#{deputyPerson.id}
+			deputy_person=#{deputyPerson.id},
+			qy_dept_parent_id = #{qyDeptParentId},
+			qy_dept_id = #{qyDeptId},
+			synstatus = #{synStatus},
+			issyntoent = #{isSyntoent}
 		WHERE id = #{id}
 	</update>
 	

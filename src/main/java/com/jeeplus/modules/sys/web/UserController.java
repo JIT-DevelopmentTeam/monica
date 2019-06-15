@@ -16,14 +16,27 @@ import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.monitor.utils.Common;
-import com.jeeplus.modules.sys.entity.*;
+import com.jeeplus.modules.sys.entity.Office;
+import com.jeeplus.modules.sys.entity.Role;
+import com.jeeplus.modules.sys.entity.SystemConfig;
+import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.SystemConfigService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import com.jeeplus.modules.tools.utils.TwoDimensionCode;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +71,30 @@ public class UserController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private UserMapper userMapper;
-	
+
+	public String CNToPinyin(String ChineseLanguage) throws BadHanyuPinyinOutputFormatCombination {
+		char[] cl_chars = ChineseLanguage.trim().toCharArray();
+		String hanyupinyin = "";
+		HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+		defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);// 输出拼音全部小写
+		defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);// 不带声调
+		defaultFormat.setVCharType(HanyuPinyinVCharType.WITH_V) ;
+		try {
+			for (int i=0; i<cl_chars.length; i++){
+				if (String.valueOf(cl_chars[i]).matches("[\u4e00-\u9fa5]+")){// 如果字符是中文,则将中文转为汉语拼音
+					hanyupinyin += PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(0,1).toUpperCase()
+							+ PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(1);
+				} else {// 如果字符不是中文,则不转换
+					hanyupinyin += cl_chars[i];
+				}
+			}
+		} catch (BadHanyuPinyinOutputFormatCombination e) {
+			//hanyupinyin = ChineseLanguage+ ":字符不能转成汉语拼音";
+			System.out.println("字符不能转成汉语拼音");
+		}
+		return hanyupinyin;
+	}
+
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -95,7 +131,22 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "synToQYWeChat")
 	public Map<String,Object>  synToQYWeChat() throws Exception{
 		Map<String,Object> json = new HashMap<>();
-
+		List<User> unSynList = systemService.findBySynStatus(0, 0, 1); // 未同步的员工
+		List<User> needUpdateList = systemService.findBySynStatus(0, 2, 1); // 需修改的员工
+		List<User> needDeleteList = systemService.findBySynStatus(0, 3, 0); // 需删除的员工
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
+        if (unSynList.size() > 0) {
+			for (int i = 0; i < unSynList.size(); i++) {
+				com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User user = new com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User();
+				String useId = CNToPinyin(unSynList.get(i).getName());
+				user.setUserid(useId);
+				user.setName(unSynList.get(i).getName());
+				user.setMobile(unSynList.get(i).getMobile());
+				user.setDepartment(new Integer[]{});
+				int result = JwUserAPI.createUser(user, accessToken.getAccesstoken());
+				System.out.println(result==0 ? unSynList.get(i).getName() + "创建成功！" : "失败：" + result);
+			}
+		}
 		return json;
 	}
 
