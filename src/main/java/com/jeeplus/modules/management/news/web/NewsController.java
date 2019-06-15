@@ -3,9 +3,7 @@
  */
 package com.jeeplus.modules.management.news.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -17,10 +15,12 @@ import javax.validation.ConstraintViolationException;
 import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +100,12 @@ public class NewsController extends BaseController {
     public String form(News news, Model model) {
         model.addAttribute("news", news);
         return "modules/management/news/newsForm";
+    }
+
+    @RequestMapping(value = "newsUserList")
+    public ModelAndView userList(ModelAndView modelAndView){
+        modelAndView.setViewName("modules/management/news/userList");
+        return modelAndView;
     }
 
     /**
@@ -291,12 +297,19 @@ public class NewsController extends BaseController {
         String filename = mf.getOriginalFilename();
         String[] names = filename.split("\\.");//
         String tempNum = (int) (Math.random() * 100000) + "";
-        String uploadFileName = tempNum + System.currentTimeMillis() + "." + names[names.length - 1];
+        String prefix=tempNum + System.currentTimeMillis();  // 文件前缀
+        String suffix=names[names.length - 1];      //文件后缀
+        String uploadFileName = prefix + "." + suffix;  //上传文件名称
         File targetFile = new File(realPath, uploadFileName);// 目标文件
         // 开始从源文件拷贝到目标文件
         // 传图片一步到位
+        String newUrl="";
+        String oldUrl="";
         try {
             mf.transferTo(targetFile);
+            newUrl=realPath+"/"+prefix;       // 压缩图片文件新路径，不包含文件的后缀，如：".jpg"
+            oldUrl=realPath+"/"+uploadFileName; //上传图片文件的原路径
+            Thumbnails.of(oldUrl).scale(1f).outputFormat(suffix).toFile(newUrl);  //进行压缩图片
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -304,9 +317,8 @@ public class NewsController extends BaseController {
         }
         Map<String, String> map = new HashMap<>();
         map.put("errno", "0");
-        //System.out.println(uploadFileName);
-        map.put("data", filePath+"/upload/news/editor/" + uploadFileName);// 这里应该是项目路径
-        map.put("url", filePath+"/upload/news/editor/" + uploadFileName);
+        map.put("data", filePath+"upload/news/editor/" + uploadFileName);// 这里应该是项目路径
+        map.put("url", filePath+"upload/news/editor/" + uploadFileName);
         return map;// 将图片地址返回
     }
 
@@ -330,7 +342,7 @@ public class NewsController extends BaseController {
             for (int i = 0; i < 3; i++) {
                 name += r.nextInt(10);
             }
-            // 获取后缀
+            //获取后缀
             String ext = FilenameUtils.getExtension(myFile.getOriginalFilename());
             //保存图片       File位置 （全路径）   /upload/xxxx/xxxx/fileName.jpg
             String url = request.getSession().getServletContext().getRealPath(savePath);
@@ -349,4 +361,126 @@ public class NewsController extends BaseController {
         return json;
     }
 
+
+    /**
+     * 上传封面
+     * @Description:保存图片并且生成缩略图
+     * @param imageFile 图片文件
+     * @param request 请求对象
+     * @return
+     */
+    @RequestMapping(value = "uploadFileAndCreateThumbnail")
+    @ResponseBody
+    public LinkedHashMap<String, Object> uploadFileAndCreateThumbnail(@RequestParam("file") MultipartFile imageFile,HttpServletRequest request) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+        if(imageFile == null ){
+            map.put("success",false);
+            map.put("msg","请选择文件，不能为空");
+            return map;
+        }
+        if (imageFile.getSize() >= 10*1024*1024){
+            map.put("success",false);
+            map.put("msg","文件不能大于10M");
+            return map;
+        }
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        // 图片名称
+        String uuid = df.format(new Date());
+        // 文件根目录
+        String fileDirectory = "images";
+        // 拼接后台文件名称
+        String pathName = fileDirectory + "/" + uuid + "." + FilenameUtils.getExtension(imageFile.getOriginalFilename());
+        // 构建保存文件路劲
+        // 2016-5-6 yangkang 修改上传路径为服务器上
+        String realPath = request.getServletContext().getRealPath("/upload/news");
+        //获取服务器绝对路径 linux 服务器地址  获取当前使用的配置文件配置
+        //String urlString=PropertiesUtil.getInstance().getSysPro("uploadPath");
+        //拼接文件路劲
+        String filePathName = realPath + "/" + pathName;
+        //判断文件保存是否存在
+        File file = new File(filePathName);
+        if (file.getParentFile() != null || !file.getParentFile().isDirectory()) {
+            //创建文件
+            file.getParentFile().mkdirs();
+        }
+        // 输入流
+        InputStream inputStream = null;
+        FileOutputStream fileOutputStream = null;
+        try {
+            inputStream = imageFile.getInputStream();
+            fileOutputStream = new FileOutputStream(file);
+            // 写出文件
+            // 2016-05-12 yangkang 改为增加缓存
+            // IOUtils.copy(inputStream, fileOutputStream);
+            byte[] buffer = new byte[2048];
+            IOUtils.copyLarge(inputStream, fileOutputStream, buffer);
+            buffer = null;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            filePathName = null;
+            map.put("success",false);
+            map.put("msg","上传失败"+e.getMessage());
+            return map;
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (fileOutputStream != null) {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+                filePathName = null;
+                e.printStackTrace();
+                map.put("success",false);
+                map.put("msg","上传失败"+e.getMessage());
+                return map;
+            }
+        }
+        //String fileId = FastDFSClient.uploadFile(file, filePathName);
+        /**
+         * 缩略图begin
+         */
+        //拼接后台文件名称
+        String thumbnailPathName = fileDirectory + "/" + uuid + "small."+ FilenameUtils.getExtension(imageFile.getOriginalFilename());
+        //added by yangkang 2016-3-30 去掉后缀中包含的.png字符串
+        if(thumbnailPathName.contains(".png")){
+            thumbnailPathName = thumbnailPathName.replace(".png", ".jpg");
+        }
+        long size = imageFile.getSize();
+        double scale = 1.0d ;
+        if(size >= 200*1024){
+            if(size > 0){
+                scale = (200*1024f) / size  ;
+            }
+        }
+        //拼接文件路劲
+        String thumbnailFilePathName = realPath + "/" + thumbnailPathName;
+        try {
+            //added by chenshun 2016-3-22 注释掉之前长宽的方式，改用大小
+            Thumbnails.of(filePathName).size(150, 150).toFile(thumbnailFilePathName);
+            if(size < 200*1024){
+                Thumbnails.of(filePathName).scale(0.2f).outputFormat("jpg").toFile(thumbnailFilePathName);
+            }else{
+                Thumbnails.of(filePathName).scale(0.2f).outputQuality(scale).outputFormat("jpg").toFile(thumbnailFilePathName);
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            map.put("success",false);
+            map.put("msg","上传失败"+e1.getMessage());
+            return map;
+        }
+        /**
+         * 缩略图end
+         */
+        //原图地址
+        map.put("originalUrl", "/upload/news/"+pathName);
+        //缩略图地址
+        map.put("thumbnailUrl","/upload/news/"+thumbnailPathName);
+        map.put("success",true);
+        map.put("msg","上传成功");
+        return map;
+    }
 }

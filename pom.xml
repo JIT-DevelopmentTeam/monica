@@ -934,6 +934,14 @@
         </dependency>
 
         <!-- UTILS end -->
+
+        <!-- 缩略图  Begin -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+        <!-- 缩略图  End  -->
     </dependencies>
 
 </project>

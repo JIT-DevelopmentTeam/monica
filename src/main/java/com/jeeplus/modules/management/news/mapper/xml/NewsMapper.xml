@@ -9,6 +9,7 @@
 		a.f_content AS "content",
 		a.f_authorid AS "authorid",
 		a.f_mainpic AS "mainpic",
+		a.f_smallnrl AS "smallnrl",
 		a.f_ispublic AS "isPublic",
 		a.f_headline AS "headline",
 		a.f_deptid AS "deptid",
@@ -91,7 +92,7 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-		</where>		
+		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
@@ -110,6 +111,7 @@
 			f_content,
 			f_authorid,
 			f_mainpic,
+			f_smallnrl,
 			f_ispublic,
 			f_headline,
 			f_deptid,
@@ -132,6 +134,7 @@
 			#{content},
 			#{authorid},
 			#{mainpic},
+			#{smallnrl},
 			#{isPublic},
 			#{headline},
 			#{deptid},
@@ -157,6 +160,7 @@
 			f_content = #{content},
 			f_authorid = #{authorid},
 			f_mainpic = #{mainpic},
+			f_smallnrl = #{smallnrl},
 			f_ispublic = #{isPublic},
 			f_headline = #{headline},
 			f_deptid = #{deptid},

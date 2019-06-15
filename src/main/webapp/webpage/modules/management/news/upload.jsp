@@ -140,7 +140,7 @@
 
             chunked: true,
             // server: 'http://webuploader.duapp.com/server/fileupload.php',
-            server: '${ctx}/management/news/news/upload',
+            server: '${ctx}/management/news/news/uploadFileAndCreateThumbnail',
             fileNumLimit: 1,//一次最多上传多少张照片
             fileSizeLimit: 5242880,  //
             fileSingleSizeLimit: 1048576  //
@@ -502,13 +502,24 @@
         updateTotalProgress();
         //
         uploader.on('uploadSuccess',function(file,response){
-            var name = window.parent.getIframeId();
-            console.log("===>" + name);
-            var imgurl = response.success; //上传图片的路径
-            // 获取iframe1，parent是index页面的window对象。
-            var iframe = parent.frames[""+name];// 此时iframe1就是iframe1页面的window对象
-            iframe.document.getElementById('mainpic').value=imgurl;
-
+            if(response.success == true){
+                jp.success(response.msg);
+                var name = window.parent.getIframeId();
+                // 1.获取iframe1，parent是index页面的window对象。// 2.获取iframe1，parent是index页面的window对象。
+                var iframe = parent.frames[""+name];
+                //上传图片原文件路径
+                var oldUrl = response.originalUrl;
+                iframe.document.getElementById('smallnrl').value=oldUrl;
+                console.log(oldUrl);
+                //上传图片的压缩文件路径
+                var imgurl = response.thumbnailUrl;
+                console.log(imgurl);
+                iframe.document.getElementById('mainpic').value=imgurl;
+            }else if(response.success == false){
+                jp.alert(response.msg);
+            }else{
+                jp.alert("无法操作！请联系管理员！");
+            }
         });
     });
 </script>

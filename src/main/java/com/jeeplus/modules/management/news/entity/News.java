@@ -25,6 +25,7 @@ public class News extends DataEntity<News> {
 	private String content;		// 内容
 	private String authorid;		// 发布人
 	private String mainpic;		// 封面图片路径
+	private String smallnrl;    // 文件预览图路径
 	private Integer isPublic;		// 是否发布
 	private Integer headline;		// 是否设置为头条
 	private String deptid;		// 发布人部门
@@ -89,7 +90,16 @@ public class News extends DataEntity<News> {
 	public void setMainpic(String mainpic) {
 		this.mainpic = mainpic;
 	}
-	
+
+	@ExcelField(title="文件预览图路径", align=2, sort=15)
+	public String getSmallnrl() {
+		return smallnrl;
+	}
+
+	public void setSmallnrl(String smallnrl) {
+		this.smallnrl = smallnrl;
+	}
+
 	@NotNull(message="是否发布不能为空")
 	@ExcelField(title="是否发布", dictType="", align=2, sort=6)
 	public Integer getIsPublic() {
