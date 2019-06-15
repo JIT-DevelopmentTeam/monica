@@ -73,6 +73,15 @@
                             </label>
                         </div>
                     </div>
+
+                    <div id="loadToAudit" class="weui-loadmore">
+                        <i class="weui-loading"></i>
+                        <span class="weui-loadmore__tips">正在加载...</span>
+                    </div>
+
+                    <div id="endToAudit" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+                        <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
+                    </div>
                 </div>
 
                 <div id="historyDetail" style="display: none;">
@@ -123,19 +132,18 @@
                             </label>
                         </div>
                     </div>
+
+                    <div id="loadHistory" class="weui-loadmore">
+                        <i class="weui-loading"></i>
+                        <span class="weui-loadmore__tips">正在加载...</span>
+                    </div>
+
+                    <div id="endHistory" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+                        <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div id="load" class="weui-loadmore">
-        <i class="weui-loading"></i>
-        <span class="weui-loadmore__tips">正在加载...</span>
-    </div>
-
-    <div id="end" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
-        <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
     </div>
 
     <br><br><br>
@@ -182,6 +190,20 @@
 </div>
 <!--END dialog1-->
 
+<!--BEGIN dialog1-->
+<div class="js_dialog" id="iosDialog3" style="display: none;">
+    <div class="weui-mask"></div>
+    <div class="weui-dialog">
+        <div class="weui-dialog__hd"><strong class="weui-dialog__title">操作反馈</strong></div>
+        <div class="weui-dialog__bd">您确定要审核该订单吗?</div>
+        <div class="weui-dialog__ft">
+            <a onclick="closeWindow('iosDialog3');" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
+            <a onclick="check();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
+        </div>
+    </div>
+</div>
+<!--END dialog1-->
+
 <!--BEGIN dialog2-->
 <div class="js_dialog" id="iosDialog2" style="display: none;">
     <div class="weui-mask"></div>
@@ -200,9 +222,10 @@
 
 <script type="text/javascript">
     $(function () {
-        FastClick.attach(document.body);
-        $("#load").hide();
-        $("#end").hide();
+        $("#loadToAudit").hide();
+        $("#endToAudit").hide();
+        $("#loadHistory").hide();
+        $("#endHistory").hide();
     });
 
     var vm = new Vue({
@@ -243,33 +266,12 @@
                     $("#iosDialog2").fadeIn(200);
                     return;
                 }
-                $.ajax({
-                   async:false,
-                   cache:false,
-                   url:'${ctxf}/wechat/sobill/checkSobillById',
-                   data:{
-                       id:toAuditId
-                   },
-                   dataType:'json',
-                   success:function (res) {
-                       if (res.success){
-                           $("#title").text(res.msg);
-                           $("#iosDialog2").fadeIn(200);
-                           setTimeout(function () {
-                               window.location.reload();
-                           },3000);
-                       } else {
-                           $("#title").text(res.msg);
-                           $("#iosDialog2").fadeIn(200);
-                           return;
-                       }
-                   }
-                });
+                $("#iosDialog3").fadeIn(200);
             }
         }
     });
 
-
+    //展示删除弹窗
     function showWindow() {
         var toAuditId = $("input[name='toAudit']:checked").val();
         var historyId = $("input[name='history']:checked").val();
@@ -286,27 +288,193 @@
         $('#iosDialog1').fadeIn(200);
     }
 
+    //关闭弹窗
     function closeWindow(Id) {
         $('#'+Id).fadeOut(200);
     }
 
+
     // 滚动加载
-    var loading = false;  //状态标记
+    var loadingToAudit = false;  //状态标记
+    var loadingHistory = false;
     $(document.body).infinite().on("infinite", function () {
-        if (loading) return;
-        loading = true;
-        setTimeout(function () {
-            $("#load").css("display", "block");
-            loadDatas();
-            /* TODO 获取数据 */
-        }, 1500);   //模拟延迟
+        if ($("#toAuditDetail").css("display") == "block"){
+            if (loadingToAudit) return;
+            // 加载待审核数据
+            $("#loadToAudit").show();
+            setTimeout(function () {
+                loadDatas('toAudit');
+            }, 1500);   //模拟延迟
+        } else if ($("#historyDetail").css("display") == "block") {
+            if (loadingHistory) return;
+            // 加载历史数据
+            $("#loadHistory").show();
+            setTimeout(function () {
+                loadDatas('history');
+            }, 1500);   //模拟延迟
+        }
+
     });
 
+    var startToAuditPage = 0;
+    var endToAuditPage = 2;
+    var startHistoryPage = 0;
+    var endHistoryPage = 2;
     // 加载数据
-    function loadDatas() {
+    function loadDatas(Id) {
+        switch (Id) {
+            case 'toAudit':
+                startToAuditPage = startToAuditPage + 2;
+                endToAuditPage = endToAuditPage + 2;
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                   data:{
+                       checkStatus:0,
+                       startPage:startToAuditPage,
+                       endPage:endToAuditPage
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                       var sobillList = res.body.sobillList;
+                       var template = '';
+                       for (let i = 0; i < sobillList.length; i++) {
+                           template += '<div class="weui-cells">';
+                           template += '<div class="weui-cells_radio">';
+                           template += '<label class="weui-cell weui-check__label" for="toAudit'+sobillList[i].id+'">';
+                           template += '<div class="weui-cell__bd">';
 
+                           template += '<div class="weui-cell">';
+                           template += '<div class="weui-cell__bd">';
+                           template += '<p>编号:</p>';
+                           template += '</div>';
+                           template += '<div class="weui-cell__ft">'+sobillList[i].billNo+'</div>';
+                           template += '</div>';
+
+                           template += '<div class="weui-cell">';
+                           template += '<div class="weui-cell__bd">';
+                           template += '<p>订单发货时间:</p>';
+                           template += '</div>';
+                           template += '<div class="weui-cell__ft">'+sobillList[i].needTime+'</div>'
+                           template += '</div>';
+
+                           template += '<div class="weui-cell">';
+                           template += '<div class="weui-cell__bd">';
+                           template += '<p>客户:</p>';
+                           template += '</div>';
+                           template += '<div class="weui-cell__ft">'+sobillList[i].cusName+'</div>'
+                           template += '</div>';
+
+                           template += '<div class="weui-cell">';
+                           template += '<div class="weui-cell__bd">';
+                           template += '<p>销售员:</p>';
+                           template += '</div>';
+                           template += '<div class="weui-cell__ft">'+sobillList[i].empName+'</div>'
+                           template += '</div>';
+
+                           template += '<div class="weui-cell">';
+                           template += '<div class="weui-cell__bd">';
+                           template += '<p>状态:</p>';
+                           template += '</div>';
+                           template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
+                           template += '</div>';
+
+                           template += '<div class="weui-cell__ft">';
+                           template += '<input type="radio" class="weui-check" name="toAudit" id="toAudit'+sobillList[i].id+'" value="'+sobillList[i].id+'"/>';
+                           template += '<span class="weui-icon-checked"></span>';
+                           template += '</div>';
+                           template += '</label>';
+                           template += '</div>';
+                           template += '</div>';
+                       }
+                       $("#loadToAudit").before(template);
+                       if (sobillList.length < 2) {
+                           loadingToAudit = true;
+                           $("#loadToAudit").hide();
+                           $("#endToAudit").show();
+                       }
+                   }
+                });
+                break;
+            case 'history':
+                startHistoryPage = startHistoryPage + 2;
+                endHistoryPage = endHistoryPage + 2;
+                $.ajax({
+                    async:false,
+                    cache:false,
+                    url:'${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    data:{
+                        checkStatus:1,
+                        startPage:startHistoryPage,
+                        endPage:endHistoryPage
+                    },
+                    dataType:'json',
+                    success:function (res) {
+                        var sobillList = res.body.sobillList;
+                        var template = '';
+                        for (let i = 0; i < sobillList.length; i++) {
+                            template += '<div class="weui-cells">';
+                            template += '<div class="weui-cells_radio">';
+                            template += '<label class="weui-cell weui-check__label" for="history'+sobillList[i].id+'">';
+                            template += '<div class="weui-cell__bd">';
+
+                            template += '<div class="weui-cell">';
+                            template += '<div class="weui-cell__bd">';
+                            template += '<p>编号:</p>';
+                            template += '</div>';
+                            template += '<div class="weui-cell__ft">'+sobillList[i].billNo+'</div>';
+                            template += '</div>';
+
+                            template += '<div class="weui-cell">';
+                            template += '<div class="weui-cell__bd">';
+                            template += '<p>订单发货时间:</p>';
+                            template += '</div>';
+                            template += '<div class="weui-cell__ft">'+sobillList[i].needTime+'</div>'
+                            template += '</div>';
+
+                            template += '<div class="weui-cell">';
+                            template += '<div class="weui-cell__bd">';
+                            template += '<p>客户:</p>';
+                            template += '</div>';
+                            template += '<div class="weui-cell__ft">'+sobillList[i].cusName+'</div>'
+                            template += '</div>';
+
+                            template += '<div class="weui-cell">';
+                            template += '<div class="weui-cell__bd">';
+                            template += '<p>销售员:</p>';
+                            template += '</div>';
+                            template += '<div class="weui-cell__ft">'+sobillList[i].empName+'</div>'
+                            template += '</div>';
+
+                            template += '<div class="weui-cell">';
+                            template += '<div class="weui-cell__bd">';
+                            template += '<p>状态:</p>';
+                            template += '</div>';
+                            template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
+                            template += '</div>';
+
+                            template += '<div class="weui-cell__ft">';
+                            template += '<input type="radio" class="weui-check" name="history" id="history'+sobillList[i].id+'" value="'+sobillList[i].id+'"/>';
+                            template += '<span class="weui-icon-checked"></span>';
+                            template += '</div>';
+                            template += '</label>';
+                            template += '</div>';
+                            template += '</div>';
+                        }
+                        if (sobillList.length < 2) {
+                            loadingHistory = true;
+                            $("#loadHistory").hide();
+                            $("#endHistory").show();
+                        }
+                        $("#loadHistory").before(template);
+                    }
+                });
+                break;
+        }
     }
 
+    //执行删除
     function delect() {
         var Id = $("input[name='toAudit']:checked").val();
         $.ajax({
@@ -318,6 +486,7 @@
            },
            dataType:'json',
            success:function (res){
+               closeWindow('iosDialog1');
                if (res.success) {
                    $("#title").text(res.msg);
                    $("#iosDialog2").fadeIn(200);
@@ -327,12 +496,12 @@
                } else {
                    $("#title").text(res.msg);
                    $("#iosDialog2").fadeIn(200);
-                   closeWindow('iosDialog1');
                }
            }
         });
     }
 
+    //切换导航
     function changeStyle(Id) {
         if (Id == 'toAudit') {
             if (!$("#" + Id).hasClass("weui-bar__item_on")) {
@@ -341,6 +510,7 @@
                 $("#toAuditDetail").css("display", "block");
                 $("#historyDetail").css("display", "none");
                 $('input[type=radio][name="history"]:checked').prop("checked", false);
+                $("#loadHistory").css("display", "none");
             }
         } else if (Id == 'history') {
             if (!$("#" + Id).hasClass("weui-bar__item_on")) {
@@ -349,8 +519,37 @@
                 $("#toAuditDetail").css("display", "none");
                 $("#historyDetail").css("display", "block");
                 $('input[type=radio][name="toAudit"]:checked').prop("checked", false);
+                $("#loadToAudit").css("display", "none");
             }
         }
+    }
+
+    //执行审核
+    function check() {
+        var toAuditId = $("input[name='toAudit']:checked").val();
+        $.ajax({
+            async:false,
+            cache:false,
+            url:'${ctxf}/wechat/sobill/checkSobillById',
+            data:{
+                id:toAuditId
+            },
+            dataType:'json',
+            success:function (res) {
+                closeWindow('iosDialog3');
+                if (res.success){
+                    $("#title").text(res.msg);
+                    $("#iosDialog2").fadeIn(200);
+                    setTimeout(function () {
+                        window.location.reload();
+                    },3000);
+                } else {
+                    $("#title").text(res.msg);
+                    $("#iosDialog2").fadeIn(200);
+                    return;
+                }
+            }
+        });
     }
 </script>
 </body>

@@ -86,7 +86,7 @@ public class SobillWechatController extends BaseController {
         AjaxJson aj = new AjaxJson();
         User user = UserUtils.getUser();
         Sobill sobill = sobillService.get(id);
-        if (sobill.getCheckStatus() != 1 || sobill.getStatus() != 1){
+        if (sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
             // 待审核和未提交状态允许审核
             sobill.setCheckerId(user.getId());
             sobill.setCheckTime(new Date());

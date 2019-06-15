@@ -58,7 +58,7 @@
 			<if test="billNo != null and billNo != ''">
 				AND a.f_billno = #{billNo}
 			</if>
-			<if test="synStatus != null and synStatus != ''">
+			<if test="synStatus != null">
 				AND a.f_synstatus = #{synStatus}
 			</if>
 			<if test="cusName != null and cusName != ''">
@@ -76,10 +76,10 @@
 			<if test="(beginNeedTime != null and beginNeedTime != '') and (endNeedTime != null and endNeedTime != '') ">
 				AND a.f_needtime BETWEEN #{beginNeedTime} AND #{endNeedTime}
 			</if>
-			<if test="cancellation != null and cancellation != ''">
+			<if test="cancellation != null">
 				AND a.f_cancellation = #{cancellation}
 			</if>
-			<if test="checkStatus != null and checkStatus != ''">
+			<if test="checkStatus != null">
 				AND a.f_checkstatus = #{checkStatus}
 			</if>
 		</where>
@@ -92,7 +92,7 @@
 			</otherwise>
 		</choose>
 
-		<if test="(startPage != null and startPage != '') and (endPage != null and endPage != '')">
+		<if test="startPage != null and endPage != null">
 			LIMIT #{startPage},#{endPage}
 		</if>
 	</select>
