@@ -17,6 +17,11 @@ import com.jeeplus.modules.sys.service.AreaService;
 import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.JwDepartmentAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
@@ -29,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -122,17 +128,6 @@ public class OfficeController extends BaseController {
 		return json;
 	}
 
-	/**
-	 * 同步部门到企业微信
-	 */
-	@ResponseBody
-	@RequestMapping(value = "synToQYWeChat")
-	public Map<String,Object>  synToQYWeChat() throws Exception{
-		Map<String,Object> json = new HashMap<>();
-
-		return json;
-	}
-
 	@RequiresPermissions("sys:office:list")
 	@RequestMapping(value = {"", "list"})
 	public String list(Office office, Model model) {
@@ -175,7 +170,7 @@ public class OfficeController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions(value={"sys:office:add","sys:office:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
-	public AjaxJson save(Office office, Model model) {
+	public AjaxJson save(Office office, Model model, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
@@ -191,6 +186,7 @@ public class OfficeController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
 		if ("".equals(office.getId())) {
 			if ("".equals(office.getParent().getId())) {
 				office.setQyDeptParentId(1);
@@ -207,8 +203,55 @@ public class OfficeController extends BaseController {
 			}
 			office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
 			office.setSynStatus(0);
+
+			// 同步到微信
+			if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
+				Department department = new Department();
+				department.setId(String.valueOf(office.getQyDeptId()));
+				department.setName(office.getName());
+				department.setOrder(String.valueOf(office.getSort()));
+				department.setParentid(String.valueOf(office.getQyDeptParentId()));
+				JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+			}
+			office.setSynStatus(1);	// 同步完之后把状态改为已同步
 		} else {
-			office.setSynStatus(2);
+			String hiddenisSyntoent = request.getParameter("hiddenisSyntoent");
+			if ("0".equals(hiddenisSyntoent)) {			// 第一次保存为不需要同步
+				if (!hiddenisSyntoent.equals(office.getIsSyntoent())) {		// 判断如果第一次为不需要同步，这一次为需要同步（执行创建）
+					office.setSynStatus(0);
+					// 同步到微信
+					if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
+						Department department = new Department();
+						department.setId(String.valueOf(office.getQyDeptId()));
+						department.setName(office.getName());
+						department.setOrder(String.valueOf(office.getSort()));
+						department.setParentid(String.valueOf(office.getQyDeptParentId()));
+						JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				}
+			} else {									// 第一次保存为需要同步
+				if (hiddenisSyntoent.equals(String.valueOf(office.getIsSyntoent()))) {		// 判断如果第一次为需要同步，这一次为需要同步（执行更新）
+					office.setSynStatus(2);
+					// 同步到微信
+					if (office.getSynStatus() == 2 && office.getIsSyntoent() == 1) {
+						Department department = new Department();
+						department.setId(String.valueOf(office.getQyDeptId()));
+						department.setName(office.getName());
+						department.setOrder(String.valueOf(office.getSort()));
+						department.setParentid(String.valueOf(office.getQyDeptParentId()));
+						JwDepartmentAPI.updateDepart(department, accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				} else {													// 判断如果第一次为需要同步，这一次为不需要同步（执行删除）
+					office.setSynStatus(3);
+					// 同步到微信
+					if (office.getSynStatus() == 3 && office.getIsSyntoent() == 0) {
+						JwDepartmentAPI.deleteDepart(String.valueOf(office.getQyDeptId()), accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				}
+			}
 		}
 		officeService.save(office);
 		

@@ -29,6 +29,7 @@
 <body class="bg-white">
 	<form:form id="inputForm" modelAttribute="office"  method="post" class="form-horizontal">
 		<form:hidden path="id"/>
+		<input type="hidden" name="hiddenisSyntoent" value="${office.isSyntoent}"/>
 		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
 		   <tbody>
 		      <tr>
