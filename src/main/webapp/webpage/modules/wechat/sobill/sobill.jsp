@@ -379,6 +379,7 @@
                            template += '</div>';
                            template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
                            template += '</div>';
+                           template += '</div>';
 
                            template += '<div class="weui-cell__ft">';
                            template += '<input type="radio" class="weui-check" name="toAudit" id="toAudit'+sobillList[i].id+'" value="'+sobillList[i].id+'"/>';
@@ -452,6 +453,7 @@
                             template += '<p>状态:</p>';
                             template += '</div>';
                             template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
+                            template += '</div>';
                             template += '</div>';
 
                             template += '<div class="weui-cell__ft">';
