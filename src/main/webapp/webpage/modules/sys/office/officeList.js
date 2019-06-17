@@ -70,10 +70,17 @@
         }
     }
 
-    /*同步*/
+    /*同步ERP*/
     function synDept() {
 		jp.post("${ctx}/sys/office/synDept", {}, function (data) {
 			refresh();
+		});
+	}
+
+	/*同步到微信*/
+	function synToQYWeChat() {
+		jp.post("${ctx}/sys/office/synToQYWeChat", {}, function (data) {
+
 		});
 	}
 </script>
