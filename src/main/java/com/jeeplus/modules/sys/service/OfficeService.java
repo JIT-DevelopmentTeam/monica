@@ -36,6 +36,10 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 			return UserUtils.getOfficeList();
 		}
 	}
+
+	public List<Office> findByQyDeptParentId(int DEL_FLAG_NORMAL, int qyDeptParentId){
+		return officeMapper.findByQyDeptParentId(DEL_FLAG_NORMAL, qyDeptParentId);
+	}
 	
 	@Transactional(readOnly = true)
 	public List<Office> findList(Office office){
@@ -72,6 +76,12 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 	@Transactional(readOnly = false)
 	public void deleteByParentId(String id) {
 		officeMapper.deleteByParentId(id);
+		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteLogical(Office office) {
+		officeMapper.deleteLogical(office);
 		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
 	}
 	

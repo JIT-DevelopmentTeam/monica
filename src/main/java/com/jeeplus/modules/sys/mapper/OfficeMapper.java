@@ -6,6 +6,9 @@ package com.jeeplus.modules.sys.mapper;
 import com.jeeplus.core.persistence.TreeMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.sys.entity.Office;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 机构MAPPER接口
@@ -20,4 +23,12 @@ public interface OfficeMapper extends TreeMapper<Office> {
 	Office getByName(String name);
 
 	void deleteByParentId(String id);
+
+	List<Office> findByQyDeptParentId(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("qyDeptParentId") int qyDeptParentId);
+
+	/**
+	 * 逻辑删除（通过id）
+	 * @param office
+	 */
+	void deleteLogical(Office office);
 }

@@ -164,6 +164,25 @@ public class OfficeController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
+		if ("".equals(office.getId())) {
+			if ("".equals(office.getParent().getId())) {
+				office.setQyDeptParentId(1);
+			} else {
+				Office findParentById = officeService.get(office.getParent().getId());
+				office.setQyDeptParentId(findParentById.getQyDeptId());
+			}
+			List<Office> officeListByQyDeptParentId = officeService.findByQyDeptParentId(0, office.getQyDeptParentId());
+			int size = 0;
+			if (officeListByQyDeptParentId.size() > 0) {
+				size = officeListByQyDeptParentId.size() + 1;
+			} else {
+				size = 1;
+			}
+			office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
+			office.setSynStatus(0);
+		} else {
+			office.setSynStatus(2);
+		}
 		officeService.save(office);
 		
 		if(office.getChildDeptList()!=null){
@@ -196,7 +215,9 @@ public class OfficeController extends BaseController {
 			j.setMsg("演示模式，不允许操作！");
 			return j;
 		}
-		officeService.delete(office);
+		office.setDelFlag("1");
+		office.setSynStatus(3);
+		officeService.deleteLogical(office);
 		j.setSuccess(true);
 		j.setMsg("删除成功！");
 		return j;

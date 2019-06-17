@@ -142,6 +142,14 @@
 		ORDER BY a.code
 	</select>
 
+	<select id="findByQyDeptParentId" resultType="Office">
+		SELECT
+			<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.qy_dept_parent_id LIKE #{qyDeptParentId}
+	</select>
+
 	<insert id="insert">
 		INSERT INTO sys_office(
 			id,
@@ -225,8 +233,6 @@
 			useable=#{useable},
 			primary_person=#{primaryPerson.id},
 			deputy_person=#{deputyPerson.id},
-			qy_dept_parent_id = #{qyDeptParentId},
-			qy_dept_id = #{qyDeptId},
 			synstatus = #{synStatus},
 			issyntoent = #{isSyntoent}
 		WHERE id = #{id}
@@ -259,6 +265,14 @@
     <update id="deleteByParentId">
         DELETE FROM sys_office
         WHERE parent_ids LIKE CONCAT('%,', #{id}, ',%')
+    </update>
+
+	<!-- 逻辑删除 -->
+	<update id="deleteLogical">
+        UPDATE sys_office SET
+        	del_flag = #{DEL_FLAG_DELETE},
+        	synstatus = #{synStatus}
+        WHERE id = #{id}
     </update>
 	
 </mapper>
