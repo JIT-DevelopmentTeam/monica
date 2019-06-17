@@ -71,6 +71,7 @@ public class OfficeController extends BaseController {
 		Area area = new Area();
 		List<Office> officeList = officeService.findList(new Office());
 		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
+
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			System.out.println(jsonarr.get(i));
@@ -98,11 +99,37 @@ public class OfficeController extends BaseController {
 			area.setId(areaChina.getId());
 			office.setArea(area);
 			office.setGrade("1");
+			office.setUseable("1");
+			Office findParentById = officeService.get(office.getParent().getId());
+			if (findParentById != null) {
+				office.setQyDeptParentId(findParentById.getQyDeptId());
+				List<Office> officeListByQyDeptParentId = officeService.findByQyDeptParentId(0, office.getQyDeptParentId());
+				int size = 0;
+				if (officeListByQyDeptParentId.size() > 0) {
+					size = officeListByQyDeptParentId.size() + 1;
+				} else {
+					size = 1;
+				}
+				office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
+			}
+			office.setSynStatus(0);
+			office.setIsSyntoent(1);
 
 			officeService.save(office);
 		}
 		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);
+		return json;
+	}
+
+	/**
+	 * 同步部门到企业微信
+	 */
+	@ResponseBody
+	@RequestMapping(value = "synToQYWeChat")
+	public Map<String,Object>  synToQYWeChat() throws Exception{
+		Map<String,Object> json = new HashMap<>();
+
 		return json;
 	}
 
