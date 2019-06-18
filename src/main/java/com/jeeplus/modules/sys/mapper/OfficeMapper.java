@@ -26,6 +26,8 @@ public interface OfficeMapper extends TreeMapper<Office> {
 
 	List<Office> findByQyDeptParentId(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("qyDeptParentId") int qyDeptParentId);
 
+	List<Office> findByParentIds(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("parentIds") String parentIds);
+
 	/**
 	 * 逻辑删除（通过id）
 	 * @param office

@@ -71,12 +71,18 @@ public class OfficeController extends BaseController {
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
 
 		Office officeName = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
 		Area areaChina = areaService.findByName("中国");					// 按地域名查询地域信息
 		Area area = new Area();
-		List<Office> officeList = officeService.findList(new Office());
+		List<Office> originalList = officeService.findByParentIds(0, officeName.getId());
 		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
+		List<Office> officeList = officeService.findList(new Office());
+		for (int i = 0; i < originalList.size(); i++) {
+			System.out.println("--->" + originalList.get(i).getQyDeptId());
+			JwDepartmentAPI.deleteDepart(String.valueOf(originalList.get(i).getQyDeptId()), accessToken.getAccesstoken());
+		}
 
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
@@ -120,6 +126,13 @@ public class OfficeController extends BaseController {
 			}
 			office.setSynStatus(0);
 			office.setIsSyntoent(1);
+			Department department = new Department();
+			department.setId(String.valueOf(office.getQyDeptId()));
+			department.setName(office.getName());
+			department.setOrder(String.valueOf(office.getSort()));
+			department.setParentid(String.valueOf(office.getQyDeptParentId()));
+			JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+			office.setSynStatus(1);
 
 			officeService.save(office);
 		}
@@ -285,9 +298,9 @@ public class OfficeController extends BaseController {
 			j.setMsg("演示模式，不允许操作！");
 			return j;
 		}
-		office.setDelFlag("1");
-		office.setSynStatus(3);
-		officeService.deleteLogical(office);
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
+		JwDepartmentAPI.deleteDepart(String.valueOf(office.getQyDeptId()), accessToken.getAccesstoken());
+		officeService.delete(office);
 		j.setSuccess(true);
 		j.setMsg("删除成功！");
 		return j;
