@@ -200,7 +200,7 @@ public class OfficeController extends BaseController {
 			return j;
 		}
 		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-		if ("".equals(office.getId())) {
+		if ("".equals(office.getId())) {				// 新建
 			if ("".equals(office.getParent().getId())) {
 				office.setQyDeptParentId(1);
 			} else {
@@ -227,7 +227,7 @@ public class OfficeController extends BaseController {
 				JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
 			}
 			office.setSynStatus(1);	// 同步完之后把状态改为已同步
-		} else {
+		} else {										// 修改
 			String hiddenisSyntoent = request.getParameter("hiddenisSyntoent");
 			if ("0".equals(hiddenisSyntoent)) {			// 第一次保存为不需要同步
 				if (!hiddenisSyntoent.equals(office.getIsSyntoent())) {		// 判断如果第一次为不需要同步，这一次为需要同步（执行创建）
