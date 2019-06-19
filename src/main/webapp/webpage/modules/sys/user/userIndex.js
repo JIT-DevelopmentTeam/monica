@@ -231,10 +231,10 @@
 
           /*同步用户*/
 			function synUser() {
-				alert("同步ERP");
-				// jp.post("${ctx}/sys/user/synUser", {}, function (data) {
-				// 	refresh();
-				// });
+				// alert("同步ERP");
+				jp.post("${ctx}/sys/user/synUser", {}, function (data) {
+					refresh();
+				});
 			}
 
 			/*同步到微信*/

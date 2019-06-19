@@ -157,6 +157,43 @@ public class SystemService extends BaseService implements InitializingBean {
 //			systemRealm.clearAllCachedAuthorizationInfo();
 		}
 	}
+
+	@Transactional(readOnly = false)
+	public void saveUser(User user, boolean open) {
+		if (open) {
+			user.preInsert();
+			userMapper.insert(user);
+		} else {
+			if (StringUtils.isBlank(user.getId())){
+				user.preInsert();
+				userMapper.insert(user);
+			}else{
+				// 清除原用户机构用户缓存
+				User oldUser = userMapper.get(user.getId());
+				if (oldUser.getOffice() != null && oldUser.getOffice().getId() != null){
+					CacheUtils.remove(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + oldUser.getOffice().getId());
+				}
+				// 更新用户数据
+				user.preUpdate();
+				userMapper.update(user);
+			}
+			if (StringUtils.isNotBlank(user.getId())){
+				// 更新用户与角色关联
+				userMapper.deleteUserRole(user);
+				if (user.getRoleList() != null && user.getRoleList().size() > 0){
+					userMapper.insertUserRole(user);
+				}else{
+					throw new ServiceException(user.getLoginName() + "没有设置角色！");
+				}
+				// 将当前用户同步到Activiti
+				saveActivitiUser(user);
+				// 清除用户缓存
+				UserUtils.clearCache(user);
+//			// 清除权限缓存
+//			systemRealm.clearAllCachedAuthorizationInfo();
+			}
+		}
+	}
 	
 	@Transactional(readOnly = false)
 	public void updateUserInfo(User user) {
