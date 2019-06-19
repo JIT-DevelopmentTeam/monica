@@ -482,5 +482,12 @@
 		<!-- 排序 -->
 		ORDER BY  a.name
 	</select>
+
+	<!-- 更新同步状态 -->
+	<update id="updateSynstatus">
+		UPDATE sys_user SET
+			synstatus = #{synStatus}
+		WHERE id = #{id}
+	</update>
 	
 </mapper>

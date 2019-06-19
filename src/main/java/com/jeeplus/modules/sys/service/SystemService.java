@@ -204,6 +204,11 @@ public class SystemService extends BaseService implements InitializingBean {
 //		// 清除权限缓存
 //		systemRealm.clearAllCachedAuthorizationInfo();
 	}
+
+	@Transactional(readOnly = false)
+	public void updateSynstatus(int synStatus, String id) {
+		userMapper.updateSynstatus(synStatus, id);
+	}
 	
 	@Transactional(readOnly = false)
 	public void deleteUser(User user) {

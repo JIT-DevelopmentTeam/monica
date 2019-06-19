@@ -21,6 +21,7 @@ import com.jeeplus.modules.sys.entity.Role;
 import com.jeeplus.modules.sys.entity.SystemConfig;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.service.SystemConfigService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
@@ -72,6 +73,9 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private OfficeService officeService;
+
 	public String CNToPinyin(String ChineseLanguage) throws BadHanyuPinyinOutputFormatCombination {
 		char[] cl_chars = ChineseLanguage.trim().toCharArray();
 		String hanyupinyin = "";
@@ -115,9 +119,34 @@ public class UserController extends BaseController {
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_empl?token_value=20190603","POST");
 
 		JSONObject jsonObject = new JSONObject();
+		Office company = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
+		Office dept = new Office();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			System.out.println(jsonarr.get(i));
 			jsonObject = jsonarr.getJSONObject(i);
+			User user = new User();
+			user.setId(jsonObject.getString("id"));
+			user.setCompany(company);
+			dept.setId(jsonObject.getString("f_deptid"));
+			user.setOffice(dept);
+			user.setNo(jsonObject.getString("f_number"));
+			user.setName(jsonObject.getString("f_name"));
+			user.setLoginName(CNToPinyin(jsonObject.getString("f_name")));
+			user.setPassword(SystemService.entryptPassword("123456"));
+			user.setLoginFlag("1");
+			user.setSynStatus(0);
+			user.setIsSyntoent(1);
+
+			//生成用户二维码，使用登录名
+			String realPath = Global.getAttachmentDir()+ "qrcode/";
+			FileUtils.createDirectory(realPath);
+			String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
+			String filePath = realPath + name;  //存放路径
+			TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
+			user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
+
+			// 保存用户信息
+			systemService.saveUser(user, true);
 		}
 		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);
@@ -133,7 +162,7 @@ public class UserController extends BaseController {
 		Map<String,Object> json = new HashMap<>();
 		List<User> unSynList = systemService.findBySynStatus(0, 0, 1); // 未同步的员工
 		List<User> needUpdateList = systemService.findBySynStatus(0, 2, 1); // 需修改的员工
-		List<User> needDeleteList = systemService.findBySynStatus(0, 3, 0); // 需删除的员工
+		List<User> needDeleteList = systemService.findBySynStatus(0, 3, 1); // 需删除的员工
 		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
         if (unSynList.size() > 0) {
 			for (int i = 0; i < unSynList.size(); i++) {
@@ -142,9 +171,41 @@ public class UserController extends BaseController {
 				user.setUserid(useId);
 				user.setName(unSynList.get(i).getName());
 				user.setMobile(unSynList.get(i).getMobile());
-				user.setDepartment(new Integer[]{});
+				String officeId = unSynList.get(i).getOffice().getId();
+				Office office = officeService.get(officeId);
+				user.setDepartment(new Integer[]{office.getQyDeptId()});
 				int result = JwUserAPI.createUser(user, accessToken.getAccesstoken());
 				System.out.println(result==0 ? unSynList.get(i).getName() + "创建成功！" : "失败：" + result);
+				if (result == 0) {
+					userMapper.updateSynstatus(1, unSynList.get(i).getId());
+				}
+			}
+		}
+        if (needUpdateList.size() > 0) {
+			for (int i = 0; i < needUpdateList.size(); i++) {
+				com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User user = new com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User();
+				String useId = CNToPinyin(needUpdateList.get(i).getName());
+				user.setUserid(useId);
+				user.setName(needUpdateList.get(i).getName());
+				user.setMobile(needUpdateList.get(i).getMobile());
+				String officeId = needUpdateList.get(i).getOffice().getId();
+				Office office = officeService.get(officeId);
+				user.setDepartment(new Integer[]{office.getQyDeptId()});
+				int result = JwUserAPI.updateUser(user, accessToken.getAccesstoken());
+				System.out.println(result==0 ? needUpdateList.get(i).getName() + "修改成功！" : "失败：" + result);
+				if (result == 0) {
+					userMapper.updateSynstatus(1, needUpdateList.get(i).getId());
+				}
+			}
+		}
+        if (needDeleteList.size() > 0) {
+			for (int i = 0; i < needDeleteList.size(); i++) {
+				String useId = CNToPinyin(needDeleteList.get(i).getName());
+				int result = JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
+				System.out.println(result==0 ? needDeleteList.get(i).getName() + "删除成功！" : "失败：" + result);
+				if (result == 0) {
+					userMapper.updateSynstatus(1, needDeleteList.get(i).getId());
+				}
 			}
 		}
 		return json;
@@ -233,6 +294,11 @@ public class UserController extends BaseController {
 		String filePath = realPath + name;  //存放路径
 		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
 		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
+		if ("".equals(user.getId())) {
+			user.setSynStatus(0);
+		} else {
+			user.setSynStatus(2);
+		}
 		// 保存用户信息
 		systemService.saveUser(user);
 		// 清除当前用户缓存
@@ -264,6 +330,13 @@ public class UserController extends BaseController {
 			j.setMsg("删除失败，不允许删除超级管理员!");
 			return j;
 		}else{
+			AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
+			try {
+				String useId = CNToPinyin(user.getName());
+				JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
+			} catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
+				badHanyuPinyinOutputFormatCombination.printStackTrace();
+			}
 			systemService.deleteUser(user);//删除用户成功
 			j.setSuccess(true);
 			j.setMsg("删除成功!");
