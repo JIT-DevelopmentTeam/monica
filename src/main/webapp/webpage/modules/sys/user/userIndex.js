@@ -241,7 +241,7 @@
 			function synToQYWeChat() {
 				// alert("同步到微信");
 				jp.post("${ctx}/sys/user/synToQYWeChat", {}, function (data) {
-
+					jp.success("同步成功！");
 				});
 			}
 	</script>
