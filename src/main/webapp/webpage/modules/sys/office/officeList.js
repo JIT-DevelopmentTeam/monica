@@ -77,12 +77,6 @@
 		});
 	}
 
-	/*同步到微信*/
-	function synToQYWeChat() {
-		jp.post("${ctx}/sys/office/synToQYWeChat", {}, function (data) {
-
-		});
-	}
 </script>
 <script type="text/html" id="officeItemTpl">
 <td><a  href="#" onclick="jp.openViewDialog('查看机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')">{{d.name}}</a></td>

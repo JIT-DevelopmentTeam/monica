@@ -278,10 +278,10 @@
 			login_flag, 
 			photo, 
 			qrcode,
-			a.open_id,
-			a.qy_user_id,
-			a.synstatus,
-			a.issyntoent,
+			open_id,
+			qy_user_id,
+			synstatus,
+			issyntoent,
 			del_flag
 		) VALUES (
 			#{id}, 
@@ -482,5 +482,12 @@
 		<!-- 排序 -->
 		ORDER BY  a.name
 	</select>
+
+	<!-- 更新同步状态 -->
+	<update id="updateSynstatus">
+		UPDATE sys_user SET
+			synstatus = #{synStatus}
+		WHERE id = #{id}
+	</update>
 	
 </mapper>

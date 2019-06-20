@@ -17,6 +17,11 @@ import com.jeeplus.modules.sys.service.AreaService;
 import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.JwDepartmentAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
@@ -29,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -65,12 +71,19 @@ public class OfficeController extends BaseController {
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
 
 		Office officeName = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
 		Area areaChina = areaService.findByName("中国");					// 按地域名查询地域信息
 		Area area = new Area();
-		List<Office> officeList = officeService.findList(new Office());
+		List<Office> originalList = officeService.findByParentIds(0, officeName.getId());
 		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
+		List<Office> officeList = officeService.findList(new Office());
+		for (int i = 0; i < originalList.size(); i++) {
+			System.out.println("--->" + originalList.get(i).getQyDeptId());
+			JwDepartmentAPI.deleteDepart(String.valueOf(originalList.get(i).getQyDeptId()), accessToken.getAccesstoken());
+		}
+
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			System.out.println(jsonarr.get(i));
@@ -98,6 +111,28 @@ public class OfficeController extends BaseController {
 			area.setId(areaChina.getId());
 			office.setArea(area);
 			office.setGrade("1");
+			office.setUseable("1");
+			Office findParentById = officeService.get(office.getParent().getId());
+			if (findParentById != null) {
+				office.setQyDeptParentId(findParentById.getQyDeptId());
+				List<Office> officeListByQyDeptParentId = officeService.findByQyDeptParentId(0, office.getQyDeptParentId());
+				int size = 0;
+				if (officeListByQyDeptParentId.size() > 0) {
+					size = officeListByQyDeptParentId.size() + 1;
+				} else {
+					size = 1;
+				}
+				office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
+			}
+			office.setSynStatus(0);
+			office.setIsSyntoent(1);
+			Department department = new Department();
+			department.setId(String.valueOf(office.getQyDeptId()));
+			department.setName(office.getName());
+			department.setOrder(String.valueOf(office.getSort()));
+			department.setParentid(String.valueOf(office.getQyDeptParentId()));
+			JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+			office.setSynStatus(1);
 
 			officeService.save(office);
 		}
@@ -148,7 +183,7 @@ public class OfficeController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions(value={"sys:office:add","sys:office:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
-	public AjaxJson save(Office office, Model model) {
+	public AjaxJson save(Office office, Model model, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
@@ -164,7 +199,8 @@ public class OfficeController extends BaseController {
 			j.setMsg(errMsg);
 			return j;
 		}
-		if ("".equals(office.getId())) {
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
+		if ("".equals(office.getId())) {				// 新建
 			if ("".equals(office.getParent().getId())) {
 				office.setQyDeptParentId(1);
 			} else {
@@ -180,8 +216,55 @@ public class OfficeController extends BaseController {
 			}
 			office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
 			office.setSynStatus(0);
-		} else {
-			office.setSynStatus(2);
+
+			// 同步到微信
+			if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
+				Department department = new Department();
+				department.setId(String.valueOf(office.getQyDeptId()));
+				department.setName(office.getName());
+				department.setOrder(String.valueOf(office.getSort()));
+				department.setParentid(String.valueOf(office.getQyDeptParentId()));
+				JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+			}
+			office.setSynStatus(1);	// 同步完之后把状态改为已同步
+		} else {										// 修改
+			String hiddenisSyntoent = request.getParameter("hiddenisSyntoent");
+			if ("0".equals(hiddenisSyntoent)) {			// 第一次保存为不需要同步
+				if (!hiddenisSyntoent.equals(office.getIsSyntoent())) {		// 判断如果第一次为不需要同步，这一次为需要同步（执行创建）
+					office.setSynStatus(0);
+					// 同步到微信
+					if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
+						Department department = new Department();
+						department.setId(String.valueOf(office.getQyDeptId()));
+						department.setName(office.getName());
+						department.setOrder(String.valueOf(office.getSort()));
+						department.setParentid(String.valueOf(office.getQyDeptParentId()));
+						JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				}
+			} else {									// 第一次保存为需要同步
+				if (hiddenisSyntoent.equals(String.valueOf(office.getIsSyntoent()))) {		// 判断如果第一次为需要同步，这一次为需要同步（执行更新）
+					office.setSynStatus(2);
+					// 同步到微信
+					if (office.getSynStatus() == 2 && office.getIsSyntoent() == 1) {
+						Department department = new Department();
+						department.setId(String.valueOf(office.getQyDeptId()));
+						department.setName(office.getName());
+						department.setOrder(String.valueOf(office.getSort()));
+						department.setParentid(String.valueOf(office.getQyDeptParentId()));
+						JwDepartmentAPI.updateDepart(department, accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				} else {													// 判断如果第一次为需要同步，这一次为不需要同步（执行删除）
+					office.setSynStatus(3);
+					// 同步到微信
+					if (office.getSynStatus() == 3 && office.getIsSyntoent() == 0) {
+						JwDepartmentAPI.deleteDepart(String.valueOf(office.getQyDeptId()), accessToken.getAccesstoken());
+					}
+					office.setSynStatus(1);	// 同步完之后把状态改为已同步
+				}
+			}
 		}
 		officeService.save(office);
 		
@@ -215,9 +298,9 @@ public class OfficeController extends BaseController {
 			j.setMsg("演示模式，不允许操作！");
 			return j;
 		}
-		office.setDelFlag("1");
-		office.setSynStatus(3);
-		officeService.deleteLogical(office);
+		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
+		JwDepartmentAPI.deleteDepart(String.valueOf(office.getQyDeptId()), accessToken.getAccesstoken());
+		officeService.delete(office);
 		j.setSuccess(true);
 		j.setMsg("删除成功！");
 		return j;

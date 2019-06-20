@@ -231,17 +231,17 @@
 
           /*同步用户*/
 			function synUser() {
-				alert("同步ERP");
-				// jp.post("${ctx}/sys/user/synUser", {}, function (data) {
-				// 	refresh();
-				// });
+				// alert("同步ERP");
+				jp.post("${ctx}/sys/user/synUser", {}, function (data) {
+					refresh();
+				});
 			}
 
 			/*同步到微信*/
 			function synToQYWeChat() {
 				// alert("同步到微信");
 				jp.post("${ctx}/sys/user/synToQYWeChat", {}, function (data) {
-
+					jp.success("同步成功！");
 				});
 			}
 	</script>

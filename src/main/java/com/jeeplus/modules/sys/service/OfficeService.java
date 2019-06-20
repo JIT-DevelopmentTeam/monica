@@ -40,6 +40,10 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 	public List<Office> findByQyDeptParentId(int DEL_FLAG_NORMAL, int qyDeptParentId){
 		return officeMapper.findByQyDeptParentId(DEL_FLAG_NORMAL, qyDeptParentId);
 	}
+
+	public List<Office> findByParentIds(int DEL_FLAG_NORMAL, String parentIds) {
+		return officeMapper.findByParentIds(DEL_FLAG_NORMAL, parentIds);
+	}
 	
 	@Transactional(readOnly = true)
 	public List<Office> findList(Office office){
