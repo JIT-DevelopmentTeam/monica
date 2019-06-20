@@ -77,6 +77,10 @@
 				ORDER BY a.create_date ASC
 			</otherwise>
 		</choose>
+
+		<if test="startPage != null and endPage != null">
+			LIMIT #{startPage},#{endPage}
+		</if>
 	</select>
 	
 	<select id="findAllList" resultType="Icitem" >
