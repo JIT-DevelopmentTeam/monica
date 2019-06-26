@@ -44,12 +44,12 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-                    <if test="classId != null  and classId.id != null and classId.id != ''">
-                        AND (b.id = #{classId.id} OR b.parent_ids LIKE
-                        <if test="dbName == 'oracle'">'%,'||#{classId.id}||',%')</if>
-                        <if test="dbName == 'mysql'">CONCAT('%,', #{classId.id}, ',%'))</if>
-                        <if test="dbName == 'mssql'">'%'+#{classId.id}+'%')</if>
-                    </if>
+            <if test="classId != null  and classId.id != null and classId.id != ''">
+                AND (b.id = #{classId.id} OR b.parent_ids LIKE
+                <if test="dbName == 'oracle'">'%,'||#{classId.id}||',%')</if>
+                <if test="dbName == 'mysql'">CONCAT('%,', #{classId.id}, ',%'))</if>
+                <if test="dbName == 'mssql'">'%'+#{classId.id}+'%')</if>
+            </if>
 			<if test="number != null and number != ''">
 				AND a.f_number LIKE 
 					<if test="dbName == 'oracle'">'%'||#{number}||'%'</if>

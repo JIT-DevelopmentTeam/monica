@@ -28,9 +28,9 @@ public class IcitemWechatController {
     @Autowired
     private IcitemService icitemService;
 
-    @RequestMapping(value = "getItemsList")
+    @RequestMapping(value = "getItemsListByClassId")
     @ResponseBody
-    public AjaxJson getItemsList(Icitem icitem){
+    public AjaxJson getItemsListByClassId(Icitem icitem){
         AjaxJson aj = new AjaxJson();
         icitem.setDelFlag("0");
         List<Icitem> icitemList = icitemService.findList(icitem);

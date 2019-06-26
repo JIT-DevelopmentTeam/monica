@@ -207,10 +207,10 @@
                     <!-- 滑动门 -->
                     <div class="bg">
                         <ul style="height: 100%;">
-                            <li v-on:click="screenClass(itemClass.id)" :id="itemClass.id" v-for="itemClass in icitemClassList">
+                            <li v-on:click="screenClass(itemClass.id,index)" :id="itemClass.id" v-for="(itemClass,index) in icitemClassList">
                                 <a href="#" class="first">{{itemClass.name}}</a>
                                 <div class="div2">
-                                    <div class="banner" style="width: 100%;">
+                                    <div class="banner" :id="index" style="width: 100%;">
                                         111
                                     </div>
                                 </div>
@@ -282,8 +282,21 @@
             },
             submitItems(){
             },
-            screenClass(classId){
-
+            screenClass(classId,index){
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url: '${ctxf}/wechat/icitem/getItemsListByClassId',
+                   data:{
+                       classId:classId
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                        var icitemList = res.body.icitemList;
+                        $("#index").empty();
+                       /* TODO 数据列表 */
+                   }
+                });
             }
         }
     });
