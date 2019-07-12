@@ -1,15 +1,12 @@
 package com.jeeplus.modules.wechat.sobill;
+import com.google.common.collect.Lists;
 
 import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.utils.time.DateUtil;
-import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.management.customer.entity.Customer;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
-import com.jeeplus.modules.wxapi.api.core.util.DateUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,9 +47,20 @@ public class SobillWechatController extends BaseController {
     }
 
     @RequestMapping(value = "goAdd")
-    public ModelAndView goAdd(){
+    public ModelAndView goAdd(Sobill sobill){
         ModelAndView mv = new ModelAndView();
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        String month = (now.get(Calendar.MONTH) + 1) + "";
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int min = now.get(Calendar.MINUTE);
+        int secound = now.get(Calendar.SECOND);
+        String time = year + month + day + hour + min + secound;
+        sobill.setBillNo("SOB"+time);
+        sobill.setSynStatus(0);
         mv.setViewName("modules/wechat/sobill/addSobill");
+        mv.addObject("sobill",sobill);
         return mv;
     }
 

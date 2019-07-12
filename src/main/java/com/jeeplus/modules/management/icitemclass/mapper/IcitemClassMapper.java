@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.TreeMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
 
+import java.util.List;
+
 /**
  * 商品分类管理MAPPER接口
  * @author JiaChe
@@ -14,5 +16,7 @@ import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
  */
 @MyBatisMapper
 public interface IcitemClassMapper extends TreeMapper<IcitemClass> {
+
+    List<IcitemClass> findListForWechat(IcitemClass icitemClass);
 	
 }

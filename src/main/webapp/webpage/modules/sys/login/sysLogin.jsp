@@ -44,7 +44,7 @@
 		<div class="row">
 			<div class="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
 				<img  class="img-circle" src="${ctxStatic}/common/images/flat-avatar.png" class="user-avatar" />
-				<h1>Jeeplus</h1>
+				<h1>莫尔卡·信息化管理平台</h1>
 				<sys:message content="${message}" showType="1"/>
 				<form id="loginForm" role="form" action="${ctx}/login" method="post">
 					<div class="form-content">

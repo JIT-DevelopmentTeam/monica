@@ -43,7 +43,7 @@ public class IcitemWechatController {
     public AjaxJson getItemClass(IcitemClass icitemClass){
         AjaxJson aj = new AjaxJson();
         icitemClass.setDelFlag("0");
-        List<IcitemClass> icitemClassList = icitemClassService.findList(icitemClass);
+        List<IcitemClass> icitemClassList = icitemClassService.findListForWechat(icitemClass);
         aj.put("icitemClassList",icitemClassList);
         return aj;
     }

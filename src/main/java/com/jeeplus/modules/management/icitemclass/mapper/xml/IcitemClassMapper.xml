@@ -88,6 +88,19 @@
 		</where>
 		ORDER BY a.sort ASC
 	</select>
+
+    <select id="findListForWechat" resultType="IcitemClass">
+        SELECT
+        <include refid="icitemClassColumns"/>
+        FROM tb_icitemclass a
+        <include refid="icitemClassJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            ${dataScope}
+            AND a.f_name NOT IN ('成品','半成品','大板类','胚板类')
+        </where>
+        ORDER BY a.sort ASC
+    </select>
 	
 	<select id="findAllList" resultType="IcitemClass">
 		SELECT 
