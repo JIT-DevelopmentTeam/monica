@@ -21,7 +21,7 @@
 	<div class="panel-body">
 		<input type="hidden" id="ids"/>
 		<div class="row">
-				<div class="col-sm-3 col-md-2" >
+				<div class="col-sm-4 col-md-2" >
 					<div class="form-group">
 						<div class="row">
 							<div class="col-sm-6" >
