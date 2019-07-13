@@ -24,7 +24,7 @@
 				<div class="col-sm-3 col-md-2" >
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-8" >
+							<div class="col-sm-6" >
 								<div class="input-search">
 									<button type="submit" class="input-search-btn">
 										<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -46,7 +46,7 @@
 					</div>
 					<div id="icitemClassjsTree" style="border:0px;overflow-y: scroll;height: 500px;"></div>
 				</div>
-				<div  class="col-sm-8 col-md-9">
+				<div  class="col-sm-8 col-md-10">
 	
 	<!-- 搜索 -->
 	<div id="search-collapse" class="collapse">
