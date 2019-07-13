@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.management.warehouse.service;
 
-import java.util.List;
-
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.service.TreeService;
+import com.jeeplus.modules.management.warehouse.entity.Warehouse;
+import com.jeeplus.modules.management.warehouse.mapper.WarehouseMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeeplus.core.service.TreeService;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.modules.management.warehouse.entity.Warehouse;
-import com.jeeplus.modules.management.warehouse.mapper.WarehouseMapper;
+import java.util.List;
 
 /**
  * 库存管理Service
@@ -21,6 +21,9 @@ import com.jeeplus.modules.management.warehouse.mapper.WarehouseMapper;
 @Service
 @Transactional(readOnly = true)
 public class WarehouseService extends TreeService<WarehouseMapper, Warehouse> {
+
+	@Autowired
+	private WarehouseMapper warehouseMapper;
 
 	public Warehouse get(String id) {
 		return super.get(id);
@@ -41,6 +44,11 @@ public class WarehouseService extends TreeService<WarehouseMapper, Warehouse> {
 	@Transactional(readOnly = false)
 	public void delete(Warehouse warehouse) {
 		super.delete(warehouse);
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteAll() {
+		warehouseMapper.deleteAll();
 	}
 	
 }

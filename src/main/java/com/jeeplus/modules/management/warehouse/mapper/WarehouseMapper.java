@@ -14,5 +14,10 @@ import com.jeeplus.modules.management.warehouse.entity.Warehouse;
  */
 @MyBatisMapper
 public interface WarehouseMapper extends TreeMapper<Warehouse> {
-	
+
+    /**
+     * 物理删除（所有）
+     */
+    void deleteAll();
+
 }
