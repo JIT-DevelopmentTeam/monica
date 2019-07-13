@@ -44,7 +44,7 @@
 							</div>--%>
 						</div>
 					</div>
-					<div id="icitemClassjsTree" style="border:0px;overflow-y: scroll;height: 500px;"></div>
+					<div id="icitemClassjsTree" style="border:0px;overflow-y: auto;height: 450px;"></div>
 				</div>
 				<div  class="col-sm-8 col-md-10">
 	

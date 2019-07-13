@@ -42,7 +42,7 @@
 							</div>--%>
 						</div>
 					</div>
-					<div id="warehousejsTree" style="overflow-x:auto; border:0px;"></div>
+					<div id="warehousejsTree" style="overflow-x:auto; border:0px; overflow-y: auto; height: 450px;"></div>
 				</div>
 				<div  class="col-sm-8 col-md-10">
 	
