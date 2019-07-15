@@ -116,8 +116,6 @@
         <%--}--%>
     <%--});--%>
     $(function () {
-        /*alert(location.href.split('#').toString());
-        alert(location.href.split('#')[0]);*/
         //查看全屏图
         $("#bigCode").click(function () {
             //获取放大的图片url
