@@ -75,7 +75,7 @@
             order: "订单管理",
             orderHref: "${ctxf}/wechat/sobill/list",
             barCode: "条码追溯",
-            barCodeHref: "",
+            barCodeHref: "${ctxf}/wechat/barCode/list",
             stock: "库存查询",
             stockHref: "",
             warning: "预警提醒",
