@@ -76,9 +76,9 @@
                     </button>
                 </shiro:hasPermission>
                 <shiro:hasPermission name="management:customer:customer:synch">
-                    <button id="add" class="btn btn-primary" onclick="synch()">
-                        <i class="glyphicon glyphicon-refresh"></i> 同步
-                    </button>
+                    <a id="sync" class="btn btn-success"
+                       onclick="synch()"><i
+                            class="glyphicon glyphicon-refresh"></i> 同步ERP</a>
                 </shiro:hasPermission>
             </div>
 
