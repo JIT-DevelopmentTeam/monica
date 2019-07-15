@@ -9,13 +9,14 @@
     <title>条码追溯</title>
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/productFollow.css" charset="utf-8">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/common.css" charset="utf-8">
-    <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
-    <script src="${ctxStatic}/js/jquery-weui.js"></script>
-    <script src="${ctxStatic}/common/vue/js/vue.js"></script>
+    <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
+    <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/js/wechat/swiper.js"></script>
-    <script src="${ctxStatic}/js/wechat/fastclick.js"></script>
+    <script src="${ctxStatic}/js/fastclick.js"></script>
     <script src="${ctxStatic}/js/wechat/jweixin-1.2.0.js"></script>
+    <script src="${ctxStatic}/common/vue/js/vue.js"></script>
 
 </head>
 <body>
@@ -43,51 +44,39 @@
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
-                <!--<input type="text" name="">-->
             </div>
             <div class="proValue-list_item">
                 <span>色&nbsp;&nbsp;&nbsp;号：</span>
-                <!--<input type="text" name="">-->
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>生产日期：</span>
-                <!--<input type="text" name="">-->
             </div>
             <div class="proValue-list_item">
                 <span>等&nbsp;&nbsp;&nbsp;级：</span>
-                <!--<input type="text" name="">-->
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>生产设备：</span>
-                <!--<input type="text" name="">-->
             </div>
             <div class="proValue-list_item">
                 <span>检查员：</span>
-                <!--<input type="text" name="">-->
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>库存状态：</span>
-                <!--<input type="text" name="">-->
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>加工建议：</span>
-                <!--<textarea cols="30" rows="10" class=""></textarea>-->
             </div>
         </div>
     </div>
     <div style="height: 40px"></div>
-    <%--<div class="btn-cell">
-       <button class="back-btn"><img src="/static/images/wxqy/icon-cancel_white.png" alt="">取消</button>
-       <button class="add-btn"><img src="/static/images/wxqy/icon-confirm_white.png">确定</button>
-     </div>--%>
 </div>
 
 <script type="text/javascript">
