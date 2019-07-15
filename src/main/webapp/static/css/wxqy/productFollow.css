@@ -1,0 +1,129 @@
+body{
+    background: #f6f6f6;
+    margin: 0;
+    font-size: 14px
+}
+.search-head{
+    padding: 5px;	
+}
+.search-list{
+	background: #fff;
+    padding: 10px;
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.search-list img{
+    width: 25px;
+    height: 25px;
+    margin-top: -5px;
+}
+.search-input{
+    flex: 1;
+    height: 18px;
+    line-height: 15px;
+    border: unset;
+    font-size: 15px;
+    padding: 0px 5px;
+}
+.proInfo-body{
+	background: #fff;
+    display: flex;
+    padding: 10px 15px;
+}
+.proImg-cell_left{
+    text-align: center;
+    padding-left: 10px;
+}
+.proImg-cell_left img{
+	width: 70px;
+    height: 70px;
+    margin-top: 10px;
+    /*margin-right: 15px;*/
+}
+.proImg-cell_left p{
+    margin-bottom: 0;
+    color:  rgb(15, 118, 224);
+}
+.proInfo-cell_right{
+    flex: 1;
+    background: #c9def1;
+    padding: 5px;
+    border-radius: 5px;
+}
+.proInfo-input{
+    border: unset;
+    height: 20px;
+    font-size: 14px;
+    padding-left: 5px;
+    width: 60%;
+    border-radius: 3px
+}
+.proInfo-list{
+   /* background: #e8e8ff;
+    padding: 5px;
+    border-radius: 5px;*/
+}
+.proInfo-list+.proInfo-list{
+	margin-top: 10px
+}
+.proValue-footer{
+    /* background: #fff; */
+    margin-top: 3px;
+    /* padding: 10px 15px; */
+}
+.proValue-list{
+    display: flex;
+}
+.proValue-list+.proValue-list{
+	margin-top: 3px
+}
+.proValue-list_item{
+	flex: 1;
+    display: flex;
+    background: #fff;
+    padding: 6px 15px;
+}
+.proValue-list_item+.proValue-list_item{
+    border-left: 1px solid #f6f6f6;
+}
+.proValue-list_item span,.proInfo-list span{
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+}
+.proValue-list_item+.proValue-list_item{
+	margin-left: 2px;
+}
+/*.proValue-list_item input,textarea{*/
+	/*width: 70%;*/
+    /*border-radius: 3px;*/
+    /*border: 1px solid #ddd;*/
+    /*flex: 1;*/
+    /*padding-left: 5px;*/
+/*}*/
+.btn-cell{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    padding: 5px;
+    text-align: center;
+}
+.btn-cell button{
+    border: unset;
+    border-radius: 5px;
+    color: #fff;
+    padding: 7px 20px;
+}
+.btn-cell .back-btn{
+    background: #999;
+}
+.btn-cell .add-btn{
+    background: rgb(5, 226, 93);
+    margin-left: 20px;
+}
+.btn-cell button img{
+    width: 15px;
+    margin-right: 3px;
+}
