@@ -18,7 +18,7 @@
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
-                <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none;">
+                <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch">
                     <span class="weui-badge" style="margin-left: 5px;">头条</span>
                     <div v-for="item in items">
                         <div v-if="item.headline === 1">

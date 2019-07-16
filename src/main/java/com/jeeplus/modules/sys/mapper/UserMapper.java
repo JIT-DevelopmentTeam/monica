@@ -121,5 +121,10 @@ public interface UserMapper extends BaseMapper<User> {
 	 */
 	List<User> findBySynStatus(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("synStatus") int synStatus, @Param("isSyntoent") int isSyntoent);
 
+	/**
+	 * 更新同步状态
+	 */
+	void updateSynstatus(@Param("synStatus") int synStatus, @Param("id") String id);
+
 
 }

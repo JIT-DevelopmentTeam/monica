@@ -265,26 +265,4 @@ public class IcitemController extends BaseController {
 		return aj;
 	}
 
-	@RequestMapping(value = "getItemsList")
-	@ResponseBody
-	public AjaxJson getItemsList(Icitem icitem){
-		AjaxJson aj = new AjaxJson();
-		icitem.setDelFlag("0");
-		List<Icitem> icitemList = icitemService.findList(icitem);
-		aj.put("icitemList",icitemList);
-		return aj;
-	}
-
-	@RequestMapping(value = "getListByName")
-	@ResponseBody
-	public AjaxJson getListByName(@Param("name") String name){
-		AjaxJson aj = new AjaxJson();
-		Icitem icitem = new Icitem();
-		icitem.setDelFlag("0");
-		icitem.setName(name.trim());
-		List<Icitem> icitemList = icitemService.findList(icitem);
-		aj.put("icitemList",icitemList);
-		return aj;
-	}
-
 }

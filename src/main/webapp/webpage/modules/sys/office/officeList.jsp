@@ -28,11 +28,6 @@
                                onclick="synDept()"><i
                                     class="glyphicon glyphicon-refresh"></i> 同步ERP</a>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="sys:office:synch">
-                            <a id="add" class="btn btn-success"
-                               onclick="synToQYWeChat()"><i
-                                    class="glyphicon glyphicon-refresh"></i> 同步到微信</a>
-                        </shiro:hasPermission>
                         <button class="btn btn-default" data-toggle="tooltip" data-placement="left" onclick="refresh()"
                                 title="刷新"><i class="glyphicon glyphicon-repeat"></i> 刷新
                         </button>

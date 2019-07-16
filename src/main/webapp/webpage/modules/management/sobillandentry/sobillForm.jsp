@@ -95,7 +95,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>编码：</label></td>
 					<td class="width-35">
-						<form:input path="billNo" htmlEscape="false"    class="form-control required"/>
+						<form:input path="billNo" htmlEscape="false"  readonly="true"  class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户：</label></td>
 					<td class="width-35">

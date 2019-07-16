@@ -3,6 +3,7 @@
  */
 package com.jeeplus.modules.management.sobillandentry.web;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,15 @@ public class SobillController extends BaseController {
 			sobill.setEmplId(user.getId());
 			sobill.setEmpName(user.getName());
 			sobill.setDeptName(user.getOffice().getName());
+            Calendar now = Calendar.getInstance();
+            int year = now.get(Calendar.YEAR);
+            String month = (now.get(Calendar.MONTH) + 1) + "";
+            int day = now.get(Calendar.DAY_OF_MONTH);
+            int hour = now.get(Calendar.HOUR_OF_DAY);
+            int min = now.get(Calendar.MINUTE);
+            int secound = now.get(Calendar.SECOND);
+            String time = year + month + day + hour + min + secound;
+            sobill.setBillNo("SOB"+time);
 		}
 		model.addAttribute("sobill", sobill);
 		return "modules/management/sobillandentry/sobillForm";

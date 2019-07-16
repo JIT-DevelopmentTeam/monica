@@ -1,0 +1,25 @@
+.header{
+    height:40px;
+    line-height:40px;
+    background-color:#01aff0;
+    color:white;
+    font-size:18px;
+    text-align:center;
+    position:relative
+}
+.header_left{
+    height:46px;
+    line-height:46px;
+    color:white;
+    text-align:left;
+    font-size:14px;
+    position:absolute;
+    left:4%;
+    top:0
+}
+.header_left img{
+    float:left;
+    margin-top:11px;
+    width:11px;
+    height:auto
+}

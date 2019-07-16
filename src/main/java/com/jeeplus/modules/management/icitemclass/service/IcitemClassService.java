@@ -5,6 +5,7 @@ package com.jeeplus.modules.management.icitemclass.service;
 
 import java.util.List;
 
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,5 +43,9 @@ public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemCla
 	public void delete(IcitemClass icitemClass) {
 		super.delete(icitemClass);
 	}
+
+	public List<IcitemClass> findListForWechat(IcitemClass icitemClass){
+	    return mapper.findListForWechat(icitemClass);
+    }
 	
 }

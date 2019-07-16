@@ -62,6 +62,7 @@ public class WarehouseController extends BaseController {
 		JSONArray jsonarr =
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_stock?token_value=20190603","POST");
 
+		warehouseService.deleteAll();		// 同步数据前先清空仓库表
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
 			System.out.println(jsonarr.get(i));

@@ -190,5 +190,10 @@
 		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
         <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
+
+	<!-- 物理删除（所有） -->
+	<update id="deleteAll">
+		DELETE FROM tb_warehouse
+	</update>
 	
 </mapper>

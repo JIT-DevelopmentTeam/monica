@@ -150,6 +150,14 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.qy_dept_parent_id LIKE #{qyDeptParentId}
 	</select>
 
+	<select id="findByParentIds" resultType="Office">
+		SELECT
+		<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} AND a.parent_ids LIKE CONCAT('%,', #{parentIds}, ',%')
+	</select>
+
 	<insert id="insert">
 		INSERT INTO sys_office(
 			id,

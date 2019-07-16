@@ -26,6 +26,8 @@ public class Icitem extends DataEntity<Icitem> {
 	private String erpNote;		// erp备注
 	private String status;		// 状态
 	private String itemClassName;	// 分类名称
+	private Integer startPage;	// 起始分页
+	private Integer endPage;	// 结束分页
 
 	public Icitem() {
 		super();
@@ -136,4 +138,19 @@ public class Icitem extends DataEntity<Icitem> {
 		this.itemClassName = itemClassName;
 	}
 
+	public Integer getStartPage() {
+		return startPage;
+	}
+
+	public void setStartPage(Integer startPage) {
+		this.startPage = startPage;
+	}
+
+	public Integer getEndPage() {
+		return endPage;
+	}
+
+	public void setEndPage(Integer endPage) {
+		this.endPage = endPage;
+	}
 }
