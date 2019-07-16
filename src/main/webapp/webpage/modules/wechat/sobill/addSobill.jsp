@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            height: 1000%;
+            /*height: 1000%;*/
             /*Firefox*/
         -moz-calc(expression);
             /*chrome safari*/
@@ -43,7 +43,7 @@
             padding: 0px;
             margin: 0;
             width: 33vw;
-            /* background: rgba(0, 0, 0, 0.6); */
+            background: rgba(0, 0, 0, 0.6);
             /*定位 作为父级使用*/
             position: fixed;
 
@@ -76,8 +76,7 @@
         /*滑动门*/
         .div2 {
             width: 67vw;
-
-            /* background: skyblue; */
+            /* background: skyblue;*/
             /*使用定位实现滑动门-------重要步骤*/
             position: absolute;
             top: 0;
@@ -153,14 +152,15 @@
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="status" name="status" value="0"/>
-        <input type="hidden" id="number" name="number"/>
+        <input type="hidden" id="number" name="number" value="${sobill.billNo}"/>
 
+        <%-- 表头 --%>
         <div class="weui-cells">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>编号:</p>
                 </div>
-                <div class="weui-cell__ft"></div>
+                <div class="weui-cell__ft">${sobill.billNo}</div>
             </div>
 
             <div class="weui-cell">
@@ -185,6 +185,12 @@
             </div>
         </div>
 
+        <%-- 表体 --%>
+        <strong>名称</strong>
+        <div id="detail">
+
+        </div>
+
         <div id="items" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
             <div class="weui-popup__overlay"></div>
             <div class="weui-popup__modal">
@@ -206,38 +212,51 @@
                     </div>
                     <!-- 滑动门 -->
                     <div class="bg">
-                        <ul style="height: 100%;">
-                            <li v-on:click="screenClass(itemClass.id,index)" :id="itemClass.id" v-for="(itemClass,index) in icitemClassList">
-                                <a href="#" class="first">{{itemClass.name}}</a>
+                        <ul>
+                            <li :id="itemClass.id" v-for="(itemClass,index) in icitemClassList">
+                                <a style="width: 100%;height: 100%;" v-on:click="screenClass(itemClass.id,index)">{{itemClass.name}}</a>
                                 <div class="div2">
                                     <div class="banner" :id="index" style="width: 100%;">
-                                        111
+
                                     </div>
                                 </div>
                             </li>
                         </ul>
                     </div>
-                    <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
+                    <div style="position: fixed;bottom: 0%;width: 100%;">
+                        <div style="float: left;width: 48%;">
+                            <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
+                        </div>
+                        <div style="float: right;width: 48%;">
+                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="position: fixed;bottom: 10%;width: 100%;">
-            <a href="javascript:;" class="weui-btn weui-btn_primary">{{submit}}</a>
+        <br><br><br><br>
+        <div style="position: fixed;bottom: 8%;width: 100%;">
+            <div style="float: left;width: 48%;">
+                <a class="weui-btn weui-btn_primary open-popup" data-target="#items">{{add}}</a>
+            </div>
+            <div style="float: right;width: 48%;">
+                <a class="weui-btn weui-btn_warn">{{del}}</a>
+            </div>
         </div>
 
         <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a class="weui-tabbar__item open-popup" data-target="#items">
+            <a class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
-                <p class="weui-tabbar__label">{{add}}</p>
+                <p class="weui-tabbar__label">{{save}}</p>
             </a>
             <a href="javascript:;" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-delete.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
-                <p class="weui-tabbar__label">{{del}}</p>
+                <p class="weui-tabbar__label">{{submit}}</p>
             </a>
         </div>
     </form>
@@ -247,12 +266,7 @@
 <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script type="text/javascript">
 
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = date.getMonth()+1;
-    var day = date.getDate();
-    var number = 'SOB'+year+'-'+month+'-'+day;
-    $("#number").val(number);
+    var itemIds = new Array();
 
     var vm = new Vue({
         el:'#page',
@@ -262,12 +276,13 @@
             });
         },
         data:{
-            number:number,
             itemDetail:'商品明细',
-            submit:'提交订单',
-            add:'新增商品',
+            save:'保存',
+            submit:'提交',
+            add:'选择商品',
             del:'删除商品',
-            saveItems:'保存商品',
+            saveItems:'保存',
+            cancel:'取消',
             icitemClassList:[]
         },
         methods:{
@@ -281,8 +296,37 @@
                 $("#searchInput").val('');
             },
             submitItems(){
+                $("#detail").empty();
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/icitem/findItemListByIds',
+                   data:{
+                      idsStr:itemIds.toString()
+                   },
+                   dataType: 'json',
+                   success:function (res){
+                        var template = '<div class="weui-cells weui-cells_checkbox">';
+                        var icitemList = res.body.icitemList;
+                       for (var i = 0; i < icitemList.length; i++) {
+                           template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'Select">' +
+                           '<div class="weui-cell__hd">' +
+                           '<input id="'+icitemList[i].id+'Select" type="checkbox" class="weui-check"/>' +
+                           '<i class="weui-icon-checked"></i>' +
+                               '</div>' +
+                               '<div class="weui-cell__bd">' +
+                               '<p>'+icitemList[i].name+'</p>' +
+                               '</div>' +
+                               '</label>';
+                       }
+                        template += '</div>';
+                       $("#detail").append(template);
+                   }
+                });
             },
             screenClass(classId,index){
+                $("li:not("+classId+")").children('div').removeClass('play');
+                $("#"+classId).children('div').addClass('play');
                 $.ajax({
                    async:false,
                    cache:false,
@@ -293,28 +337,63 @@
                    dataType:'json',
                    success:function (res) {
                         var icitemList = res.body.icitemList;
-                        $("#index").empty();
-                       /* TODO 数据列表 */
+                        var template = '<div class="weui-cells weui-cells_checkbox">';
+                        $("#"+index).empty();
+                       for (var i = 0; i < icitemList.length; i++) {
+                           var check = false;
+                           for (var j = 0; j < itemIds.length; j++) {
+                               if (itemIds[j] == icitemList[i].id){
+                                   check = true;
+                               }
+                           }
+                           template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">' +
+                               '<div class="weui-cell__hd">';
+                               if(check){
+                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items"/>';
+                               } else {
+                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items"/>';
+                               }
+                                template += '<i class="weui-icon-checked"></i>' +
+                               '</div>' +
+                               '<div class="weui-cell__bd">' +
+                               '<p>'+icitemList[i].name+'</p>' +
+                               '</div>' +
+                               '</label>';
+                       }
+                       template += '</div>';
+                       $("#"+index).append(template);
                    }
                 });
             }
         }
     });
 
-    $(function () {
-        //进入页面,默认选中第一种类
-        $("ul li:first").children('div').addClass('play');
-        $("ul li:first").addClass('playdiv1');
-        $(".first").addClass("fir")
+    /* 选中商品 */
+    function selectItems(id) {
+        var index;
+        if (itemIds.indexOf(id) != -1) {
+            if (!$("#"+id).prop("checked")) {
+                index = retrieveArrayIndex(id);
+                if (index != -1) {
+                    itemIds.splice(index,1);
+                }
+            }
+        } else {
+            if ($("#"+id).prop("checked")) {
+                itemIds.push(id);
+            }
+        }
+    }
 
-        $("li").click(function() {
-            $("ul li:first").removeClass('playdiv1');
-            $(this).children('a').addClass('fir');
-            $("a:not(this)").removeClass("fir");
-            $("li:not(this)").children('div').removeClass('play');
-            $(this).children('div').addClass('play');
-        });
-    });
+    /* 检索数组元素下标 */
+    function retrieveArrayIndex(val) {
+        for (var i = 0; i < itemIds.length; i++) {
+            if (itemIds[i] == val){
+                return i;
+            }
+        }
+        return -1;
+    }
 
 </script>
 </body>

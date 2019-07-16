@@ -3,19 +3,24 @@ import com.google.common.collect.Lists;
 
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
+import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.ibatis.annotations.Param;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Controller
@@ -24,6 +29,9 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private SobillService sobillService;
+
+    @Autowired
+    private IcitemService icitemService;
 
     @RequestMapping(value = "list")
     public ModelAndView list() {

@@ -9,8 +9,10 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -57,6 +59,25 @@ public class IcitemWechatController {
         icitem.setName(name.trim());
         List<Icitem> icitemList = icitemService.findList(icitem);
         aj.put("icitemList",icitemList);
+        return aj;
+    }
+
+    @RequestMapping(value = "findItemListByIds")
+    @ResponseBody
+    public AjaxJson findItemListByIds(@RequestParam(value = "idsStr") String idsStr){
+        LinkedHashMap<String, Object> body = new LinkedHashMap<String, Object>();
+        Icitem icitem = new Icitem();
+        AjaxJson aj = new AjaxJson();
+        String[] ids = idsStr.split(",");
+        StringBuffer idsSql = new StringBuffer();
+        for (String id : ids) {
+            idsSql.append("'"+id+"',");
+        }
+        idsSql = idsSql.deleteCharAt(idsSql.length()-1);
+        icitem.setIds(idsSql.toString());
+        List<Icitem> icitemList = icitemService.findList(icitem);
+        body.put("icitemList",icitemList);
+        aj.setBody(body);
         return aj;
     }
 

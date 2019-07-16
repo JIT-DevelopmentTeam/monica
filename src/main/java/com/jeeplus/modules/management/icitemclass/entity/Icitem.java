@@ -28,6 +28,7 @@ public class Icitem extends DataEntity<Icitem> {
 	private String itemClassName;	// 分类名称
 	private Integer startPage;	// 起始分页
 	private Integer endPage;	// 结束分页
+    private String ids;         // ids
 
 	public Icitem() {
 		super();
@@ -153,4 +154,12 @@ public class Icitem extends DataEntity<Icitem> {
 	public void setEndPage(Integer endPage) {
 		this.endPage = endPage;
 	}
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
 }

@@ -68,6 +68,9 @@
 					<if test="dbName == 'mssql'">'%'+#{model}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{model},'%')</if>
 			</if>
+            <if test="ids != null and ids != ''">
+                AND a.id IN (${ids})
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -193,5 +196,17 @@
 	<select id="findUniqueByProperty" resultType="Icitem" statementType="STATEMENT">
 		select * FROM tb_icitem  where ${propertyName} = '${value}'
 	</select>
+
+    <select id="findListByIds" parameterType="Icitem" resultType="Icitem">
+        SELECT
+        <include refid="icitemColumns"/>
+        FROM tb_icitem a
+        <include refid="icitemJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            ${dataScope}
+
+        </where>
+    </select>
 	
 </mapper>
