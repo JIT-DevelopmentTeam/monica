@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>新增订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-weui/1.2.1/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -186,7 +186,6 @@
         </div>
 
         <%-- 表体 --%>
-        <strong>名称</strong>
         <div id="detail">
 
         </div>
@@ -241,7 +240,7 @@
                 <a class="weui-btn weui-btn_primary open-popup" data-target="#items">{{add}}</a>
             </div>
             <div style="float: right;width: 48%;">
-                <a class="weui-btn weui-btn_warn">{{del}}</a>
+                <a v-on:click="delItems" class="weui-btn weui-btn_warn">{{del}}</a>
             </div>
         </div>
 
@@ -297,6 +296,17 @@
             },
             submitItems(){
                 $("#detail").empty();
+                var checkVals = [];
+                $("input[name='items']:checked").each(function () {
+                    checkVals.push($(this).val());
+                });
+                var index;
+                for (var i = 0; i < checkVals.length; i++) {
+                    index = retrieveArrayIndex(checkVals[i]);
+                    if (index == -1) {
+                        itemIds.push(checkVals[i]);
+                    }
+                }
                 $.ajax({
                    async:false,
                    cache:false,
@@ -309,13 +319,16 @@
                         var template = '<div class="weui-cells weui-cells_checkbox">';
                         var icitemList = res.body.icitemList;
                        for (var i = 0; i < icitemList.length; i++) {
-                           template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'Select">' +
+                           template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'Select" id="'+icitemList[i].id+'Detail">' +
                            '<div class="weui-cell__hd">' +
-                           '<input id="'+icitemList[i].id+'Select" type="checkbox" class="weui-check"/>' +
+                           '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
                            '<i class="weui-icon-checked"></i>' +
                                '</div>' +
                                '<div class="weui-cell__bd">' +
-                               '<p>'+icitemList[i].name+'</p>' +
+                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>编码:'+icitemList[i].number+'</span></div></div>' +
+                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>名称:'+icitemList[i].name+'</span></div><div style="float:right;"><span>单位:'+icitemList[i].unit+'</span></div></div>' +
+                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>型号:'+icitemList[i].model+'</span></div><div style="float: right;"><span>单价:</span></div></div>' +
+                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>数量:<input type="number" name="quantity" min="0" step="1"/></span></div><div style="float: right;"><span>金额:<span name="amount"></span></span></div></div>' +
                                '</div>' +
                                '</label>';
                        }
@@ -349,9 +362,9 @@
                            template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">' +
                                '<div class="weui-cell__hd">';
                                if(check){
-                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items"/>';
+                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
                                } else {
-                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items"/>';
+                                   template += '<input id="'+icitemList[i].id+'" onclick="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
                                }
                                 template += '<i class="weui-icon-checked"></i>' +
                                '</div>' +
@@ -364,6 +377,24 @@
                        $("#"+index).append(template);
                    }
                 });
+            },
+            delItems:function () {
+                var checkVals = [];
+                $("input[name='selectItems']:checked").each(function () {
+                    checkVals.push($(this).val());
+                });
+                if (checkVals.length == 0) {
+                    alert("请选择要删除的商品!");
+                    return;
+                }
+                var index;
+                for (var i = 0; i < checkVals.length; i++) {
+                    index = retrieveArrayIndex(checkVals[i]);
+                    if (index != -1) {
+                        itemIds.splice(index,1);
+                        $("#"+checkVals[i]+"Detail").remove();
+                    }
+                }
             }
         }
     });
