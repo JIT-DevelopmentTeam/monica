@@ -26,7 +26,7 @@
             <span class="icon-bar"></span>
         </button>
 
-        <a class="navbar-brand J_menuItem" href="${ctx}/home">JeePlus </a>
+        <a class="navbar-brand J_menuItem" href="${ctx}/home">莫尔卡信息管理平台 </a>
     </div>
     <div class="collapse navbar-collapse">
         <form class="navbar-form navbar-left" role="search">

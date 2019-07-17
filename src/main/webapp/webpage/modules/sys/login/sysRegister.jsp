@@ -192,7 +192,7 @@
 		<div class="row">
 			<div class="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
 				<img  class="img-circle" src="${ctxStatic}/common/images/flat-avatar.png" class="user-avatar" />
-				<h1>Jeeplus</h1>
+				<h1>莫尔卡信息管理平台</h1>
 				<sys:message content="${message}" showType="1"/>
 				<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/register/registerUser" method="post" class="form-group form-horizontal">
 							<input  type="hidden" value="wangba" name="roleName"><!-- 默认注册用户都是网吧管理员 -->

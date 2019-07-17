@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/productFollow.css" charset="utf-8">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/common.css" charset="utf-8">
     <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
-    <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">
+    <%--<link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">--%>
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/js/wechat/swiper.js"></script>
