@@ -125,6 +125,7 @@ public class UserController extends BaseController {
 			jsonObject = jsonarr.getJSONObject(i);
 			User user = new User();
 			user.setId(jsonObject.getString("id"));
+			systemService.deleteUser(user);					// 导入数据前把之前的数据先删除了
 			user.setCompany(company);
 			dept.setId(jsonObject.getString("f_deptid"));
 			user.setOffice(dept);

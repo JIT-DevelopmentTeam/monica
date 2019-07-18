@@ -175,7 +175,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY c.code, o.code, a.name
+				ORDER BY o.code, a.name
 			</otherwise>
 		</choose>
 	</select>
