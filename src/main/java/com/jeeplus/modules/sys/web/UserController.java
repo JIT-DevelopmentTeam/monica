@@ -148,8 +148,7 @@ public class UserController extends BaseController {
 			// 保存用户信息
 			systemService.saveUser(user, true);
 		}
-		System.out.println("================插入成功================");
-		json.put("Data",jsonarr);
+		json.put("msg","success");
 		return json;
 	}
 

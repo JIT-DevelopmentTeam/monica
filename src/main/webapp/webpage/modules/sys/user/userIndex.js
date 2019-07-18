@@ -231,17 +231,26 @@
 
           /*同步用户*/
 			function synUser() {
-				// alert("同步ERP");
-				jp.post("${ctx}/sys/user/synUser", {}, function (data) {
-					refresh();
+				jp.confirm("同步数据可能需要一些时间，您确定要继续吗？", function () {
+					jp.loading("正在同步，请稍候...");
+					jp.post("${ctx}/sys/user/synUser", {}, function (data) {
+						if (data.msg == "success") {
+							refresh();
+							jp.success("同步成功");
+						} else {
+							jp.error("同步失败");
+						}
+					});
 				});
 			}
 
 			/*同步到微信*/
 			function synToQYWeChat() {
-				// alert("同步到微信");
-				jp.post("${ctx}/sys/user/synToQYWeChat", {}, function (data) {
-					jp.success("同步成功！");
+				jp.confirm("同步数据到微信可能需要一些时间，您确定要继续吗？", function () {
+					jp.loading("正在同步到微信，请稍候...");
+					jp.post("${ctx}/sys/user/synToQYWeChat", {}, function (data) {
+						jp.success("同步成功！");
+					});
 				});
 			}
 	</script>
