@@ -72,8 +72,16 @@
 
     /*同步ERP*/
     function synDept() {
-		jp.post("${ctx}/sys/office/synDept", {}, function (data) {
-			refresh();
+    	jp.confirm("同步数据可能需要一些时间，您确定要继续吗？", function () {
+    		jp.loading("正在同步，请稍候...");
+			jp.post("${ctx}/sys/office/synDept", {}, function (data) {
+				if (data.msg == "success") {
+					refresh();
+					jp.success("同步成功");
+				} else {
+					jp.error("同步失败");
+				}
+			});
 		});
 	}
 
