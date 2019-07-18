@@ -119,6 +119,7 @@ public class UserController extends BaseController {
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_empl?token_value=20190603","POST");
 
 		JSONObject jsonObject = new JSONObject();
+
 		Office company = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
 		Office dept = new Office();
 		for (int i = 0; i < jsonarr.size(); i++) {
@@ -134,6 +135,7 @@ public class UserController extends BaseController {
 			user.setLoginName(CNToPinyin(jsonObject.getString("f_name")));
 			user.setPassword(SystemService.entryptPassword("123456"));
 			user.setLoginFlag("1");
+			user.setQyUserId(CNToPinyin(jsonObject.getString("f_name")));
 			user.setSynStatus(0);
 			user.setIsSyntoent(1);
 
@@ -249,7 +251,7 @@ public class UserController extends BaseController {
 	@RequiresPermissions(value={"sys:user:add","sys:user:edit"},logical=Logical.OR)
 	@ResponseBody
 	@RequestMapping(value = "save")
-	public AjaxJson save(User user, HttpServletRequest request, Model model) {
+	public AjaxJson save(User user, HttpServletRequest request, Model model) throws Exception {
 		AjaxJson j = new AjaxJson();
 		if(Global.isDemoMode()){
 			j.setSuccess(false);
@@ -293,6 +295,7 @@ public class UserController extends BaseController {
 		String filePath = realPath + name;  //存放路径
 		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
 		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
+		user.setQyUserId(CNToPinyin(user.getName()));
 		if ("".equals(user.getId())) {
 			user.setSynStatus(0);
 		} else {
@@ -330,12 +333,8 @@ public class UserController extends BaseController {
 			return j;
 		}else{
 			AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-			try {
-				String useId = CNToPinyin(user.getName());
-				JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
-			} catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
-				badHanyuPinyinOutputFormatCombination.printStackTrace();
-			}
+			String useId = user.getQyUserId();
+			JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
 			systemService.deleteUser(user);//删除用户成功
 			j.setSuccess(true);
 			j.setMsg("删除成功!");
@@ -366,9 +365,12 @@ public class UserController extends BaseController {
 				j.setSuccess(false);
 				j.setMsg("删除失败，不允许删除超级管理员!");//删除用户失败, 不允许删除超级管理员用户
 			}else{
+				AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
+				String useId = user.getQyUserId();
+				JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
+				systemService.deleteUser(user);//删除用户成功
 				j.setSuccess(true);
 				j.setMsg("删除成功!");
-				systemService.deleteUser(user);//删除用户成功
 			}
 		}
 		return j;
