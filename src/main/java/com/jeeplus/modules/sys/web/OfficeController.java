@@ -80,13 +80,11 @@ public class OfficeController extends BaseController {
 		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
 		List<Office> officeList = officeService.findList(new Office());
 		for (int i = 0; i < originalList.size(); i++) {
-			System.out.println("--->" + originalList.get(i).getQyDeptId());
 			JwDepartmentAPI.deleteDepart(String.valueOf(originalList.get(i).getQyDeptId()), accessToken.getAccesstoken());
 		}
 
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
-			System.out.println(jsonarr.get(i));
 			jsonObject = jsonarr.getJSONObject(i);
 			Office office = new Office();
 			Office parent = new Office();

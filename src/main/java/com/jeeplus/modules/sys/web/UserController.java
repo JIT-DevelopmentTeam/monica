@@ -122,7 +122,6 @@ public class UserController extends BaseController {
 		Office company = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
 		Office dept = new Office();
 		for (int i = 0; i < jsonarr.size(); i++) {
-			System.out.println(jsonarr.get(i));
 			jsonObject = jsonarr.getJSONObject(i);
 			User user = new User();
 			user.setId(jsonObject.getString("id"));
