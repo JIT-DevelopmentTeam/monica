@@ -9,8 +9,8 @@
     <title>条码追溯</title>
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/productFollow.css" charset="utf-8">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/common.css" charset="utf-8">
-    <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
-    <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
+    <%--<link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">--%>
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/js/wechat/swiper.js"></script>
@@ -137,6 +137,7 @@
             pb.open();
         });
         //配置调用手机微信功能
+        // 通过config接口注入权限验证配置
         wx.config({
             debug: true, // 开启调试模式。
             appId: '${config.appId}', // 必填，公众号的唯一标识
@@ -148,7 +149,7 @@
                 'scanQRCode',// 微信扫一扫接口
             ] // 必填，配置功能按钮
         });
-        //
+        // 通过ready接口处理成功验证
         wx.ready(function () {
             wx.checkJsApi({  //判断当前客户端版本是否支持指定JS接口
                 jsApiList: ['scanQRCode'],
@@ -159,7 +160,7 @@
                 }
             });
         });
-        //
+        // 通过error接口处理失败验证
         wx.error(function (res) {
             alert(res.errMsg);
             //console.log("-->出错了<--：" + res.errMsg);//这个地方的好处就是wx.config配置错误，会弹出窗口哪里错误，然后根据微信文档查询即可。
