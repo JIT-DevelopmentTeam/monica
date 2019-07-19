@@ -30,7 +30,7 @@
     </div>
     <div class="proInfo-body">
         <div class="proInfo-cell_right">
-            <div class="proInfo-list"><span>唯&nbsp;一&nbsp;码&nbsp;：</span></div>
+            <div class="proInfo-list"><span>唯&nbsp;&nbsp;一&nbsp;&nbsp;码：</span></div>
             <div class="proInfo-list"><span>产品编号：</span></div>
             <div class="proInfo-list"><span>产品名称：</span></div>
             <div class="proInfo-list"><span>规格型号：</span></div>
@@ -43,7 +43,7 @@
     <div class="proValue-footer">
         <div class="proValue-list">
             <div class="proValue-list_item">
-                <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
+                <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
             </div>
             <div class="proValue-list_item">
                 <span>色&nbsp;&nbsp;&nbsp;号：</span>
