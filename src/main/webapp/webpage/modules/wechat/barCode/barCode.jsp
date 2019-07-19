@@ -43,10 +43,10 @@
     <div class="proValue-footer">
         <div class="proValue-list">
             <div class="proValue-list_item">
-                <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
+                <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
             </div>
             <div class="proValue-list_item">
-                <span>色&nbsp;&nbsp;&nbsp;号：</span>
+                <span>色&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
             </div>
         </div>
         <div class="proValue-list">
@@ -54,7 +54,7 @@
                 <span>生产日期：</span>
             </div>
             <div class="proValue-list_item">
-                <span>等&nbsp;&nbsp;&nbsp;级：</span>
+                <span>等&nbsp;&nbsp;&nbsp;&nbsp;级：</span>
             </div>
         </div>
         <div class="proValue-list">
