@@ -89,7 +89,6 @@ body{
 }
 .proValue-list_item span,.proInfo-list span{
     display: inline-block;
-    width: 70px;
     text-align: right;
 }
 .proValue-list_item+.proValue-list_item{
