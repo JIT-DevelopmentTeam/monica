@@ -162,18 +162,6 @@
                 });
             }
         });
-        // 通过config接口注入权限验证配置
-        <%--wx.config({--%>
-            <%--debug: true, // 开启调试模式。--%>
-            <%--appId: '${config.appId}', // 必填，公众号的唯一标识--%>
-            <%--timestamp: '${config.timestamp}', // 必填，生成签名的时间戳--%>
-            <%--nonceStr: '${config.nonceStr}', // 必填，生成签名的随机串--%>
-            <%--signature: '${config.signature}',// 必填，签名--%>
-            <%--jsApiList: [--%>
-                <%--'checkJsApi',// 基础--%>
-                <%--'scanQRCode',// 微信扫一扫接口--%>
-            <%--] // 必填，配置功能按钮--%>
-        <%--});--%>
         // 通过ready接口处理成功验证
         wx.ready(function () {
             wx.checkJsApi({  //判断当前客户端版本是否支持指定JS接口
