@@ -77,7 +77,7 @@
             barCode: "条码追溯",
             barCodeHref: "${ctxf}/wechat/barCode/list",
             stock: "库存查询",
-            stockHref: "",
+            stockHref: "${ctxf}/wechat/stock/list",
             warning: "预警提醒",
             warningHref: "",
             dataAnalysis: "数据分析",
