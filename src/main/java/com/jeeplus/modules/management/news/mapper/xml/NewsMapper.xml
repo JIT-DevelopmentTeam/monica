@@ -103,7 +103,7 @@
 		</choose>
 	</select>
 	
-	<insert id="insert">
+	<insert id="insert" parameterType="News" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO tb_news(
 			id,
 			f_title,

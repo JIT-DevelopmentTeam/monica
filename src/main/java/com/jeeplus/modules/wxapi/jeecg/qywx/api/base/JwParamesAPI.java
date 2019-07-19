@@ -14,6 +14,12 @@ public class JwParamesAPI {
 	// 管理组的凭证密钥，每个secret代表了对应用、通讯录、接口的不同权限；不同的管理组拥有不同的secret
 	public static String secret = "GCB1HLm-Ii0lfACOjoZmW9qMdjPIKV0pOyBda-DPMec";
 
+	//管理莫尔卡应用的凭证密钥
+	public static String monicaSecret="B6kHFal4F2fIUFscOZP8pDF6QmLGtF06xyZrE_PDdUk";
+	//企业应用的idt
+	public static int monicaAgentid=1000011;
+
+	//通讯录应用
 	public static String contactSecret = "gdV_8uxQ_rl9yjQf2Kp0zTHxXbiO8zi2bszC6tOyCmI";
 	 //应用id
 	public static String agentid = "4";

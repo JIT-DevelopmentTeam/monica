@@ -4,12 +4,28 @@
 <head>
 	<title>新闻公告管理</title>
 	<meta name="decorator" content="ani"/>
+	<link rel="stylesheet" href="${ctxStatic}/plugin/bootstrapselect/bootstrap-select.min.css">
 	<!-- SUMMERNOTE -->
 	<script src="${ctxStatic}/plugin/wangEditor/js/wangEditor.js"></script>
+
+    <script src="${ctxStatic}/plugin/bootstrapselect/bootstrap-select.min.js"></script>
+    <script src="${ctxStatic}/plugin/bootstrapselect/defaults-zh_CN.min.js"></script>
+    <%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
+	<style>
+		.text{
+			font-size: 14px;
+		}
+	</style>
 
 	<script type="text/javascript">
 
 		$(document).ready(function() {
+		    $("#obj").selectpicker({
+                'selectedText': 'cat',
+                'width': '350px',
+                'title': '请选择'
+			});
+
             $("textarea").css("resize","none");
 
 
@@ -101,21 +117,45 @@
             // 初始化 textarea 的值
             $("[name=\"content\"]").val(editor.txt.html());
 
-			/*$('#content').summernote({
-				height: 300,
-                lang: 'zh-CN',
-                callbacks: {
-                    onChange: function(contents, $editable) {
-                        $("input[name='content']").val($('#content').summernote('code'));//取富文本的值
-                    }
-                }
-            });*/
-	        $('#starttime').datetimepicker({
+	        /*$('#starttime').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
 	        $('#endtime').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
-		    });
+		    });*/
+
+            $("#starttime").datetimepicker({
+                startView:2,
+                format:"yyyy-mm-dd",
+                minView:"month",
+                todayBtn : "linked",
+                todayHighlight : true,
+                language: "zh-CN",
+                showMeridian:true,
+                autoclose:true,
+            }).on('dp.changeDate',function(ev){
+                var starttime=$("#starttime").val();
+                $("#endtime").datetimepicker('setStartDate',starttime);
+                $("#starttime").datetimepicker('hide');
+            });
+
+            $("#endtime").datetimepicker({
+                startView:2,
+                minView:"month",
+                format:"yyyy-mm-dd",
+                todayBtn : "linked",
+                todayHighlight : true,
+                language: "zh-CN",
+                autoclose:true,
+                showMeridian:true,
+            }).on('dp.changeDate',function(ev) {
+                var starttime = $("#starttime").val();
+                var endtime = $("#endtime").val();
+                $("#starttime").datetimepicker('setEndDate', endtime);
+                $("#endttime").datetimepicker('hide');
+            });
+
+
 	        $('#push').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
@@ -130,7 +170,7 @@
                     if(data.success){
                         jp.getParent().refresh();
                         var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-                        parent.layer.close(dialogIndex);
+                        //parent.layer.close(dialogIndex);
                         jp.success(data.msg);
                     }else{
                         jp.error(data.msg);
@@ -145,6 +185,41 @@
         function getUserName() {
             console.log("获取发布人/作者");
             jp.openSaveDialog('选择发布人', "${ctx}/management/news/news/newsUserList", '900px', '500px');
+        }
+
+        /**
+         * 新闻推送规则
+         */
+        function newsPushRule(val) {
+            if(val == ""){
+                return;
+            }
+            var option="";
+            jp.post("${ctx}/management/news/news/userOrOffice",{pushrule:val},function (data) {
+                //人员列表
+                if(data.userListInfo != null){
+                    if(data.userListInfo.length > 0){
+                        $.each(data.userListInfo, function (index, value) {
+                            //console.log(value.id+":"+value.name);
+                            option +="<option  value=\""+value.id+"\"   data-tokens=\""+ value.name+"\">"+value.name+"</option>";
+                        });
+                        console.log(option);
+                    }
+                }
+                //部门列表
+                if(data.officeListInfo !=null){
+                    if(data.officeListInfo.length > 0){
+                        $.each(data.officeListInfo, function (index, value) {
+                            console.log(value.id+":"+value.name);
+                            option +="<option  value=\""+value.id+"\">"+value.name+"</option>";
+                        });
+                        console.log(""+option);
+                    }
+                }
+                $("#objId").html(option);
+                $('#objId').selectpicker('refresh');//刷新
+				$('div[class="dropdown-menu open"]').css("z-index", "99999");
+            });
         }
 	</script>
 </head>
@@ -193,12 +268,11 @@
 						<form:radiobutton path="isPublic"   itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPublic" id="isPublic"></label>
 					</td>
-
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
 						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
 						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
-                        <label class="error" for="isPublic" id="isPublic"></label>
+                        <label class="error" for="headline" id="headline"></label>
 					</td>
 				</tr>
 				<tr>
@@ -256,13 +330,26 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">推送规则：</label></td>
 					<td class="width-35">
-						<form:input path="pushrule" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
-					<td class="width-35">
-						<form:input path="readCount" htmlEscape="false" type="number" min="1" step="1"  class="form-control "/>
-					</td>
-				</tr>
+                        <form:select path="pushrule" htmlEscape="false" class="form-control " onchange="newsPushRule(this.value)">
+                            <form:option value="">请选择</form:option>
+                            <form:option value="0">全部推送</form:option>
+                            <form:option value="1">人员推送</form:option>
+                            <form:option value="2">部门推送</form:option>
+                        </form:select>
+						<%--<form:input path="pushrule" htmlEscape="false"    class="form-control "/>--%>
+
+                    <td  class="width-15 active"><label class="pull-right">推送对象：</label></td>
+                    <td class="width-35">
+						<select id="objId" name="objId" class="selectpicker required show-tick form-control" multiple  data-live-search="true"></select>
+                    </td>
+                </tr>
+                <tr>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
+                    <td class="width-35">
+                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="1" step="1"  class="form-control "/>
+                    </td>
+                </tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td colspan="3">

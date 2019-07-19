@@ -7,6 +7,7 @@ import com.jeeplus.modules.wxapi.api.core.req.model.DownloadMedia;
 import com.jeeplus.modules.wxapi.api.core.req.model.ServiceIP;
 import com.jeeplus.modules.wxapi.api.core.req.model.UploadMedia;
 import com.jeeplus.modules.wxapi.api.core.req.model.kfaccount.KfaccountList;
+import org.junit.Test;
 
 public class ReqTest {
 
@@ -76,6 +77,7 @@ public class ReqTest {
 	 * @return
 	 * @throws WexinReqException
 	 */
+	@Test
 	public String getKfaccountList(String access_token) throws WexinReqException{
 		KfaccountList kf = new KfaccountList();
 		kf.setAccess_token(access_token);
