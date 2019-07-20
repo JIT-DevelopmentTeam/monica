@@ -37,6 +37,7 @@ public class News extends DataEntity<News> {
 	private Integer readCount;		// 阅读次数
 	private User user;
 	private Office office;
+	private String objId;
 	
 	public News() {
 		super();
@@ -201,5 +202,13 @@ public class News extends DataEntity<News> {
 
 	public void setOffice(Office office) {
 		this.office = office;
+	}
+
+	public String getObjId() {
+		return objId;
+	}
+
+	public void setObjId(String objId) {
+		this.objId = objId;
 	}
 }

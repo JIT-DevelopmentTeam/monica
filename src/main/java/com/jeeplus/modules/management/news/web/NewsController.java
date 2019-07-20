@@ -12,9 +12,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.utils.FileUtils;
+import com.jeeplus.modules.management.newspush.entity.NewsPush;
+import com.jeeplus.modules.management.newspush.service.NewsPushService;
+import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsArticle;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsEntity;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -59,6 +72,15 @@ public class NewsController extends BaseController {
     @Autowired
     private NewsService newsService;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private OfficeService officeService;
+
+    @Autowired
+    private NewsPushService newsPushService;
+
     @ModelAttribute
     public News get(@RequestParam(required = false) String id) {
         News entity = null;
@@ -98,6 +120,21 @@ public class NewsController extends BaseController {
     @RequiresPermissions(value = {"management:news:news:view", "management:news:news:add", "management:news:news:edit"}, logical = Logical.OR)
     @RequestMapping(value = "form")
     public String form(News news, Model model) {
+        NewsPush newsPush=new NewsPush();
+        newsPush.setDelFlag("0");
+        newsPush.setNewsId(news.getId());
+        List<NewsPush> newsPushList=newsPushService.findAllList(newsPush);
+        if(newsPushList.size() > 0) {
+            String getObjId = "";
+            for (int i = 0; i < newsPushList.size(); i++) {
+                if(newsPushList.size() == newsPushList.size()-1){
+                    getObjId = newsPushList.get(i).getObjId();
+                }else
+                getObjId = newsPushList.get(i).getObjId() + ",";
+            }
+            news.setObjId(getObjId);
+        }
+        System.out.println("----"+news.getObjId());
         model.addAttribute("news", news);
         return "modules/management/news/newsForm";
     }
@@ -126,7 +163,7 @@ public class NewsController extends BaseController {
     @ResponseBody
     @RequiresPermissions(value = {"management:news:news:add", "management:news:news:edit"}, logical = Logical.OR)
     @RequestMapping(value = "save")
-    public AjaxJson save(News news, Model model) throws Exception {
+    public AjaxJson save(News news,HttpServletRequest request,Model model) throws Exception {
         AjaxJson j = new AjaxJson();
         /**
          * 后台hibernate-validation插件校验
@@ -137,8 +174,50 @@ public class NewsController extends BaseController {
             j.setMsg(errMsg);
             return j;
         }
-        //新增或编辑表单保存
-        newsService.save(news);//保存
+
+        try {
+            //新增或编辑表单保存
+            newsService.save(news);//保存
+            if(news.getObjId() != null && !"".equals(news.getObjId())) {
+                if (news.getIsPush() != null) {
+                    String objIds = news.getObjId();
+                    String[] objIdArr = objIds.split(",");
+                    if (news.getIsPush() == 1) {
+                        NewsPush newsPush = null;
+                        User user = null;
+                        List<User> userList = null;
+                        for (int i = 0; i < objIdArr.length; i++) {
+                            newsPush = new NewsPush();
+                            newsPush.setNewsId(news.getId());
+                            newsPush.setObjId(objIdArr[i]);
+                            System.out.println(newsPush.getNewsId() + " : " + newsPush.getObjId());
+                            newsPushService.save(newsPush);
+                            user = userMapper.get(newsPush.getObjId());
+                            userList.add(user);
+                            System.out.println("部门编号：" + user.getOffice().getId());
+                        }
+                        newsPush.setDelFlag("0");
+                        if (userList.size() > 0) {
+                            String getObjId = "";
+                            for (int i = 0; i < userList.size(); i++) {
+                                if (i == userList.size() - 1) {
+                                    getObjId += userList.get(i).getQyUserId();
+                                } else
+                                    getObjId += userList.get(i).getQyUserId() + "|";
+                            }
+                            System.out.println("UserID : " + getObjId);
+                            // 新闻推送
+                            captainSendLoggingData(request,news,getObjId);
+                        }
+                    }else if(news.getIsPush() == 2){
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         j.setSuccess(true);
         j.setMsg("保存新闻公告成功");
         return j;
@@ -483,4 +562,55 @@ public class NewsController extends BaseController {
         map.put("msg","上传成功");
         return map;
     }
+
+    @RequestMapping(value = "userOrOffice")
+    @ResponseBody
+    public Map<String,Object> userOrOffice(@RequestParam(name = "pushrule") String pushrule){
+        Map<String,Object> result =new HashMap<>();
+        //判断推送规则 1:人员推送，2:部门推送，0:全部推送
+        if("1".equals(pushrule)){
+            User user=new User();
+            user.setDelFlag("0");
+            List<User> userList=userMapper.findAllList(user);
+            result.put("userListInfo",userList);
+        }else if("2".equals(pushrule)){
+            Office office=new Office();
+            office.setDelFlag("0");
+            List<Office> officeList=officeService.findAllList(office);
+            result.put("officeListInfo",officeList);
+        }else{
+            return result;
+        }
+        return result;
+    }
+
+    /**
+     * 新闻公告推送
+     * @param request
+     * @param newsDate
+     * @param touser
+     */
+    private void captainSendLoggingData(HttpServletRequest request,News newsDate,String touser) {
+        // 获取请求协议
+        String path = request.getContextPath();
+        String filePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
+        AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
+        com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News news = new com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News();
+        news.setTouser(touser);//成员ID列表
+        //news.setToparty("");     //部门ID列表
+        //news.setTotag("");       //标签ID列表
+        news.setMsgtype("news");   //消息类型
+        news.setAgentid(JwParamesAPI.monicaAgentid);      //企业应用的id
+        NewsArticle newsArticles = new NewsArticle();
+        newsArticles.setUrl(filePath+"/f/wechat/news/form?id="+newsDate.getId()); //点击后跳转的链接
+        newsArticles.setTitle(newsDate.getTitle());       //推送标题
+        String picurl = filePath + newsDate.getMainpic();  //图片url
+        newsArticles.setPicurl(picurl);
+        NewsEntity newsEntity=new NewsEntity();
+        newsEntity.setArticles(new NewsArticle[] {newsArticles});
+        news.setNews(newsEntity);
+        JSONObject result = JwMessageAPI.sendNewsMessage(news, accessToken.getAccesstoken());
+        System.out.println("推送成功："+result);
+    }
+
 }

@@ -236,7 +236,7 @@ public class JwUserAPI {
 		/*JSONObject js = getUsersByDepartid("5", null,null,accessToken.getAccesstoken());
 		System.out.println(js.toJSONString());*/
 		//1:测试创建成员
-		User user=new User();
+		/*User user=new User();
 		user.setUserid("yangmoumou1");
 		user.setName("杨某某1");
 		user.setPosition("JAVA测试人员");
@@ -244,7 +244,7 @@ public class JwUserAPI {
 		user.setDepartment(new Integer[]{5});//设置部门
 		int result = createUser(user, accessToken.getAccesstoken());
 		System.out.println(result==0?"成功":"失败"+"----"+result);
-		/*User user=new User();
+		User user=new User();
 		user.setUserid("yangmoumou3");
 		user.setName("杨某某2");
 		user.setPosition("JAVA测试人员");
@@ -280,15 +280,15 @@ public class JwUserAPI {
 		/**
 		 *6 getUsersByDepartid
 		 */
-		/*List<User> users=getUsersByDepartid("5", null, null, accessToken.getAccesstoken());
-		for (User user : users) {
-			System.out.println("xx");
-		}
+		/*List<User> users=getUsersByDepartid("1", "1", null, accessToken.getAccesstoken());
+//		for (User user : users) {
+//			System.out.println("xx");
+//		}
 		System.out.println(JSONObject.toJSON(users));*/
 		/**
 		 * 7 获取部门成员(详情)
 		 */
-		/*List<User> users=getDetailUsersByDepartid("5", null, null, accessToken.getAccesstoken());
-		System.out.println(JSONObject.toJSON(users));*/
+		User users=getUserByUserid("LiWeiHongKong", accessToken.getAccesstoken());
+		System.out.println("---->"+JSONObject.toJSON(users));
 	}
 }
