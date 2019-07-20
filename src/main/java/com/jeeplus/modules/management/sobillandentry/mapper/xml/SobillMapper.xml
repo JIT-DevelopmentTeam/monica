@@ -178,6 +178,7 @@
 			f_emplid = #{emplId},
 			f_currencyid = #{currencyId},
 			f_needtime = #{needTime},
+			f_status = #{status},
 			f_checkerid = #{checkerId},
 			f_checktime = #{checkTime},
 			f_checkstatus = #{checkStatus},

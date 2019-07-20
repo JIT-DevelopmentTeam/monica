@@ -11,6 +11,11 @@
     <script src="${ctxStatic}/css/jquery-weui.css"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
+    <style type="text/css">
+        body{
+            overflow: auto;
+        }
+    </style>
 </head>
 <body>
 <div id="page" class="page">
@@ -155,7 +160,7 @@
             </div>
             <p class="weui-tabbar__label">{{add}}</p>
         </a>
-        <a v-bind:href="editHref" class="weui-tabbar__item">
+        <a v-on:click="editHref" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/icon-edit2_blue.png" alt="">
             </div>
@@ -232,12 +237,12 @@
         el: '#page',
         created:function (){
             // 待审核数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:0,startPage:0,endPage:2}}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:0,startPage:0,endPage:9}}).then(function (res) {
                 this.toAuditList = res.data.body.sobillList;
             });
 
             // 历史数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:1,startPage:0,endPage:2}}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:1,startPage:0,endPage:9}}).then(function (res) {
                 this.historyList = res.data.body.sobillList;
             });
         },
@@ -245,7 +250,6 @@
             add: '新增',
             addHref: '${ctxf}/wechat/sobill/goAdd',
             edit: '编辑',
-            editHref: '${ctxf}/wechat/sobill/goEdit',
             del: '删除',
             delectById: function () {
                 showWindow();
@@ -267,6 +271,23 @@
                     return;
                 }
                 $("#iosDialog3").fadeIn(200);
+            }
+        },
+        methods:{
+            editHref:function(){
+                var historyId = $("input[name='history']:checked").val();
+                if (historyId != null && historyId != '') {
+                    $("#title").text('审核订单不允许编辑操作!');
+                    $("#iosDialog2").fadeIn(200);
+                    return;
+                }
+                var toAuditId = $("input[name='toAudit']:checked").val();
+                if (toAuditId == null || toAuditId == '') {
+                    $("#title").text('请至少选择一条数据!');
+                    $("#iosDialog2").fadeIn(200);
+                    return;
+                }
+                window.location.href = '${ctxf}/wechat/sobill/goEdit?id='+toAuditId;
             }
         }
     });
@@ -317,15 +338,15 @@
     });
 
     var startToAuditPage = 0;
-    var endToAuditPage = 2;
+    var endToAuditPage = 9;
     var startHistoryPage = 0;
-    var endHistoryPage = 2;
+    var endHistoryPage = 9;
     // 加载数据
     function loadDatas(Id) {
         switch (Id) {
             case 'toAudit':
-                startToAuditPage = startToAuditPage + 2;
-                endToAuditPage = endToAuditPage + 2;
+                startToAuditPage = startToAuditPage + 10;
+                endToAuditPage = endToAuditPage + 10;
                 $.ajax({
                    async:false,
                    cache:false,
@@ -390,7 +411,7 @@
                            template += '</div>';
                        }
                        $("#loadToAudit").before(template);
-                       if (sobillList.length < 2) {
+                       if (sobillList.length < 10) {
                            loadingToAudit = true;
                            $("#loadToAudit").hide();
                            $("#endToAudit").show();
@@ -399,8 +420,8 @@
                 });
                 break;
             case 'history':
-                startHistoryPage = startHistoryPage + 2;
-                endHistoryPage = endHistoryPage + 2;
+                startHistoryPage = startHistoryPage + 10;
+                endHistoryPage = endHistoryPage + 10;
                 $.ajax({
                     async:false,
                     cache:false,
@@ -464,7 +485,7 @@
                             template += '</div>';
                             template += '</div>';
                         }
-                        if (sobillList.length < 2) {
+                        if (sobillList.length < 10) {
                             loadingHistory = true;
                             $("#loadHistory").hide();
                             $("#endHistory").show();

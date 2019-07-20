@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="UTF-8">
-    <title>新增订单</title>
+    <title>编辑订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
@@ -150,9 +150,7 @@
 <body>
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
-        <input type="hidden" id="status" name="status" value="0"/>
-        <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
-
+        <input type="hidden" id="id" name="id" value="${sobill.id}"/>
         <%-- 表头 --%>
         <div class="weui-cells">
             <div class="weui-cell">
@@ -166,27 +164,48 @@
                 <div class="weui-cell__bd">
                     <p>客户:</p>
                 </div>
-                <div class="weui-cell__ft"></div>
+                <div class="weui-cell__ft">${sobill.cusName}</div>
             </div>
 
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>销售员:</p>
                 </div>
-                <div class="weui-cell__ft"></div>
+                <div class="weui-cell__ft">${sobill.empName}</div>
             </div>
 
             <div class="weui-cell">
                 <div class="weui-cell__bd">
                     <p>状态:</p>
                 </div>
-                <div class="weui-cell__ft">草稿</div>
+                <div class="weui-cell__ft"><c:if test="${sobill.status == 0}">草稿</c:if><c:if test="${sobill.status == 1}">提交</c:if></div>
             </div>
         </div>
 
         <%-- 表体 --%>
         <div id="detail">
-
+            <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
+                <div class="weui-cells_checkbox">
+                    <div id="${var.itemId}Detail">
+                        <div style="float: left;width: 8%;">
+                            <label class="weui-check__label" for="${var.itemId}Select">
+                                <div class="weui-cell__hd">
+                                    <input id="${var.itemId}Select" name="selectItems" type="checkbox" class="weui-check" value="${var.itemId}"/>
+                                    <i class="weui-icon-checked"></i>
+                                </div>
+                            </label>
+                        </div>
+                        <div style="width: 92%;float: left;">
+                            <div class="weui-cell__bd">
+                                <div style="float: left;width: 100%;"><div style="float: left;"><span>编码:${var.number}</span></div></div>
+                                <div style="float: left;width: 100%;"><div style="float: left;"><span>名称:${var.itemName}</span></div><div style="float:right;"><span>单位:${var.unit}</span></div></div>
+                                <div style="float: left;width: 100%;"><div style="float: left;"><span>型号:${var.model}</span></div><div style="float: right;"><span>单价:</span></div></div>
+                                <div style="float: left;width: 100%;"><div style="float: left;"><span>数量:<input type="number" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}"/></span></div><div style="float: right;"><span>金额:<span name="amount">${var.amount}</span></span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
         </div>
 
         <div id="items" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
@@ -269,6 +288,8 @@
 <script type="text/javascript">
 
     var itemIds = new Array();
+    var itemIdsStr = '${itemIdsStr}';
+    itemIds = itemIdsStr.split(",");
 
     var vm = new Vue({
         el:'#page',
@@ -292,7 +313,7 @@
                 $("#searchBar").removeClass("weui-search-bar_focusing");
             },
             open(){
-                $("#searchBar").addClass("weui-search-bar_focusing")
+                $("#searchBar").addClass("weui-search-bar_focusing");
             },
             empty(){
                 $("#searchInput").val('');
@@ -313,39 +334,39 @@
                     }
                 }
                 $.ajax({
-                   async:false,
-                   cache:false,
-                   url:'${ctxf}/wechat/icitem/findItemListByIds',
-                   data:{
-                      idsStr:addVals.toString()
-                   },
-                   dataType: 'json',
-                   success:function (res){
+                    async:false,
+                    cache:false,
+                    url:'${ctxf}/wechat/icitem/findItemListByIds',
+                    data:{
+                        idsStr:addVals.toString()
+                    },
+                    dataType: 'json',
+                    success:function (res){
                         var template = '<div class="weui-cells_checkbox">';
                         var icitemList = res.body.icitemList;
-                       for (var i = 0; i < icitemList.length; i++) {
-                           template += '<div id="'+icitemList[i].id+'Detail" style="margin-top: 2%;">' +
-                           '<div style="float: left;width: 8%;">'+
-                           '<label class="weui-check__label" for="'+icitemList[i].id+'Select">' +
-                           '<div class="weui-cell__hd">' +
-                           '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
-                           '<i class="weui-icon-checked"></i>' +
-                               '</div>' +
-                               '</label>'+
-                              '</div>'+
-                               '<div style="width: 92%;float: left;">'+
-                               '<div class="weui-cell__bd">' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>编码:'+icitemList[i].number+'</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>名称:'+icitemList[i].name+'</span></div><div style="float:right;"><span>单位:'+icitemList[i].unit+'</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>型号:'+icitemList[i].model+'</span></div><div style="float: right;"><span>单价:</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>数量:<input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1"/></span></div><div style="float: right;"><span>金额:<span name="amount"></span></span></div></div>' +
-                               '</div>'+
-                               '</div>'+
-                               '</div>';
-                       }
+                        for (var i = 0; i < icitemList.length; i++) {
+                            template += '<div id="'+icitemList[i].id+'Detail">' +
+                                '<div style="float: left;width: 8%;">'+
+                                '<label class="weui-check__label" for="'+icitemList[i].id+'Select">' +
+                                '<div class="weui-cell__hd">' +
+                                '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
+                                '<i class="weui-icon-checked"></i>' +
+                                '</div>' +
+                                '</label>'+
+                                '</div>'+
+                                '<div style="width: 92%;float: left;">'+
+                                '<div class="weui-cell__bd">' +
+                                '<div style="float: left;width: 100%;"><div style="float: left;"><span>编码:'+icitemList[i].number+'</span></div></div>' +
+                                '<div style="float: left;width: 100%;"><div style="float: left;"><span>名称:'+icitemList[i].name+'</span></div><div style="float:right;"><span>单位:'+icitemList[i].unit+'</span></div></div>' +
+                                '<div style="float: left;width: 100%;"><div style="float: left;"><span>型号:'+icitemList[i].model+'</span></div><div style="float: right;"><span>单价:</span></div></div>' +
+                                '<div style="float: left;width: 100%;"><div style="float: left;"><span>数量:<input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1"/></span></div><div style="float: right;"><span>金额:<span name="amount"></span></span></div></div>' +
+                                '</div>'+
+                                '</div>'+
+                                '</div>';
+                        }
                         template += '</div>';
-                       $("#detail").append(template);
-                   }
+                        $("#detail").append(template);
+                    }
                 });
             },
             /* 选择分类 */
@@ -353,34 +374,34 @@
                 $("li:not("+classId+")").children('div').removeClass('play');
                 $("#"+classId).children('div').addClass('play');
                 $.ajax({
-                   async:false,
-                   cache:false,
-                   url: '${ctxf}/wechat/icitem/getItemsListByClassId',
-                   data:{
-                       classId:classId
-                   },
-                   dataType:'json',
-                   success:function (res) {
+                    async:false,
+                    cache:false,
+                    url: '${ctxf}/wechat/icitem/getItemsListByClassId',
+                    data:{
+                        classId:classId
+                    },
+                    dataType:'json',
+                    success:function (res) {
                         var icitemList = res.body.icitemList;
                         var template = '<div class="weui-cells weui-cells_checkbox">';
                         $("#"+index).empty();
-                       for (var i = 0; i < icitemList.length; i++) {
-                           var check = false;
-                           for (var j = 0; j < itemIds.length; j++) {
-                               if (itemIds[j] == icitemList[i].id){
-                                   check = true;
-                               }
-                           }
-                           template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">' +
-                               '<div class="weui-cell__hd" style="float: left;">';
-                               if(check){
-                                   template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
-                               } else {
-                                   template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
-                               }
-                                template += '<i class="weui-icon-checked"></i>' +
-                               '</div>' +
-                               '<div class="weui-cell__bd">' +
+                        for (var i = 0; i < icitemList.length; i++) {
+                            var check = false;
+                            for (var j = 0; j < itemIds.length; j++) {
+                                if (itemIds[j] == icitemList[i].id){
+                                    check = true;
+                                }
+                            }
+                            template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">' +
+                                '<div class="weui-cell__hd" style="float: left;">';
+                            if(check){
+                                template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
+                            } else {
+                                template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
+                            }
+                            template += '<i class="weui-icon-checked"></i>' +
+                                '</div>' +
+                                '<div class="weui-cell__bd">' +
                                 '<p>编码:'+icitemList[i].number+'</p>'+
                                 '<p>名称:'+icitemList[i].name+'</p>'+
                                 '<p>单位:'+icitemList[i].unit+'</p>'+
@@ -388,10 +409,10 @@
                                 '<p>单价:</p>'+
                                 '</div>' +
                                 '</label>';
-                       }
-                       template += '</div>';
-                       $("#"+index).append(template);
-                   }
+                        }
+                        template += '</div>';
+                        $("#"+index).append(template);
+                    }
                 });
             },
             /* 删除商品 */
@@ -440,7 +461,7 @@
             submitSob:function () {
                 var result = confirm("您确定要提交订单吗?");
                 if (result) {
-                    // 提交跳过审核
+                    // 提交
                     save(1);
                 }
             }
@@ -457,13 +478,12 @@
         return -1;
     }
 
-    /* 保存订单 type(0:保存草稿,1:审核提交) */
+    /* 保存订单 type(0:保存草稿,1:提交) */
     function save(type) {
         if (itemIds.length == 0) {
             alert("请至少选择一个商品!");
             return;
         }
-        var billNo = $("#billNo").val();
         var check = true;
         var json = '[';
         for (var i = 0; i < itemIds.length; i++) {
@@ -478,9 +498,9 @@
             alert("请检查订单明细是否填写完整!");
             return
         }
+        var id = $("#id").val();
         var data = {
-            "id":"",
-            "billNo":billNo,
+            "id":id,
             "synStatus":0,
             "status":type,
             "cancellation":0,

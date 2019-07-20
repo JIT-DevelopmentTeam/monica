@@ -1,26 +1,30 @@
 package com.jeeplus.modules.wechat.sobill;
-import com.google.common.collect.Lists;
+import com.jeeplus.common.utils.IdGen;
 
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
+import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Param;
-import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @Controller
@@ -29,6 +33,9 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private SobillService sobillService;
+
+    @Autowired
+    private SobillentryMapper sobillentryMapper;
 
     @Autowired
     private IcitemService icitemService;
@@ -69,6 +76,23 @@ public class SobillWechatController extends BaseController {
         sobill.setSynStatus(0);
         mv.setViewName("modules/wechat/sobill/addSobill");
         mv.addObject("sobill",sobill);
+        return mv;
+    }
+
+    @RequestMapping(value = "goEdit")
+    public ModelAndView goEdit(@RequestParam("id") String id){
+        ModelAndView mv = new ModelAndView();
+        Sobill sobill = sobillService.get(id);
+        StringBuffer itemIdsStr = new StringBuffer();
+        for (Sobillentry sobillentry : sobill.getSobillentryList()) {
+            itemIdsStr.append(sobillentry.getItemId()+",");
+        }
+        if (!"".equals(itemIdsStr.toString())){
+            itemIdsStr = itemIdsStr.deleteCharAt(itemIdsStr.length()-1);
+            mv.addObject("itemIdsStr",itemIdsStr.toString());
+        }
+        mv.addObject("sobill",sobill);
+        mv.setViewName("modules/wechat/sobill/editSobill");
         return mv;
     }
 
@@ -115,6 +139,84 @@ public class SobillWechatController extends BaseController {
             aj.setSuccess(false);
             aj.setMsg("审核失败!(请检查该订单是否已审核或已提交状态)");
         }
+        return aj;
+    }
+
+    @RequestMapping(value = "saveSob",produces = {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public AjaxJson saveSob(@RequestBody Object object){
+        AjaxJson aj = new AjaxJson();
+        JSONObject jsonObject = JSONObject.fromObject(object);
+        if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){
+            Sobill sobill = new Sobill();
+            sobill.setBillNo(jsonObject.getString("billNo"));
+            sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
+            sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
+            sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
+            sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
+            sobill.setId(IdGen.uuid());
+            sobill.setIsNewRecord(true);
+            List<Sobillentry> sobillentryList = new ArrayList<>();
+            JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject sobillEntryObject = jsonArray.getJSONObject(i);
+                Sobillentry sobillentry = new Sobillentry();
+                sobillentry.setSobillId(sobill);
+                sobillentry.setItemId(sobillEntryObject.getString("itemId"));
+                sobillentry.setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
+                sobillentry.setDelFlag("0");
+                // id设置为空字符串才会插入数据
+                sobillentry.setId("");
+                sobillentryList.add(sobillentry);
+            }
+            sobill.setSobillentryList(sobillentryList);
+            sobillService.save(sobill);
+        } else {
+            Sobill sobill = sobillService.get(jsonObject.getString("id"));
+            if (sobill != null){
+                sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
+                sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
+                sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
+                sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
+                List<Sobillentry> sobillentryList = sobill.getSobillentryList();
+                JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
+                for (int i = 0; i < sobillentryList.size(); i++) {
+                    boolean delect = true;
+                    for (int j = 0; j < jsonArray.size(); j++) {
+                        JSONObject sobillEntryObject = jsonArray.getJSONObject(j);
+                        if (sobillEntryObject.getString("itemId").equals(sobillentryList.get(i).getItemId())){
+                            delect = false;
+                        }
+                    }
+                    if (delect) {
+                        sobillentryList.get(i).setDelFlag("1");
+                    }
+                }
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject sobillEntryObject = jsonArray.getJSONObject(i);
+                    boolean exist = false;
+                    for (int j = 0; j < sobillentryList.size(); j++) {
+                        if (sobillentryList.get(j).getItemId().equals(sobillEntryObject.getString("itemId"))){
+                            exist = true;
+                            sobillentryList.get(j).setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
+                        }
+                    }
+                    if (!exist){
+                        Sobillentry sobillentry = new Sobillentry();
+                        sobillentry.setSobillId(sobill);
+                        sobillentry.setItemId(sobillEntryObject.getString("itemId"));
+                        sobillentry.setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
+                        sobillentry.setDelFlag("0");
+                        // id设置为空字符串才会插入数据
+                        sobillentry.setId("");
+                        sobillentryList.add(sobillentry);
+                    }
+                }
+            }
+            sobillService.save(sobill);
+        }
+        aj.setSuccess(true);
+        aj.setMsg("保存成功!");
         return aj;
     }
 

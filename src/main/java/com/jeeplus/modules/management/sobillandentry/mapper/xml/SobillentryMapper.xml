@@ -20,7 +20,8 @@
 		a.f_rowid AS "rowId",
 		item.f_name AS "itemName",
 		item.f_model AS "model",
-		item.f_unit AS "unit"
+		item.f_unit AS "unit",
+		item.f_number AS "number"
 	</sql>
 	
 	<sql id="sobillentryJoins">
@@ -45,7 +46,7 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="sobillId != null and sobillId != ''">
+			<if test="sobillId.id != null and sobillId.id != ''">
 				AND a.f_sobillid = #{sobillId.id}
 			</if>
 		</where>

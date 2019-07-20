@@ -143,7 +143,8 @@ public class SobillController extends BaseController {
 			}
 			sobill.setAmount(count);
 		}
-		sobillService.save(sobill);//保存
+        //保存
+		sobillService.save(sobill);
 		j.setSuccess(true);
 		j.setMsg("保存订单成功");
 		return j;
