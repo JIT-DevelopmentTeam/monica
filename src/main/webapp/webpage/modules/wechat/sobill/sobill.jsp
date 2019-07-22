@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <title>订单管理</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
-    <script src="${ctxStatic}/css/jquery-weui.css"></script>
+    <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -181,49 +181,9 @@
     </div>
 </div>
 
-<!--BEGIN dialog1-->
-<div class="js_dialog" id="iosDialog1" style="display: none;">
-    <div class="weui-mask"></div>
-    <div class="weui-dialog">
-        <div class="weui-dialog__hd"><strong class="weui-dialog__title">操作反馈</strong></div>
-        <div class="weui-dialog__bd">您确定要将该订单删除吗?</div>
-        <div class="weui-dialog__ft">
-            <a onclick="closeWindow('iosDialog1');" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
-            <a onclick="delect();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
-        </div>
-    </div>
-</div>
-<!--END dialog1-->
-
-<!--BEGIN dialog1-->
-<div class="js_dialog" id="iosDialog3" style="display: none;">
-    <div class="weui-mask"></div>
-    <div class="weui-dialog">
-        <div class="weui-dialog__hd"><strong class="weui-dialog__title">操作反馈</strong></div>
-        <div class="weui-dialog__bd">您确定要审核该订单吗?</div>
-        <div class="weui-dialog__ft">
-            <a onclick="closeWindow('iosDialog3');" class="weui-dialog__btn weui-dialog__btn_default">取消</a>
-            <a onclick="check();" class="weui-dialog__btn weui-dialog__btn_primary">确定</a>
-        </div>
-    </div>
-</div>
-<!--END dialog1-->
-
-<!--BEGIN dialog2-->
-<div class="js_dialog" id="iosDialog2" style="display: none;">
-    <div class="weui-mask"></div>
-    <div class="weui-dialog">
-        <div class="weui-dialog__bd" id="title"></div>
-        <div class="weui-dialog__ft">
-            <a onclick="closeWindow('iosDialog2');" class="weui-dialog__btn weui-dialog__btn_primary">知道了</a>
-        </div>
-    </div>
-</div>
-<!--END dialog2-->
-
-<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
-<script src="${ctxStatic}/js/fastclick.js"></script>
-<script src="${ctxStatic}/js/jquery-weui.js"></script>
+<%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
+<script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
 
 <script type="text/javascript">
     $(function () {
@@ -251,69 +211,100 @@
             addHref: '${ctxf}/wechat/sobill/goAdd',
             edit: '编辑',
             del: '删除',
-            delectById: function () {
-                showWindow();
-            },
             check: '审核',
             toAuditList:[],
-            historyList:[],
-            checkSobill:function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $("#title").text('该订单已审核,无需重复操作!');
-                    $("#iosDialog2").fadeIn(200);
-                    return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
-                    $("#title").text('请至少选择一条数据!');
-                    $("#iosDialog2").fadeIn(200);
-                    return;
-                }
-                $("#iosDialog3").fadeIn(200);
-            }
+            historyList:[]
         },
         methods:{
             editHref:function(){
                 var historyId = $("input[name='history']:checked").val();
                 if (historyId != null && historyId != '') {
-                    $("#title").text('审核订单不允许编辑操作!');
-                    $("#iosDialog2").fadeIn(200);
+                    $.alert("审核订单不允许编辑操作!");
                     return;
                 }
                 var toAuditId = $("input[name='toAudit']:checked").val();
                 if (toAuditId == null || toAuditId == '') {
-                    $("#title").text('请至少选择一条数据!');
-                    $("#iosDialog2").fadeIn(200);
+                    $.alert("请至少选择一条数据!");
                     return;
                 }
                 window.location.href = '${ctxf}/wechat/sobill/goEdit?id='+toAuditId;
+            },
+            /* 删除 */
+            delectById: function () {
+                var toAuditId = $("input[name='toAudit']:checked").val();
+                var historyId = $("input[name='history']:checked").val();
+                if (historyId != null && historyId != '') {
+                    $.alert("订单已审核不允许删除!");
+                    return;
+                }
+                if (toAuditId == null || toAuditId == '') {
+                    $.alert("请至少选择一条数据!");
+                    return;
+                }
+                $.confirm("您确定要删除该订单吗?", function() {
+                    //点击确认后的回调函数
+                    $.ajax({
+                        async:false,
+                        cache:false,
+                        url:'${ctxf}/wechat/sobill/delectById',
+                        data:{
+                            id:toAuditId
+                        },
+                        dataType:'json',
+                        success:function (res){
+                            if (res.success) {
+                                $.alert(res.msg);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                },3000);
+                            } else {
+                                $.alert(res.msg);
+                            }
+                        }
+                    });
+                }, function() {
+                    //点击取消后的回调函数
+                });
+            },
+            checkSobill:function () {
+                var historyId = $("input[name='history']:checked").val();
+                if (historyId != null && historyId != '') {
+                    $.alert("该订单已审核,无需重复操作!");
+                    return;
+                }
+                var toAuditId = $("input[name='toAudit']:checked").val();
+                if (toAuditId == null || toAuditId == '') {
+                    $.alert("请至少选择一条数据!");
+                    return;
+                }
+                $.confirm("您确定要审核该订单吗?", function() {
+                    //点击确认后的回调函数
+                    $.ajax({
+                        async:false,
+                        cache:false,
+                        url:'${ctxf}/wechat/sobill/checkSobill',
+                        type:'post',
+                        data:{
+                            id:toAuditId
+                        },
+                        dataType:'json',
+                        success:function (res) {
+                            if (res.success) {
+                                $.alert(res.msg);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 3000);
+                            } else {
+                                $.alert(res.msg);
+                            }
+                        }
+                    });
+                }, function() {
+                    //点击取消后的回调函数
+                });
             }
         }
     });
-
-    //展示删除弹窗
-    function showWindow() {
-        var toAuditId = $("input[name='toAudit']:checked").val();
-        var historyId = $("input[name='history']:checked").val();
-        if (historyId != null && historyId != '') {
-            $("#title").text('订单已审核或已提交不允许删除!');
-            $("#iosDialog2").fadeIn(200);
-            return;
-        }
-        if (toAuditId == null || toAuditId == '') {
-            $("#title").text('请至少选择一条数据!');
-            $("#iosDialog2").fadeIn(200);
-            return;
-        }
-        $('#iosDialog1').fadeIn(200);
-    }
-
-    //关闭弹窗
-    function closeWindow(Id) {
-        $('#'+Id).fadeOut(200);
-    }
-
 
     // 滚动加载
     var loadingToAudit = false;  //状态标记
@@ -497,33 +488,6 @@
         }
     }
 
-    //执行删除
-    function delect() {
-        var Id = $("input[name='toAudit']:checked").val();
-        $.ajax({
-           async:false,
-           cache:false,
-           url:'${ctxf}/wechat/sobill/delectById',
-           data:{
-               id:Id
-           },
-           dataType:'json',
-           success:function (res){
-               closeWindow('iosDialog1');
-               if (res.success) {
-                   $("#title").text(res.msg);
-                   $("#iosDialog2").fadeIn(200);
-                   setTimeout(function () {
-                       window.location.reload();
-                   },3000);
-               } else {
-                   $("#title").text(res.msg);
-                   $("#iosDialog2").fadeIn(200);
-               }
-           }
-        });
-    }
-
     //切换导航
     function changeStyle(Id) {
         if (Id == 'toAudit') {
@@ -545,34 +509,6 @@
                 $("#loadToAudit").css("display", "none");
             }
         }
-    }
-
-    //执行审核
-    function check() {
-        var toAuditId = $("input[name='toAudit']:checked").val();
-        $.ajax({
-            async:false,
-            cache:false,
-            url:'${ctxf}/wechat/sobill/checkSobillById',
-            data:{
-                id:toAuditId
-            },
-            dataType:'json',
-            success:function (res) {
-                closeWindow('iosDialog3');
-                if (res.success){
-                    $("#title").text(res.msg);
-                    $("#iosDialog2").fadeIn(200);
-                    setTimeout(function () {
-                        window.location.reload();
-                    },3000);
-                } else {
-                    $("#title").text(res.msg);
-                    $("#iosDialog2").fadeIn(200);
-                    return;
-                }
-            }
-        });
     }
 </script>
 </body>

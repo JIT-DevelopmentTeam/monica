@@ -282,7 +282,7 @@ public class SobillController extends BaseController {
 			sobill.setCheckerId(UserUtils.getUser().getId());
 			sobill.setCheckStatus(1);
 			sobill.setCheckTime(new Date());
-			sobillService.checkOrder(sobill);
+			sobillService.save(sobill);
 			aj.setSuccess(true);
 			aj.setMsg("审核成功!");
 		}
@@ -304,7 +304,7 @@ public class SobillController extends BaseController {
 			sobill.setCheckerId(null);
 			sobill.setCheckStatus(0);
 			sobill.setCheckTime(null);
-			sobillService.checkOrder(sobill);
+			sobillService.save(sobill);
 			aj.setSuccess(true);
 			aj.setMsg("反审核成功!");
 		}
