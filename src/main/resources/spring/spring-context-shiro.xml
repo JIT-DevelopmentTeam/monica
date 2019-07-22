@@ -16,8 +16,8 @@
 			<value>
 				/static/** = anon
 				/userfiles/** = anon
-				/WW_verify_KfvxCWrMWRCzdI5M.txt = anon
-				/MP_verify_x7fvMVgFuqzTYmIS.txt = anon
+				/WW_verify_KfvxCWrMWRCzdI5M.txt = anon <!-- 企业微信 -->
+				/MP_verify_x7fvMVgFuqzTYmIS.txt = anon <!-- 公众号 -->
 				${adminPath}/sys/user/infoCareStatus = anon
 				${adminPath}/sys/user/validateLoginName = anon
 				${adminPath}/sys/user/validateMobile = anon
