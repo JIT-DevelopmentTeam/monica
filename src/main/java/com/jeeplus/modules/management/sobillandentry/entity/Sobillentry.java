@@ -29,6 +29,7 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	private Integer rowId;		// 行序号
 	private String itemName;	// 商品名称
 	private String model;	// 型号
+    private String number;      // 商品编号
 	
 	public Sobillentry() {
 		super();
@@ -141,4 +142,12 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	public void setModel(String model) {
 		this.model = model;
 	}
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 }
