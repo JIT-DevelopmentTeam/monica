@@ -104,6 +104,18 @@
 			</otherwise>
 		</choose>
 	</select>
+
+	<!-- 根据产品编号查询产品信息 -->
+	<select id="findByNumber" resultType="Icitem" >
+		SELECT
+		<include refid="icitemColumns"/>
+		FROM tb_icitem a
+		<include refid="icitemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.f_number = #{number}
+		</where>
+	</select>
 	
 	<insert id="insert">
 		INSERT INTO tb_icitem(

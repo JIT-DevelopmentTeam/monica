@@ -30,10 +30,10 @@
     </div>
     <div class="proInfo-body">
         <div class="proInfo-cell_right">
-            <div class="proInfo-list"><span>唯&nbsp;一&nbsp;码&nbsp;：</span></div>
-            <div class="proInfo-list"><span>产品编号：</span></div>
-            <div class="proInfo-list"><span>产品名称：</span></div>
-            <div class="proInfo-list"><span>规格型号：</span></div>
+            <div class="proInfo-list"><span>唯&nbsp;一&nbsp;码&nbsp;：</span><span id="primaryNo"></span></div>
+            <div class="proInfo-list"><span>产品编号：</span><span id="itemNo"></span></div>
+            <div class="proInfo-list"><span>产品名称：</span><span id="itemName"></span></div>
+            <div class="proInfo-list"><span>规格型号：</span><span id="model"></span></div>
         </div>
         <div class="proImg-cell_left">
             <img src="${ctxStatic}/image/wechat/qr_code.png" title="图" id="picUrl">
@@ -143,14 +143,13 @@
             type: "get",
             dataType: "json",
             success: function (res) {
-                console.log(res);
                 var appId = res.config.appId;
                 var timestamp = res.config.timestamp;
                 var nonceStr = res.config.nonceStr;
                 var signature = res.config.signature;
                 // 通过config接口注入权限验证配置
                 wx.config({
-                    debug: true, // 开启调试模式。
+                    debug: false, // 开启调试模式。
                     appId: appId, // 必填，公众号的唯一标识
                     timestamp: timestamp, // 必填，生成签名的时间戳
                     nonceStr: nonceStr, // 必填，生成签名的随机串
@@ -186,11 +185,24 @@
                 success: function (res) {
                     var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                     //window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
-                    alert("扫一扫返回来的数据:" + result);
+                    // alert("扫一扫返回来的数据:" + result);
+                    $.ajax({
+                        url: "${ctxf}/wechat/barCode/scanQRCode",
+                        data: {"data": result},
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            // alert("查询出来的数据：" + data.result.number);
+                            $("#primaryNo").text(data.result.erpId);
+                            $("#itemNo").text(data.result.number);
+                            $("#itemName").text(data.result.name);
+                            $("#model").text(data.result.model);
+                        }
+                    });
                 },
                 error: function (res) {
-                    //alert(res.errMsg);
-                    console.log("异常");
+                    alert(res.errMsg);
+                    // console.log("异常");
                 }
             });
         });
