@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
+    <%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
     <style type="text/css">
         body {
             margin: 0;
@@ -154,33 +155,65 @@
         <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
 
         <%-- 表头 --%>
-        <div class="weui-cells">
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <p>编号:</p>
+        <%--<div class="weui-cell">
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>编号:</p>
+                    </div>
+                    <div class="weui-cell__ft">${sobill.billNo}</div>
                 </div>
-                <div class="weui-cell__ft">${sobill.billNo}</div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>客户:</p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>销售员:</p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </div>
+
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <p>状态:</p>
+                    </div>
+                    <div class="weui-cell__ft">草稿</div>
+                </div>
+            </div>
+        </div>--%>
+
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">编号:</label></div>
+                <div class="weui-cell__bd">
+                    ${sobill.billNo}
+                </div>
             </div>
 
             <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">客户:</label></div>
                 <div class="weui-cell__bd">
-                    <p>客户:</p>
+
                 </div>
-                <div class="weui-cell__ft"></div>
             </div>
 
             <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">销售员:</label></div>
                 <div class="weui-cell__bd">
-                    <p>销售员:</p>
+
                 </div>
-                <div class="weui-cell__ft"></div>
             </div>
 
             <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">状态:</label></div>
                 <div class="weui-cell__bd">
-                    <p>状态:</p>
+                    草稿
                 </div>
-                <div class="weui-cell__ft">草稿</div>
             </div>
         </div>
 
@@ -265,7 +298,6 @@
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
-<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script type="text/javascript">
 
     var itemIds = new Array();
@@ -401,7 +433,7 @@
                     checkVals.push($(this).val());
                 });
                 if (checkVals.length == 0) {
-                    alert("请选择要删除的商品!");
+                    $.alert("请选择要删除的商品!");
                     return;
                 }
                 var index;
@@ -431,19 +463,21 @@
             },
             /* 保存订单 */
             saveSob:function () {
-                var result = confirm("您确定要保存订单吗?");
-                if (result) {
-                    // 保存草稿
+                $.confirm("您确定要保存订单吗?", function() {
+                    //点击确认后的回调函数
                     save(0);
-                }
+                }, function() {
+                    //点击取消后的回调函数
+                });
             },
             submitSob:function () {
-                var result = confirm("您确定要提交订单吗?");
-                if (result) {
-                    // 提交跳过审核
+                $.confirm("您确定要提交订单吗?", function() {
+                    //点击确认后的回调函数
                     save(1);
-                }
-            }
+                }, function() {
+                    //点击取消后的回调函数
+                });
+            },
         }
     });
 
@@ -460,7 +494,7 @@
     /* 保存订单 type(0:保存草稿,1:审核提交) */
     function save(type) {
         if (itemIds.length == 0) {
-            alert("请至少选择一个商品!");
+            $.alert("请至少选择一个商品!");
             return;
         }
         var billNo = $("#billNo").val();
@@ -475,7 +509,7 @@
         json = json.substring(0,json.length-1);
         json += ']';
         if (!check){
-            alert("请检查订单明细是否填写完整!");
+            $.alert("请检查订单明细是否填写完整!");
             return
         }
         var data = {
@@ -498,16 +532,15 @@
             dataType:'json',
             success:function (res) {
                 if (res.success) {
-                    alert("保存成功!");
+                    $.alert("保存成功!");
                     setTimeout(function(){ window.location.href = '${ctxf}/wechat/sobill/list' }, 3000);
                 }
             },
             error:function () {
-                alert("保存出错!");
+                $.alert("保存出错!");
             }
         });
     }
-
 </script>
 </body>
 </html>
