@@ -72,4 +72,19 @@ public class BarCodeWechatController extends BaseController {
         return result;
     }
 
+    /**
+     * 根据输入的code查询匹配的信息
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "searchCode")
+    public Map<String, Object> searchCode(HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<>();
+        String itemId = request.getParameter("QRCode");
+        Icitem icitem = icitemService.findByNumber("0", itemId);
+        result.put("result", icitem);
+        return result;
+    }
+
 }

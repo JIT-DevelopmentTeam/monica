@@ -212,7 +212,18 @@
     function searchCode() {
         var $QRCode = $("#QRCode").val();
         if ($QRCode != null && $QRCode != '') {
-            alert("功能待定");
+            $.ajax({
+                url: "${ctxf}/wechat/barCode/searchCode",
+                data: {"QRCode": $QRCode},
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    $("#primaryNo").text(data.result.erpId);
+                    $("#itemNo").text(data.result.number);
+                    $("#itemName").text(data.result.name);
+                    $("#model").text(data.result.model);
+                }
+            });
         } else
             alert("请输入条码");
     }
