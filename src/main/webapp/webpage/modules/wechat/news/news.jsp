@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <title>新闻公告</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
+    <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
-    <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 
 </head>
 <body>
