@@ -1,0 +1,126 @@
+body{
+    background: #f6f6f6;
+    margin: 0;
+}
+.isHead{
+    /*background: #fff;*/
+    padding-top: 10px;
+}
+.head-nav{
+    text-align: center;
+    position: relative;
+}
+.head-nav img{
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.nav-item{
+    padding:3px 15px;
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
+    border: 1px solid #0f76e0;
+    color:#0f76e0
+}
+.nav-item+.nav-item{
+    /*border-left: none;*/
+    margin-left: -5px;
+    border-radius: 0 5px 5px 0;
+}
+.nav-item.isChoosed{
+    background: #0f76e0;
+    color: #ffffff;
+}
+.order-cell{
+    position: relative;
+}
+.icon-check{
+    width: 12px;
+    height: 12px;
+    border: 1px solid #0f76e0;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    display: none;
+}
+.icon-check_inside{
+    width: 8px;
+    height: 8px;
+    background: #0f76e0;
+    border-radius: 50%;
+    margin: 2px;
+}
+.order-cell_left{
+    background: #fff;
+    width: 90%;
+    /*margin-top: 15px;*/
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #4a4a4a;
+    position: sticky;
+    /*transform: translateX(25px);*/
+}
+.order-list{
+    display: flex;
+}
+.order-list.show-detail_list{
+    text-align: right;
+    margin-top: 10px;
+    color: #888;
+    position: relative;
+}
+.order-list+.order-list{
+    margin-top: 10px;
+}
+.order-list_item{
+    flex: 1;
+}
+.order-list_item span{
+    color: #2f2f2f;
+}
+.order-cell_bg{
+    background: #eee;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.form-footer:after{
+    content: " ";
+    display: inline-block;
+    height: 8px;
+    width: 8px;
+    border-width: 1px 1px 0 0;
+    border-color: #C8C8CD;
+    border-style: solid;
+    -webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+    position: absolute;
+    top: 50%;
+    margin-top: -4px;
+    right: 0;
+}
+.fiexd-list{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #fff;
+    padding: 5px 0;
+    border-top: 1px solid #eee;
+    z-index: 9999;
+}
+.fiexd-item{
+    flex: 1;
+    text-align: center;
+}
+.fiexd-item p{
+    margin: -5px;
+    font-size: 14px;
+    color: #4a4a4a;
+}
+.collaborator{
+    /*padding: 10px 15px;*/
+}

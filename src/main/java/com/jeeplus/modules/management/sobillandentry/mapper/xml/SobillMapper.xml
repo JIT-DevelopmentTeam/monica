@@ -5,6 +5,7 @@
 	<sql id="sobillColumns">
 		a.id AS "id",
 		a.create_by AS "createBy.id",
+		creater.name AS "createBy.name",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
@@ -36,6 +37,7 @@
 		LEFT JOIN sys_user AS checker ON a.f_checkerid = checker.id
 		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
 		LEFT JOIN tb_customer AS cus ON a.f_custid = cus.id
+		LEFT JOIN sys_user AS creater ON a.create_by = creater.id
 	</sql>
 	
     

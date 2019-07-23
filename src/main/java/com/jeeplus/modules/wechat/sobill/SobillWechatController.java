@@ -1,4 +1,5 @@
 package com.jeeplus.modules.wechat.sobill;
+import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.IdGen;
 
 import com.jeeplus.common.json.AjaxJson;
@@ -73,6 +74,7 @@ public class SobillWechatController extends BaseController {
         int secound = now.get(Calendar.SECOND);
         String time = year + month + day + hour + min + secound;
         sobill.setBillNo("SOB"+time);
+        sobill.setCreateDate(new Date());
         sobill.setSynStatus(0);
         mv.setViewName("modules/wechat/sobill/addSobill");
         mv.addObject("sobill",sobill);
@@ -153,6 +155,8 @@ public class SobillWechatController extends BaseController {
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
             sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
+            sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
+            sobill.setCreateDate(DateUtils.parseDate(jsonObject.get("createDate")));
             sobill.setId(IdGen.uuid());
             sobill.setIsNewRecord(true);
             List<Sobillentry> sobillentryList = new ArrayList<>();
@@ -177,6 +181,7 @@ public class SobillWechatController extends BaseController {
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
                 sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
                 sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
+                sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
                 for (int i = 0; i < sobillentryList.size(); i++) {

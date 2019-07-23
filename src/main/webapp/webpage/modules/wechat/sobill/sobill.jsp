@@ -7,6 +7,7 @@
           content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="UTF-8">
     <title>订单管理</title>
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/orderList.css">
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
@@ -14,6 +15,8 @@
     <style type="text/css">
         body{
             overflow: auto;
+            padding-top: 15%;
+            padding-bottom: 12%;
         }
     </style>
 </head>
@@ -29,51 +32,33 @@
                     历史订单
                 </div>
             </div>
-            <div class="weui-tab__panel">
+
+            <div id="order-cell1">
                 <div id="toAuditDetail">
-                    <div class="weui-cells" v-for="toAudit in toAuditList">
+                    <div class="order-cell" v-for="toAudit in toAuditList">
                         <div class="weui-cells_radio">
                             <label class="weui-cell weui-check__label" :for="'toAudit'+toAudit.id">
-                                <div class="weui-cell__bd">
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>编号:</p>
-                                        </div>
-                                        <div class="weui-cell__ft">{{toAudit.billNo}}</div>
+                                <div class="order-cell_left">
+                                    <div class="order-list">
+                                        <div class="order-list_item"><span>客户：</span>  {{toAudit.cusName}}</div>
+                                        <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id" :value="toAudit.id"/>
+                                        <span class="weui-icon-checked"></span>
                                     </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>订单发货时间:</p>
+                                    <div class="order-cell_bg">
+                                        <div class="order-list">
+                                            <div class="order-list_item"><span>编号：</span>  {{toAudit.billNo}}</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{toAudit.needTime}}</div>
-                                    </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>客户:</p>
+                                        <div class="order-list">
+                                            <div class="order-list_item"><span>跟单：</span>  {{toAudit.empName}}</div>
+                                            <div class="order-list_item"><span>日期：</span>  {{toAudit.needTime}}</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{toAudit.cusName}}</div>
-                                    </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>销售员:</p>
+                                        <div class="order-list">
+                                            <div class="order-list_item" v-if="toAudit.synStatus === 0"><span>同步：</span>未同步</div>
+                                            <div class="order-list_item" v-else><span>同步：</span>已同步</div>
+                                            <div class="order-list_item" v-if="toAudit.status === 0"><span>状态：</span>草稿</div>
+                                            <div class="order-list_item" v-else><span>状态：</span>提交</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{toAudit.empName}}</div>
                                     </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>状态:</p>
-                                        </div>
-                                        <div class="weui-cell__ft" v-if="toAudit.status === 0">草稿</div>
-                                        <div class="weui-cell__ft" v-else>提交</div>
-                                    </div>
-                                </div>
-                                <div class="weui-cell__ft">
-                                    <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id" :value="toAudit.id"/>
-                                    <span class="weui-icon-checked"></span>
                                 </div>
                             </label>
                         </div>
@@ -88,51 +73,33 @@
                         <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
                     </div>
                 </div>
+            </div>
 
                 <div id="historyDetail" style="display: none;">
-                    <div class="weui-cells" v-for="history in historyList">
+                    <div class="order-cell" v-for="history in historyList">
                         <div class="weui-cells_radio">
                             <label class="weui-cell weui-check__label" :for="'history'+history.id">
-                                <div class="weui-cell__bd">
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>编号:</p>
-                                        </div>
-                                        <div class="weui-cell__ft">{{history.billNo}}</div>
+                                <div class="order-cell_left">
+                                    <div class="order-list">
+                                        <div class="order-list_item"><span>客户：</span>  {{history.cusName}}</div>
+                                        <input type="radio" class="weui-check" name="history" :id="'history'+history.id" :value="history.id"/>
+                                        <span class="weui-icon-checked"></span>
                                     </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>订单发货时间:</p>
+                                    <div class="order-cell_bg">
+                                        <div class="order-list">
+                                            <div class="order-list_item"><span>编号：</span>  {{history.billNo}}</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{history.needTime}}</div>
-                                    </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>客户:</p>
+                                        <div class="order-list">
+                                            <div class="order-list_item"><span>跟单：</span>  {{history.empName}}</div>
+                                            <div class="order-list_item"><span>日期：</span>  {{history.needTime}}</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{history.cusName}}</div>
-                                    </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>销售员:</p>
+                                        <div class="order-list">
+                                            <div class="order-list_item" v-if="history.synStatus === 0"><span>同步：</span>未同步</div>
+                                            <div class="order-list_item" v-else><span>同步：</span>已同步</div>
+                                            <div class="order-list_item" v-if="history.status === 0"><span>状态：</span>草稿</div>
+                                            <div class="order-list_item" v-else><span>状态：</span>提交</div>
                                         </div>
-                                        <div class="weui-cell__ft">{{history.empName}}</div>
                                     </div>
-
-                                    <div class="weui-cell">
-                                        <div class="weui-cell__bd">
-                                            <p>状态:</p>
-                                        </div>
-                                        <div class="weui-cell__ft" v-if="history.status === 0">草稿</div>
-                                        <div class="weui-cell__ft" v-else>提交</div>
-                                    </div>
-                                </div>
-                                <div class="weui-cell__ft">
-                                    <input type="radio" class="weui-check" name="history" :id="'history'+history.id" :value="history.id"/>
-                                    <span class="weui-icon-checked"></span>
                                 </div>
                             </label>
                         </div>
@@ -147,7 +114,6 @@
                         <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 
