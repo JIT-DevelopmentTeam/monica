@@ -160,6 +160,14 @@
         <div class="order-panel">
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
+                    编号
+                </div>
+                <div class="addOrder-list_ft">
+                    ${sobill.billNo}
+                </div>
+            </div>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
@@ -204,7 +212,7 @@
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-top: 5%;padding-bottom: 500px;">
+        <div id="detail" style="padding-top: 5%;padding-bottom: 50px;">
 
         </div>
 

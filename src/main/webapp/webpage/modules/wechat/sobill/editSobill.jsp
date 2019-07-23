@@ -158,6 +158,14 @@
         <div class="order-panel">
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
+                    编号
+                </div>
+                <div class="addOrder-list_ft">
+                    ${sobill.billNo}
+                </div>
+            </div>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
@@ -200,7 +208,7 @@
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-bottom: 500px;background: white;">
+        <div id="detail" style="padding-bottom: 50px;background: white;">
             <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
                 <div id="${var.itemId}Detail" class="weui-cells_checkbox" style="padding-top: 3%;">
                     <div class="pro-cell">
