@@ -14,7 +14,7 @@
 
     <style type="text/css">
         .weui-media-box {
-            padding: 2px;
+            padding: 0px;
             position: relative;
         }
     </style>
@@ -26,7 +26,7 @@
             <div class="weui-panel__bd">
                 <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch">
                     <span class="weui-badge" style="margin-left: 5px;">头条</span>
-                    <div v-for="item in items">
+                    <div v-for="item in items" style="border-bottom: 1px solid #f7f7f7;">
                         <div v-if="item.headline === 1">
                             <%--<span class="weui-badge" style="margin-left: 5px;" v-if="item.headline === 1">头条</span>--%>
                             <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div id="newList">
-                    <div v-for="item in items">
+                    <div v-for="item in items" style="border-bottom: 1px solid #efefef;">
                         <div  v-if="item.headline === 0">
                             <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
                                 <div class="weui-media-box__hd">
