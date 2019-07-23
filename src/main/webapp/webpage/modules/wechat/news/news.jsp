@@ -12,6 +12,12 @@
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
 
+    <style type="text/css">
+        .weui-media-box {
+            padding: 2px;
+            position: relative;
+        }
+    </style>
 </head>
 <body>
 <div class="page">
