@@ -13,7 +13,7 @@
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
-        body{
+        body {
             overflow: auto;
             padding-top: 15%;
             padding-bottom: 12%;
@@ -40,22 +40,25 @@
                             <label class="weui-cell weui-check__label" :for="'toAudit'+toAudit.id">
                                 <div class="order-cell_left">
                                     <div class="order-list">
-                                        <div class="order-list_item"><span>客户：</span>  {{toAudit.cusName}}</div>
-                                        <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id" :value="toAudit.id"/>
+                                        <div class="order-list_item"><span>客户：</span> {{toAudit.cusName}}</div>
+                                        <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id"
+                                               :value="toAudit.id"/>
                                         <span class="weui-icon-checked"></span>
                                     </div>
                                     <div class="order-cell_bg">
                                         <div class="order-list">
-                                            <div class="order-list_item"><span>编号：</span>  {{toAudit.billNo}}</div>
+                                            <div class="order-list_item"><span>编号：</span> {{toAudit.billNo}}</div>
                                         </div>
                                         <div class="order-list">
-                                            <div class="order-list_item"><span>跟单：</span>  {{toAudit.empName}}</div>
-                                            <div class="order-list_item"><span>日期：</span>  {{toAudit.needTime}}</div>
+                                            <div class="order-list_item"><span>跟单：</span> {{toAudit.empName}}</div>
+                                            <div class="order-list_item"><span>日期：</span> {{toAudit.needTime}}</div>
                                         </div>
                                         <div class="order-list">
-                                            <div class="order-list_item" v-if="toAudit.synStatus === 0"><span>同步：</span>未同步</div>
+                                            <div class="order-list_item" v-if="toAudit.synStatus === 0"><span>同步：</span>未同步
+                                            </div>
                                             <div class="order-list_item" v-else><span>同步：</span>已同步</div>
-                                            <div class="order-list_item" v-if="toAudit.status === 0"><span>状态：</span>草稿</div>
+                                            <div class="order-list_item" v-if="toAudit.status === 0"><span>状态：</span>草稿
+                                            </div>
                                             <div class="order-list_item" v-else><span>状态：</span>提交</div>
                                         </div>
                                     </div>
@@ -75,45 +78,48 @@
                 </div>
             </div>
 
-                <div id="historyDetail" style="display: none;">
-                    <div class="order-cell" v-for="history in historyList">
-                        <div class="weui-cells_radio">
-                            <label class="weui-cell weui-check__label" :for="'history'+history.id">
-                                <div class="order-cell_left">
+            <div id="historyDetail" style="display: none;">
+                <div class="order-cell" v-for="history in historyList">
+                    <div class="weui-cells_radio">
+                        <label class="weui-cell weui-check__label" :for="'history'+history.id">
+                            <div class="order-cell_left">
+                                <div class="order-list">
+                                    <div class="order-list_item"><span>客户：</span> {{history.cusName}}</div>
+                                    <input type="radio" class="weui-check" name="history" :id="'history'+history.id"
+                                           :value="history.id"/>
+                                    <span class="weui-icon-checked"></span>
+                                </div>
+                                <div class="order-cell_bg">
                                     <div class="order-list">
-                                        <div class="order-list_item"><span>客户：</span>  {{history.cusName}}</div>
-                                        <input type="radio" class="weui-check" name="history" :id="'history'+history.id" :value="history.id"/>
-                                        <span class="weui-icon-checked"></span>
+                                        <div class="order-list_item"><span>编号：</span> {{history.billNo}}</div>
                                     </div>
-                                    <div class="order-cell_bg">
-                                        <div class="order-list">
-                                            <div class="order-list_item"><span>编号：</span>  {{history.billNo}}</div>
+                                    <div class="order-list">
+                                        <div class="order-list_item"><span>跟单：</span> {{history.empName}}</div>
+                                        <div class="order-list_item"><span>日期：</span> {{history.needTime}}</div>
+                                    </div>
+                                    <div class="order-list">
+                                        <div class="order-list_item" v-if="history.synStatus === 0"><span>同步：</span>未同步
                                         </div>
-                                        <div class="order-list">
-                                            <div class="order-list_item"><span>跟单：</span>  {{history.empName}}</div>
-                                            <div class="order-list_item"><span>日期：</span>  {{history.needTime}}</div>
+                                        <div class="order-list_item" v-else><span>同步：</span>已同步</div>
+                                        <div class="order-list_item" v-if="history.status === 0"><span>状态：</span>草稿
                                         </div>
-                                        <div class="order-list">
-                                            <div class="order-list_item" v-if="history.synStatus === 0"><span>同步：</span>未同步</div>
-                                            <div class="order-list_item" v-else><span>同步：</span>已同步</div>
-                                            <div class="order-list_item" v-if="history.status === 0"><span>状态：</span>草稿</div>
-                                            <div class="order-list_item" v-else><span>状态：</span>提交</div>
-                                        </div>
+                                        <div class="order-list_item" v-else><span>状态：</span>提交</div>
                                     </div>
                                 </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div id="loadHistory" class="weui-loadmore">
-                        <i class="weui-loading"></i>
-                        <span class="weui-loadmore__tips">正在加载...</span>
-                    </div>
-
-                    <div id="endHistory" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
-                        <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
+
+                <div id="loadHistory" class="weui-loadmore">
+                    <i class="weui-loading"></i>
+                    <span class="weui-loadmore__tips">正在加载...</span>
+                </div>
+
+                <div id="endHistory" class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+                    <span class="weui-loadmore__tips" style="background-color: #F6F6F6;">加载完毕</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -161,14 +167,26 @@
 
     var vm = new Vue({
         el: '#page',
-        created:function (){
+        created: function () {
             // 待审核数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:0,startPage:0,endPage:9}}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+                params: {
+                    checkStatus: 0,
+                    startPage: 0,
+                    endPage: 10
+                }
+            }).then(function (res) {
                 this.toAuditList = res.data.body.sobillList;
             });
 
             // 历史数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus',{params:{checkStatus:1,startPage:0,endPage:9}}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+                params: {
+                    checkStatus: 1,
+                    startPage: 0,
+                    endPage: 10
+                }
+            }).then(function (res) {
                 this.historyList = res.data.body.sobillList;
             });
         },
@@ -178,11 +196,11 @@
             edit: '编辑',
             del: '删除',
             check: '审核',
-            toAuditList:[],
-            historyList:[]
+            toAuditList: [],
+            historyList: []
         },
-        methods:{
-            editHref:function(){
+        methods: {
+            editHref: function () {
                 var historyId = $("input[name='history']:checked").val();
                 if (historyId != null && historyId != '') {
                     $.alert("审核订单不允许编辑操作!");
@@ -193,7 +211,7 @@
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                window.location.href = '${ctxf}/wechat/sobill/goEdit?id='+toAuditId;
+                window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + toAuditId;
             },
             /* 删除 */
             delectById: function () {
@@ -207,54 +225,17 @@
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                $.confirm("您确定要删除该订单吗?", function() {
+                $.confirm("您确定要删除该订单吗?", function () {
                     //点击确认后的回调函数
                     $.ajax({
-                        async:false,
-                        cache:false,
-                        url:'${ctxf}/wechat/sobill/delectById',
-                        data:{
-                            id:toAuditId
+                        async: false,
+                        cache: false,
+                        url: '${ctxf}/wechat/sobill/delectById',
+                        data: {
+                            id: toAuditId
                         },
-                        dataType:'json',
-                        success:function (res){
-                            if (res.success) {
-                                $.alert(res.msg);
-                                setTimeout(function () {
-                                    window.location.reload();
-                                },3000);
-                            } else {
-                                $.alert(res.msg);
-                            }
-                        }
-                    });
-                }, function() {
-                    //点击取消后的回调函数
-                });
-            },
-            checkSobill:function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("该订单已审核,无需重复操作!");
-                    return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
-                    $.alert("请至少选择一条数据!");
-                    return;
-                }
-                $.confirm("您确定要审核该订单吗?", function() {
-                    //点击确认后的回调函数
-                    $.ajax({
-                        async:false,
-                        cache:false,
-                        url:'${ctxf}/wechat/sobill/checkSobill',
-                        type:'post',
-                        data:{
-                            id:toAuditId
-                        },
-                        dataType:'json',
-                        success:function (res) {
+                        dataType: 'json',
+                        success: function (res) {
                             if (res.success) {
                                 $.alert(res.msg);
                                 setTimeout(function () {
@@ -265,7 +246,44 @@
                             }
                         }
                     });
-                }, function() {
+                }, function () {
+                    //点击取消后的回调函数
+                });
+            },
+            checkSobill: function () {
+                var historyId = $("input[name='history']:checked").val();
+                if (historyId != null && historyId != '') {
+                    $.alert("该订单已审核,无需重复操作!");
+                    return;
+                }
+                var toAuditId = $("input[name='toAudit']:checked").val();
+                if (toAuditId == null || toAuditId == '') {
+                    $.alert("请至少选择一条数据!");
+                    return;
+                }
+                $.confirm("您确定要审核该订单吗?", function () {
+                    //点击确认后的回调函数
+                    $.ajax({
+                        async: false,
+                        cache: false,
+                        url: '${ctxf}/wechat/sobill/checkSobill',
+                        type: 'post',
+                        data: {
+                            id: toAuditId
+                        },
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.success) {
+                                $.alert(res.msg);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 3000);
+                            } else {
+                                $.alert(res.msg);
+                            }
+                        }
+                    });
+                }, function () {
                     //点击取消后的回调函数
                 });
             }
@@ -276,7 +294,7 @@
     var loadingToAudit = false;  //状态标记
     var loadingHistory = false;
     $(document.body).infinite().on("infinite", function () {
-        if ($("#toAuditDetail").css("display") == "block"){
+        if ($("#toAuditDetail").css("display") == "block") {
             if (loadingToAudit) return;
             // 加载待审核数据
             $("#loadToAudit").show();
@@ -295,9 +313,10 @@
     });
 
     var startToAuditPage = 0;
-    var endToAuditPage = 9;
+    var endToAuditPage = 10;
     var startHistoryPage = 0;
-    var endHistoryPage = 9;
+    var endHistoryPage = 10;
+
     // 加载数据
     function loadDatas(Id) {
         switch (Id) {
@@ -305,142 +324,100 @@
                 startToAuditPage = startToAuditPage + 10;
                 endToAuditPage = endToAuditPage + 10;
                 $.ajax({
-                   async:false,
-                   cache:false,
-                   url:'${ctxf}/wechat/sobill/getSobillListByCheckStatus',
-                   data:{
-                       checkStatus:0,
-                       startPage:startToAuditPage,
-                       endPage:endToAuditPage
-                   },
-                   dataType:'json',
-                   success:function (res) {
-                       var sobillList = res.body.sobillList;
-                       var template = '';
-                       for (let i = 0; i < sobillList.length; i++) {
-                           template += '<div class="weui-cells">';
-                           template += '<div class="weui-cells_radio">';
-                           template += '<label class="weui-cell weui-check__label" for="toAudit'+sobillList[i].id+'">';
-                           template += '<div class="weui-cell__bd">';
+                    async: false,
+                    cache: false,
+                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    data: {
+                        checkStatus: 0,
+                        startPage: startToAuditPage,
+                        endPage: endToAuditPage
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        var sobillList = res.body.sobillList;
+                        var template = '';
+                        for (let i = 0; i < sobillList.length; i++) {
+                            template += '<div class="order-cell">' +
+                                '<div class="weui-cells_radio">' +
+                                '<label class="weui-cell weui-check__label" for="' + sobillList[i].id + '">' +
+                                '<div class="order-cell_left">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
+                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<span class="weui-icon-checked"></span>' +
+                                '</div>' +
 
-                           template += '<div class="weui-cell">';
-                           template += '<div class="weui-cell__bd">';
-                           template += '<p>编号:</p>';
-                           template += '</div>';
-                           template += '<div class="weui-cell__ft">'+sobillList[i].billNo+'</div>';
-                           template += '</div>';
-
-                           template += '<div class="weui-cell">';
-                           template += '<div class="weui-cell__bd">';
-                           template += '<p>订单发货时间:</p>';
-                           template += '</div>';
-                           template += '<div class="weui-cell__ft">'+sobillList[i].needTime+'</div>'
-                           template += '</div>';
-
-                           template += '<div class="weui-cell">';
-                           template += '<div class="weui-cell__bd">';
-                           template += '<p>客户:</p>';
-                           template += '</div>';
-                           template += '<div class="weui-cell__ft">'+sobillList[i].cusName+'</div>'
-                           template += '</div>';
-
-                           template += '<div class="weui-cell">';
-                           template += '<div class="weui-cell__bd">';
-                           template += '<p>销售员:</p>';
-                           template += '</div>';
-                           template += '<div class="weui-cell__ft">'+sobillList[i].empName+'</div>'
-                           template += '</div>';
-
-                           template += '<div class="weui-cell">';
-                           template += '<div class="weui-cell__bd">';
-                           template += '<p>状态:</p>';
-                           template += '</div>';
-                           template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
-                           template += '</div>';
-                           template += '</div>';
-
-                           template += '<div class="weui-cell__ft">';
-                           template += '<input type="radio" class="weui-check" name="toAudit" id="toAudit'+sobillList[i].id+'" value="'+sobillList[i].id+'"/>';
-                           template += '<span class="weui-icon-checked"></span>';
-                           template += '</div>';
-                           template += '</label>';
-                           template += '</div>';
-                           template += '</div>';
-                       }
-                       $("#loadToAudit").before(template);
-                       if (sobillList.length < 10) {
-                           loadingToAudit = true;
-                           $("#loadToAudit").hide();
-                           $("#endToAudit").show();
-                       }
-                   }
+                                '<div class="order-cell_bg">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTime != null && sobillList[i].needTime != '' ? sobillList[i].needTime : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "同步" : "未同步") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "提交" : "草稿") + '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</label>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        $("#loadToAudit").before(template);
+                        if (sobillList.length < 10) {
+                            loadingToAudit = true;
+                            $("#loadToAudit").hide();
+                            $("#endToAudit").show();
+                        }
+                    }
                 });
                 break;
             case 'history':
                 startHistoryPage = startHistoryPage + 10;
                 endHistoryPage = endHistoryPage + 10;
                 $.ajax({
-                    async:false,
-                    cache:false,
-                    url:'${ctxf}/wechat/sobill/getSobillListByCheckStatus',
-                    data:{
-                        checkStatus:1,
-                        startPage:startHistoryPage,
-                        endPage:endHistoryPage
+                    async: false,
+                    cache: false,
+                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    data: {
+                        checkStatus: 1,
+                        startPage: startHistoryPage,
+                        endPage: endHistoryPage
                     },
-                    dataType:'json',
-                    success:function (res) {
+                    dataType: 'json',
+                    success: function (res) {
                         var sobillList = res.body.sobillList;
                         var template = '';
                         for (let i = 0; i < sobillList.length; i++) {
-                            template += '<div class="weui-cells">';
-                            template += '<div class="weui-cells_radio">';
-                            template += '<label class="weui-cell weui-check__label" for="history'+sobillList[i].id+'">';
-                            template += '<div class="weui-cell__bd">';
+                            template += '<div class="order-cell">' +
+                                '<div class="weui-cells_radio">' +
+                                '<label class="weui-cell weui-check__label" for="' + sobillList[i].id + '">' +
+                                '<div class="order-cell_left">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
+                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<span class="weui-icon-checked"></span>' +
+                                '</div>' +
 
-                            template += '<div class="weui-cell">';
-                            template += '<div class="weui-cell__bd">';
-                            template += '<p>编号:</p>';
-                            template += '</div>';
-                            template += '<div class="weui-cell__ft">'+sobillList[i].billNo+'</div>';
-                            template += '</div>';
-
-                            template += '<div class="weui-cell">';
-                            template += '<div class="weui-cell__bd">';
-                            template += '<p>订单发货时间:</p>';
-                            template += '</div>';
-                            template += '<div class="weui-cell__ft">'+sobillList[i].needTime+'</div>'
-                            template += '</div>';
-
-                            template += '<div class="weui-cell">';
-                            template += '<div class="weui-cell__bd">';
-                            template += '<p>客户:</p>';
-                            template += '</div>';
-                            template += '<div class="weui-cell__ft">'+sobillList[i].cusName+'</div>'
-                            template += '</div>';
-
-                            template += '<div class="weui-cell">';
-                            template += '<div class="weui-cell__bd">';
-                            template += '<p>销售员:</p>';
-                            template += '</div>';
-                            template += '<div class="weui-cell__ft">'+sobillList[i].empName+'</div>'
-                            template += '</div>';
-
-                            template += '<div class="weui-cell">';
-                            template += '<div class="weui-cell__bd">';
-                            template += '<p>状态:</p>';
-                            template += '</div>';
-                            template += '<div class="weui-cell__ft">'+(sobillList[i].status == 1 ? '提交' : '草稿')+'</div>'
-                            template += '</div>';
-                            template += '</div>';
-
-                            template += '<div class="weui-cell__ft">';
-                            template += '<input type="radio" class="weui-check" name="history" id="history'+sobillList[i].id+'" value="'+sobillList[i].id+'"/>';
-                            template += '<span class="weui-icon-checked"></span>';
-                            template += '</div>';
-                            template += '</label>';
-                            template += '</div>';
-                            template += '</div>';
+                                '<div class="order-cell_bg">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTime != null && sobillList[i].needTime != '' ? sobillList[i].needTime : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "同步" : "未同步") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "提交" : "草稿") + '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</label>' +
+                                '</div>' +
+                                '</div>';
                         }
                         if (sobillList.length < 10) {
                             loadingHistory = true;
