@@ -70,11 +70,6 @@
                 <span>库存状态：</span>
             </div>
         </div>
-        <div class="proValue-list">
-            <div class="proValue-list_item">
-                <span>加工建议：</span>
-            </div>
-        </div>
     </div>
     <div style="height: 40px"></div>
 </div>
