@@ -25,10 +25,8 @@
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
                 <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch">
-                    <span class="weui-badge" style="margin-left: 5px;">头条</span>
                     <div v-for="item in items" style="border-bottom: 1px solid #f7f7f7;">
                         <div v-if="item.headline === 1">
-                            <%--<span class="weui-badge" style="margin-left: 5px;" v-if="item.headline === 1">头条</span>--%>
                             <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
                                 <div class="weui-media-box__hd">
                                     <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
@@ -37,6 +35,7 @@
                                     <h4 class="weui-media-box__title">{{ item.title }}</h4>
                                     <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
                                 </div>
+                                <span class="weui-badge" style="margin: 1em;">头条</span>
                             </a>
                         </div>
                     </div>
@@ -46,7 +45,7 @@
                         <div  v-if="item.headline === 0">
                             <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
                                 <div class="weui-media-box__hd">
-                                    <img style="width: 70px; height: 80px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
+                                    <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
                                 </div>
                                 <div class="weui-media-box__bd">
                                     <h4 class="weui-media-box__title">{{ item.title }}</h4>
