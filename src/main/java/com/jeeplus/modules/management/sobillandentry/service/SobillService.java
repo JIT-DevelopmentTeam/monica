@@ -74,9 +74,4 @@ public class SobillService extends CrudService<SobillMapper, Sobill> {
 		sobillentryMapper.delete(new Sobillentry(sobill));
 	}
 
-	@Transactional(readOnly = false)
-	public void checkOrder(Sobill sobill) {
-		sobillMapper.checkOrder(sobill);
-	}
-	
 }

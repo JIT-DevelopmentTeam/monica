@@ -32,43 +32,9 @@
 			}
 
         }
-		function addRow(list, idx, tpl, row){
-		    /* TODO 选择商品后生成 */
-			$(list).append(Mustache.render(tpl, {
-				idx: idx, delBtn: true, row: row
-			}));
-			$(list+idx).find("select").each(function(){
-				$(this).val($(this).attr("data-value"));
-			});
-			$(list+idx).find("input[type='checkbox'], input[type='radio']").each(function(){
-				var ss = $(this).attr("data-value").split(',');
-				for (var i=0; i<ss.length; i++){
-					if($(this).val() == ss[i]){
-						$(this).attr("checked","checked");
-					}
-				}
-			});
-			$(list+idx).find(".form_datetime").each(function(){
-				 $(this).datetimepicker({
-					 format: "YYYY-MM-DD HH:mm:ss"
-			    });
-			});
-		}
-		function delRow(obj, prefix){
-			var id = $(prefix+"_id");
-			var delFlag = $(prefix+"_delFlag");
-			if (id.val() == ""){
-				$(obj).parent().parent().remove();
-				count();
-			}else if(delFlag.val() == "0"){
-				delFlag.val("1");
-				$(obj).html("&divide;").attr("title", "撤销删除");
-				$(obj).parent().parent().addClass("error");
-			}else if(delFlag.val() == "1"){
-				delFlag.val("0");
-				$(obj).html("&times;").attr("title", "删除");
-				$(obj).parent().parent().removeClass("error");
-			}
+		function addItems(){
+            jp.openDialog("选择商品", "${ctx}/management/icitemclass/icitem/list", window.innerWidth * 0.9 + "px", window.innerHeight * 0.8 + 'px', null ,function (iframeWin) {
+            });
 		}
 	</script>
 </head>
@@ -178,7 +144,7 @@
             </ul>
             <div class="tab-content">
 				<div id="tab-1" class="tab-pane fade in  active">
-			<a class="btn btn-white btn-sm" onclick="addRow('#sobillentryList', sobillentryRowIdx, sobillentryTpl);sobillentryRowIdx = sobillentryRowIdx + 1;" title="新增"><i class="fa fa-plus"></i> 新增</a>
+			<a class="btn btn-white btn-sm" onclick="addItems();" title="新增"><i class="fa fa-plus"></i> 新增</a>
 			<table class="table table-striped table-bordered table-condensed">
 				<thead>
 					<tr>
@@ -186,88 +152,31 @@
 						<th><font color="red">*</font>商品</th>
 						<th>批号</th>
 						<th><font color="red">*</font>单价</th>
-						<th><font color="red">*</font>数量</th>
+						<th width="10%;"><font color="red">*</font>数量</th>
 						<th><font color="red">*</font>总额</th>
-						<th><font color="red">*</font>行序号</th>
+						<th width="10%;"><font color="red">*</font>行序号</th>
 						<th>备注</th>
 						<th width="10">&nbsp;</th>
 					</tr>
+                    <c:forEach items="${sobill.sobillentryList}" varStatus="vs" var="var">
+                        <tr>
+                            <td class="hide"></td>
+                            <td>${var.itemName}</td>
+                            <td>${var.batchNo}</td>
+                            <td>${var.price}</td>
+                            <td><input type="number" id="${var.id}Qty" value="${var.auxqty}" min="0" class="form-control required"/></td>
+                            <td>${var.amount}</td>
+                            <td><input type="number" id="${var.id}Row" value="${var.rowId}" min="0" step="1" class="form-control required"/></td>
+                            <td>${var.remarks}</td>
+                            <td class="text-center" width="10">
+                                <span class="close" onclick="delRow()" title="删除">&times;</span>
+                            </td>
+                        </tr>
+                    </c:forEach>
 				</thead>
 				<tbody id="sobillentryList">
 				</tbody>
 			</table>
-			<script type="text/template" id="sobillentryTpl">//<!--
-				<tr id="sobillentryList{{idx}}">
-					<td class="hide">
-						<input id="sobillentryList{{idx}}_id" name="sobillentryList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
-						<input id="sobillentryList{{idx}}_delFlag" name="sobillentryList[{{idx}}].delFlag" type="hidden" value="0"/>
-					</td>
-
-					<td>
-						<sys:gridselect id="sobillentryList{{idx}}_item" title="选择商品" url="${ctx}/management/icitemclass/icitem/data"
-						cssClass="form-control required" fieldKeys="number|name|unit|model" fieldLabels="编号|名称|单位|型号" labelName="sobillentryList{{idx}}_item.name"
-						labelValue="{{row.itemName}}"  name="sobillentryList[{{idx}}].itemId" searchKeys="number|name" searchLabels="编号|名称" value="{{row.itemId}}"/>
-					</td>
-
-					<td>
-						<input id="sobillentryList{{idx}}_batchNo" name="sobillentryList[{{idx}}].batchNo" type="text" value="{{row.batchNo}}"    class="form-control "/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_price" name="sobillentryList[{{idx}}].price" type="text" value="{{row.price}}" onchange="countItemsAmount('sobillentryList{{idx}}');"  class="form-control required isFloatGteZero"/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_auxqty" name="sobillentryList[{{idx}}].auxqty" type="text" value="{{row.auxqty}}" onchange="countItemsAmount('sobillentryList{{idx}}');" class="form-control required isFloatGteZero"/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_amount" name="sobillentryList[{{idx}}].amount" type="text" value="{{row.amount}}"  onchange="count();"  class="form-control required isFloatGteZero"/>
-					</td>
-					
-					
-					<td>
-						<input id="sobillentryList{{idx}}_rowId" name="sobillentryList[{{idx}}].rowId" type="text" value="{{row.rowId}}"    class="form-control required isIntGteZero"/>
-					</td>
-
-					<td>
-						<input id="sobillentryList{{idx}}_remarks" name="sobillentryList[{{idx}}].remarks" rows="4" value="{{row.remarks}}" class="form-control "/>
-					</td>
-					
-					<td class="text-center" width="10">
-						{{#delBtn}}<span class="close" onclick="delRow(this, '#sobillentryList{{idx}}')" title="删除">&times;</span>{{/delBtn}}
-					</td>
-
-				</tr>//-->
-			</script>
-			<script type="text/javascript">
-				var sobillentryRowIdx = 0, sobillentryTpl = $("#sobillentryTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
-				$(document).ready(function() {
-					var data = ${fns:toJson(sobill.sobillentryList)};
-					for (var i=0; i<data.length; i++){
-						addRow('#sobillentryList', sobillentryRowIdx, sobillentryTpl, data[i]);
-						sobillentryRowIdx = sobillentryRowIdx + 1;
-					}
-				});
-
-                function countItemsAmount(Id) {
-                    var price = ($("#"+Id+"_price").val() != null && $("#"+Id+"_price").val() != '' ? parseFloat($("#"+Id+"_price").val()) : 0);
-                    var auxqty = ($("#"+Id+"_auxqty").val() != null && $("#"+Id+"_auxqty").val() != '' ? parseFloat($("#"+Id+"_auxqty").val()) : 0);
-                    $("#"+Id+"_amount").val((price * auxqty).toFixed(2));
-                    count();
-                }
-
-                function count() {
-                    var itemsAmount = 0;
-                    for (var i = 0; i < sobillentryRowIdx; i++) {
-                        itemsAmount += ($("#sobillentryList"+i+"_amount").val() != null && $("#sobillentryList"+i+"_amount").val() != '' ? parseFloat($("#sobillentryList"+i+"_amount").val()) : 0);
-                    }
-					$("#amount").val(itemsAmount.toFixed(2));
-                }
-			</script>
 			</div>
 		</div>
 		</div>

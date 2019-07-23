@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.management.icitemclass.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.service.CrudService;
 import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.mapper.IcitemMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 商品资料Service
@@ -21,6 +21,9 @@ import com.jeeplus.modules.management.icitemclass.mapper.IcitemMapper;
 @Service
 @Transactional(readOnly = true)
 public class IcitemService extends CrudService<IcitemMapper, Icitem> {
+
+	@Autowired
+	private IcitemMapper icitemMapper;
 
 	public Icitem get(String id) {
 		return super.get(id);
@@ -32,6 +35,16 @@ public class IcitemService extends CrudService<IcitemMapper, Icitem> {
 	
 	public Page<Icitem> findPage(Page<Icitem> page, Icitem icitem) {
 		return super.findPage(page, icitem);
+	}
+
+	/**
+	 * 根据产品编号查询产品信息
+	 * @param DEL_FLAG_NORMAL
+	 * @param number
+	 * @return
+	 */
+	public Icitem findByNumber(String DEL_FLAG_NORMAL, String number) {
+		return icitemMapper.findByNumber(DEL_FLAG_NORMAL, number);
 	}
 	
 	@Transactional(readOnly = false)

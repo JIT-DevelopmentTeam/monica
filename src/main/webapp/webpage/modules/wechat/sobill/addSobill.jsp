@@ -8,12 +8,14 @@
     <title>新增订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/editOrder.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/saleOrder.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
+    <%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
     <style type="text/css">
         body {
             margin: 0;
-            padding: 0;
             /*height: 1000%;*/
             /*Firefox*/
         -moz-calc(expression);
@@ -31,6 +33,7 @@
         .bg {
             width: 33vw;
             height: 100%;
+            padding-bottom: 50px;
             box-sizing: border-box;
             border-right: 1px rgba(215, 215, 215, 0.6) solid;
             overflow: auto;
@@ -154,38 +157,62 @@
         <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
 
         <%-- 表头 --%>
-        <div class="weui-cells">
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <p>编号:</p>
+        <div class="order-panel">
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    编号
                 </div>
-                <div class="weui-cell__ft">${sobill.billNo}</div>
+                <div class="addOrder-list_ft">
+                    ${sobill.billNo}
+                </div>
             </div>
-
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <p>客户:</p>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    <span>*</span>客户
                 </div>
-                <div class="weui-cell__ft"></div>
+                <div class="addOrder-list_ft">
+                    <%--<input class="weui-input" style="margin-right: 1px" id="cus" type="text" placeholder="请选择客户">
+                    <input id="FCUSTID" type="hidden" name="FCUSTID" readonly>--%>
+                </div>
             </div>
-
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <p>销售员:</p>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    <span>*</span>类型
                 </div>
-                <div class="weui-cell__ft"></div>
+                <div class="addOrder-list_ft">
+                    <%-- <input class="weui-input" style="margin-right: 1px" id="type" type="text" placeholder="请选择">
+                     <input id="FBILLTYPE" type="hidden" name="FBILLTYPE" readonly>--%>
+                </div>
             </div>
-
-            <div class="weui-cell">
-                <div class="weui-cell__bd">
-                    <p>状态:</p>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    <span>*</span>提货日期
                 </div>
-                <div class="weui-cell__ft">草稿</div>
+                <div class="addOrder-list_ft">
+                    <input placeholder="请选择日期" id="needTime" name="needTime" class="weui-input" type="date"/>
+                </div>
+            </div>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    <span>*</span>跟单人员
+                </div>
+                <div class="addOrder-list_ft">
+                    <%--<input class="weui-input" style="margin-right: 1px" id="merchandiser" type="text" placeholder="请选择">
+                    <input id="FEMPID" type="hidden" name="FEMPID" readonly>--%>
+                </div>
+            </div>
+            <div class="addOrder-list">
+                <div class="addOrder-list_bd">
+                    单据日期
+                </div>
+                <div class="addOrder-list_ft">
+                    <input type="text" id="createDate" name="createDate" readonly value="<fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="weui-input"/>
+                </div>
             </div>
         </div>
 
         <%-- 表体 --%>
-        <div id="detail">
+        <div id="detail" style="padding-top: 5%;padding-bottom: 50px;">
 
         </div>
 
@@ -244,7 +271,7 @@
             </a>
             <a v-on:click="delItems" class="weui-tabbar__item open-popup">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-delete.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{del}}</p>
             </a>
@@ -265,7 +292,6 @@
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
-<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script type="text/javascript">
 
     var itemIds = new Array();
@@ -321,29 +347,50 @@
                    },
                    dataType: 'json',
                    success:function (res){
-                        var template = '<div class="weui-cells_checkbox">';
+                        var template = '';
                         var icitemList = res.body.icitemList;
                        for (var i = 0; i < icitemList.length; i++) {
-                           template += '<div id="'+icitemList[i].id+'Detail" style="margin-top: 2%;">' +
-                           '<div style="float: left;width: 8%;">'+
-                           '<label class="weui-check__label" for="'+icitemList[i].id+'Select">' +
-                           '<div class="weui-cell__hd">' +
-                           '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
-                           '<i class="weui-icon-checked"></i>' +
-                               '</div>' +
-                               '</label>'+
-                              '</div>'+
-                               '<div style="width: 92%;float: left;">'+
-                               '<div class="weui-cell__bd">' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>编码:'+icitemList[i].number+'</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>名称:'+icitemList[i].name+'</span></div><div style="float:right;"><span>单位:'+icitemList[i].unit+'</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>型号:'+icitemList[i].model+'</span></div><div style="float: right;"><span>单价:</span></div></div>' +
-                               '<div style="float: left;width: 100%;"><div style="float: left;"><span>数量:<input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1"/></span></div><div style="float: right;"><span>金额:<span name="amount"></span></span></div></div>' +
+                           template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox" style="padding-top: 3%;">' +
+                               '<div class="pro-cell">'+
+                                    '<div class="pro-list">'+
+                                        '<div class="pro-item_left">'+
+                                            '<span>商品编号：</span>  '+icitemList[i].number+
+                                        '</div>'+
+                                        '<label class="weui-check__label" for="'+icitemList[i].id+'Select">' +
+                                            '<div class="weui-cell__hd">' +
+                                                '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
+                                                '<i class="weui-icon-checked"></i>' +
+                                            '</div>' +
+                                        '</label>'+
+                                    '</div>'+
+                                   '<div class="pro-list">'+
+                                        '<div class="pro-item_left">'+
+                                            '<span>商品名称：</span>  '+icitemList[i].name+
+                                        '</div>'+
+                                        '<div class="pro-item_right">'+
+                                            '<span>单位：</span>  '+icitemList[i].unit+
+                                        '</div>'+
+                                   '</div>'+
+                                    '<div class="pro-list">'+
+                                        '<div class="pro-item_left">'+
+                                            '<span>规格型号：</span>  '+icitemList[i].model+
+                                        '</div>'+
+                                        '<div class="pro-item_right">'+
+                                            '<span>单价：</span>  '+
+                                        '</div>'+
+                                    '</div>'+
+                                    '<div class="pro-list">'+
+                                        '<div class="pro-item_left">'+
+                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                        '</div>'+
+                                        '<div class="pro-item_right">'+
+                                            '<span>金额：</span>  <span class="total"></span>元'+
+                                        '</div>'+
+                                    '</div>'+
                                '</div>'+
-                               '</div>'+
-                               '</div>';
+                               '<hr>'+
+                           '</div>';
                        }
-                        template += '</div>';
                        $("#detail").append(template);
                    }
                 });
@@ -401,17 +448,21 @@
                     checkVals.push($(this).val());
                 });
                 if (checkVals.length == 0) {
-                    alert("请选择要删除的商品!");
+                    $.alert("请选择要删除的商品!");
                     return;
                 }
-                var index;
-                for (var i = 0; i < checkVals.length; i++) {
-                    index = retrieveArrayIndex(checkVals[i]);
-                    if (index != -1) {
-                        itemIds.splice(index,1);
-                        $("#"+checkVals[i]+"Detail").remove();
+                $.confirm("您确定要删除选中商品吗?","提醒",function () {
+                    var index;
+                    for (var i = 0; i < checkVals.length; i++) {
+                        index = retrieveArrayIndex(checkVals[i]);
+                        if (index != -1) {
+                            itemIds.splice(index,1);
+                            $("#"+checkVals[i]+"Detail").remove();
+                        }
                     }
-                }
+                },function () {
+
+                });
             },
             /* 选中商品 */
             selectItems:function (){
@@ -431,19 +482,21 @@
             },
             /* 保存订单 */
             saveSob:function () {
-                var result = confirm("您确定要保存订单吗?");
-                if (result) {
-                    // 保存草稿
+                $.confirm("您确定要保存订单吗?", function() {
+                    //点击确认后的回调函数
                     save(0);
-                }
+                }, function() {
+                    //点击取消后的回调函数
+                });
             },
             submitSob:function () {
-                var result = confirm("您确定要提交订单吗?");
-                if (result) {
-                    // 提交跳过审核
+                $.confirm("您确定要提交订单吗?", function() {
+                    //点击确认后的回调函数
                     save(1);
-                }
-            }
+                }, function() {
+                    //点击取消后的回调函数
+                });
+            },
         }
     });
 
@@ -460,10 +513,16 @@
     /* 保存订单 type(0:保存草稿,1:审核提交) */
     function save(type) {
         if (itemIds.length == 0) {
-            alert("请至少选择一个商品!");
+            $.alert("请至少选择一个商品!");
             return;
         }
         var billNo = $("#billNo").val();
+        var needTime = $("#needTime").val();
+        var createDate = $("#createDate").val();
+        if (needTime == null || needTime == '') {
+            $.alert("请选择发货日期!");
+            return;
+        }
         var check = true;
         var json = '[';
         for (var i = 0; i < itemIds.length; i++) {
@@ -475,7 +534,7 @@
         json = json.substring(0,json.length-1);
         json += ']';
         if (!check){
-            alert("请检查订单明细是否填写完整!");
+            $.alert("请检查订单明细是否填写完整!");
             return
         }
         var data = {
@@ -485,6 +544,8 @@
             "status":type,
             "cancellation":0,
             "checkStatus":0,
+            "needTime":needTime,
+            "createDate":createDate,
             "sobillentryList":json
         };
         $.ajax({
@@ -498,16 +559,15 @@
             dataType:'json',
             success:function (res) {
                 if (res.success) {
-                    alert("保存成功!");
+                    $.alert("保存成功!");
                     setTimeout(function(){ window.location.href = '${ctxf}/wechat/sobill/list' }, 3000);
                 }
             },
             error:function () {
-                alert("保存出错!");
+                $.alert("保存出错!");
             }
         });
     }
-
 </script>
 </body>
 </html>

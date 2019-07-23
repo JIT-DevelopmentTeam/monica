@@ -6,6 +6,7 @@ package com.jeeplus.modules.management.icitemclass.mapper;
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.icitemclass.entity.Icitem;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 商品资料MAPPER接口
@@ -14,5 +15,13 @@ import com.jeeplus.modules.management.icitemclass.entity.Icitem;
  */
 @MyBatisMapper
 public interface IcitemMapper extends BaseMapper<Icitem> {
-	
+
+    /**
+     * 根据产品编号查询产品信息
+     * @param DEL_FLAG_NORMAL
+     * @param number
+     * @return
+     */
+    Icitem findByNumber(@Param("DEL_FLAG_NORMAL") String DEL_FLAG_NORMAL, @Param("number") String number);
+
 }
