@@ -71,6 +71,9 @@
             padding-bottom: 2px;
             border-bottom:1px solid #f7f7f7;
         }
+        .weui-cells_radio .weui-check+.weui-icon-checked{
+            min-width: 0px;
+        }
     </style>
 </head>
 <body><div id="app">
@@ -171,8 +174,8 @@
                 <div class="weui-cell__bd">
                     <p>A</p>
                 </div>
-                <div class="weui-cell__ft">
-                    <input type="radio" class="weui-check" name="radio1" id="x11">
+                <div class="weui-cell__ft" style="position: fixed; right: 2%;">
+                    <input type="checkbox" class="weui-check" name="checkbox1" id="x11">
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -180,8 +183,8 @@
                 <div class="weui-cell__bd">
                     <p>B</p>
                 </div>
-                <div class="weui-cell__ft">
-                    <input type="radio" name="radio1" class="weui-check" id="x12">
+                <div class="weui-cell__ft" style="position: fixed; right: 2%;">
+                    <input type="checkbox" name="checkbox1" class="weui-check" id="x12">
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -189,8 +192,8 @@
                 <div class="weui-cell__bd">
                     <p>C</p>
                 </div>
-                <div class="weui-cell__ft">
-                    <input type="radio" name="radio1" class="weui-check" id="x13">
+                <div class="weui-cell__ft" style="position: fixed; right: 2%;">
+                    <input type="checkbox" name="checkbox1" class="weui-check" id="x13">
                     <span class="weui-icon-checked"></span>
                 </div>
             </label>
@@ -200,7 +203,7 @@
             <div class="weui-cell">
                 <div class="weui-cell__hd weui-label"></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="color" name="color" type="text" placeholder="请输入色号" />
+                    <input class="weui-input" id="color" name="color" type="text" placeholder="请输入色号" style="text-align: center;" />
                 </div>
                 <div class="weui-cell__hd weui-label"></div>
             </div>
