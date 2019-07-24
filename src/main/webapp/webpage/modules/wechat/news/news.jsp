@@ -14,8 +14,22 @@
 
     <style type="text/css">
         .weui-media-box {
-            padding: 0px;
+            padding: 0px 20px;
             position: relative;
+        }
+        .weui-panel:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            height: 1px;
+            border-top: 0px solid #E5E5E5;
+            color: #E5E5E5;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scaleY(0.5);
+            transform: scaleY(0.5);
         }
     </style>
 </head>
@@ -24,35 +38,37 @@
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
-                <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch">
-                    <div v-for="item in items" style="border-bottom: 1px solid #f7f7f7;">
-                        <div v-if="item.headline === 1">
-                            <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
-                                <div class="weui-media-box__hd">
-                                    <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
-                                </div>
-                                <div class="weui-media-box__bd">
-                                    <h4 class="weui-media-box__title">{{ item.title }}</h4>
-                                    <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
-                                </div>
-                                <span class="weui-badge" style="margin: 1em;">头条</span>
-                            </a>
-                        </div>
+                <div style="background-color: #c9def1; border-radius: 30px;">
+                    <span style="margin-left: 10px;">头条</span>
+                </div>
+                <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch;">
+                    <div v-for="item in items" v-show="item.headline === 1" style="border-bottom: 1px solid #f7f7f7;">
+                        <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <p class="weui-media-box__title">{{ item.title }}</p>
+                                <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
+                            </div>
+                            <span class="weui-badge" style="margin: 1em;">头条</span>
+                        </a>
                     </div>
                 </div>
+                <div style="background-color: #c9def1; border-radius: 30px;">
+                    <span style="margin-left: 10px;"></span>
+                </div>
                 <div id="newList">
-                    <div v-for="item in items" style="border-bottom: 1px solid #efefef;">
-                        <div  v-if="item.headline === 0">
-                            <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
-                                <div class="weui-media-box__hd">
-                                    <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
-                                </div>
-                                <div class="weui-media-box__bd">
-                                    <h4 class="weui-media-box__title">{{ item.title }}</h4>
-                                    <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
-                                </div>
-                            </a>
-                        </div>
+                    <div v-for="item in items" v-show="item.headline === 0" style="border-bottom: 1px solid #efefef;">
+                        <a href="javascript:void(0);" @click="detail(item.id)" class="weui-media-box weui-media-box_appmsg">
+                            <div class="weui-media-box__hd">
+                                <img style="width: 70px; height: 70px;" class="weui-media-box__thumb" v-bind:src="path + item.mainpic" alt="">
+                            </div>
+                            <div class="weui-media-box__bd">
+                                <p class="weui-media-box__title">{{ item.title }}</p>
+                                <p class="weui-media-box__desc">{{ item.user.name }} {{ item.push }}</p>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
@@ -108,7 +124,6 @@
             init: function () {
                 if ($('#headLine').height() != 20) {
                     $('#headLine').css("display", "block");
-                    $('#newList').css("border-top", "1px solid lightgrey");
                 }
             }
         },
@@ -119,24 +134,6 @@
             this.init();
         }
     });
-
-    function changeStyle(Id) {
-        if (Id == 'toAudit') {
-            if (!$("#" + Id).hasClass("weui-bar__item_on")) {
-                $("#" + Id).addClass("weui-bar__item_on");
-                $("#history").removeClass("weui-bar__item_on");
-                $("#toAuditDetail").css("display", "block");
-                $("#historyDetail").css("display", "none");
-            }
-        } else if (Id == 'history') {
-            if (!$("#" + Id).hasClass("weui-bar__item_on")) {
-                $("#" + Id).addClass("weui-bar__item_on");
-                $("#toAudit").removeClass("weui-bar__item_on");
-                $("#toAuditDetail").css("display", "none");
-                $("#historyDetail").css("display", "block");
-            }
-        }
-    }
 </script>
 </body>
 </html>

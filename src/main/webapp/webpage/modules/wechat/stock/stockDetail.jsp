@@ -25,14 +25,12 @@
             color: #999;
             line-height: 2;
         }
-
         .weui-label {
             display: block;
-            width: 73px;
+            width: 74px;
             word-wrap: break-word;
             word-break: break-all;
         }
-
         .weui-cell {
             padding: 3px 6px;
             position: relative;
@@ -43,7 +41,9 @@
             /* -webkit-align-items: center; */
             align-items: center;
         }
-
+        .weui-input {
+            width: 100%;
+        }
         .placeholder {
             margin: 5px;
             padding: 0 10px;
@@ -54,7 +54,6 @@
             /*color: #cfcfcf;*/
             color: #8a8a8a;
         }
-
     </style>
 </head>
 <body>
