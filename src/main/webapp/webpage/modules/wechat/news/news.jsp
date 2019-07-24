@@ -14,8 +14,22 @@
 
     <style type="text/css">
         .weui-media-box {
-            padding: 0px 5px;
+            padding: 0px 20px;
             position: relative;
+        }
+        .weui-panel:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            height: 1px;
+            border-top: 0px solid #E5E5E5;
+            color: #E5E5E5;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scaleY(0.5);
+            transform: scaleY(0.5);
         }
     </style>
 </head>
