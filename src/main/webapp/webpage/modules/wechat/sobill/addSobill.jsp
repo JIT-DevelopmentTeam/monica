@@ -311,7 +311,7 @@
                     data.push(info)
                 }
                 $("#cusName").select({
-                    title: "选择needTime",
+                    title: "选择客户",
                     items: data,
                     onChange: function(result) {//选中触发事件
                         $("#custId").val(result.values);
