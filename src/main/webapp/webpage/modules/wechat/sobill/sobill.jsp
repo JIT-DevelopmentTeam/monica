@@ -41,7 +41,7 @@
                                 <div class="order-cell_left">
                                     <div class="order-list">
                                         <div class="order-list_item"><span>客户：</span> {{toAudit.cusName}}</div>
-                                        <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id"
+                                        <input type="checkbox" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id"
                                                :value="toAudit.id"/>
                                         <span class="weui-icon-checked"></span>
                                     </div>
@@ -85,7 +85,7 @@
                             <div class="order-cell_left">
                                 <div class="order-list">
                                     <div class="order-list_item"><span>客户：</span> {{history.cusName}}</div>
-                                    <input type="radio" class="weui-check" name="history" :id="'history'+history.id"
+                                    <input type="checkbox" class="weui-check" name="history" :id="'history'+history.id"
                                            :value="history.id"/>
                                     <span class="weui-icon-checked"></span>
                                 </div>
@@ -169,7 +169,7 @@
         el: '#page',
         created: function () {
             // 待审核数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillList', {
                 params: {
                     checkStatus: 0,
                     startPage: 0,
@@ -180,9 +180,9 @@
             });
 
             // 历史数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillList', {
                 params: {
-                    checkStatus: 1,
+                    isHistory: 1,
                     startPage: 0,
                     endPage: 10
                 }
@@ -201,38 +201,74 @@
         },
         methods: {
             editHref: function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("审核订单不允许编辑操作!");
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                if (toAuditIds.length > 1 || historyIds.length > 1) {
+                    $.alert("编辑操作仅允许单选!");
                     return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
+                } else if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + toAuditId;
+                var id = '';
+                if (toAuditIds.length == 1) {
+                    id = toAuditIds[0];
+                } else if (historyIds.length == 1){
+                    id = historyIds[0];
+                }
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/sobill/getById',
+                   type:'post',
+                   data:{
+                       id:id
+                   },
+                   dataType:'json',
+                   success:function(res){
+                       var sobill = res.body.sobill;
+                       if (sobill.checkStatus == 1) {
+                           $.alert("该订单已审核,不允许编辑!");
+                           return;
+                       }
+                       window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + id;
+                    }
+                });
             },
             /* 删除 */
             delectById: function () {
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("订单已审核不允许删除!");
-                    return;
-                }
-                if (toAuditId == null || toAuditId == '') {
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                $.confirm("您确定要删除该订单吗?", function () {
+                var idsStr = '';
+                if (toAuditIds.length > 0) {
+                    idsStr = toAuditIds.toString();
+                } else if (historyIds.length > 0){
+                    idsStr = historyIds.toString();
+                }
+                $.confirm("您确定要删除选中订单吗?", function () {
                     //点击确认后的回调函数
                     $.ajax({
                         async: false,
                         cache: false,
-                        url: '${ctxf}/wechat/sobill/delectById',
+                        url: '${ctxf}/wechat/sobill/delectByIds',
                         data: {
-                            id: toAuditId
+                            idsStr: idsStr
                         },
                         dataType: 'json',
                         success: function (res) {
@@ -250,26 +286,35 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 审核订单 */
             checkSobill: function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("该订单已审核,无需重复操作!");
-                    return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                $.confirm("您确定要审核该订单吗?", function () {
+                var idsStr = '';
+                if (toAuditIds.length > 0) {
+                    idsStr = toAuditIds.toString();
+                } else if (historyIds.length > 0){
+                    idsStr = historyIds.toString();
+                }
+                $.confirm("您确定要审核选中订单吗?", function () {
                     //点击确认后的回调函数
                     $.ajax({
                         async: false,
                         cache: false,
-                        url: '${ctxf}/wechat/sobill/checkSobill',
+                        url: '${ctxf}/wechat/sobill/checkSobillByIds',
                         type: 'post',
                         data: {
-                            id: toAuditId
+                            idsStr: idsStr
                         },
                         dataType: 'json',
                         success: function (res) {
@@ -326,7 +371,7 @@
                 $.ajax({
                     async: false,
                     cache: false,
-                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    url: '${ctxf}/wechat/sobill/getSobillList',
                     data: {
                         checkStatus: 0,
                         startPage: startToAuditPage,
@@ -343,7 +388,7 @@
                                 '<div class="order-cell_left">' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<input type="checkbox" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
                                 '<span class="weui-icon-checked"></span>' +
                                 '</div>' +
 
@@ -380,9 +425,9 @@
                 $.ajax({
                     async: false,
                     cache: false,
-                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    url: '${ctxf}/wechat/sobill/getSobillList',
                     data: {
-                        checkStatus: 1,
+                        isHistory: 1,
                         startPage: startHistoryPage,
                         endPage: endHistoryPage
                     },
@@ -397,7 +442,7 @@
                                 '<div class="order-cell_left">' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<input type="checkbox" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
                                 '<span class="weui-icon-checked"></span>' +
                                 '</div>' +
 
@@ -439,7 +484,7 @@
                 $("#history").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "block");
                 $("#historyDetail").css("display", "none");
-                $('input[type=radio][name="history"]:checked').prop("checked", false);
+                $('input[type=checkbox][name="history"]:checked').prop("checked", false);
                 $("#loadHistory").css("display", "none");
             }
         } else if (Id == 'history') {
@@ -448,7 +493,7 @@
                 $("#toAudit").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "none");
                 $("#historyDetail").css("display", "block");
-                $('input[type=radio][name="toAudit"]:checked').prop("checked", false);
+                $('input[type=checkbox][name="toAudit"]:checked').prop("checked", false);
                 $("#loadToAudit").css("display", "none");
             }
         }

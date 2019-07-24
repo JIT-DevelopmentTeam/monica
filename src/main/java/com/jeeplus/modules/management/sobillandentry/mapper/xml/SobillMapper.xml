@@ -84,6 +84,9 @@
 			<if test="checkStatus != null">
 				AND a.f_checkstatus = #{checkStatus}
 			</if>
+            <if test="isHistory == true">
+                AND a.create_date &lt; CURDATE()
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

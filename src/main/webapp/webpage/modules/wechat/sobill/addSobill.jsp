@@ -16,6 +16,7 @@
     <style type="text/css">
         body {
             margin: 0;
+            background: white;
             /*height: 1000%;*/
             /*Firefox*/
         -moz-calc(expression);
@@ -155,6 +156,7 @@
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="status" name="status" value="0"/>
         <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
+        <input type="hidden" id="custId" name="custId"/>
 
         <%-- 表头 --%>
         <div class="order-panel">
@@ -171,8 +173,7 @@
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
-                    <%--<input class="weui-input" style="margin-right: 1px" id="cus" type="text" placeholder="请选择客户">
-                    <input id="FCUSTID" type="hidden" name="FCUSTID" readonly>--%>
+                    <input placeholder="请选择客户" type="text" id="cusName" readonly class="weui-input" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -186,10 +187,10 @@
             </div>
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
-                    <span>*</span>提货日期
+                    <span>*</span>发货日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input placeholder="请选择日期" id="needTime" name="needTime" class="weui-input" type="date"/>
+                    <input placeholder="请选择日期" v-on:click="openCalendar" id="needTime" name="needTime" class="weui-input" type="text" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -206,7 +207,7 @@
                     单据日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input type="text" id="createDate" name="createDate" readonly value="<fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="weui-input"/>
+                    <input type="text" id="createDate" name="createDate" readonly value="<fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="weui-input" style="text-align: right;"/>
                 </div>
             </div>
         </div>
@@ -263,7 +264,7 @@
         <br><br><br>
 
         <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a class="weui-tabbar__item open-popup" data-target="#items">
+            <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
@@ -301,6 +302,21 @@
         created: function () {
             this.$http.get('${ctxf}/wechat/icitem/getItemClass',{}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
+            });
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId',{}).then(function (res) {
+                var customerList = res.body.body.customerList;
+                var data = new Array();
+                for (var i = 0; i < customerList.length; i++){
+                     var info = { "title": customerList[i].name, "value": customerList[i].id};
+                    data.push(info)
+                }
+                $("#cusName").select({
+                    title: "选择needTime",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#custId").val(result.values);
+                    }
+                });
             });
         },
         data:{
@@ -453,6 +469,8 @@
                 }
                 $.confirm("您确定要删除选中商品吗?","提醒",function () {
                     var index;
+                    /* 清除选中 */
+                    cleanSelect();
                     for (var i = 0; i < checkVals.length; i++) {
                         index = retrieveArrayIndex(checkVals[i]);
                         if (index != -1) {
@@ -489,6 +507,7 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 提交订单 */
             submitSob:function () {
                 $.confirm("您确定要提交订单吗?", function() {
                     //点击确认后的回调函数
@@ -497,8 +516,21 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 打开日历 */
+            openCalendar:function () {
+                $("#needTime").calendar({
+                    dateFormat:"yyyy-mm-dd"
+                });
+            }
         }
     });
+
+    /* 清理选择 */
+    function cleanSelect() {
+        for (var i = 0; i < itemIds.length; i++) {
+            $("#"+itemIds[i]).attr("checked",false);
+        }
+    }
 
     /* 检索数组元素下标 */
     function retrieveArrayIndex(val) {
@@ -512,15 +544,20 @@
 
     /* 保存订单 type(0:保存草稿,1:审核提交) */
     function save(type) {
-        if (itemIds.length == 0) {
-            $.alert("请至少选择一个商品!");
-            return;
-        }
         var billNo = $("#billNo").val();
         var needTime = $("#needTime").val();
+        var custId = $("#custId").val();
         var createDate = $("#createDate").val();
+        if (custId == null || custId == '') {
+            $.alert("请选择客户!");
+            return;
+        }
         if (needTime == null || needTime == '') {
             $.alert("请选择发货日期!");
+            return;
+        }
+        if (itemIds.length == 0) {
+            $.alert("请至少选择一个商品!");
             return;
         }
         var check = true;
@@ -539,7 +576,9 @@
         }
         var data = {
             "id":"",
+            "custId":custId,
             "billNo":billNo,
+            "needTime":needTime,
             "synStatus":0,
             "status":type,
             "cancellation":0,

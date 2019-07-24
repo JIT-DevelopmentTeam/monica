@@ -48,13 +48,21 @@ public class SobillWechatController extends BaseController {
         return mv;
     }
 
-    @RequestMapping(value = "getSobillListByCheckStatus")
+    @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillListByCheckStatus(@Param("checkStatus") Integer checkStatus,@Param("startPage") Integer startPage,@Param("endPage") Integer endPage){
+    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @RequestParam("startPage") Integer startPage,@RequestParam("endPage") Integer endPage){
         AjaxJson aj = new AjaxJson();
         Sobill sobill = new Sobill();
         sobill.setDelFlag("0");
-        sobill.setCheckStatus(checkStatus);
+        if (checkStatus != null){
+            // 待审核
+            sobill.setCheckStatus(checkStatus);
+        }
+
+        if (isHistory != null){
+            // 历史订单
+            sobill.setHistory(true);
+        }
         sobill.setStartPage(startPage);
         sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
@@ -105,40 +113,51 @@ public class SobillWechatController extends BaseController {
         return mv;
     }
 
-    @RequestMapping(value = "delectById")
+    @RequestMapping(value = "delectByIds")
     @ResponseBody
-    public AjaxJson delectById(@Param("id") String id){
+    public AjaxJson delectById(@RequestParam("idsStr") String idsStr){
         AjaxJson aj = new AjaxJson();
-        Sobill sobill = new Sobill();
-        sobill.setId(id);
-        sobill = sobillService.get(sobill);
-        if (sobill.getStatus() == 1 || sobill.getCheckStatus() == 1){
-            aj.setSuccess(false);
-            aj.setMsg("删除失败!(已提交或已审核订单不允许删除)");
+        String[] ids = idsStr.split(",");
+        boolean delect = true;
+        for (String id : ids) {
+            Sobill sobill = sobillService.get(id);
+            if (sobill != null && sobill.getCheckStatus() != 1){
+                sobillService.delete(sobill);
+            } else {
+                delect = false;
+            }
+        }
+        aj.setSuccess(true);
+        if (!delect){
+            aj.setMsg("操作成功!(部分订单已审核不允许删除!)");
         } else {
-            sobillService.delete(sobill);
-            aj.setSuccess(true);
-            aj.setMsg("删除数据成功!");
+            aj.setMsg("删除订单成功!");
         }
         return aj;
     }
 
-    @RequestMapping(value = "checkSobill")
+    @RequestMapping(value = "checkSobillByIds")
     @ResponseBody
-    public AjaxJson checkSobill(@RequestParam("id") String id){
+    public AjaxJson checkSobill(@RequestParam("idsStr") String idsStr){
         AjaxJson aj = new AjaxJson();
-        Sobill sobill = sobillService.get(id);
-        if (sobill.getCheckStatus() != 1){
-            // 待审核和未提交状态允许审核
-            /* TODO 审核人 */
-            sobill.setCheckTime(new Date());
-            sobill.setCheckStatus(1);
-            sobillService.save(sobill);
-            aj.setSuccess(true);
+        String[] ids = idsStr.split(",");
+        boolean check = true;
+        for (String id : ids) {
+            Sobill sobill = sobillService.get(id);
+            if (sobill != null && sobill.getCheckStatus() != 1){
+                /* TODO 审核人 */
+                sobill.setCheckTime(new Date());
+                sobill.setCheckStatus(1);
+                sobillService.save(sobill);
+            } else {
+                check = false;
+            }
+        }
+        aj.setSuccess(true);
+        if (check){
             aj.setMsg("审核成功!");
         } else {
-            aj.setSuccess(false);
-            aj.setMsg("审核失败!(请检查该订单是否已审核!)");
+            aj.setMsg("操作成功!(部分订单已审核不允许重复操作!)");
         }
         return aj;
     }
@@ -151,6 +170,8 @@ public class SobillWechatController extends BaseController {
         if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){
             Sobill sobill = new Sobill();
             sobill.setBillNo(jsonObject.getString("billNo"));
+            sobill.setCustId(jsonObject.getString("custId"));
+            sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
@@ -177,6 +198,8 @@ public class SobillWechatController extends BaseController {
         } else {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
+                sobill.setCustId(jsonObject.getString("custId"));
+                sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
                 sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
                 sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
@@ -221,6 +244,15 @@ public class SobillWechatController extends BaseController {
         }
         aj.setSuccess(true);
         aj.setMsg("保存成功!");
+        return aj;
+    }
+
+    @RequestMapping(value = "getById")
+    @ResponseBody
+    public AjaxJson getById(@RequestParam("id") String id){
+        AjaxJson aj = new AjaxJson();
+        Sobill sobill = sobillService.get(id);
+        aj.put("sobill",sobill);
         return aj;
     }
 
