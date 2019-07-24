@@ -24,7 +24,7 @@
         }
         .weui-label {
             display: block;
-            width: 73px;
+            width: 74px;
             word-wrap: break-word;
             word-break: break-all;
         }
@@ -38,13 +38,15 @@
             /* -webkit-align-items: center; */
             align-items: center;
         }
+        .weui-input {
+            width: 100%;
+        }
         a img {
             margin-top: 0.25rem;
             border: 0;
             width: 65%;
             height: 75%;
         }
-
         .fixed-body{
             position: absolute;
             width: 100%;
