@@ -14,7 +14,7 @@
 
     <style type="text/css">
         .weui-media-box {
-            padding: 0px;
+            padding: 0px 5px;
             position: relative;
         }
     </style>
