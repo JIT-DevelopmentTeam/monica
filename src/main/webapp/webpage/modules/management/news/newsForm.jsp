@@ -264,13 +264,13 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否发布：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="isPublic"   itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPublic" id="isPublic"></label>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="headline" id="headline"></label>
 					</td>
@@ -313,7 +313,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否推送：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPush" id="isPush"></label>
 					</td>

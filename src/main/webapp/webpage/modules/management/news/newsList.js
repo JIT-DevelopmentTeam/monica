@@ -112,51 +112,54 @@ $(document).ready(function() {
                 sortable: true,
                 sortName: 'authorid'
 
-            },{
-                       field: 'office.name',
-                       title: '发布人部门',
-                       sortable: true,
-                       sortName: 'deptid'
+            },
+		   {
+			   field: 'office.name',
+			   title: '发布人部门',
+			   sortable: true,
+			   sortName: 'deptid'
 
-                   }
-                   ,{
-                       field: 'isPublic',
-                       title: '是否发布',
-                       sortable: true,
-                       sortName: 'isPublic',
-                       formatter:function(value, row , index){
-                           var i = "-";
-                           if(value == 0){
-                               i = "否"
-                           }else if(value == 1){
-                               i = "是"
-                           }
-                           return i;
-                       }
+		   }
+		   ,{
+			   field: 'isPublic',
+			   title: '是否发布',
+			   sortable: true,
+			   sortName: 'isPublic',
+			   formatter:function(value, row , index){
+				   var i = "-";
+				   if(value == 0){
+					   i = "否"
+				   }else if(value == 1){
+					   i = "是"
+				   }
+				   return i;
+			   }
 
-                   }
-                   ,{
-                       field: 'headline',
-                       title: '是否设置为头条',
-                       sortable: true,
-                       sortName: 'headline',
-                       formatter:function(value, row , index){
-                           var i = "-";
-                           if(value == 0){
-                               i = "否"
-                           }else if(value == 1){
-                               i = "是"
-                           }
-                           return i;
-                       }
+		   }
+		   ,{
+			   field: 'headline',
+			   title: '是否设置为头条',
+			   sortable: true,
+			   sortName: 'headline',
+			   formatter:function(value, row , index){
+				   var i = "-";
+				   if(value == 0){
+					   i = "否"
+				   }else if(value == 1){
+					   i = "是"
+				   }
+				   return i;
+			   }
 
-                   }
+		   }
 			,{
 		        field: 'describe',
 		        title: '摘要',
                 class:"text-nowrap",
 		        sortable: true,
-		        sortName: 'describe'
+		        sortName: 'describe',
+			    cellStyle: formatTableUnit,
+			    formatter: paramsMatter
 		       
 		    }
 
@@ -330,6 +333,25 @@ $(document).ready(function() {
         '<button type="button" class="picMainpic btn btn-primary btn-sm"><i class="glyphicon glyphicon-file"></i>查看封面</button>'
         ].join('');
     }
+
+// 表格超出宽度鼠标悬停显示td内容
+function paramsMatter(value, row, index, field) {
+	var span = document.createElement('span');
+	span.setAttribute('title', value);
+	span.innerHTML = value;
+	return span.outerHTML;
+}
+// td宽度以及内容超过宽度隐藏
+function formatTableUnit(value, row, index) {
+	return {
+		css: {
+			"white-space": 'nowrap',
+			"text-overflow": 'ellipsis',
+			"overflow": 'hidden',
+			"max-width": '150px'
+		}
+	}
+}
 
   function getIdSelections() {
         return $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
