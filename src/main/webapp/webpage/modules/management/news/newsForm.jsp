@@ -170,7 +170,7 @@
                     if(data.success){
                         jp.getParent().refresh();
                         var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-                        //parent.layer.close(dialogIndex);
+                        parent.layer.close(dialogIndex);
                         jp.success(data.msg);
                     }else{
                         jp.error(data.msg);
@@ -347,7 +347,7 @@
                     </td>
                     <td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
                     <td class="width-35">
-                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="1" step="1"  class="form-control "/>
+                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="0" step="1"  class="form-control "/>
                     </td>
                 </tr>
 				<tr>
