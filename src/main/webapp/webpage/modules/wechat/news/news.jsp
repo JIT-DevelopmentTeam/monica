@@ -124,7 +124,6 @@
             init: function () {
                 if ($('#headLine').height() != 20) {
                     $('#headLine').css("display", "block");
-                    // $('#newList').css("border-top", "1px solid lightgrey");
                 }
             }
         },
@@ -135,24 +134,6 @@
             this.init();
         }
     });
-
-    function changeStyle(Id) {
-        if (Id == 'toAudit') {
-            if (!$("#" + Id).hasClass("weui-bar__item_on")) {
-                $("#" + Id).addClass("weui-bar__item_on");
-                $("#history").removeClass("weui-bar__item_on");
-                $("#toAuditDetail").css("display", "block");
-                $("#historyDetail").css("display", "none");
-            }
-        } else if (Id == 'history') {
-            if (!$("#" + Id).hasClass("weui-bar__item_on")) {
-                $("#" + Id).addClass("weui-bar__item_on");
-                $("#toAudit").removeClass("weui-bar__item_on");
-                $("#toAuditDetail").css("display", "none");
-                $("#historyDetail").css("display", "block");
-            }
-        }
-    }
 </script>
 </body>
 </html>
