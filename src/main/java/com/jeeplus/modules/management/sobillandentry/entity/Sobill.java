@@ -45,7 +45,9 @@ public class Sobill extends DataEntity<Sobill> {
 	private Integer startPage;		// 起始分页
 	private Integer endPage;	// 结束分页
     private boolean isHistory;  // 是否为历史订单
-    private String typeName;
+    private String needTimeStr;     // 发货日期字符串
+    private String startTime;   // 开始时间
+    private String endTime;     // 结束时间
 
 	public Sobill() {
 		super();
@@ -277,11 +279,27 @@ public class Sobill extends DataEntity<Sobill> {
         isHistory = history;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public String getNeedTimeStr() {
+        return needTimeStr;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setNeedTimeStr(String needTimeStr) {
+        this.needTimeStr = needTimeStr;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

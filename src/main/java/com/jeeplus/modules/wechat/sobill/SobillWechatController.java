@@ -50,19 +50,18 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @RequestParam("startPage") Integer startPage,@RequestParam("endPage") Integer endPage){
+    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @Param("startPage") Integer startPage,@Param("endPage") Integer endPage, @Param("startTime") String startTime,@Param("endTime") String endTime){
         AjaxJson aj = new AjaxJson();
         Sobill sobill = new Sobill();
         sobill.setDelFlag("0");
-        if (checkStatus != null){
-            // 待审核
-            sobill.setCheckStatus(checkStatus);
-        }
-
+        // 待审核
+        sobill.setCheckStatus(checkStatus);
         if (isHistory != null){
             // 历史订单
             sobill.setHistory(true);
         }
+        sobill.setStartTime(startTime);
+        sobill.setEndTime(endTime);
         sobill.setStartPage(startPage);
         sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
@@ -121,7 +120,7 @@ public class SobillWechatController extends BaseController {
         boolean delect = true;
         for (String id : ids) {
             Sobill sobill = sobillService.get(id);
-            if (sobill != null && sobill.getCheckStatus() != 1){
+            if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
                 sobillService.delete(sobill);
             } else {
                 delect = false;
@@ -129,7 +128,7 @@ public class SobillWechatController extends BaseController {
         }
         aj.setSuccess(true);
         if (!delect){
-            aj.setMsg("操作成功!(部分订单已审核不允许删除!)");
+            aj.setMsg("操作成功!(部分订单已审核或已提交不允许删除!)");
         } else {
             aj.setMsg("删除订单成功!");
         }
@@ -144,7 +143,7 @@ public class SobillWechatController extends BaseController {
         boolean check = true;
         for (String id : ids) {
             Sobill sobill = sobillService.get(id);
-            if (sobill != null && sobill.getCheckStatus() != 1){
+            if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
                 /* TODO 审核人 */
                 sobill.setCheckTime(new Date());
                 sobill.setCheckStatus(1);
@@ -157,7 +156,7 @@ public class SobillWechatController extends BaseController {
         if (check){
             aj.setMsg("审核成功!");
         } else {
-            aj.setMsg("操作成功!(部分订单已审核不允许重复操作!)");
+            aj.setMsg("操作成功!(部分订单已审核或已提交不允许操作!)");
         }
         return aj;
     }
@@ -172,6 +171,7 @@ public class SobillWechatController extends BaseController {
             sobill.setBillNo(jsonObject.getString("billNo"));
             sobill.setCustId(jsonObject.getString("custId"));
             sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
+            sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
@@ -200,6 +200,7 @@ public class SobillWechatController extends BaseController {
             if (sobill != null){
                 sobill.setCustId(jsonObject.getString("custId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
+                sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
                 sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
                 sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
