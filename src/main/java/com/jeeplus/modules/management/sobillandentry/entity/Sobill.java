@@ -44,6 +44,7 @@ public class Sobill extends DataEntity<Sobill> {
 	private String cusName;		// 客户名称
 	private Integer startPage;		// 起始分页
 	private Integer endPage;	// 结束分页
+    private boolean isHistory;  // 是否为历史订单
 	
 	public Sobill() {
 		super();
@@ -266,4 +267,12 @@ public class Sobill extends DataEntity<Sobill> {
 	public void setEndPage(Integer endPage) {
 		this.endPage = endPage;
 	}
+
+    public boolean isHistory() {
+        return isHistory;
+    }
+
+    public void setHistory(boolean history) {
+        isHistory = history;
+    }
 }

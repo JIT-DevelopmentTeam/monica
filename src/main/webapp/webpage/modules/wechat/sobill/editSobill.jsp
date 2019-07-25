@@ -15,7 +15,7 @@
     <style type="text/css">
         body {
             margin: 0;
-            background: #f6f6f6;
+            background: white;
             /*height: 1000%;*/
             /*Firefox*/
         -moz-calc(expression);
@@ -154,6 +154,7 @@
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="id" name="id" value="${sobill.id}"/>
+        <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
         <%-- 表头 --%>
         <div class="order-panel">
             <div class="addOrder-list">
@@ -169,7 +170,7 @@
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
-                    ${sobill.cusName}
+                    <input type="text" id="cusName" readonly class="weui-input" value="${sobill.cusName}" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -183,10 +184,10 @@
             </div>
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
-                    <span>*</span>提货日期
+                    <span>*</span>发货日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input class="weui-input" type="date" id="needTime" name="needTime" value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />">
+                    <input placeholder="请选择日期" readonly v-on:click="openCalendar" id="needTime" name="needTime" class="weui-input" type="text" value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -286,7 +287,7 @@
         <br><br><br>
 
         <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a class="weui-tabbar__item open-popup" data-target="#items">
+            <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
@@ -327,6 +328,21 @@
         created: function () {
             this.$http.get('${ctxf}/wechat/icitem/getItemClass',{}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
+            });
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId',{}).then(function (res) {
+                var customerList = res.body.body.customerList;
+                var data = new Array();
+                for (var i = 0; i < customerList.length; i++){
+                    var info = { "title": customerList[i].name, "value": customerList[i].id};
+                    data.push(info)
+                }
+                $("#cusName").select({
+                    title: "选择客户",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#custId").val(result.values);
+                    }
+                });
             });
         },
         data:{
@@ -478,6 +494,8 @@
                     return;
                 }
                 $.confirm("您确定要删除选中商品吗?","提醒",function () {
+                    /* 清理选择 */
+                    cleanSelect();
                     var index;
                     for (var i = 0; i < checkVals.length; i++) {
                         index = retrieveArrayIndex(checkVals[i]);
@@ -522,6 +540,12 @@
                 }, function() {
                     //点击取消后的回调函数
                 });
+            },
+            /* 打开日历 */
+            openCalendar:function () {
+                $("#needTime").calendar({
+                    dateFormat:"yyyy-mm-dd"
+                });
             }
         }
     });
@@ -538,10 +562,6 @@
 
     /* 保存订单 type(0:保存草稿,1:提交) */
     function save(type) {
-        if (itemIds.length == 0) {
-            $.alert("请至少选择一个商品!");
-            return;
-        }
         var check = true;
         var json = '[';
         for (var i = 0; i < itemIds.length; i++) {
@@ -557,13 +577,23 @@
             return
         }
         var id = $("#id").val();
+        var custId = $("#custId").val();
         var needTime = $("#needTime").val();
+        if (custId == null || custId == '') {
+            $.alert("请选择客户!");
+            return;
+        }
         if (needTime == null || needTime == '') {
             $.alert("请选择发货日期!");
             return
         }
+        if (itemIds.length == 0) {
+            $.alert("请至少选择一个商品!");
+            return;
+        }
         var data = {
             "id":id,
+            "custId":custId,
             "synStatus":0,
             "status":type,
             "cancellation":0,
@@ -590,6 +620,13 @@
                 $.alert("保存出错!");
             }
         });
+    }
+
+    /* 清理选择 */
+    function cleanSelect() {
+        for (var i = 0; i < itemIds.length; i++) {
+            $("#"+itemIds[i]).attr("checked",false);
+        }
     }
 
 </script>
