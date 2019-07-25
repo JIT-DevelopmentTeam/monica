@@ -117,22 +117,8 @@
             // 初始化 textarea 的值
             $("[name=\"content\"]").val(editor.txt.html());
 
-	        /*$('#starttime').datetimepicker({
-				 format: "YYYY-MM-DD HH:mm:ss"
-		    });
-	        $('#endtime').datetimepicker({
-				 format: "YYYY-MM-DD HH:mm:ss"
-		    });*/
-
             $("#starttime").datetimepicker({
-                startView:2,
-                format:"yyyy-mm-dd",
-                minView:"month",
-                todayBtn : "linked",
-                todayHighlight : true,
-                language: "zh-CN",
-                showMeridian:true,
-                autoclose:true,
+                format:"YYYY-MM-DD",
             }).on('dp.changeDate',function(ev){
                 var starttime=$("#starttime").val();
                 $("#endtime").datetimepicker('setStartDate',starttime);
@@ -140,16 +126,8 @@
             });
 
             $("#endtime").datetimepicker({
-                startView:2,
-                minView:"month",
-                format:"yyyy-mm-dd",
-                todayBtn : "linked",
-                todayHighlight : true,
-                language: "zh-CN",
-                autoclose:true,
-                showMeridian:true,
+                format:"YYYY-MM-DD",
             }).on('dp.changeDate',function(ev) {
-                var starttime = $("#starttime").val();
                 var endtime = $("#endtime").val();
                 $("#starttime").datetimepicker('setEndDate', endtime);
                 $("#endttime").datetimepicker('hide');
@@ -159,6 +137,17 @@
 	        $('#push').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
+
+	        $("input[name='isPush']").each(function () {
+				if ($("input[name='isPush']:checked").val() == '0') {
+					$("input[name='push']").attr("readonly", "readonly");
+					$("#pushrule").attr("disabled", "true");
+					$("#objId").attr("disabled", "true");
+				}
+				$(this).on("click", function () {
+					alert($(this).val());
+				});
+			});
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
