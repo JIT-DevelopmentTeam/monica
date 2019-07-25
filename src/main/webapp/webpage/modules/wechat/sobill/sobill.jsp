@@ -415,7 +415,7 @@
                                 '</div>' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -497,7 +497,7 @@
                                 '</div>' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color:red;'>草稿</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color:red;'>草稿</span>") + '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -551,7 +551,7 @@
                                 '</div>' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
