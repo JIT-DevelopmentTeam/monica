@@ -1,6 +1,7 @@
 package com.jeeplus.modules.wechat.icitem;
 
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
 import com.jeeplus.modules.management.icitemclass.service.IcitemClassService;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "${frontPath}/wechat/icitem")
-public class IcitemWechatController {
+public class IcitemWechatController extends BaseController {
 
     @Autowired
     private IcitemClassService icitemClassService;

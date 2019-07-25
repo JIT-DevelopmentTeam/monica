@@ -157,6 +157,7 @@
         <input type="hidden" id="status" name="status" value="0"/>
         <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
         <input type="hidden" id="custId" name="custId"/>
+        <input type="hidden" id="type" name="type"/>
 
         <%-- 表头 --%>
         <div class="order-panel">
@@ -181,8 +182,7 @@
                     <span>*</span>类型
                 </div>
                 <div class="addOrder-list_ft">
-                    <%-- <input class="weui-input" style="margin-right: 1px" id="type" type="text" placeholder="请选择">
-                     <input id="FBILLTYPE" type="hidden" name="FBILLTYPE" readonly>--%>
+                    <input class="weui-input" id="typeSelect" readonly type="text" placeholder="请选择类型" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -315,6 +315,22 @@
                     items: data,
                     onChange: function(result) {//选中触发事件
                         $("#custId").val(result.values);
+                    }
+                });
+            });
+            /* 订单类型 */
+            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30',{}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = { "title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#typeSelect").select({
+                    title: "选择类型",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#type").val(result.values);
                     }
                 });
             });

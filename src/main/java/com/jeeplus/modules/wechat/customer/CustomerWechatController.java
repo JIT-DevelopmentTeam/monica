@@ -1,6 +1,7 @@
 package com.jeeplus.modules.wechat.customer;
 
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.customer.entity.Customer;
 import com.jeeplus.modules.management.customer.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "${frontPath}/wechat/customer")
-public class CustomerWechatController {
+public class CustomerWechatController extends BaseController {
 
     @Autowired
     private CustomerService customerService;
