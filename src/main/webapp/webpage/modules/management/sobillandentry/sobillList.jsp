@@ -16,6 +16,7 @@
 		<h3 class="panel-title">订单列表</h3>
 	</div>
 	<div class="panel-body">
+    <input type="hidden" id="sobillId" name="sobillId" class="form-control "/>
 	
 	<!-- 搜索 -->
 	<div id="search-collapse" class="collapse">
@@ -156,6 +157,22 @@
         <li data-item="action1"><a>取消</a></li>
     </ul>  
 	</div>
+
+    <%-- 订单明细 --%>
+    <div class="row">
+        <div class="panel panel-default col-sm-12 col-md-12">
+            <div class="panel-heading"  style="background-color: rgba(128,128,128,0.07);">
+                <h3 class="panel-title"><label>订单明细</label></h3>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-11">
+            <div class="panel-heading">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-11">
+            <table id="sobillentryListTable" ></table>
+        </div>
+    </div>
 	</div>
 	</div>
 </body>

@@ -223,7 +223,7 @@
                         </div>
                         <div class="pro-list">
                             <div class="pro-item_left"><span><span style="color: red;">*</span>数量：</span>
-                                <input type="number" v-on:change="verificationNum" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input"/>
+                                <input type="number" onchange="verificationNum('${var.itemId}Qty')" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input" placeholder="请输入数量"/>
                             </div>
                             <div class="pro-item_right"><span>金额： </span> <span class="total"><fmt:formatNumber value="${var.amount}" pattern=".00" /></span>元</div>
                         </div>
@@ -269,7 +269,7 @@
                             <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
                         </div>
                         <div style="float: right;width: 48%;">
-                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
                         </div>
                     </div>
                 </div>
@@ -278,7 +278,7 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 10000;">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
             <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
@@ -437,7 +437,7 @@
                                                 '</div>'+
                                                 '<div class="pro-list">'+
                                                     '<div class="pro-item_left">'+
-                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                                     '</div>'+
                                                     '<div class="pro-item_right">'+
                                                         '<span>金额：</span>  <span class="total"></span>元'+
@@ -560,9 +560,8 @@
                     dateFormat:"yyyy-mm-dd"
                 });
             },
-            /* 验证数字 */
-            verificationNum:function (value) {
-                alert(value);
+            cancelItems:function(){
+
             }
         }
     });
@@ -575,6 +574,15 @@
             }
         }
         return -1;
+    }
+
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
+        }
     }
 
     /* 保存订单 type(0:保存草稿,1:提交) */

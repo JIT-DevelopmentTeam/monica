@@ -256,7 +256,7 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 2;">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: z-index: 500;;">
             <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
@@ -406,7 +406,7 @@
                                     '</div>'+
                                     '<div class="pro-list">'+
                                         '<div class="pro-item_left">'+
-                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                         '</div>'+
                                         '<div class="pro-item_right">'+
                                             '<span>金额：</span>  <span class="total"></span>元'+
@@ -550,6 +550,15 @@
             }
         }
         return -1;
+    }
+
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
+        }
     }
 
     /* 保存订单 status(0:保存草稿,1:审核提交) */

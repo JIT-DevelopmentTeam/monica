@@ -9,6 +9,7 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
+import com.jeeplus.modules.management.sobillandentry.web.SobillController;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import net.sf.json.JSONArray;
@@ -176,7 +177,6 @@ public class SobillWechatController extends BaseController {
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
             sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
-            sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
             sobill.setCreateDate(DateUtils.parseDate(jsonObject.get("createDate")));
             sobill.setId(IdGen.uuid());
             sobill.setIsNewRecord(true);
@@ -208,18 +208,7 @@ public class SobillWechatController extends BaseController {
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
-                for (int i = 0; i < sobillentryList.size(); i++) {
-                    boolean delect = true;
-                    for (int j = 0; j < jsonArray.size(); j++) {
-                        JSONObject sobillEntryObject = jsonArray.getJSONObject(j);
-                        if (sobillEntryObject.getString("itemId").equals(sobillentryList.get(i).getItemId())){
-                            delect = false;
-                        }
-                    }
-                    if (delect) {
-                        sobillentryList.get(i).setDelFlag("1");
-                    }
-                }
+                SobillController.checkDelect(sobillentryList, jsonArray);
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JSONObject sobillEntryObject = jsonArray.getJSONObject(i);
                     boolean exist = false;

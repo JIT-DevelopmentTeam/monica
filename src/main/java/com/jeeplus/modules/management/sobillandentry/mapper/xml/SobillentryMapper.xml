@@ -163,5 +163,5 @@
 	<select id="findUniqueByProperty" resultType="Sobillentry" statementType="STATEMENT">
 		select * FROM ic_sobillentry  where ${propertyName} = '${value}'
 	</select>
-	
+
 </mapper>

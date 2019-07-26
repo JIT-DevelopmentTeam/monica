@@ -129,7 +129,7 @@ public class Sobill extends DataEntity<Sobill> {
 		this.currencyId = currencyId;
 	}
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="订单发货时间不能为空")
 	@ExcelField(title="订单发货时间", align=2, sort=16)
 	public Date getNeedTime() {
