@@ -38,7 +38,7 @@
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
-                <div style="background-color: #c9def1; border-radius: 30px;">
+                <div style="background-color: #e2e2e2; border-radius: 30px;">
                     <span style="margin-left: 10px;">头条</span>
                 </div>
                 <div id="headLine" style="max-height: 306px; min-height: auto; overflow-y: auto; display: none; -webkit-overflow-scrolling:touch;">
@@ -55,7 +55,7 @@
                         </a>
                     </div>
                 </div>
-                <div style="background-color: #c9def1; border-radius: 30px;">
+                <div style="background-color: #e2e2e2; border-radius: 30px;">
                     <span style="margin-left: 10px;"></span>
                 </div>
                 <div id="newList">
