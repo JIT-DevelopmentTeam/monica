@@ -247,18 +247,21 @@
         }
     });
 
-    var d = document;
     //打开筛选
     function showFixed(){
-        d.getElementById('fixed').style.cssText  = "display:block"
+        if ($("#fixed").css("display") == "none") {
+            $("#fixed").css("display", "block");
+        } else {
+            $("#fixed").css("display", "none");
+        }
     }
     // 筛选取消
     function cancel(){
-        d.getElementById('fixed').style.cssText  = "display:none"
+        $("#fixed").css("display", "none");
     }
     // 筛选确认
     function confirm(){
-        d.getElementById('fixed').style.cssText  = "display:none"
+        $("#fixed").css("display", "none");
     }
 
     // 跳转详情页面
