@@ -266,7 +266,6 @@
 
     // 跳转详情页面
     function goStockDetail() {
-        console.log("445564")
         window.location ="${ctxf}/wechat/stock/detail";
     }
 
