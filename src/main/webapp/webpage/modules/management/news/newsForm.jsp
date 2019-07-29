@@ -134,9 +134,14 @@
             });
 
 
+
 	        $('#push').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
+
+	        $("#pushTime").click(function () {
+                $("#push").find("div").css("z-index","99999");
+            });
 
 	        $("input[name='isPush']").each(function () {
 				if ($("input[name='isPush']:checked").val() == '0') {
@@ -144,10 +149,25 @@
 					$("#pushrule").attr("disabled", "true");
 					$("#objId").attr("disabled", "true");
 				}
-				$(this).on("click", function () {
-					alert($(this).val());
-				});
 			});
+            // 判断当前选中
+            $("input[name='isPush']").on('ifChecked', function () {
+                if (this.value == "0") {
+                    $("input[name='push']").attr("readonly", "readonly");
+                    $("#pushrule").attr("disabled", "true");
+                    $("#objId").attr("disabled", "true");
+                    $("[name='push']").val("");
+                } else if (this.value == "1") {
+                    var pushrule = $("#pushrule");
+                    pushrule.removeAttr("disabled");
+                    pushrule.attr("class","form-control  required");
+                    var  objId = $("#objId");
+                    objId.removeAttr("disabled");
+                    objId.attr("class","selectpicker required show-tick  form-control  required");
+                    var push = $("[name='push']");
+					push.removeAttr("readonly");
+                }
+            });
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
@@ -278,6 +298,7 @@
 					<td class="width-35">
 						<div class='input-group form_datetime' id='endtime'>
 							<input type='text'  name="endtime" class="form-control "  value="<fmt:formatDate value="${news.endtime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<div id="pushtimepicker" class="bootstrap-datetimepicker-widget dropdown-menu usetwentyfour bottom pull-right"></div>
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
@@ -310,7 +331,7 @@
 					<td class="width-35">
 						<div class='input-group form_datetime' id='push'>
 							<input type='text'  name="push" class="form-control "  value="<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-							<span class="input-group-addon">
+							<span class="input-group-addon" id="pushTime">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
 						</div>
@@ -325,11 +346,9 @@
                             <form:option value="1">人员推送</form:option>
                             <form:option value="2">部门推送</form:option>
                         </form:select>
-						<%--<form:input path="pushrule" htmlEscape="false"    class="form-control "/>--%>
-
                     <td  class="width-15 active"><label class="pull-right">推送对象：</label></td>
                     <td class="width-35">
-						<select id="objId" name="objId" class="selectpicker required show-tick form-control" multiple  data-live-search="true"></select>
+						<select id="objId" name="objId" class="selectpicker required show-tick form-control " multiple  data-live-search="true"></select>
                     </td>
                 </tr>
                 <tr>
