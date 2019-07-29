@@ -15,16 +15,26 @@
     <style type="text/css">
         body {
             overflow: auto;
-            padding-top: 15%;
-            padding-bottom: 12%;
         }
     </style>
 </head>
 <body>
 <div id="page" class="page">
+    <div style="background: white;position: fixed;top: 0px;z-index: 10000;width: 100%;height: 5%;background: #f6f6f6;">
+        <div style="float: left; width: 80%;">
+            <input type="text" v-on:click="openStartCalendar" id="startTime" readonly class="weui-input"
+                   placeholder="请选择开始时间" style="text-align: center;width:45%;"/>
+            至
+            <input type="text" v-on:click="openEndCalendar" id="endTime" readonly class="weui-input"
+                   placeholder="请选择结束时间" style="text-align: center;width:45%;"/>
+        </div>
+        <div style="float: right;width: 20%;">
+            <a v-on:click="filterDate" class="weui-btn weui-btn_mini weui-btn_primary">搜索</a>
+        </div>
+    </div>
     <div class="page__bd" style="height: 100%;">
         <div class="weui-tab">
-            <div class="weui-navbar" style="position: fixed;top: 0px;">
+            <div class="weui-navbar" style="position: fixed;top: 5%;z-index: 10000;">
                 <div id="toAudit" class="weui-navbar__item weui-bar__item_on" onclick="changeStyle('toAudit');">
                     待审核订单
                 </div>
@@ -33,7 +43,7 @@
                 </div>
             </div>
 
-            <div id="order-cell1">
+            <div id="order-cell1" style="padding-top: 24%;">
                 <div id="toAuditDetail">
                     <div class="order-cell" v-for="toAudit in toAuditList">
                         <div class="weui-cells_radio">
@@ -41,7 +51,8 @@
                                 <div class="order-cell_left">
                                     <div class="order-list">
                                         <div class="order-list_item"><span>客户：</span> {{toAudit.cusName}}</div>
-                                        <input type="radio" class="weui-check" name="toAudit" :id="'toAudit'+toAudit.id"
+                                        <input type="checkbox" class="weui-check" name="toAudit"
+                                               :id="'toAudit'+toAudit.id"
                                                :value="toAudit.id"/>
                                         <span class="weui-icon-checked"></span>
                                     </div>
@@ -51,15 +62,19 @@
                                         </div>
                                         <div class="order-list">
                                             <div class="order-list_item"><span>跟单：</span> {{toAudit.empName}}</div>
-                                            <div class="order-list_item"><span>日期：</span> {{toAudit.needTime}}</div>
+                                            <div class="order-list_item"><span>日期：</span> {{toAudit.needTimeStr}}</div>
                                         </div>
                                         <div class="order-list">
-                                            <div class="order-list_item" v-if="toAudit.synStatus === 0"><span>同步：</span>未同步
+                                            <div class="order-list_item" v-if="toAudit.synStatus === 0"><span>同步：</span><span
+                                                    style="color: red;">未同步</span>
                                             </div>
-                                            <div class="order-list_item" v-else><span>同步：</span>已同步</div>
-                                            <div class="order-list_item" v-if="toAudit.status === 0"><span>状态：</span>草稿
+                                            <div class="order-list_item" v-else><span>同步：</span><span
+                                                    style="color: green;">已同步</span></div>
+                                            <div class="order-list_item" v-if="toAudit.status === 0">
+                                                <span>状态：</span><span style="color: red;">草稿</span>
                                             </div>
-                                            <div class="order-list_item" v-else><span>状态：</span>提交</div>
+                                            <div class="order-list_item" v-else><span>状态：</span><span
+                                                    style="color: green;">提交</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +100,7 @@
                             <div class="order-cell_left">
                                 <div class="order-list">
                                     <div class="order-list_item"><span>客户：</span> {{history.cusName}}</div>
-                                    <input type="radio" class="weui-check" name="history" :id="'history'+history.id"
+                                    <input type="checkbox" class="weui-check" name="history" :id="'history'+history.id"
                                            :value="history.id"/>
                                     <span class="weui-icon-checked"></span>
                                 </div>
@@ -95,15 +110,19 @@
                                     </div>
                                     <div class="order-list">
                                         <div class="order-list_item"><span>跟单：</span> {{history.empName}}</div>
-                                        <div class="order-list_item"><span>日期：</span> {{history.needTime}}</div>
+                                        <div class="order-list_item"><span>日期：</span> {{history.needTimeStr}}</div>
                                     </div>
                                     <div class="order-list">
-                                        <div class="order-list_item" v-if="history.synStatus === 0"><span>同步：</span>未同步
+                                        <div class="order-list_item" v-if="history.synStatus === 0">
+                                            <span>同步：</span><span style="color: red;">未同步</span>
                                         </div>
-                                        <div class="order-list_item" v-else><span>同步：</span>已同步</div>
-                                        <div class="order-list_item" v-if="history.status === 0"><span>状态：</span>草稿
+                                        <div class="order-list_item" v-else><span>同步：</span><span style="color: green;">已同步</span>
                                         </div>
-                                        <div class="order-list_item" v-else><span>状态：</span>提交</div>
+                                        <div class="order-list_item" v-if="history.status === 0"><span>状态：</span><span
+                                                style="color: red;">草稿</span>
+                                        </div>
+                                        <div class="order-list_item" v-else><span>状态：</span><span style="color: green;">提交</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +188,7 @@
         el: '#page',
         created: function () {
             // 待审核数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillList', {
                 params: {
                     checkStatus: 0,
                     startPage: 0,
@@ -180,9 +199,9 @@
             });
 
             // 历史数据
-            this.$http.get('${ctxf}/wechat/sobill/getSobillListByCheckStatus', {
+            this.$http.get('${ctxf}/wechat/sobill/getSobillList', {
                 params: {
-                    checkStatus: 1,
+                    isHistory: 1,
                     startPage: 0,
                     endPage: 10
                 }
@@ -201,38 +220,74 @@
         },
         methods: {
             editHref: function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("审核订单不允许编辑操作!");
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                if (toAuditIds.length > 1 || historyIds.length > 1) {
+                    $.alert("编辑操作仅允许单选!");
                     return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
+                } else if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + toAuditId;
+                var id = '';
+                if (toAuditIds.length == 1) {
+                    id = toAuditIds[0];
+                } else if (historyIds.length == 1) {
+                    id = historyIds[0];
+                }
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    url: '${ctxf}/wechat/sobill/getById',
+                    type: 'post',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        var sobill = res.body.sobill;
+                        if (sobill.checkStatus == 1 || sobill.status == 1) {
+                            $.alert("该订单已审核或已提交,不允许编辑!");
+                            return;
+                        }
+                        window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + id;
+                    }
+                });
             },
             /* 删除 */
             delectById: function () {
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("订单已审核不允许删除!");
-                    return;
-                }
-                if (toAuditId == null || toAuditId == '') {
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                $.confirm("您确定要删除该订单吗?", function () {
+                var idsStr = '';
+                if (toAuditIds.length > 0) {
+                    idsStr = toAuditIds.toString();
+                } else if (historyIds.length > 0) {
+                    idsStr = historyIds.toString();
+                }
+                $.confirm("您确定要删除选中订单吗?", function () {
                     //点击确认后的回调函数
                     $.ajax({
                         async: false,
                         cache: false,
-                        url: '${ctxf}/wechat/sobill/delectById',
+                        url: '${ctxf}/wechat/sobill/delectByIds',
                         data: {
-                            id: toAuditId
+                            idsStr: idsStr
                         },
                         dataType: 'json',
                         success: function (res) {
@@ -250,26 +305,35 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 审核订单 */
             checkSobill: function () {
-                var historyId = $("input[name='history']:checked").val();
-                if (historyId != null && historyId != '') {
-                    $.alert("该订单已审核,无需重复操作!");
-                    return;
-                }
-                var toAuditId = $("input[name='toAudit']:checked").val();
-                if (toAuditId == null || toAuditId == '') {
+                var historyIds = [];
+                $("input[name='history']:checked").each(function () {
+                    historyIds.push($(this).val());
+                });
+                var toAuditIds = [];
+                $("input[name='toAudit']:checked").each(function () {
+                    toAuditIds.push($(this).val());
+                });
+                if (toAuditIds.length == 0 && historyIds.length == 0) {
                     $.alert("请至少选择一条数据!");
                     return;
                 }
-                $.confirm("您确定要审核该订单吗?", function () {
+                var idsStr = '';
+                if (toAuditIds.length > 0) {
+                    idsStr = toAuditIds.toString();
+                } else if (historyIds.length > 0) {
+                    idsStr = historyIds.toString();
+                }
+                $.confirm("您确定要审核选中订单吗?", function () {
                     //点击确认后的回调函数
                     $.ajax({
                         async: false,
                         cache: false,
-                        url: '${ctxf}/wechat/sobill/checkSobill',
+                        url: '${ctxf}/wechat/sobill/checkSobillByIds',
                         type: 'post',
                         data: {
-                            id: toAuditId
+                            idsStr: idsStr
                         },
                         dataType: 'json',
                         success: function (res) {
@@ -285,6 +349,82 @@
                     });
                 }, function () {
                     //点击取消后的回调函数
+                });
+            },
+            openStartCalendar: function () {
+                $("#startTime").calendar({
+                    dateFormat: "yyyy-mm-dd"
+                });
+            },
+            openEndCalendar: function () {
+                $("#endTime").calendar({
+                    dateFormat: "yyyy-mm-dd"
+                });
+            },
+            filterDate: function () {
+                var startTime = $("#startTime").val();
+                var endTime = $("#endTime").val();
+                if ((startTime == null || startTime == '') && (endTime == null || endTime == '')) {
+                    $.alert("请至少选择一个日期!");
+                    return;
+                }
+                var detail = '';
+                var head = '';
+                var checkStatus;
+                if ($("#toAudit").hasClass("weui-bar__item_on")) {
+                    detail = 'toAuditDetail';
+                    head = 'toAudit';
+                    checkStatus = 0;
+                } else {
+                    detail = 'historyDetail';
+                    head = 'history';
+                }
+                $.ajax({
+                    async: false,
+                    cache: false,
+                    url: '${ctxf}/wechat/sobill/getSobillList',
+                    type: 'post',
+                    data: {
+                        startTime: startTime,
+                        endTime: endTime,
+                        checkStatus: checkStatus
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        var sobillList = res.body.sobillList;
+                        $("#"+detail).empty();
+                        var template = '';
+                        for (var i = 0; i < sobillList.length; i++) {
+                            template += '<div class="order-cell">' +
+                                '<div class="weui-cells_radio">' +
+                                '<label class="weui-cell weui-check__label" for="'+ head + sobillList[i].id + '">' +
+                                '<div class="order-cell_left">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
+                                '<input type="checkbox" class="weui-check" name="'+ head +'" id="'+ head + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<span class="weui-icon-checked"></span>' +
+                                '</div>' +
+
+                                '<div class="order-cell_bg">' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
+                                '</div>' +
+                                '<div class="order-list">' +
+                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</label>' +
+                                '</div>' +
+                                '</div>';
+                        }
+                        $("#"+detail).append(template);
+                    }
                 });
             }
         }
@@ -326,7 +466,7 @@
                 $.ajax({
                     async: false,
                     cache: false,
-                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    url: '${ctxf}/wechat/sobill/getSobillList',
                     data: {
                         checkStatus: 0,
                         startPage: startToAuditPage,
@@ -339,11 +479,11 @@
                         for (let i = 0; i < sobillList.length; i++) {
                             template += '<div class="order-cell">' +
                                 '<div class="weui-cells_radio">' +
-                                '<label class="weui-cell weui-check__label" for="' + sobillList[i].id + '">' +
+                                '<label class="weui-cell weui-check__label" for="toAudit' + sobillList[i].id + '">' +
                                 '<div class="order-cell_left">' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<input type="checkbox" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
                                 '<span class="weui-icon-checked"></span>' +
                                 '</div>' +
 
@@ -353,11 +493,11 @@
                                 '</div>' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
-                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTime != null && sobillList[i].needTime != '' ? sobillList[i].needTime : "") + '</div>' +
+                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
-                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "同步" : "未同步") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "提交" : "草稿") + '</div>' +
+                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color:red;'>草稿</span>") + '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -380,9 +520,9 @@
                 $.ajax({
                     async: false,
                     cache: false,
-                    url: '${ctxf}/wechat/sobill/getSobillListByCheckStatus',
+                    url: '${ctxf}/wechat/sobill/getSobillList',
                     data: {
-                        checkStatus: 1,
+                        isHistory: 1,
                         startPage: startHistoryPage,
                         endPage: endHistoryPage
                     },
@@ -393,11 +533,11 @@
                         for (let i = 0; i < sobillList.length; i++) {
                             template += '<div class="order-cell">' +
                                 '<div class="weui-cells_radio">' +
-                                '<label class="weui-cell weui-check__label" for="' + sobillList[i].id + '">' +
+                                '<label class="weui-cell weui-check__label" for="history' + sobillList[i].id + '">' +
                                 '<div class="order-cell_left">' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                                '<input type="radio" class="weui-check" name="toAudit" id="toAudit' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                '<input type="checkbox" class="weui-check" name="history" id="history' + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
                                 '<span class="weui-icon-checked"></span>' +
                                 '</div>' +
 
@@ -407,11 +547,11 @@
                                 '</div>' +
                                 '<div class="order-list">' +
                                 '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
-                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTime != null && sobillList[i].needTime != '' ? sobillList[i].needTime : "") + '</div>' +
+                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
-                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "同步" : "未同步") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].synStatus == 1 ? "提交" : "草稿") + '</div>' +
+                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
+                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -439,7 +579,7 @@
                 $("#history").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "block");
                 $("#historyDetail").css("display", "none");
-                $('input[type=radio][name="history"]:checked').prop("checked", false);
+                $('input[type=checkbox][name="history"]:checked').prop("checked", false);
                 $("#loadHistory").css("display", "none");
             }
         } else if (Id == 'history') {
@@ -448,7 +588,7 @@
                 $("#toAudit").removeClass("weui-bar__item_on");
                 $("#toAuditDetail").css("display", "none");
                 $("#historyDetail").css("display", "block");
-                $('input[type=radio][name="toAudit"]:checked').prop("checked", false);
+                $('input[type=checkbox][name="toAudit"]:checked').prop("checked", false);
                 $("#loadToAudit").css("display", "none");
             }
         }

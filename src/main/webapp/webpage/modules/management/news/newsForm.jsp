@@ -117,22 +117,8 @@
             // 初始化 textarea 的值
             $("[name=\"content\"]").val(editor.txt.html());
 
-	        /*$('#starttime').datetimepicker({
-				 format: "YYYY-MM-DD HH:mm:ss"
-		    });
-	        $('#endtime').datetimepicker({
-				 format: "YYYY-MM-DD HH:mm:ss"
-		    });*/
-
             $("#starttime").datetimepicker({
-                startView:2,
-                format:"yyyy-mm-dd",
-                minView:"month",
-                todayBtn : "linked",
-                todayHighlight : true,
-                language: "zh-CN",
-                showMeridian:true,
-                autoclose:true,
+                format:"YYYY-MM-DD",
             }).on('dp.changeDate',function(ev){
                 var starttime=$("#starttime").val();
                 $("#endtime").datetimepicker('setStartDate',starttime);
@@ -140,16 +126,8 @@
             });
 
             $("#endtime").datetimepicker({
-                startView:2,
-                minView:"month",
-                format:"yyyy-mm-dd",
-                todayBtn : "linked",
-                todayHighlight : true,
-                language: "zh-CN",
-                autoclose:true,
-                showMeridian:true,
+                format:"YYYY-MM-DD",
             }).on('dp.changeDate',function(ev) {
-                var starttime = $("#starttime").val();
                 var endtime = $("#endtime").val();
                 $("#starttime").datetimepicker('setEndDate', endtime);
                 $("#endttime").datetimepicker('hide');
@@ -159,6 +137,17 @@
 	        $('#push').datetimepicker({
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
+
+	        $("input[name='isPush']").each(function () {
+				if ($("input[name='isPush']:checked").val() == '0') {
+					$("input[name='push']").attr("readonly", "readonly");
+					$("#pushrule").attr("disabled", "true");
+					$("#objId").attr("disabled", "true");
+				}
+				$(this).on("click", function () {
+					alert($(this).val());
+				});
+			});
 		});
 		function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
@@ -170,7 +159,7 @@
                     if(data.success){
                         jp.getParent().refresh();
                         var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-                        //parent.layer.close(dialogIndex);
+                        parent.layer.close(dialogIndex);
                         jp.success(data.msg);
                     }else{
                         jp.error(data.msg);
@@ -264,13 +253,13 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否发布：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPublic"   itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="isPublic"   itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPublic" id="isPublic"></label>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="headline" id="headline"></label>
 					</td>
@@ -313,7 +302,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否推送：</label></td>
 					<td class="width-35">
-						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>否
+						<form:radiobutton path="isPush" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
 						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPush" id="isPush"></label>
 					</td>
@@ -347,7 +336,7 @@
                     </td>
                     <td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
                     <td class="width-35">
-                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="1" step="1"  class="form-control "/>
+                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="0" step="1"  class="form-control "/>
                     </td>
                 </tr>
 				<tr>

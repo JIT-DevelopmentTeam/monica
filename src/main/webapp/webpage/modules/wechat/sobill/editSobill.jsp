@@ -15,14 +15,7 @@
     <style type="text/css">
         body {
             margin: 0;
-            background: #f6f6f6;
-            /*height: 1000%;*/
-            /*Firefox*/
-        -moz-calc(expression);
-            /*chrome safari*/
-        -webkit-calc(expression);
-            /*Standard */
-        calc();
+            background: white;
         }
 
         .all {
@@ -150,10 +143,12 @@
         }
     </style>
 </head>
-<body>
+<body ontouchstart>
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="id" name="id" value="${sobill.id}"/>
+        <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
+        <input type="hidden" id="type" name="type" value="${sobill.type}"/>
         <%-- 表头 --%>
         <div class="order-panel">
             <div class="addOrder-list">
@@ -169,7 +164,7 @@
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
-                    ${sobill.cusName}
+                    <input type="text" id="cusName" readonly class="weui-input" value="${sobill.cusName}" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -177,16 +172,15 @@
                     <span>*</span>类型
                 </div>
                 <div class="addOrder-list_ft">
-                    <%-- <input class="weui-input" style="margin-right: 1px" id="type" type="text" placeholder="请选择">
-                     <input id="FBILLTYPE" type="hidden" name="FBILLTYPE" readonly>--%>
+                    <input class="weui-input" readonly id="typeSelect" type="text" placeholder="请选择类型" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
-                    <span>*</span>提货日期
+                    <span>*</span>发货日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input class="weui-input" type="date" id="needTime" name="needTime" value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />">
+                    <input placeholder="请选择日期" readonly v-on:click="openCalendar" id="needTime" name="needTime" class="weui-input" type="text" value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -208,9 +202,9 @@
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-bottom: 50px;background: white;">
+        <div id="detail" style="background: white;">
             <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
-                <div id="${var.itemId}Detail" class="weui-cells_checkbox" style="padding-top: 3%;">
+                <div id="${var.itemId}Detail" class="weui-cells_checkbox">
                     <div class="pro-cell">
                         <div class="pro-list">
                             <div class="pro-item_left"><span>商品编码：</span>  ${var.number}</div>
@@ -229,11 +223,10 @@
                         </div>
                         <div class="pro-list">
                             <div class="pro-item_left"><span><span style="color: red;">*</span>数量：</span>
-                                <input type="number" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input"/>
+                                <input type="number" onchange="verificationNum('${var.itemId}Qty')" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input" placeholder="请输入数量"/>
                             </div>
                             <div class="pro-item_right"><span>金额： </span> <span class="total"><fmt:formatNumber value="${var.amount}" pattern=".00" /></span>元</div>
                         </div>
-                        <hr>
                     </div>
                 </div>
             </c:forEach>
@@ -276,7 +269,7 @@
                             <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
                         </div>
                         <div style="float: right;width: 48%;">
-                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
                         </div>
                     </div>
                 </div>
@@ -285,8 +278,8 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a class="weui-tabbar__item open-popup" data-target="#items">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+            <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
@@ -300,13 +293,13 @@
             </a>
             <a v-on:click="saveSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{save}}</p>
             </a>
             <a v-on:click="submitSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{submit}}</p>
             </a>
@@ -327,6 +320,43 @@
         created: function () {
             this.$http.get('${ctxf}/wechat/icitem/getItemClass',{}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
+            });
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId',{}).then(function (res) {
+                var customerList = res.body.body.customerList;
+                var data = new Array();
+                for (var i = 0; i < customerList.length; i++){
+                    var info = { "title": customerList[i].name, "value": customerList[i].id};
+                    data.push(info)
+                }
+                $("#cusName").select({
+                    title: "选择客户",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#custId").val(result.values);
+                    }
+                });
+            });
+            /* 订单类型 */
+            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30',{}).then(function (res) {
+                var dictList = res.body.rows;
+                for (var i = 0; i < dictList.length; i++) {
+                    if (dictList[i].value == ${sobill.type}) {
+                        $("#typeSelect").val(dictList[i].label);
+                    }
+                }
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = { "title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                
+                $("#typeSelect").select({
+                    title: "选择类型",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#type").val(result.values);
+                    }
+                });
             });
         },
         data:{
@@ -376,7 +406,7 @@
                         var template = '';
                         var icitemList = res.body.icitemList;
                         for (var i = 0; i < icitemList.length; i++) {
-                            template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox" style="padding-top: 3%;">' +
+                            template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox">' +
                                             '<div class="pro-cell">'+
                                                 '<div class="pro-list">'+
                                                     '<div class="pro-item_left">'+
@@ -407,14 +437,13 @@
                                                 '</div>'+
                                                 '<div class="pro-list">'+
                                                     '<div class="pro-item_left">'+
-                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                                     '</div>'+
                                                     '<div class="pro-item_right">'+
                                                         '<span>金额：</span>  <span class="total"></span>元'+
                                                     '</div>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<hr>'+
                                         '</div>';
                         }
                         $("#detail").append(template);
@@ -478,6 +507,8 @@
                     return;
                 }
                 $.confirm("您确定要删除选中商品吗?","提醒",function () {
+                    /* 清理选择 */
+                    cleanSelect();
                     var index;
                     for (var i = 0; i < checkVals.length; i++) {
                         index = retrieveArrayIndex(checkVals[i]);
@@ -522,6 +553,15 @@
                 }, function() {
                     //点击取消后的回调函数
                 });
+            },
+            /* 打开日历 */
+            openCalendar:function () {
+                $("#needTime").calendar({
+                    dateFormat:"yyyy-mm-dd"
+                });
+            },
+            cancelItems:function(){
+
             }
         }
     });
@@ -536,12 +576,17 @@
         return -1;
     }
 
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
+        }
+    }
+
     /* 保存订单 type(0:保存草稿,1:提交) */
     function save(type) {
-        if (itemIds.length == 0) {
-            $.alert("请至少选择一个商品!");
-            return;
-        }
         var check = true;
         var json = '[';
         for (var i = 0; i < itemIds.length; i++) {
@@ -557,13 +602,23 @@
             return
         }
         var id = $("#id").val();
+        var custId = $("#custId").val();
         var needTime = $("#needTime").val();
+        if (custId == null || custId == '') {
+            $.alert("请选择客户!");
+            return;
+        }
         if (needTime == null || needTime == '') {
             $.alert("请选择发货日期!");
             return
         }
+        if (itemIds.length == 0) {
+            $.alert("请至少选择一个商品!");
+            return;
+        }
         var data = {
             "id":id,
+            "custId":custId,
             "synStatus":0,
             "status":type,
             "cancellation":0,
@@ -590,6 +645,13 @@
                 $.alert("保存出错!");
             }
         });
+    }
+
+    /* 清理选择 */
+    function cleanSelect() {
+        for (var i = 0; i < itemIds.length; i++) {
+            $("#"+itemIds[i]).attr("checked",false);
+        }
     }
 
 </script>

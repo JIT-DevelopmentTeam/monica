@@ -256,6 +256,11 @@ public class IcitemController extends BaseController {
 		return j;
     }
 
+    /**
+     * 获取商品对象
+     * @param icitem
+     * @return
+     */
     @RequestMapping(value = "getById")
 	@ResponseBody
 	public AjaxJson getById(Icitem icitem){
@@ -264,5 +269,28 @@ public class IcitemController extends BaseController {
 		aj.put("icitem",icitem);
 		return aj;
 	}
+
+    /**
+     * 多个id获取数据
+     * @param idsStr
+     * @return
+     */
+	@ResponseBody
+    @RequestMapping(value = "getListByIds")
+    public AjaxJson getListByIds(@RequestParam("idsStr") String idsStr){
+	    AjaxJson aj = new AjaxJson();
+	    StringBuffer ids = new StringBuffer();
+        String[] idsArray = idsStr.split(",");
+        for (String id : idsArray) {
+            ids.append("'"+id+"',");
+        }
+        ids = ids.deleteCharAt(ids.length()-1);
+        Icitem icitem = new Icitem();
+        icitem.setDelFlag("0");
+        icitem.setIds(ids.toString());
+        List<Icitem> icitemList = icitemService.findList(icitem);
+        aj.put("icitemList",icitemList);
+	    return aj;
+    }
 
 }

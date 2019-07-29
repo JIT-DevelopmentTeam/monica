@@ -44,7 +44,11 @@ public class Sobill extends DataEntity<Sobill> {
 	private String cusName;		// 客户名称
 	private Integer startPage;		// 起始分页
 	private Integer endPage;	// 结束分页
-	
+    private boolean isHistory;  // 是否为历史订单
+    private String needTimeStr;     // 发货日期字符串
+    private String startTime;   // 开始时间
+    private String endTime;     // 结束时间
+
 	public Sobill() {
 		super();
 	}
@@ -125,7 +129,7 @@ public class Sobill extends DataEntity<Sobill> {
 		this.currencyId = currencyId;
 	}
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message="订单发货时间不能为空")
 	@ExcelField(title="订单发货时间", align=2, sort=16)
 	public Date getNeedTime() {
@@ -266,4 +270,36 @@ public class Sobill extends DataEntity<Sobill> {
 	public void setEndPage(Integer endPage) {
 		this.endPage = endPage;
 	}
+
+    public boolean isHistory() {
+        return isHistory;
+    }
+
+    public void setHistory(boolean history) {
+        isHistory = history;
+    }
+
+    public String getNeedTimeStr() {
+        return needTimeStr;
+    }
+
+    public void setNeedTimeStr(String needTimeStr) {
+        this.needTimeStr = needTimeStr;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 }

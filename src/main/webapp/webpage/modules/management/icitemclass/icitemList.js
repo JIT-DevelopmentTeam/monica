@@ -76,7 +76,16 @@
 
                 }
             },
-
+            // 选中事件
+            onCheck:function(row){
+                var ids = $("#ids").val();
+                if (ids == null || ids == '') {
+                    $("#ids").val(row.id+",");
+                } else {
+                    ids += row.id+",";
+                    $("#ids").val(ids);
+                }
+            },
             onClickRow: function(row, $el){
             },
             onShowSearch: function () {
@@ -320,6 +329,10 @@ function view(id){//没有权限时，不显示确定按钮
 
  function save(parentObject) {
 	 $("#ids").val(getIdSelections());
+ }
+
+ function submitItems() {
+    $("#ids").val(getIdSelections());
  }
 
 </script>

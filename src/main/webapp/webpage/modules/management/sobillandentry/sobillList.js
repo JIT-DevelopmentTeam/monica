@@ -9,7 +9,7 @@ $(document).ready(function() {
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
                //显示检索按钮
-	       showSearch: true,
+               showSearch: true,
                //显示刷新按钮
                showRefresh: true,
                //显示切换手机试图按钮
@@ -20,10 +20,6 @@ $(document).ready(function() {
     	       showExport: true,
     	       //显示切换分页按钮
     	       showPaginationSwitch: true,
-    	       //显示详情按钮
-    	       detailView: true,
-    	       	//显示详细内容函数
-	           detailFormatter: "detailFormatter",
     	       //最低显示2行
     	       minimumCountColumns: 2,
                //是否显示行间隔色
@@ -46,10 +42,10 @@ $(document).ready(function() {
                //queryParamsType:'',
                ////查询参数,每次调用是会带上这个参数，可自定义
                queryParams : function(params) {
-               	var searchParam = $("#searchForm").serializeJSON();
-               	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
-               	searchParam.pageSize = params.limit === undefined? -1 : params.limit;
-               	searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
+                    var searchParam = $("#searchForm").serializeJSON();
+                    searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+                    searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+                    searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
                    return searchParam;
                },
                //分页方式：client客户端分页，server服务端分页（*）
@@ -80,6 +76,8 @@ $(document).ready(function() {
                },
 
                onClickRow: function(row, $el){
+                   $("#sobillId").val(row.id);
+                   $("#sobillentryListTable").bootstrapTable("refresh");
                },
                	onShowSearch: function () {
 			$("#search-collapse").slideToggle();
@@ -154,8 +152,10 @@ $(document).ready(function() {
 		        title: '发货时间',
 				class: 'text-nowrap',
 		        sortable: true,
-		        sortName: 'needTime'
-
+		        sortName: 'needTime',
+               formatter:function(value, row , index){
+                   return value.substring(0,10);
+               }
 		    }
 			,{
 		        field: 'status',
@@ -227,6 +227,8 @@ $(document).ready(function() {
 
 		});
 
+        // 初始化订单明细
+        sobillentryList();
 
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
@@ -239,6 +241,7 @@ $(document).ready(function() {
             $('#remove').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
             $('#view,#edit,#check,#cancelCheck,#synchronization').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
         });
+
 
 		$("#btnImport").click(function(){
 			jp.open({
@@ -298,16 +301,22 @@ $(document).ready(function() {
 		});
 
 				$('#beginNeedTime').datetimepicker({
-					 format: "YYYY-MM-DD HH:mm:ss"
+					 format: "YYYY-MM-DD"
 				});
 				$('#endNeedTime').datetimepicker({
-					 format: "YYYY-MM-DD HH:mm:ss"
+					 format: "YYYY-MM-DD"
 				});
 
 	});
 
   function getIdSelections() {
         return $.map($("#sobillTable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
+    function getEntryIdSelections() {
+        return $.map($("#sobillentryListTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
@@ -331,6 +340,7 @@ $(document).ready(function() {
     //刷新列表
   function refresh() {
       $('#sobillTable').bootstrapTable('refresh');
+      $("#sobillentryListTable").bootstrapTable("refresh");
   }
   function add(){
 	  jp.openSaveDialog('新增订单', "${ctx}/management/sobillandentry/sobill/form", window.innerWidth * 0.9+'px', window.innerWidth * 0.8+'px');
@@ -405,58 +415,159 @@ function cancelCheckOrder(){
         });
     });
 }
+
+// 订单明细列表
+function sobillentryList() {
+    //项目计划列表表格
+    $("#sobillentryListTable").bootstrapTable({
+        //请求方法
+        method: 'post',
+        //类型json
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        //显示检索按钮
+        showSearch: false,
+        //显示刷新按钮
+        showRefresh: false,
+        //显示切换手机试图按钮
+        showToggle: false,
+        //显示 内容列下拉框
+        showColumns: false,
+        //显示到处按钮
+        showExport: false,
+        //显示切换分页按钮
+        showPaginationSwitch: false,
+        //最低显示2行
+        minimumCountColumns: 2,
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //是否显示分页（*）
+        pagination: true,
+        //排序方式
+        sortOrder: "asc",
+        //初始化加载第一页，默认第一页
+        pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+        url: "${ctx}/management/sobillandentry/sobill/getSobillEntryListBySobillId",
+        //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+        //queryParamsType:'',
+        ////查询参数,每次调用是会带上这个参数，可自定义
+        queryParams : function(params) {
+            var searchParam = $("#searchForm").serializeJSON();
+            searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+            searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+            searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
+            searchParam.sobillId = $("#sobillId").val() === undefined ? "" : $("#sobillId").val();
+            return searchParam;
+        },
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        contextMenuTrigger:"right",//pc端 按右键弹出菜单
+        contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
+        contextMenu: '#context-menu',
+        onContextMenuItem: function(row, $el){
+            if($el.data("item") == "edit"){
+                edit(row.id);
+            }else if($el.data("item") == "view"){
+                view(row.id);
+            } else if($el.data("item") == "delete"){
+                jp.confirm('确认要删除该合同管理记录吗？', function(){
+                    jp.loading();
+                    jp.get("${ctx}/management/contract/contract/delete?id="+row.id, function(data){
+                        if(data.success){
+                            $('#contractTable').bootstrapTable('refresh');
+                            jp.success(data.msg);
+                        }else{
+                            jp.error(data.msg);
+                        }
+                    })
+
+                });
+
+            }
+        },
+
+        onClickRow: function(row, $el){
+        },
+        onShowSearch: function () {
+            $("#search-collapse").slideToggle();
+        },
+        columns: [{
+            checkbox: true
+
+        }
+            ,{
+                title: "序号",
+                sortable: true
+                ,formatter:function(value, row , index){
+                    return index+1;
+                }
+
+            }
+            ,{
+                field: 'itemName',
+                title: '商品',
+                sortable: true,
+                sortName: 'itemName'
+
+            }
+            ,{
+                field: 'unit',
+                title: '商品单位',
+                sortable: true,
+                sortName: 'unit'
+
+            }
+            ,{
+                field: 'model',
+                title: '型号',
+                sortable: true,
+                sortName: 'model'
+
+            }
+            ,{
+                field: 'batchNo',
+                title: '批号',
+                sortable: true,
+                sortName: 'batchNo'
+
+            }
+            ,{
+                field: 'price',
+                title: '单价',
+                sortable: true,
+                sortName: 'price'
+
+            }
+            ,{
+                field: 'auxqty',
+                title: '数量',
+                sortable: true,
+                sortName: 'auxqty'
+
+            }
+            ,{
+                field: 'amount',
+                title: '总额',
+                sortable: true,
+                sortName: 'amount'
+
+            }
+            ,{
+                field: 'remarks',
+                title: '备注',
+                class:"text-nowrap",
+                sortable: true,
+                sortName: 'remarks'
+
+            }
+        ]
+    });
+}
 </script>
-<script type="text/template" id="sobillChildrenTpl">//<!--
-	<div class="tabs-container">
-		<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#tab-{{idx}}-1" aria-expanded="true">订单明细</a></li>
-		</ul>
-		<div class="tab-content">
-				 <div id="tab-{{idx}}-1" class="tab-pane fade in active">
-						<table class="ani table">
-						<thead>
-							<tr>
-								<th>商品</th>
-								<th>商品单位</th>
-    							<th>型号</th>
-								<th>批号</th>
-								<th>单价</th>
-								<th>数量</th>
-								<th>总额</th>
-    							<th>备注</th>
-							</tr>
-						</thead>
-						<tbody id="sobillChild-{{idx}}-1-List">
-						</tbody>
-					</table>
-				</div>
-		</div>//-->
-	</script>
-	<script type="text/template" id="sobillChild1Tpl">//<!--
-				<tr>
-					<td>
-						{{row.itemName}}
-					</td>
-					<td>
-						{{row.unit}}
-					</td>
-					<td>
-						{{row.model}}
-					</td>
-					<td>
-						{{row.batchNo}}
-					</td>
-					<td>
-						{{row.price}}
-					</td>
-					<td>
-						{{row.auxqty}}
-					</td>
-					<td>
-						{{row.amount}}
-					</td>
-					<td>
-						{{row.remarks}}
-					</td>
-				</tr>//-->
-	</script>

@@ -16,13 +16,7 @@
     <style type="text/css">
         body {
             margin: 0;
-            /*height: 1000%;*/
-            /*Firefox*/
-        -moz-calc(expression);
-            /*chrome safari*/
-        -webkit-calc(expression);
-            /*Standard */
-        calc();
+            background: white;
         }
 
         .all {
@@ -150,11 +144,13 @@
         }
     </style>
 </head>
-<body>
+<body ontouchstart>
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="status" name="status" value="0"/>
         <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
+        <input type="hidden" id="custId" name="custId"/>
+        <input type="hidden" id="type" name="type"/>
 
         <%-- 表头 --%>
         <div class="order-panel">
@@ -171,8 +167,7 @@
                     <span>*</span>客户
                 </div>
                 <div class="addOrder-list_ft">
-                    <%--<input class="weui-input" style="margin-right: 1px" id="cus" type="text" placeholder="请选择客户">
-                    <input id="FCUSTID" type="hidden" name="FCUSTID" readonly>--%>
+                    <input placeholder="请选择客户" type="text" id="cusName" readonly class="weui-input" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -180,16 +175,15 @@
                     <span>*</span>类型
                 </div>
                 <div class="addOrder-list_ft">
-                    <%-- <input class="weui-input" style="margin-right: 1px" id="type" type="text" placeholder="请选择">
-                     <input id="FBILLTYPE" type="hidden" name="FBILLTYPE" readonly>--%>
+                    <input class="weui-input" id="typeSelect" readonly type="text" placeholder="请选择类型" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
                 <div class="addOrder-list_bd">
-                    <span>*</span>提货日期
+                    <span>*</span>发货日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input placeholder="请选择日期" id="needTime" name="needTime" class="weui-input" type="date"/>
+                    <input placeholder="请选择日期" v-on:click="openCalendar" id="needTime" name="needTime" class="weui-input" type="text" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -206,13 +200,13 @@
                     单据日期
                 </div>
                 <div class="addOrder-list_ft">
-                    <input type="text" id="createDate" name="createDate" readonly value="<fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="weui-input"/>
+                    <input type="text" id="createDate" name="createDate" readonly value="<fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>" class="weui-input" style="text-align: right;"/>
                 </div>
             </div>
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-top: 5%;padding-bottom: 50px;">
+        <div id="detail">
 
         </div>
 
@@ -248,12 +242,12 @@
                             </li>
                         </ul>
                     </div>
-                    <div style="position: fixed;bottom: 0%;width: 100%;">
+                    <div style="position: fixed;bottom: 0%;width: 100%;z-index: 501;">
                         <div style="float: left;width: 48%;">
                             <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
                         </div>
                         <div style="float: right;width: 48%;">
-                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
                         </div>
                     </div>
                 </div>
@@ -262,8 +256,8 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
-            <a class="weui-tabbar__item open-popup" data-target="#items">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: z-index: 500;;">
+            <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
                 </div>
@@ -277,13 +271,13 @@
             </a>
             <a v-on:click="saveSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{save}}</p>
             </a>
             <a v-on:click="submitSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{submit}}</p>
             </a>
@@ -301,6 +295,37 @@
         created: function () {
             this.$http.get('${ctxf}/wechat/icitem/getItemClass',{}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
+            });
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId',{}).then(function (res) {
+                var customerList = res.body.body.customerList;
+                var data = new Array();
+                for (var i = 0; i < customerList.length; i++){
+                     var info = { "title": customerList[i].name, "value": customerList[i].id};
+                    data.push(info)
+                }
+                $("#cusName").select({
+                    title: "选择客户",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#custId").val(result.values);
+                    }
+                });
+            });
+            /* 订单类型 */
+            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30',{}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = { "title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#typeSelect").select({
+                    title: "选择类型",
+                    items: data,
+                    onChange: function(result) {//选中触发事件
+                        $("#type").val(result.values);
+                    }
+                });
             });
         },
         data:{
@@ -350,7 +375,7 @@
                         var template = '';
                         var icitemList = res.body.icitemList;
                        for (var i = 0; i < icitemList.length; i++) {
-                           template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox" style="padding-top: 3%;">' +
+                           template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox">' +
                                '<div class="pro-cell">'+
                                     '<div class="pro-list">'+
                                         '<div class="pro-item_left">'+
@@ -381,14 +406,13 @@
                                     '</div>'+
                                     '<div class="pro-list">'+
                                         '<div class="pro-item_left">'+
-                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                         '</div>'+
                                         '<div class="pro-item_right">'+
                                             '<span>金额：</span>  <span class="total"></span>元'+
                                         '</div>'+
                                     '</div>'+
                                '</div>'+
-                               '<hr>'+
                            '</div>';
                        }
                        $("#detail").append(template);
@@ -453,6 +477,8 @@
                 }
                 $.confirm("您确定要删除选中商品吗?","提醒",function () {
                     var index;
+                    /* 清除选中 */
+                    cleanSelect();
                     for (var i = 0; i < checkVals.length; i++) {
                         index = retrieveArrayIndex(checkVals[i]);
                         if (index != -1) {
@@ -489,6 +515,7 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 提交订单 */
             submitSob:function () {
                 $.confirm("您确定要提交订单吗?", function() {
                     //点击确认后的回调函数
@@ -497,8 +524,23 @@
                     //点击取消后的回调函数
                 });
             },
+            /* 打开日历 */
+            openCalendar:function () {
+                $("#needTime").calendar({
+                    dateFormat:"yyyy-mm-dd"
+                });
+            },
+            cancelItems:function () {
+            }
         }
     });
+
+    /* 清理选择 */
+    function cleanSelect() {
+        for (var i = 0; i < itemIds.length; i++) {
+            $("#"+itemIds[i]).attr("checked",false);
+        }
+    }
 
     /* 检索数组元素下标 */
     function retrieveArrayIndex(val) {
@@ -510,17 +552,36 @@
         return -1;
     }
 
-    /* 保存订单 type(0:保存草稿,1:审核提交) */
-    function save(type) {
-        if (itemIds.length == 0) {
-            $.alert("请至少选择一个商品!");
-            return;
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
         }
+    }
+
+    /* 保存订单 status(0:保存草稿,1:审核提交) */
+    function save(status) {
         var billNo = $("#billNo").val();
         var needTime = $("#needTime").val();
+        var custId = $("#custId").val();
         var createDate = $("#createDate").val();
+        var type = $("#type").val();
+        if (custId == null || custId == '') {
+            $.alert("请选择客户!");
+            return;
+        }
+        if (type == null || type == '') {
+            $.alert("请选择类型!");
+            return;
+        }
         if (needTime == null || needTime == '') {
             $.alert("请选择发货日期!");
+            return;
+        }
+        if (itemIds.length == 0) {
+            $.alert("请至少选择一个商品!");
             return;
         }
         var check = true;
@@ -539,12 +600,15 @@
         }
         var data = {
             "id":"",
+            "custId":custId,
             "billNo":billNo,
+            "needTime":needTime,
             "synStatus":0,
-            "status":type,
+            "status":status,
             "cancellation":0,
             "checkStatus":0,
             "needTime":needTime,
+            "type":type,
             "createDate":createDate,
             "sobillentryList":json
         };

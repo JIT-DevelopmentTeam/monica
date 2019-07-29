@@ -29,6 +29,7 @@ public class Icitem extends DataEntity<Icitem> {
 	private Integer startPage;	// 起始分页
 	private Integer endPage;	// 结束分页
     private String ids;         // ids
+    private Integer isSelect;   // 是否为选择数据
 
 	public Icitem() {
 		super();
@@ -161,5 +162,13 @@ public class Icitem extends DataEntity<Icitem> {
 
     public void setIds(String ids) {
         this.ids = ids;
+    }
+
+    public Integer getIsSelect() {
+        return isSelect;
+    }
+
+    public void setIsSelect(Integer isSelect) {
+        this.isSelect = isSelect;
     }
 }
