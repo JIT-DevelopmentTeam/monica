@@ -139,6 +139,14 @@
 				 format: "YYYY-MM-DD HH:mm:ss"
 		    });
 
+	        $("#pullStarttime").click(function () {
+                $("#starttime").find("div").css("z-index","99999");
+            });
+
+	        $("#pullEndtime").click(function () {
+                $("#endtime").find("div").css("z-index","99999");
+            });
+
 	        $("#pushTime").click(function () {
                 $("#push").find("div").css("z-index","99999");
             });
@@ -289,7 +297,7 @@
 					<td class="width-35">
 						<div class='input-group form_datetime' id='starttime'>
 							<input type='text'  name="starttime" class="form-control "  value="<fmt:formatDate value="${news.starttime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-							<span class="input-group-addon">
+							<span class="input-group-addon" id="pullStarttime">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
 						</div>
@@ -299,7 +307,7 @@
 						<div class='input-group form_datetime' id='endtime'>
 							<input type='text'  name="endtime" class="form-control "  value="<fmt:formatDate value="${news.endtime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
 							<div id="pushtimepicker" class="bootstrap-datetimepicker-widget dropdown-menu usetwentyfour bottom pull-right"></div>
-							<span class="input-group-addon">
+							<span class="input-group-addon" id="pullEndtime">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
 						</div>
