@@ -135,7 +135,7 @@
                                                 '<td>'+icitemList[i].name+'</td>'+
                                                 '<td><input type="text" id="'+icitemList[i].id+'BatchNo" class="form-control"/></td>'+
                                                 '<td></td>'+
-                                                '<td><input type="number" id="'+icitemList[i].id+'Auxqty" value="1" min="0" class="form-control required"/></td>'+
+                                                '<td><input type="number" id="'+icitemList[i].id+'Auxqty" value="1.0" min="0" class="form-control required"/></td>'+
                                                 '<td></td>'+
                                                 '<td><input type="number" id="'+icitemList[i].id+'RowId" min="0" step="1" class="form-control required"/></td>'+
                                                 '<td><input type="text" id="'+icitemList[i].id+'Remarks" class="form-control"/></td>'+

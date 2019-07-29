@@ -166,10 +166,6 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-11">
-            <div class="panel-heading">
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-11">
             <table id="sobillentryListTable" ></table>
         </div>
     </div>

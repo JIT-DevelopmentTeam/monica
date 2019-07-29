@@ -422,7 +422,11 @@ public class SobillController extends BaseController {
      */
     public Page<Sobillentry> findPage(Page<Sobillentry> page, Sobillentry sobillentry) {
         sobillentry.setPage(page);
-        page.setList(sobillentryMapper.findList(sobillentry));
+        if (sobillentry.getSobillId().getId() == null || "".equals(sobillentry.getSobillId().getId())){
+            page.setList(null);
+        } else {
+            page.setList(sobillentryMapper.findList(sobillentry));
+        }
         return page;
     }
 
