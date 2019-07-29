@@ -3,18 +3,14 @@
  */
 package com.jeeplus.modules.management.news.web;
 
-import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -33,12 +29,6 @@ import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.OfficeService;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsArticle;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsEntity;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -57,16 +47,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 新闻公告Controller
