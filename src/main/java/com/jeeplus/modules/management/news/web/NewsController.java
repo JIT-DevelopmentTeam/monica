@@ -170,13 +170,13 @@ public class NewsController extends BaseController {
             j.setMsg(errMsg);
             return j;
         }
-        System.out.println(news.getPush());
         try {
             //新增或编辑表单保存
             newsService.save(news);//保存
             String objIds = news.getObjId();
             if(objIds != null){
                 String[] objIdArr = objIds.split(",");
+                System.out.println("--->:"+objIdArr);
                 NewsPush newsPush = null;
                 for (int i = 0; i < objIdArr.length; i++) {
                     newsPush = new NewsPush();
