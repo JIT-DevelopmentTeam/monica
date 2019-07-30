@@ -63,18 +63,7 @@ public class NewsService extends CrudService<NewsMapper, News> {
 	@Transactional(readOnly = false)
 	public void save(News news) {
 		super.save(news);
-		if(news.getIsPush() != null && news.getIsPush() == 1){
-			if (!news.getIsNewRecord()) {
-				JobKey key = new JobKey(news.getTitle(), news.getPushrule());
-				try {
-					scheduler.deleteJob(key);
-				} catch (SchedulerException e) {
-					e.printStackTrace();
-					System.out.println("出现异常");
-				}
-			}
-			this.task(news);
-		}
+
 	}
 	
 	@Transactional(readOnly = false)
