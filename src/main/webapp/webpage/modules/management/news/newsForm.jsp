@@ -140,7 +140,8 @@
 		    });
 
 	        $("#pullStarttime").click(function () {
-                $("#starttime").find("div").css("z-index","99999");
+                $("#starttime").find("div").css("z-index",
+					"99999");
             });
 
 	        $("#pullEndtime").click(function () {

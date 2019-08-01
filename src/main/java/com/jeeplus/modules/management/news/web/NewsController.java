@@ -170,20 +170,34 @@ public class NewsController extends BaseController {
             j.setMsg(errMsg);
             return j;
         }
-        System.out.println(news.getPush());
         try {
             //新增或编辑表单保存
             newsService.save(news);//保存
             String objIds = news.getObjId();
             if(objIds != null){
                 String[] objIdArr = objIds.split(",");
+                /*System.out.println("--->:"+objIds);*/
                 NewsPush newsPush = null;
+                NewsPush del = new NewsPush();
+                del.setNewsId(news.getId());
+                newsPushService.delete(del);
                 for (int i = 0; i < objIdArr.length; i++) {
                     newsPush = new NewsPush();
                     newsPush.setNewsId(news.getId());
                     newsPush.setObjId(objIdArr[i]);
-                    newsPushService.delete(newsPush);
                     newsPushService.save(newsPush);  // 保存推送对象表信息
+                }
+                if(news.getIsPush() != null && news.getIsPush() == 1){
+                    if (!news.getIsNewRecord()) {
+                        JobKey key = new JobKey(news.getTitle(), news.getPushrule());
+                        try {
+                            scheduler.deleteJob(key);
+                        } catch (SchedulerException e) {
+                            e.printStackTrace();
+                            System.out.println("出现异常");
+                        }
+                    }
+                    newsService.task(news);
                 }
             }
         } catch (Exception e) {
