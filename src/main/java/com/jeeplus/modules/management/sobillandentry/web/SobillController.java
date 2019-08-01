@@ -129,7 +129,7 @@ public class SobillController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions(value={"management:sobillandentry:sobill:add","management:sobillandentry:sobill:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save",produces = {"application/json;charset=UTF-8"})
-	public AjaxJson save(@RequestBody Object object, Model model) throws Exception{
+	public AjaxJson save(@RequestBody Object object) throws Exception{
 		AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){

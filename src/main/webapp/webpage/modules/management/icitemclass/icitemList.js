@@ -76,14 +76,42 @@
 
                 }
             },
-            // 选中事件
+            // 选中
             onCheck:function(row){
                 var ids = $("#ids").val();
                 if (ids == null || ids == '') {
-                    $("#ids").val(row.id+",");
+                    $("#ids").val(row.id);
                 } else {
-                    ids += row.id+",";
-                    $("#ids").val(ids);
+                    var idsStr = '';
+                    var idsArray = ids.split(",");
+                    if ($.inArray(row.id,idsArray) == -1) {
+                        idsArray.push(row.id);
+                    }
+                    for (var i = 0; i < idsArray.length; i++) {
+                        idsStr += idsArray[i]+",";
+                    }
+                    if (idsArray.length > 0) {
+                        idsStr = idsStr.substring(0,idsStr.length-1);
+                    }
+                    $("#ids").val(idsStr);
+                }
+            },
+            // 取消选中
+            onUncheck:function(row) {
+                var ids = $("#ids").val();
+                var idsArray = ids.split(",");
+                if ($.inArray(row.id, idsArray) != -1) {
+                    idsArray.splice($.inArray(row.id, idsArray),1);
+                }
+                if (idsArray.length == 0) {
+                    $("#ids").val('');
+                } else {
+                    var idsStr = '';
+                    for (var i = 0; i < idsArray.length; i++) {
+                        idsStr += idsArray[i]+',';
+                    }
+                    idsStr = idsStr.substring(0,idsStr.length-1);
+                    $("#ids").val(idsStr);
                 }
             },
             onClickRow: function(row, $el){
