@@ -106,7 +106,7 @@
 	<!--物理删除-->
 	<update id="delete">
 		DELETE FROM tb_newspush
-		WHERE id = #{id}
+		WHERE f_newsid = #{newsId}
 	</update>
 	
 	<!--逻辑删除-->

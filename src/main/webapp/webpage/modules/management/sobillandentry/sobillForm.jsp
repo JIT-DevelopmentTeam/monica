@@ -6,36 +6,173 @@
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 
-		$(document).ready(function() {
+        var itemIds = [];
+
+        if (${sobill.id != null && sobill.id != ''}) {
+            var itemIdsStr = '${itemIdsStr}';
+            itemIds = itemIdsStr.split(",");
+        }
+
+        $(document).ready(function() {
 	        $('#needTime').datetimepicker({
-				 format: "YYYY-MM-DD HH:mm:ss"
+				 format: "YYYY-MM-DD"
 		    });
 		});
 
-		function save() {
+        $.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (o[this.name]) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
+
+        function save() {
             var isValidate = jp.validateForm('#inputForm');//校验表单
             if(!isValidate){
                 return false;
 			}else{
+                if (itemIds.length == 0) {
+                    jp.error("请至少选择一个商品!");
+                    return;
+                }
+                var headerData = $('#inputForm').serializeObject() ;
+                headerData = JSON.stringify(headerData);
+                var bodyData = '"sobillentryList":[';
+                for (var i = 0; i < itemIds.length; i++) {
+                    bodyData += '{"itemId":"'+itemIds[i]+'","batchNo":"'+$("#"+itemIds[i]+"BatchNo").val()+'",' +
+                        '"auxqty":"'+$("#"+itemIds[i]+"Auxqty").val()+'","rowId":"'+$("#"+itemIds[i]+"RowId").val()+'",' +
+                        '"remarks":"'+$("#"+itemIds[i]+"Remarks").val()+'"' +
+                        '},';
+                }
+                bodyData = bodyData.substring(0,bodyData.length-1);
+                bodyData += ']';
+                var allData = headerData.slice(0,headerData.length-1)+","+bodyData+headerData.slice(headerData.length-1);
                 jp.loading();
-                jp.post("${ctx}/management/sobillandentry/sobill/save",$('#inputForm').serialize(),function(data){
-                    if(data.success){
-                        jp.getParent().refresh();
-                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-                        parent.layer.close(dialogIndex);
-                        jp.success(data.msg)
+                $.ajax({
+                    async:false,
+                    cache:false,
+                    type:'post',
+                    url:'${ctx}/management/sobillandentry/sobill/save',
+                    contentType: "application/json; charset=utf-8",
+                    data:JSON.stringify(allData),
+                    processData : false,
+                    dataType:'json',
+                    success:function (res) {
+                        if(res.success){
+                            jp.getParent().refresh();
+                            var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                            parent.layer.close(dialogIndex);
+                            jp.success(res.msg)
 
-                    }else{
-                        jp.error(data.msg);
+                        }else{
+                            jp.error(res.msg);
+                        }
+                    },
+                    error:function () {
+                        jp.error("保存出错!");
                     }
-                })
+                });
 			}
 
         }
 		function addItems(){
-            jp.openDialog("选择商品", "${ctx}/management/icitemclass/icitem/list", window.innerWidth * 0.9 + "px", window.innerHeight * 0.8 + 'px', null ,function (iframeWin) {
+            jp.open({
+                type: 2,
+                area: [window.innerWidth * 0.9 + "px", window.innerHeight * 1 + 'px'],//弹框大小
+                title:"选择商品",//标题
+                content: "${ctx}/management/icitemclass/icitem/list?isSelect=1" ,//Controller地址
+                btn: ['确定', '关闭'],
+                yes: function(index, layero){//回调函数
+                    var body = top.layer.getChildFrame('body', index);
+                    var ids = body.find('#ids').val().substring(0,body.find('#ids').val().length-1);//子页面的某个id，通过这个 父页面 可以获取子页面的值，并进行下一步的操作
+                    // 需要新增
+                    var addIds = [];
+                    if (itemIds.length == 0){
+                        itemIds = ids.split(",");
+                        addIds = ids.split(",");
+                    } else {
+                        // 选择
+                        var newIds = ids.split(",");
+                        for (var i = 0; i < newIds.length; i++) {
+                            var check = true;
+                            for (var j = 0; j < itemIds.length; j++) {
+                                if (itemIds[j] == newIds[i]) {
+                                    check = false;
+                                }
+                            }
+                            if (check) {
+                                itemIds.push(newIds[i]);
+                                addIds.push(newIds[i]);
+                            }
+                        }
+                    }
+                    if (addIds.length > 0) {
+                        $.ajax({
+                           async:false,
+                           cache:false,
+                           url:'${ctx}/management/icitemclass/icitem/getListByIds',
+                           type:'post',
+                           data:{
+                               idsStr:addIds.toString()
+                           },
+                           dataType:'json',
+                           success:function (res) {
+                               var icitemList = res.body.icitemList;
+                               var templet = '';
+                               for (var i = 0; i < icitemList.length; i++) {
+                                   templet += '<tr id="'+icitemList[i].id+'Tr">'+
+                                                '<td class="hide"></td>'+
+                                                '<td>'+icitemList[i].name+'</td>'+
+                                                '<td><input type="text" id="'+icitemList[i].id+'BatchNo" class="form-control"/></td>'+
+                                                '<td></td>'+
+                                                '<td><input type="number" id="'+icitemList[i].id+'Auxqty" value="1.0" min="0" class="form-control required"/></td>'+
+                                                '<td></td>'+
+                                                '<td><input type="number" id="'+icitemList[i].id+'RowId" min="0" step="1" class="form-control required"/></td>'+
+                                                '<td><input type="text" id="'+icitemList[i].id+'Remarks" class="form-control"/></td>'+
+                                                '<td class="text-center" width="10"><span class="close" onclick="delRow(\''+icitemList[i].id+'\')" title="删除">&times;</span></td>'
+                                           '<tr>';
+                               }
+                               $("#sobillentryList").append(templet);
+                           }
+                        });
+                    } else {
+                        jp.error("请至少选择一个商品!");
+                        return;
+                    }
+                    jp.close(index);//关闭弹框。
+                },
+                cancel: function(index){
+                }
             });
 		}
+
+		function delRow(Id) {
+            $("#"+Id+"Tr").remove();
+            var index = retrieveArrayIndex(Id);
+            if(index != -1){
+                itemIds.splice(index,1);
+            }
+        }
+
+        /* 检索数组元素下标 */
+        function retrieveArrayIndex(val) {
+            for (var i = 0; i < itemIds.length; i++) {
+                if (itemIds[i] == val){
+                    return i;
+                }
+            }
+            return -1;
+        }
 	</script>
 </head>
 <body class="bg-white">
@@ -101,7 +238,7 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>发货时间：</label></td>
 					<td class="width-35">
 						<div class='input-group form_datetime' id='needTime'>
-							<input type='text'  name="needTime" class="form-control required"  value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<input type='text'  name="needTime" class="form-control required"  value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd"/>"/>
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
@@ -137,6 +274,7 @@
 				</tr>
 		 	</tbody>
 		</table>
+        </form:form>
 		<div class="tabs-container">
             <ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">订单明细</a>
@@ -150,7 +288,7 @@
 					<tr>
 						<th class="hide"></th>
 						<th><font color="red">*</font>商品</th>
-						<th>批号</th>
+						<th width="20%;">批号</th>
 						<th><font color="red">*</font>单价</th>
 						<th width="10%;"><font color="red">*</font>数量</th>
 						<th><font color="red">*</font>总额</th>
@@ -158,28 +296,27 @@
 						<th>备注</th>
 						<th width="10">&nbsp;</th>
 					</tr>
+				</thead>
+				<tbody id="sobillentryList">
                     <c:forEach items="${sobill.sobillentryList}" varStatus="vs" var="var">
-                        <tr>
+                        <tr id="${var.itemId}Tr">
                             <td class="hide"></td>
                             <td>${var.itemName}</td>
-                            <td>${var.batchNo}</td>
+                            <td><input type="text" id="${var.itemId}BatchNo" value="${var.batchNo}" class="form-control"/></td>
                             <td>${var.price}</td>
-                            <td><input type="number" id="${var.id}Qty" value="${var.auxqty}" min="0" class="form-control required"/></td>
+                            <td><input type="number" id="${var.itemId}Auxqty" value="${var.auxqty}" min="0" class="form-control required"/></td>
                             <td>${var.amount}</td>
-                            <td><input type="number" id="${var.id}Row" value="${var.rowId}" min="0" step="1" class="form-control required"/></td>
-                            <td>${var.remarks}</td>
+                            <td><input type="number" id="${var.itemId}RowId" value="${var.rowId}" min="0" step="1" class="form-control required"/></td>
+                            <td><input type="text" id="${var.itemId}Remarks" value="${var.remarks}" class="form-control"/></td>
                             <td class="text-center" width="10">
-                                <span class="close" onclick="delRow()" title="删除">&times;</span>
+                                <span class="close" onclick="delRow('${var.itemId}')" title="删除">&times;</span>
                             </td>
                         </tr>
                     </c:forEach>
-				</thead>
-				<tbody id="sobillentryList">
 				</tbody>
 			</table>
 			</div>
 		</div>
 		</div>
-		</form:form>
 </body>
 </html>

@@ -76,7 +76,26 @@
 
                 }
             },
-
+            // 选中
+            onCheck:function(row){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 取消选中
+            onUncheck:function(row) {
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 全选
+            onCheckAll:function(rows){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 取消全选
+            onUncheckAll:function(rows){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
             onClickRow: function(row, $el){
             },
             onShowSearch: function () {
@@ -320,6 +339,10 @@ function view(id){//没有权限时，不显示确定按钮
 
  function save(parentObject) {
 	 $("#ids").val(getIdSelections());
+ }
+
+ function submitItems() {
+    $("#ids").val(getIdSelections());
  }
 
 </script>

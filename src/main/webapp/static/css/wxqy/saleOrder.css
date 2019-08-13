@@ -21,6 +21,9 @@
 }
 .pro-cell{
     position: relative;
+    background: #eee;
+    border-radius: 10px 10px 10px 10px;
+    margin: 2%;
 }
 .pro-cell_right{
     background: #ffffff;

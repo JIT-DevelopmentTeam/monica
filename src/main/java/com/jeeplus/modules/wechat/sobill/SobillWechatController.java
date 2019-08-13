@@ -9,6 +9,7 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
+import com.jeeplus.modules.management.sobillandentry.web.SobillController;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import net.sf.json.JSONArray;
@@ -50,19 +51,18 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @RequestParam("startPage") Integer startPage,@RequestParam("endPage") Integer endPage){
+    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @Param("startPage") Integer startPage,@Param("endPage") Integer endPage, @Param("startTime") String startTime,@Param("endTime") String endTime){
         AjaxJson aj = new AjaxJson();
         Sobill sobill = new Sobill();
         sobill.setDelFlag("0");
-        if (checkStatus != null){
-            // 待审核
-            sobill.setCheckStatus(checkStatus);
-        }
-
+        // 待审核
+        sobill.setCheckStatus(checkStatus);
         if (isHistory != null){
             // 历史订单
             sobill.setHistory(true);
         }
+        sobill.setStartTime(startTime);
+        sobill.setEndTime(endTime);
         sobill.setStartPage(startPage);
         sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
@@ -121,7 +121,7 @@ public class SobillWechatController extends BaseController {
         boolean delect = true;
         for (String id : ids) {
             Sobill sobill = sobillService.get(id);
-            if (sobill != null && sobill.getCheckStatus() != 1){
+            if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
                 sobillService.delete(sobill);
             } else {
                 delect = false;
@@ -129,7 +129,7 @@ public class SobillWechatController extends BaseController {
         }
         aj.setSuccess(true);
         if (!delect){
-            aj.setMsg("操作成功!(部分订单已审核不允许删除!)");
+            aj.setMsg("操作成功!(部分订单已审核或已提交不允许删除!)");
         } else {
             aj.setMsg("删除订单成功!");
         }
@@ -144,7 +144,7 @@ public class SobillWechatController extends BaseController {
         boolean check = true;
         for (String id : ids) {
             Sobill sobill = sobillService.get(id);
-            if (sobill != null && sobill.getCheckStatus() != 1){
+            if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
                 /* TODO 审核人 */
                 sobill.setCheckTime(new Date());
                 sobill.setCheckStatus(1);
@@ -157,7 +157,7 @@ public class SobillWechatController extends BaseController {
         if (check){
             aj.setMsg("审核成功!");
         } else {
-            aj.setMsg("操作成功!(部分订单已审核不允许重复操作!)");
+            aj.setMsg("操作成功!(部分订单已审核或已提交不允许操作!)");
         }
         return aj;
     }
@@ -172,11 +172,11 @@ public class SobillWechatController extends BaseController {
             sobill.setBillNo(jsonObject.getString("billNo"));
             sobill.setCustId(jsonObject.getString("custId"));
             sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
+            sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
             sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
-            sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
             sobill.setCreateDate(DateUtils.parseDate(jsonObject.get("createDate")));
             sobill.setId(IdGen.uuid());
             sobill.setIsNewRecord(true);
@@ -200,6 +200,7 @@ public class SobillWechatController extends BaseController {
             if (sobill != null){
                 sobill.setCustId(jsonObject.getString("custId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
+                sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
                 sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
                 sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
@@ -207,18 +208,7 @@ public class SobillWechatController extends BaseController {
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
-                for (int i = 0; i < sobillentryList.size(); i++) {
-                    boolean delect = true;
-                    for (int j = 0; j < jsonArray.size(); j++) {
-                        JSONObject sobillEntryObject = jsonArray.getJSONObject(j);
-                        if (sobillEntryObject.getString("itemId").equals(sobillentryList.get(i).getItemId())){
-                            delect = false;
-                        }
-                    }
-                    if (delect) {
-                        sobillentryList.get(i).setDelFlag("1");
-                    }
-                }
+                SobillController.checkDelect(sobillentryList, jsonArray);
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JSONObject sobillEntryObject = jsonArray.getJSONObject(i);
                     boolean exist = false;

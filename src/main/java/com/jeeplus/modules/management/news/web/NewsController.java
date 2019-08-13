@@ -3,7 +3,14 @@
  */
 package com.jeeplus.modules.management.news.web;
 
-import com.alibaba.fastjson.JSONObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -22,17 +29,14 @@ import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.OfficeService;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsArticle;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsEntity;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,16 +47,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 新闻公告Controller
@@ -172,50 +170,39 @@ public class NewsController extends BaseController {
             j.setMsg(errMsg);
             return j;
         }
-
         try {
             //新增或编辑表单保存
             newsService.save(news);//保存
-            if(news.getObjId() != null && !"".equals(news.getObjId())) {
-                if (news.getIsPush() != null) {
-                    String objIds = news.getObjId();
-                    String[] objIdArr = objIds.split(",");
-                    if (news.getIsPush() == 1) {
-                        NewsPush newsPush = null;
-                        User user = null;
-                        List<User> userList = null;
-                        for (int i = 0; i < objIdArr.length; i++) {
-                            newsPush = new NewsPush();
-                            newsPush.setNewsId(news.getId());
-                            newsPush.setObjId(objIdArr[i]);
-                            System.out.println(newsPush.getNewsId() + " : " + newsPush.getObjId());
-                            newsPushService.save(newsPush);
-                            user = userMapper.get(newsPush.getObjId());
-                            userList.add(user);
-                            System.out.println("部门编号：" + user.getOffice().getId());
+            String objIds = news.getObjId();
+            if(objIds != null){
+                String[] objIdArr = objIds.split(",");
+                /*System.out.println("--->:"+objIds);*/
+                NewsPush newsPush = null;
+                NewsPush del = new NewsPush();
+                del.setNewsId(news.getId());
+                newsPushService.delete(del);
+                for (int i = 0; i < objIdArr.length; i++) {
+                    newsPush = new NewsPush();
+                    newsPush.setNewsId(news.getId());
+                    newsPush.setObjId(objIdArr[i]);
+                    newsPushService.save(newsPush);  // 保存推送对象表信息
+                }
+                if(news.getIsPush() != null && news.getIsPush() == 1){
+                    if (!news.getIsNewRecord()) {
+                        JobKey key = new JobKey(news.getTitle(), news.getPushrule());
+                        try {
+                            scheduler.deleteJob(key);
+                        } catch (SchedulerException e) {
+                            e.printStackTrace();
+                            System.out.println("出现异常");
                         }
-                        newsPush.setDelFlag("0");
-                        if (userList.size() > 0) {
-                            String getObjId = "";
-                            for (int i = 0; i < userList.size(); i++) {
-                                if (i == userList.size() - 1) {
-                                    getObjId += userList.get(i).getQyUserId();
-                                } else
-                                    getObjId += userList.get(i).getQyUserId() + "|";
-                            }
-                            System.out.println("UserID : " + getObjId);
-                            // 新闻推送
-                            captainSendLoggingData(request,news,getObjId);
-                        }
-                    }else if(news.getIsPush() == 2){
-
                     }
+                    newsService.task(news);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         j.setSuccess(true);
         j.setMsg("保存新闻公告成功");
         return j;
@@ -582,33 +569,21 @@ public class NewsController extends BaseController {
         return result;
     }
 
-    /**
-     * 新闻公告推送
-     * @param request
-     * @param newsDate
-     * @param touser
-     */
-    private void captainSendLoggingData(HttpServletRequest request,News newsDate,String touser) {
-        // 获取请求协议
-        String path = request.getContextPath();
-        String filePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
-        AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
-        com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News news = new com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News();
-        news.setTouser(touser);//成员ID列表
-        //news.setToparty("");     //部门ID列表
-        //news.setTotag("");       //标签ID列表
-        news.setMsgtype("news");   //消息类型
-        news.setAgentid(JwParamesAPI.monicaAgentid);      //企业应用的id
-        NewsArticle newsArticles = new NewsArticle();
-        newsArticles.setUrl(filePath+"/f/wechat/news/form?id="+newsDate.getId()); //点击后跳转的链接
-        newsArticles.setTitle(newsDate.getTitle());       //推送标题
-        String picurl = filePath + newsDate.getMainpic();  //图片url
-        newsArticles.setPicurl(picurl);
-        NewsEntity newsEntity=new NewsEntity();
-        newsEntity.setArticles(new NewsArticle[] {newsArticles});
-        news.setNews(newsEntity);
-        JSONObject result = JwMessageAPI.sendNewsMessage(news, accessToken.getAccesstoken());
-        System.out.println("推送成功："+result);
+    @Autowired
+    private Scheduler scheduler;
+
+    @RequestMapping("testNews")
+    public void test(){
+        News news= newsService.get("ffd9e79272d74d91a2518b1ef2acf320");
+        if (!news.getIsNewRecord()) {
+            JobKey key = new JobKey(news.getTitle(), news.getPushrule());
+            try {
+                scheduler.deleteJob(key);
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+        }
+        newsService.task(news);
     }
 
 }

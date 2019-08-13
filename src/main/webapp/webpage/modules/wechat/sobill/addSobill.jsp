@@ -17,13 +17,6 @@
         body {
             margin: 0;
             background: white;
-            /*height: 1000%;*/
-            /*Firefox*/
-        -moz-calc(expression);
-            /*chrome safari*/
-        -webkit-calc(expression);
-            /*Standard */
-        calc();
         }
 
         .all {
@@ -151,7 +144,7 @@
         }
     </style>
 </head>
-<body>
+<body ontouchstart>
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="status" name="status" value="0"/>
@@ -213,7 +206,7 @@
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-top: 5%;padding-bottom: 50px;">
+        <div id="detail">
 
         </div>
 
@@ -249,12 +242,12 @@
                             </li>
                         </ul>
                     </div>
-                    <div style="position: fixed;bottom: 0%;width: 100%;">
+                    <div style="position: fixed;bottom: 0%;width: 100%;z-index: 501;">
                         <div style="float: left;width: 48%;">
                             <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
                         </div>
                         <div style="float: right;width: 48%;">
-                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
                         </div>
                     </div>
                 </div>
@@ -263,7 +256,7 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: z-index: 500;;">
             <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
@@ -278,13 +271,13 @@
             </a>
             <a v-on:click="saveSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{save}}</p>
             </a>
             <a v-on:click="submitSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{submit}}</p>
             </a>
@@ -382,7 +375,7 @@
                         var template = '';
                         var icitemList = res.body.icitemList;
                        for (var i = 0; i < icitemList.length; i++) {
-                           template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox" style="padding-top: 3%;">' +
+                           template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox">' +
                                '<div class="pro-cell">'+
                                     '<div class="pro-list">'+
                                         '<div class="pro-item_left">'+
@@ -413,14 +406,13 @@
                                     '</div>'+
                                     '<div class="pro-list">'+
                                         '<div class="pro-item_left">'+
-                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                            '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                         '</div>'+
                                         '<div class="pro-item_right">'+
                                             '<span>金额：</span>  <span class="total"></span>元'+
                                         '</div>'+
                                     '</div>'+
                                '</div>'+
-                               '<hr>'+
                            '</div>';
                        }
                        $("#detail").append(template);
@@ -537,6 +529,8 @@
                 $("#needTime").calendar({
                     dateFormat:"yyyy-mm-dd"
                 });
+            },
+            cancelItems:function () {
             }
         }
     });
@@ -558,14 +552,28 @@
         return -1;
     }
 
-    /* 保存订单 type(0:保存草稿,1:审核提交) */
-    function save(type) {
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
+        }
+    }
+
+    /* 保存订单 status(0:保存草稿,1:审核提交) */
+    function save(status) {
         var billNo = $("#billNo").val();
         var needTime = $("#needTime").val();
         var custId = $("#custId").val();
         var createDate = $("#createDate").val();
+        var type = $("#type").val();
         if (custId == null || custId == '') {
             $.alert("请选择客户!");
+            return;
+        }
+        if (type == null || type == '') {
+            $.alert("请选择类型!");
             return;
         }
         if (needTime == null || needTime == '') {
@@ -596,10 +604,11 @@
             "billNo":billNo,
             "needTime":needTime,
             "synStatus":0,
-            "status":type,
+            "status":status,
             "cancellation":0,
             "checkStatus":0,
             "needTime":needTime,
+            "type":type,
             "createDate":createDate,
             "sobillentryList":json
         };

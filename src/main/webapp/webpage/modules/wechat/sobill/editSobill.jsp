@@ -16,13 +16,6 @@
         body {
             margin: 0;
             background: white;
-            /*height: 1000%;*/
-            /*Firefox*/
-        -moz-calc(expression);
-            /*chrome safari*/
-        -webkit-calc(expression);
-            /*Standard */
-        calc();
         }
 
         .all {
@@ -150,12 +143,12 @@
         }
     </style>
 </head>
-<body>
+<body ontouchstart>
 <div id="page">
     <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
         <input type="hidden" id="id" name="id" value="${sobill.id}"/>
         <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
-        <input type="text" id="type" name="type" value="${sobill.type}"/>
+        <input type="hidden" id="type" name="type" value="${sobill.type}"/>
         <%-- 表头 --%>
         <div class="order-panel">
             <div class="addOrder-list">
@@ -179,7 +172,7 @@
                     <span>*</span>类型
                 </div>
                 <div class="addOrder-list_ft">
-                    <input class="weui-input" readonly id="typeSelect" type="text" placeholder="请选择类型">
+                    <input class="weui-input" readonly id="typeSelect" type="text" placeholder="请选择类型" style="text-align: right;"/>
                 </div>
             </div>
             <div class="addOrder-list">
@@ -209,9 +202,9 @@
         </div>
 
         <%-- 表体 --%>
-        <div id="detail" style="padding-bottom: 50px;background: white;">
+        <div id="detail" style="background: white;">
             <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
-                <div id="${var.itemId}Detail" class="weui-cells_checkbox" style="padding-top: 3%;">
+                <div id="${var.itemId}Detail" class="weui-cells_checkbox">
                     <div class="pro-cell">
                         <div class="pro-list">
                             <div class="pro-item_left"><span>商品编码：</span>  ${var.number}</div>
@@ -230,11 +223,10 @@
                         </div>
                         <div class="pro-list">
                             <div class="pro-item_left"><span><span style="color: red;">*</span>数量：</span>
-                                <input type="number" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input"/>
+                                <input type="number" onchange="verificationNum('${var.itemId}Qty')" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input" placeholder="请输入数量"/>
                             </div>
                             <div class="pro-item_right"><span>金额： </span> <span class="total"><fmt:formatNumber value="${var.amount}" pattern=".00" /></span>元</div>
                         </div>
-                        <hr>
                     </div>
                 </div>
             </c:forEach>
@@ -277,7 +269,7 @@
                             <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
                         </div>
                         <div style="float: right;width: 48%;">
-                            <a class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
+                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
                         </div>
                     </div>
                 </div>
@@ -286,7 +278,7 @@
 
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;">
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
             <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
@@ -301,13 +293,13 @@
             </a>
             <a v-on:click="saveSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{save}}</p>
             </a>
             <a v-on:click="submitSob" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{submit}}</p>
             </a>
@@ -347,11 +339,17 @@
             /* 订单类型 */
             this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30',{}).then(function (res) {
                 var dictList = res.body.rows;
+                for (var i = 0; i < dictList.length; i++) {
+                    if (dictList[i].value == ${sobill.type}) {
+                        $("#typeSelect").val(dictList[i].label);
+                    }
+                }
                 var data = [];
                 for (var i = 0; i < dictList.length; i++) {
                     var info = { "title": dictList[i].label, "value": dictList[i].value};
                     data.push(info);
                 }
+                
                 $("#typeSelect").select({
                     title: "选择类型",
                     items: data,
@@ -408,7 +406,7 @@
                         var template = '';
                         var icitemList = res.body.icitemList;
                         for (var i = 0; i < icitemList.length; i++) {
-                            template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox" style="padding-top: 3%;">' +
+                            template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox">' +
                                             '<div class="pro-cell">'+
                                                 '<div class="pro-list">'+
                                                     '<div class="pro-item_left">'+
@@ -439,14 +437,13 @@
                                                 '</div>'+
                                                 '<div class="pro-list">'+
                                                     '<div class="pro-item_left">'+
-                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
+                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
                                                     '</div>'+
                                                     '<div class="pro-item_right">'+
                                                         '<span>金额：</span>  <span class="total"></span>元'+
                                                     '</div>'+
                                                 '</div>'+
                                             '</div>'+
-                                            '<hr>'+
                                         '</div>';
                         }
                         $("#detail").append(template);
@@ -562,6 +559,9 @@
                 $("#needTime").calendar({
                     dateFormat:"yyyy-mm-dd"
                 });
+            },
+            cancelItems:function(){
+
             }
         }
     });
@@ -574,6 +574,15 @@
             }
         }
         return -1;
+    }
+
+    /* 验证数量 */
+    function verificationNum(id) {
+        var value = $("#"+id).val();
+        if (value <= 0){
+            $.alert("请输入合法数字!");
+            $("#"+id).val('');
+        }
     }
 
     /* 保存订单 type(0:保存草稿,1:提交) */

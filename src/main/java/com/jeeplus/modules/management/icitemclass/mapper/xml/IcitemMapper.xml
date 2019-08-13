@@ -209,16 +209,4 @@
 		select * FROM tb_icitem  where ${propertyName} = '${value}'
 	</select>
 
-    <select id="findListByIds" parameterType="Icitem" resultType="Icitem">
-        SELECT
-        <include refid="icitemColumns"/>
-        FROM tb_icitem a
-        <include refid="icitemJoins"/>
-        <where>
-            a.del_flag = #{DEL_FLAG_NORMAL}
-            ${dataScope}
-
-        </where>
-    </select>
-	
 </mapper>

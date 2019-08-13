@@ -29,6 +29,8 @@
 		emp.name AS "empName",
 		checker.name AS "checkerName",
 		dept.name AS "deptName",
+		cus.f_name AS "cusName",
+		date_format(a.f_needtime, '%Y-%m-%d') AS "needTimeStr"
 		cus.f_name AS "cusName"
 		/*dict.label AS "typeName"*/
 	</sql>
@@ -88,6 +90,14 @@
 			</if>
             <if test="isHistory == true">
                 AND a.create_date &lt; CURDATE()
+            </if>
+
+            <if test="startTime != null and startTime != ''">
+                AND a.create_date <![CDATA[ >= ]]> #{startTime}
+            </if>
+
+            <if test="endTime != null and endTime != ''">
+                AND a.create_date <![CDATA[ <= ]]> #{endTime}
             </if>
 		</where>
 		<choose>
