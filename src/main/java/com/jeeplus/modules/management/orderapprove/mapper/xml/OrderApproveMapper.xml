@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.orderapprove.mapper.OrderApproveMapper">
+    
+	<sql id="orderApproveColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.f_type AS "type",
+		a.f_approval_emplid AS "approvalEmplId",
+		a.f_index AS "index",
+		a.f_name AS "name",
+		a.f_status AS "status",
+		a.f_date AS "date",
+		a.f_remark AS "remark",
+		a.f_istoapp AS "isToapp",
+		a.f_islast AS "isLast"
+	</sql>
+	
+	<sql id="orderApproveJoins">
+		
+		LEFT JOIN sys_user approvalEmplId ON approvalEmplId.id = a.f_approval_emplid
+	</sql>
+	
+    
+	<select id="get" resultType="OrderApprove" >
+		SELECT 
+			<include refid="orderApproveColumns"/>
+		FROM ic_order_approve a
+		<include refid="orderApproveJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="OrderApprove" >
+		SELECT 
+			<include refid="orderApproveColumns"/>
+		FROM ic_order_approve a
+		<include refid="orderApproveJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="type != null and type != ''">
+				AND a.f_type = #{type}
+			</if>
+			<if test="approvalEmplId != null and approvalEmplId != ''">
+				AND a.f_approval_emplid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{approvalEmplId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{approvalEmplId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{approvalEmplId},'%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.f_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="OrderApprove" >
+		SELECT 
+			<include refid="orderApproveColumns"/>
+		FROM ic_order_approve a
+		<include refid="orderApproveJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ic_order_approve(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			f_type,
+			f_approval_emplid,
+			f_index,
+			f_name,
+			f_status,
+			f_date,
+			f_remark,
+			f_istoapp,
+			f_islast
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{type},
+			#{approvalEmplId},
+			#{index},
+			#{name},
+			#{status},
+			#{date},
+			#{remark},
+			#{isToapp},
+			#{isLast}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ic_order_approve SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			f_type = #{type},
+			f_approval_emplid = #{approvalEmplId},
+			f_index = #{index},
+			f_name = #{name},
+			f_status = #{status},
+			f_date = #{date},
+			f_remark = #{remark},
+			f_istoapp = #{isToapp},
+			f_islast = #{isLast}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM ic_order_approve
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE ic_order_approve SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="OrderApprove" statementType="STATEMENT">
+		select * FROM ic_order_approve  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
