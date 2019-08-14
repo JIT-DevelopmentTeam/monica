@@ -93,7 +93,7 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<shiro:hasPermission name="management:sobillandentry:sobill:add">
+			<%--<shiro:hasPermission name="management:sobillandentry:sobill:add">
 				<button id="add" class="btn btn-primary" onclick="add()">
 					<i class="glyphicon glyphicon-plus"></i> 新建
 				</button>
@@ -107,7 +107,7 @@
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-			</shiro:hasPermission>
+			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:sobillandentry:sobill:import">
 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
 			</shiro:hasPermission>
@@ -127,10 +127,6 @@
                 <button id="check" class="btn btn-primary" onclick="checkOrder()">
                     <i class="glyphicon glyphicon-search"></i> 审核
                 </button>
-
-				<button id="cancelCheck" class="btn btn-danger" onclick="cancelCheckOrder()">
-					<i class="glyphicon glyphicon-remove"></i> 反审核
-				</button>
             </shiro:hasPermission>
 
 			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">

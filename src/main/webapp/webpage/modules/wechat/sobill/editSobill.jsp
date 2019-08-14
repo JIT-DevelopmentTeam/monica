@@ -32,7 +32,8 @@
             overflow: auto;
         }
 
-        body {}
+        body {
+        }
 
         ul {
             list-style: none;
@@ -63,7 +64,7 @@
             color: black;
         }
 
-        ul li:hover>a {
+        ul li:hover > a {
             color: black;
             font-weight: bold;
         }
@@ -112,7 +113,7 @@
         }
 
         ul div a {
-            padding:0 1rem;
+            padding: 0 1rem;
             color: black;
             height: 35px;
             line-height: 35px;
@@ -145,166 +146,170 @@
 </head>
 <body ontouchstart>
 <div id="page">
-    <form id="Form" method="post" action="${ctx}/management/sobillandentry/sobill/save">
-        <input type="hidden" id="id" name="id" value="${sobill.id}"/>
-        <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
-        <input type="hidden" id="type" name="type" value="${sobill.type}"/>
-        <%-- 表头 --%>
-        <div class="order-panel">
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    编号
-                </div>
-                <div class="addOrder-list_ft">
-                    ${sobill.billNo}
-                </div>
+    <input type="hidden" id="id" name="id" value="${sobill.id}"/>
+    <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
+    <input type="hidden" id="type" name="type" value="${sobill.type}"/>
+    <%-- 表头 --%>
+    <div class="order-panel">
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                编号
             </div>
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    <span>*</span>客户
-                </div>
-                <div class="addOrder-list_ft">
-                    <input type="text" id="cusName" readonly class="weui-input" value="${sobill.cusName}" style="text-align: right;"/>
-                </div>
-            </div>
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    <span>*</span>类型
-                </div>
-                <div class="addOrder-list_ft">
-                    <input class="weui-input" readonly id="typeSelect" type="text" placeholder="请选择类型" style="text-align: right;"/>
-                </div>
-            </div>
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    <span>*</span>发货日期
-                </div>
-                <div class="addOrder-list_ft">
-                    <input placeholder="请选择日期" readonly v-on:click="openCalendar" id="needTime" name="needTime" class="weui-input" type="text" value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />" style="text-align: right;"/>
-                </div>
-            </div>
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    <span>*</span>跟单人员
-                </div>
-                <div class="addOrder-list_ft">
-                    ${sobill.empName}
-                </div>
-            </div>
-            <div class="addOrder-list">
-                <div class="addOrder-list_bd">
-                    单据日期
-                </div>
-                <div class="addOrder-list_ft">
-                    <fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss" />
-                </div>
+            <div class="addOrder-list_ft">
+                ${sobill.billNo}
             </div>
         </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                <span>*</span>客户
+            </div>
+            <div class="addOrder-list_ft">
+                <input type="text" id="cusName" readonly class="weui-input" value="${sobill.cusName}"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                <span>*</span>类型
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" readonly id="typeSelect" type="text" placeholder="请选择类型"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                <span>*</span>发货日期
+            </div>
+            <div class="addOrder-list_ft">
+                <input placeholder="请选择日期" readonly id="needTime" name="needTime" class="weui-input" type="text"
+                       value="<fmt:formatDate value="${sobill.needTime}" pattern="yyyy-MM-dd" />"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                <span>*</span>跟单人员
+            </div>
+            <div class="addOrder-list_ft">
+                ${sobill.empName}
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                单据日期
+            </div>
+            <div class="addOrder-list_ft">
+                <fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+            </div>
+        </div>
+    </div>
 
-        <%-- 表体 --%>
-        <div id="detail" style="background: white;">
-            <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
-                <div id="${var.itemId}Detail" class="weui-cells_checkbox">
-                    <div class="pro-cell">
-                        <div class="pro-list">
-                            <div class="pro-item_left"><span>商品编码：</span>  ${var.number}</div>
-                            <label class="weui-check__label" for="${var.itemId}Select">
-                                <input id="${var.itemId}Select" name="selectItems" type="checkbox" class="weui-check" value="${var.itemId}"/>
-                                <i class="weui-icon-checked"></i>
-                            </label>
+    <%-- 表体 --%>
+    <div id="detail" style="background: white;">
+        <c:forEach items="${sobill.sobillentryList}" var="var" varStatus="vs">
+            <div id="${var.itemId}Detail" class="weui-cells_checkbox">
+                <div class="pro-cell">
+                    <div class="pro-list">
+                        <div class="pro-item_left"><span>商品编码：</span> ${var.number}</div>
+                        <label class="weui-check__label" for="${var.itemId}Select">
+                            <input id="${var.itemId}Select" name="selectItems" type="checkbox" class="weui-check"
+                                   value="${var.itemId}"/>
+                            <i class="weui-icon-checked"></i>
+                        </label>
+                    </div>
+                    <div class="pro-list">
+                        <div class="pro-item_left"><span>商品名称：</span> ${var.itemName}</div>
+                        <div class="pro-item_right"><span>单位： </span> ${var.unit}</div>
+                    </div>
+                    <div class="pro-list">
+                        <div class="pro-item_left"><span>规格型号：</span> ${var.model}</div>
+                        <div class="pro-item_right"><span>单价： </span> <span class="price"><%--<fmt:formatNumber value="${var.FPRICE}" pattern=".00" /></span>--%>元
                         </div>
-                        <div class="pro-list">
-                            <div class="pro-item_left"><span>商品名称：</span>  ${var.itemName}</div>
-                            <div class="pro-item_right"><span>单位： </span> ${var.unit}</div>
+                    </div>
+                    <div class="pro-list">
+                        <div class="pro-item_left"><span><span style="color: red;">*</span>数量：</span>
+                            <input type="number" onchange="verificationNum('${var.itemId}Qty')" id="${var.itemId}Qty"
+                                   name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input"
+                                   placeholder="请输入数量"/>
                         </div>
-                        <div class="pro-list">
-                            <div class="pro-item_left"><span>规格型号：</span>  ${var.model}</div>
-                            <div class="pro-item_right"><span>单价： </span> <span class="price"><%--<fmt:formatNumber value="${var.FPRICE}" pattern=".00" /></span>--%>元</div>
-                        </div>
-                        <div class="pro-list">
-                            <div class="pro-item_left"><span><span style="color: red;">*</span>数量：</span>
-                                <input type="number" onchange="verificationNum('${var.itemId}Qty')" id="${var.itemId}Qty" name="quantity" min="0" step="1" value="${var.auxqty}" class="weui-input" placeholder="请输入数量"/>
-                            </div>
-                            <div class="pro-item_right"><span>金额： </span> <span class="total"><fmt:formatNumber value="${var.amount}" pattern=".00" /></span>元</div>
+                        <div class="pro-item_right"><span>金额： </span> <span class="total"><fmt:formatNumber
+                                value="${var.amount}" pattern=".00"/></span>元
                         </div>
                     </div>
                 </div>
-            </c:forEach>
-        </div>
+            </div>
+        </c:forEach>
+    </div>
 
-        <div id="items" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
-            <div class="weui-popup__overlay"></div>
-            <div class="weui-popup__modal">
-                <div class="all">
-                    <!-- 搜索框 -->
-                    <%--<div class="weui-search-bar" id="searchBar" style="height: 7%;">
-                        <div v-on:click="open" class="weui-search-bar__form">
-                            <div class="weui-search-bar__box">
-                                <i class="weui-icon-search"></i>
-                                <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
-                                <a v-on:click="empty" class="weui-icon-clear" id="searchClear"></a>
-                            </div>
-                            <label class="weui-search-bar__label" id="searchText">
-                                <i class="weui-icon-search"></i>
-                                <span>搜索</span>
-                            </label>
+    <div id="items" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <div class="all">
+                <!-- 搜索框 -->
+                <%--<div class="weui-search-bar" id="searchBar" style="height: 7%;">
+                    <div v-on:click="open" class="weui-search-bar__form">
+                        <div class="weui-search-bar__box">
+                            <i class="weui-icon-search"></i>
+                            <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+                            <a v-on:click="empty" class="weui-icon-clear" id="searchClear"></a>
                         </div>
-                        <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
-                    </div>--%>
-                    <!-- 滑动门 -->
-                    <div class="bg">
-                        <ul>
-                            <li :id="itemClass.id" v-for="(itemClass,index) in icitemClassList">
-                                <a v-on:click="screenClass(itemClass.id,index)">{{itemClass.name}}</a>
-                                <div class="div2">
-                                    <div class="banner" :id="index">
+                        <label class="weui-search-bar__label" id="searchText">
+                            <i class="weui-icon-search"></i>
+                            <span>搜索</span>
+                        </label>
+                    </div>
+                    <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+                </div>--%>
+                <!-- 滑动门 -->
+                <div class="bg">
+                    <ul>
+                        <li :id="itemClass.id" v-for="(itemClass,index) in icitemClassList">
+                            <a v-on:click="screenClass(itemClass.id,index)">{{itemClass.name}}</a>
+                            <div class="div2">
+                                <div class="banner" :id="index">
 
-                                    </div>
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div style="position: fixed;bottom: 0%;width: 100%;">
-                        <div style="float: left;width: 48%;">
-                            <a v-on:click="submitItems" class="weui-btn weui-btn_primary close-popup" data-target="#items">{{saveItems}}</a>
-                        </div>
-                        <div style="float: right;width: 48%;">
-                            <a v-on:click="cancelItems" class="weui-btn weui-btn_warn close-popup" data-target="#items">{{cancel}}</a>
-                        </div>
-                    </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-cell">
+                    <button v-on:click="submitItems" class="add-btn close-popup" data-target="#items"><img src="${ctxStatic}/image/wechat/icon-add_white.png">{{saveItems}}</button>
+                    <button v-on:click="cancelItems" class="back-btn close-popup" data-target="#items"><img src="${ctxStatic}/image/wechat/icon-back_white.png">{{cancel}}</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <br><br><br>
+    <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
-            <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{add}}</p>
-            </a>
-            <a v-on:click="delItems" class="weui-tabbar__item open-popup">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-delete.png" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{del}}</p>
-            </a>
-            <a v-on:click="saveSob" class="weui-tabbar__item">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{save}}</p>
-            </a>
-            <a v-on:click="submitSob" class="weui-tabbar__item">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-check_blue.png" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{submit}}</p>
-            </a>
-        </div>
-    </form>
+    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+        <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{add}}</p>
+        </a>
+        <a v-on:click="delItems" class="weui-tabbar__item open-popup">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/delect.jpg" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{del}}</p>
+        </a>
+        <a v-on:click="saveSob" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/save.jpg" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{save}}</p>
+        </a>
+        <a v-on:click="submitSob" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/save.jpg" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{submit}}</p>
+        </a>
+    </div>
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
@@ -316,28 +321,28 @@
     itemIds = itemIdsStr.split(",");
 
     var vm = new Vue({
-        el:'#page',
+        el: '#page',
         created: function () {
-            this.$http.get('${ctxf}/wechat/icitem/getItemClass',{}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/icitem/getItemClass', {}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
             });
-            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId',{}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId', {}).then(function (res) {
                 var customerList = res.body.body.customerList;
                 var data = new Array();
-                for (var i = 0; i < customerList.length; i++){
-                    var info = { "title": customerList[i].name, "value": customerList[i].id};
+                for (var i = 0; i < customerList.length; i++) {
+                    var info = {"title": customerList[i].name, "value": customerList[i].id};
                     data.push(info)
                 }
                 $("#cusName").select({
                     title: "选择客户",
                     items: data,
-                    onChange: function(result) {//选中触发事件
+                    onChange: function (result) {//选中触发事件
                         $("#custId").val(result.values);
                     }
                 });
             });
             /* 订单类型 */
-            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30',{}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
                     if (dictList[i].value == ${sobill.type}) {
@@ -346,41 +351,41 @@
                 }
                 var data = [];
                 for (var i = 0; i < dictList.length; i++) {
-                    var info = { "title": dictList[i].label, "value": dictList[i].value};
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
                     data.push(info);
                 }
-                
+
                 $("#typeSelect").select({
                     title: "选择类型",
                     items: data,
-                    onChange: function(result) {//选中触发事件
+                    onChange: function (result) {//选中触发事件
                         $("#type").val(result.values);
                     }
                 });
             });
         },
-        data:{
-            itemDetail:'商品明细',
-            save:'保存',
-            submit:'提交',
-            add:'选择商品',
-            del:'删除商品',
-            saveItems:'保存',
-            cancel:'取消',
-            icitemClassList:[]
+        data: {
+            itemDetail: '商品明细',
+            save: '保存',
+            submit: '提交',
+            add: '选择商品',
+            del: '删除商品',
+            saveItems: '保存',
+            cancel: '取消',
+            icitemClassList: []
         },
-        methods:{
-            close(){
+        methods: {
+            close() {
                 $("#searchBar").removeClass("weui-search-bar_focusing");
             },
-            open(){
+            open() {
                 $("#searchBar").addClass("weui-search-bar_focusing");
             },
-            empty(){
+            empty() {
                 $("#searchInput").val('');
             },
             /* 提交商品 */
-            submitItems(){
+            submitItems() {
                 var checkVals = [];
                 var addVals = [];
                 $("input[name='items']:checked").each(function () {
@@ -395,109 +400,109 @@
                     }
                 }
                 $.ajax({
-                    async:false,
-                    cache:false,
-                    url:'${ctxf}/wechat/icitem/findItemListByIds',
-                    data:{
-                        idsStr:addVals.toString()
+                    async: false,
+                    cache: false,
+                    url: '${ctxf}/wechat/icitem/findItemListByIds',
+                    data: {
+                        idsStr: addVals.toString()
                     },
                     dataType: 'json',
-                    success:function (res){
+                    success: function (res) {
                         var template = '';
                         var icitemList = res.body.icitemList;
                         for (var i = 0; i < icitemList.length; i++) {
-                            template += '<div id="'+icitemList[i].id+'Detail" class="weui-cells_checkbox">' +
-                                            '<div class="pro-cell">'+
-                                                '<div class="pro-list">'+
-                                                    '<div class="pro-item_left">'+
-                                                        '<span>商品编号：</span>  '+icitemList[i].number+
-                                                    '</div>'+
-                                                    '<label class="weui-check__label" for="'+icitemList[i].id+'Select">' +
-                                                        '<div class="weui-cell__hd">' +
-                                                            '<input id="'+icitemList[i].id+'Select" name="selectItems" type="checkbox" class="weui-check" value="'+icitemList[i].id+'"/>' +
-                                                            '<i class="weui-icon-checked"></i>' +
-                                                        '</div>' +
-                                                    '</label>'+
-                                                '</div>'+
-                                                '<div class="pro-list">'+
-                                                    '<div class="pro-item_left">'+
-                                                        '<span>商品名称：</span>  '+icitemList[i].name+
-                                                    '</div>'+
-                                                    '<div class="pro-item_right">'+
-                                                        '<span>单位：</span>  '+icitemList[i].unit+
-                                                    '</div>'+
-                                                '</div>'+
-                                                '<div class="pro-list">'+
-                                                    '<div class="pro-item_left">'+
-                                                        '<span>规格型号：</span>  '+icitemList[i].model+
-                                                    '</div>'+
-                                                    '<div class="pro-item_right">'+
-                                                        '<span>单价：</span>  '+
-                                                    '</div>'+
-                                                '</div>'+
-                                                '<div class="pro-list">'+
-                                                    '<div class="pro-item_left">'+
-                                                        '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\''+icitemList[i].id+'Qty\')" id="'+icitemList[i].id+'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>'+
-                                                    '</div>'+
-                                                    '<div class="pro-item_right">'+
-                                                        '<span>金额：</span>  <span class="total"></span>元'+
-                                                    '</div>'+
-                                                '</div>'+
-                                            '</div>'+
-                                        '</div>';
+                            template += '<div id="' + icitemList[i].id + 'Detail" class="weui-cells_checkbox">' +
+                                '<div class="pro-cell">' +
+                                '<div class="pro-list">' +
+                                '<div class="pro-item_left">' +
+                                '<span>商品编号：</span>  ' + icitemList[i].number +
+                                '</div>' +
+                                '<label class="weui-check__label" for="' + icitemList[i].id + 'Select">' +
+                                '<div class="weui-cell__hd">' +
+                                '<input id="' + icitemList[i].id + 'Select" name="selectItems" type="checkbox" class="weui-check" value="' + icitemList[i].id + '"/>' +
+                                '<i class="weui-icon-checked"></i>' +
+                                '</div>' +
+                                '</label>' +
+                                '</div>' +
+                                '<div class="pro-list">' +
+                                '<div class="pro-item_left">' +
+                                '<span>商品名称：</span>  ' + icitemList[i].name +
+                                '</div>' +
+                                '<div class="pro-item_right">' +
+                                '<span>单位：</span>  ' + icitemList[i].unit +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="pro-list">' +
+                                '<div class="pro-item_left">' +
+                                '<span>规格型号：</span>  ' + icitemList[i].model +
+                                '</div>' +
+                                '<div class="pro-item_right">' +
+                                '<span>单价：</span>  ' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="pro-list">' +
+                                '<div class="pro-item_left">' +
+                                '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\'' + icitemList[i].id + 'Qty\')" id="' + icitemList[i].id + 'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>' +
+                                '</div>' +
+                                '<div class="pro-item_right">' +
+                                '<span>金额：</span>  <span class="total"></span>元' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
                         }
                         $("#detail").append(template);
                     }
                 });
             },
             /* 选择分类 */
-            screenClass(classId,index){
-                $("li:not("+classId+")").children('div').removeClass('play');
-                $("#"+classId).children('div').addClass('play');
+            screenClass(classId, index) {
+                $("li:not(" + classId + ")").children('div').removeClass('play');
+                $("#" + classId).children('div').addClass('play');
                 $.ajax({
-                    async:false,
-                    cache:false,
+                    async: false,
+                    cache: false,
                     url: '${ctxf}/wechat/icitem/getItemsListByClassId',
-                    data:{
-                        classId:classId
+                    data: {
+                        classId: classId
                     },
-                    dataType:'json',
-                    success:function (res) {
+                    dataType: 'json',
+                    success: function (res) {
                         var icitemList = res.body.icitemList;
                         var template = '<div class="weui-cells weui-cells_checkbox">';
-                        $("#"+index).empty();
+                        $("#" + index).empty();
                         for (var i = 0; i < icitemList.length; i++) {
                             var check = false;
                             for (var j = 0; j < itemIds.length; j++) {
-                                if (itemIds[j] == icitemList[i].id){
+                                if (itemIds[j] == icitemList[i].id) {
                                     check = true;
                                 }
                             }
-                            template += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">' +
+                            template += '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '">' +
                                 '<div class="weui-cell__hd" style="float: left;">';
-                            if(check){
-                                template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" checked class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
+                            if (check) {
+                                template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" checked class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             } else {
-                                template += '<input id="'+icitemList[i].id+'" v-on:click="selectItems(\''+icitemList[i].id+'\');" type="checkbox" class="weui-check" name="items" value="'+icitemList[i].id+'"/>';
+                                template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             }
                             template += '<i class="weui-icon-checked"></i>' +
                                 '</div>' +
                                 '<div class="weui-cell__bd">' +
-                                '<p>编码:'+icitemList[i].number+'</p>'+
-                                '<p>名称:'+icitemList[i].name+'</p>'+
-                                '<p>单位:'+icitemList[i].unit+'</p>'+
-                                '<p>型号:'+icitemList[i].model+'</p>'+
-                                '<p>单价:</p>'+
+                                '<p>编码:' + icitemList[i].number + '</p>' +
+                                '<p>名称:' + icitemList[i].name + '</p>' +
+                                '<p>单位:' + icitemList[i].unit + '</p>' +
+                                '<p>型号:' + icitemList[i].model + '</p>' +
+                                '<p>单价:</p>' +
                                 '</div>' +
                                 '</label>';
                         }
                         template += '</div>';
-                        $("#"+index).append(template);
+                        $("#" + index).append(template);
                     }
                 });
             },
             /* 删除商品 */
-            delItems:function () {
+            delItems: function () {
                 var checkVals = [];
                 $("input[name='selectItems']:checked").each(function () {
                     checkVals.push($(this).val());
@@ -506,70 +511,68 @@
                     $.alert("请选择要删除的商品!");
                     return;
                 }
-                $.confirm("您确定要删除选中商品吗?","提醒",function () {
+                $.confirm("您确定要删除选中商品吗?", "提醒", function () {
                     /* 清理选择 */
                     cleanSelect();
                     var index;
                     for (var i = 0; i < checkVals.length; i++) {
                         index = retrieveArrayIndex(checkVals[i]);
                         if (index != -1) {
-                            itemIds.splice(index,1);
-                            $("#"+checkVals[i]+"Detail").remove();
+                            itemIds.splice(index, 1);
+                            $("#" + checkVals[i] + "Detail").remove();
                         }
                     }
-                },function () {
+                }, function () {
 
                 });
             },
             /* 选中商品 */
-            selectItems:function (){
+            selectItems: function () {
                 var index;
                 if (itemIds.indexOf(id) != -1) {
-                    if (!$("#"+id).prop("checked")) {
+                    if (!$("#" + id).prop("checked")) {
                         index = retrieveArrayIndex(id);
                         if (index != -1) {
-                            itemIds.splice(index,1);
+                            itemIds.splice(index, 1);
                         }
                     }
                 } else {
-                    if ($("#"+id).prop("checked")) {
+                    if ($("#" + id).prop("checked")) {
                         itemIds.push(id);
                     }
                 }
             },
             /* 保存订单 */
-            saveSob:function () {
-                $.confirm("您确定要保存订单吗?", function() {
+            saveSob: function () {
+                $.confirm("您确定要保存订单吗?", function () {
                     //点击确认后的回调函数
                     save(0);
-                }, function() {
+                }, function () {
                     //点击取消后的回调函数
                 });
             },
-            submitSob:function () {
-                $.confirm("您确定要提交订单吗?", function() {
+            submitSob: function () {
+                $.confirm("您确定要提交订单吗?", function () {
                     //点击确认后的回调函数
                     save(1);
-                }, function() {
+                }, function () {
                     //点击取消后的回调函数
                 });
             },
-            /* 打开日历 */
-            openCalendar:function () {
-                $("#needTime").calendar({
-                    dateFormat:"yyyy-mm-dd"
-                });
-            },
-            cancelItems:function(){
+            cancelItems: function () {
 
             }
         }
     });
 
+    $("#needTime").calendar({
+        dateFormat: "yyyy-mm-dd"
+    });
+
     /* 检索数组元素下标 */
     function retrieveArrayIndex(val) {
         for (var i = 0; i < itemIds.length; i++) {
-            if (itemIds[i] == val){
+            if (itemIds[i] == val) {
                 return i;
             }
         }
@@ -578,71 +581,78 @@
 
     /* 验证数量 */
     function verificationNum(id) {
-        var value = $("#"+id).val();
-        if (value <= 0){
+        var value = $("#" + id).val();
+        if (value <= 0) {
             $.alert("请输入合法数字!");
-            $("#"+id).val('');
+            $("#" + id).val('');
         }
     }
 
     /* 保存订单 type(0:保存草稿,1:提交) */
-    function save(type) {
+    function save(status) {
+        var id = $("#id").val();
+        var custId = $("#custId").val();
+        var needTime = $("#needTime").val();
+        var type = $("#type").val();
+        if (custId == null || custId == '') {
+            $.alert("请选择客户!");
+            return;
+        }
+        if (type == null || type == '') {
+            $.alert("请选择类型!");
+            return;
+        }
+        if (needTime == null || needTime == '') {
+            $.alert("请选择发货日期!");
+            return;
+        }
+        if (itemIds.length == 0) {
+            $.alert("请至少选择一个商品!");
+            return;
+        }
         var check = true;
         var json = '[';
         for (var i = 0; i < itemIds.length; i++) {
             if ($("#" + itemIds[i] + "Qty").val() == null || $("#" + itemIds[i] + "Qty").val() == '') {
                 check = false;
             }
-            json += '{"itemId":"'+itemIds[i]+'","auxqty":'+$("#"+itemIds[i]+"Qty").val()+"},";
+            json += '{"itemId":"' + itemIds[i] + '","auxqty":' + $("#" + itemIds[i] + "Qty").val() + "},";
         }
-        json = json.substring(0,json.length-1);
+        json = json.substring(0, json.length - 1);
         json += ']';
-        if (!check){
+        if (!check) {
             $.alert("请检查订单明细是否填写完整!");
             return
         }
-        var id = $("#id").val();
-        var custId = $("#custId").val();
-        var needTime = $("#needTime").val();
-        if (custId == null || custId == '') {
-            $.alert("请选择客户!");
-            return;
-        }
-        if (needTime == null || needTime == '') {
-            $.alert("请选择发货日期!");
-            return
-        }
-        if (itemIds.length == 0) {
-            $.alert("请至少选择一个商品!");
-            return;
-        }
+        $.showLoading("数据加载中");
         var data = {
-            "id":id,
-            "custId":custId,
-            "synStatus":0,
-            "status":type,
-            "cancellation":0,
-            "checkStatus":0,
-            "needTime":needTime,
-            "sobillentryList":json
+            "id": id,
+            "custId": custId,
+            "status": status,
+            "needTime": needTime,
+            "type": type,
+            "sobillentryList": json
         };
         $.ajax({
-            async:false,
-            cache:false,
-            type:'post',
-            url:'${ctxf}/wechat/sobill/saveSob',
+            async: false,
+            cache: false,
+            type: 'post',
+            url: '${ctxf}/wechat/sobill/saveSob',
             contentType: "application/json; charset=utf-8",
-            data:JSON.stringify(data),
-            processData : false,
-            dataType:'json',
-            success:function (res) {
+            data: JSON.stringify(data),
+            processData: false,
+            dataType: 'json',
+            success: function (res) {
                 if (res.success) {
-                    $.alert("保存成功!");
-                    setTimeout(function(){ window.location.href = '${ctxf}/wechat/sobill/list' }, 3000);
+                    setTimeout(function () {
+                        $.hideLoading();
+                        $.toast("操作成功!");
+                        window.location.href = '${ctxf}/wechat/sobill/list';
+                    }, 3000);
                 }
             },
-            error:function () {
-                $.alert("保存出错!");
+            error: function () {
+                $.toast("保存出错!");
             }
         });
     }
@@ -650,7 +660,7 @@
     /* 清理选择 */
     function cleanSelect() {
         for (var i = 0; i < itemIds.length; i++) {
-            $("#"+itemIds[i]).attr("checked",false);
+            $("#" + itemIds[i]).attr("checked", false);
         }
     }
 
