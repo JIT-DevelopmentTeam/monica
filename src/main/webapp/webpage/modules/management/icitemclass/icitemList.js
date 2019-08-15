@@ -29,11 +29,11 @@ $(document).ready(function () {
         //是否显示分页（*）
         pagination: true,
         //固定高度，达到固定表头
-        height: $(window).height() * 0.8,
+        height:$(window).height() * 0.8,
         //排序方式
         sortOrder: "asc",
         //初始化加载第一页，默认第一页
-        pageNumber: 1,
+        pageNumber:1,
         //每页的记录行数（*）
         pageSize: 10,
         //可供选择的每页的行数（*）
@@ -43,79 +43,60 @@ $(document).ready(function () {
         //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
         //queryParamsType:'',
         ////查询参数,每次调用是会带上这个参数，可自定义
-        queryParams: function (params) {
+        queryParams : function(params) {
             var searchParam = $("#searchForm").serializeJSON();
-            searchParam.pageNo = params.limit === undefined ? "1" : params.offset / params.limit + 1;
-            searchParam.pageSize = params.limit === undefined ? -1 : params.limit;
-            searchParam.orderBy = params.sort === undefined ? "" : params.sort + " " + params.order;
+            searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+            searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+            searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
             return searchParam;
         },
         //分页方式：client客户端分页，server服务端分页（*）
         sidePagination: "server",
-        contextMenuTrigger: "right",//pc端 按右键弹出菜单
-        contextMenuTriggerMobile: "press",//手机端 弹出菜单，click：单击， press：长按。
+        contextMenuTrigger:"right",//pc端 按右键弹出菜单
+        contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
         contextMenu: '#context-menu',
-        onContextMenuItem: function (row, $el) {
-            if ($el.data("item") == "edit") {
+        onContextMenuItem: function(row, $el){
+            if($el.data("item") == "edit"){
                 edit(row.id);
-            } else if ($el.data("item") == "view") {
+            }else if($el.data("item") == "view"){
                 view(row.id);
-            } else if ($el.data("item") == "delete") {
-                jp.confirm('确认要删除该商品资料记录吗？', function () {
+            } else if($el.data("item") == "delete"){
+                jp.confirm('确认要删除该商品资料记录吗？', function(){
                     jp.loading();
-                    jp.get("${ctx}/management/icitemclass/icitem/delete?id=" + row.id, function (data) {
-                        if (data.success) {
+                    jp.get("${ctx}/management/icitemclass/icitem/delete?id="+row.id, function(data){
+                        if(data.success){
                             $('#icitemTable').bootstrapTable('refresh');
                             jp.success(data.msg);
-                        } else {
+                        }else{
                             jp.error(data.msg);
                         }
                     })
 
                 });
 
-                }
-            },
-            // 选中
-            onCheck:function(row){
-                var ids = getIdSelections();
-                $("#ids").val(ids);
-            },
-            // 取消选中
-            onUncheck:function(row) {
-                var ids = getIdSelections();
-                $("#ids").val(ids);
-            },
-            // 全选
-            onCheckAll:function(rows){
-                var ids = getIdSelections();
-                $("#ids").val(ids);
-            },
-            // 取消全选
-            onUncheckAll:function(rows){
-                var ids = getIdSelections();
-                $("#ids").val(ids);
-            },
-            onClickRow: function(row, $el){
-            },
-            onShowSearch: function () {
-                $("#search-collapse").slideToggle();
-            },
-            columns: [{
-                checkbox: true
             }
         },
-        // 选中事件
-        onCheck: function (row) {
-            var ids = $("#ids").val();
-            if (ids == null || ids == '') {
-                $("#ids").val(row.id + ",");
-            } else {
-                ids += row.id + ",";
-                $("#ids").val(ids);
-            }
+        // 选中
+        onCheck:function(row){
+            var ids = getIdSelections();
+            $("#ids").val(ids);
         },
-        onClickRow: function (row, $el) {
+        // 取消选中
+        onUncheck:function(row) {
+            var ids = getIdSelections();
+            $("#ids").val(ids);
+        },
+        // 全选
+        onCheckAll:function(rows){
+            var ids = getIdSelections();
+            $("#ids").val(ids);
+        },
+        // 取消全选
+        onUncheckAll:function(rows){
+            var ids = getIdSelections();
+            $("#ids").val(ids);
+        },
+        onClickRow: function(row, $el){
         },
         onShowSearch: function () {
             $("#search-collapse").slideToggle();
@@ -124,12 +105,12 @@ $(document).ready(function () {
             checkbox: true
 
         }
-            , {
+            ,{
                 field: 'erpId',
                 title: 'erp端id',
                 sortable: true,
                 sortName: 'erpId'
-                , formatter: function (value, row, index) {
+                ,formatter:function(value, row , index){
                     value = jp.unescapeHTML(value);
                     <c:choose>
                         <c:when test="${fns:hasPermission('management:icitemclass:icitem:edit')}">
@@ -139,86 +120,97 @@ $(document).ready(function () {
                             return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
                         </c:when>
                         <c:otherwise>
-                        return value;
-                    </c:otherwise>
-                        </c:choose>
-                    }
-
+                            return value;
+                        </c:otherwise>
+                    </c:choose>
                 }
-                ,{
-                    field: '',
-                    title: '分类id',
-                    sortable: true,
-                    width:'15',
-                    sortName: ''
 
-                }
-                ,{
-                    field: 'number',
-                    title: '编号',
-                    sortable: true,
-                    sortName: 'number'
+            }
+            ,{
+                field: '',
+                title: '分类id',
+                sortable: true,
+                width:'15',
+                sortName: ''
 
-                }
-                ,{
-                    field: 'name',
-                    title: '商品名称',
-                    sortable: true,
-                    sortName: 'name'
+            }
+            ,{
+                field: 'number',
+                title: '编号',
+                sortable: true,
+                sortName: 'number'
 
-                }
-                ,{
-                    field: 'model',
-                    title: '商品型号',
-                    sortable: true,
-                    sortName: 'model'
+            }
+            ,{
+                field: 'name',
+                title: '商品名称',
+                sortable: true,
+                sortName: 'name'
 
-                }
-                ,{
-                    field: 'unit',
-                    title: '商品计算单位',
-                    sortable: true,
-                    sortName: 'unit'
+            }
+            ,{
+                field: 'model',
+                title: '商品型号',
+                sortable: true,
+                sortName: 'model'
 
-                }
-                ,{
-                    field: 'erpclassId',
-                    title: 'erp端分类id',
-                    sortable: true,
-                    sortName: 'erpclassId'
+            }
+            ,{
+                field: 'unit',
+                title: '商品计算单位',
+                sortable: true,
+                sortName: 'unit'
 
-                }
-                ,{
-                    field: 'modifyTime',
-                    title: '同步时间戳',
-                    sortable: true,
-                    sortName: 'modifyTime'
+            }
+            ,{
+                field: 'erpclassId',
+                title: 'erp端分类id',
+                sortable: true,
+                sortName: 'erpclassId'
 
-                }
-                ,{
-                    field: 'erpNote',
-                    title: 'erp备注',
-                    sortable: true,
-                    sortName: 'erpNote'
+            }
+            ,{
+                field: 'modifyTime',
+                title: '同步时间戳',
+                sortable: true,
+                sortName: 'modifyTime'
 
-                }
-                ,{
-                    field: 'status',
-                    title: '状态',
-                    sortable: true,
-                    sortName: 'status'
+            }
+            ,{
+                field: 'erpNote',
+                title: 'erp备注',
+                sortable: true,
+                sortName: 'erpNote'
 
-                }
-                ,{
-                    field: 'remarks',
-                    title: '备注信息',
-                    sortable: true,
-                    sortName: 'remarks'
+            }
+            ,{
+                field: 'status',
+                title: '状态',
+                sortable: true,
+                sortName: 'status'
 
+            }
+            ,{
+                field: 'remarks',
+                title: '备注信息',
+                sortable: true,
+                sortName: 'remarks'
+
+            }
+            ,{
+                field: '',
+                title: '操作',
+                sortable: true,
+                formatter:function(value, row, index) {
+                    return [
+                        '<div class="btn-group">',
+                            '<button id="picGroupDetail" type="button" class="btn btn-default" onclick="picGroupDetail(\''+row.iid+'\')"  singleSelected=true>图片详情</button>',
+                        '</div>'
+                    ].join('');
                 }
+
             }
         ]
-
 
     });
     /* $("#icitemTable").colResizable();*/
