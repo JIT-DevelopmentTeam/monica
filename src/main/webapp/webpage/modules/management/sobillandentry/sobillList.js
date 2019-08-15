@@ -238,8 +238,8 @@ $(document).ready(function() {
 
 	  $('#sobillTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
-            $('#view,#edit,#check,#cancelCheck,#synchronization').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
+            $('#remove,#check').prop('disabled', ! $('#sobillTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#sobillTable').bootstrapTable('getSelections').length!=1);
         });
 
 
@@ -402,19 +402,6 @@ $(document).ready(function() {
             });
         });
 	}
-
-function cancelCheckOrder(){
-    jp.confirm('您确定要反审核该订单吗？', function(){
-        jp.post("${ctx}/management/sobillandentry/sobill/cancelCheckOrder?id="+getIdSelections(),null, function(data){
-            if(data.success){
-                jp.success(data.msg);
-                refresh();
-            }else{
-                jp.error(data.msg);
-            }
-        });
-    });
-}
 
 // 订单明细列表
 function sobillentryList() {

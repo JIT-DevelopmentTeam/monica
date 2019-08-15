@@ -31,6 +31,7 @@
 		dept.name AS "deptName",
 		cus.f_name AS "cusName",
 		date_format(a.f_needtime, '%Y-%m-%d') AS "needTimeStr"
+		/*dict.label AS "typeName"*/
 	</sql>
 	
 	<sql id="sobillJoins">
@@ -39,6 +40,7 @@
 		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
 		LEFT JOIN tb_customer AS cus ON a.f_custid = cus.id
 		LEFT JOIN sys_user AS creater ON a.create_by = creater.id
+		/*LEFT JOIN sys_dict_value AS dict ON a.f_type = dict.id*/
 	</sql>
 	
     

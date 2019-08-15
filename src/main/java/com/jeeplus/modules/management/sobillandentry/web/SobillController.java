@@ -129,7 +129,7 @@ public class SobillController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions(value={"management:sobillandentry:sobill:add","management:sobillandentry:sobill:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save",produces = {"application/json;charset=UTF-8"})
-	public AjaxJson save(@RequestBody Object object, Model model) throws Exception{
+	public AjaxJson save(@RequestBody Object object) throws Exception{
 		AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){
@@ -370,28 +370,6 @@ public class SobillController extends BaseController {
 			sobillService.save(sobill);
 			aj.setSuccess(true);
 			aj.setMsg("审核成功!");
-		}
-		return aj;
-	}
-
-	/**
-	 * 反审核订单
-	 */
-	@RequestMapping(value = "cancelCheckOrder")
-	@ResponseBody
-	public AjaxJson cancelCheckOrder(String id,Sobill sobill){
-		AjaxJson aj = new AjaxJson();
-		sobill = sobillService.get(id);
-		if ("0".equals(sobill.getCheckStatus().toString())){
-			aj.setSuccess(false);
-			aj.setMsg("反审核失败(请检查该订单是否待审核)!");
-		} else {
-			sobill.setCheckerId(null);
-			sobill.setCheckStatus(0);
-			sobill.setCheckTime(null);
-			sobillService.save(sobill);
-			aj.setSuccess(true);
-			aj.setMsg("反审核成功!");
 		}
 		return aj;
 	}

@@ -74,6 +74,35 @@ $(document).ready(function () {
 
                 });
 
+                }
+            },
+            // 选中
+            onCheck:function(row){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 取消选中
+            onUncheck:function(row) {
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 全选
+            onCheckAll:function(rows){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            // 取消全选
+            onUncheckAll:function(rows){
+                var ids = getIdSelections();
+                $("#ids").val(ids);
+            },
+            onClickRow: function(row, $el){
+            },
+            onShowSearch: function () {
+                $("#search-collapse").slideToggle();
+            },
+            columns: [{
+                checkbox: true
             }
         },
         // 选中事件
@@ -110,92 +139,82 @@ $(document).ready(function () {
                             return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
                         </c:when>
                         <c:otherwise>
-                            return value;
-                        </c:otherwise>
-                    </c:choose>
+                        return value;
+                    </c:otherwise>
+                        </c:choose>
+                    }
+
                 }
+                ,{
+                    field: '',
+                    title: '分类id',
+                    sortable: true,
+                    width:'15',
+                    sortName: ''
 
-            }
-            , {
-                field: '',
-                title: '分类id',
-                sortable: true,
-                width: '15',
-                sortName: ''
+                }
+                ,{
+                    field: 'number',
+                    title: '编号',
+                    sortable: true,
+                    sortName: 'number'
 
-            }
-            , {
-                field: 'number',
-                title: '编号',
-                sortable: true,
-                sortName: 'number'
+                }
+                ,{
+                    field: 'name',
+                    title: '商品名称',
+                    sortable: true,
+                    sortName: 'name'
 
-            }
-            , {
-                field: 'name',
-                title: '商品名称',
-                sortable: true,
-                sortName: 'name'
+                }
+                ,{
+                    field: 'model',
+                    title: '商品型号',
+                    sortable: true,
+                    sortName: 'model'
 
-            }
-            , {
-                field: 'model',
-                title: '商品型号',
-                sortable: true,
-                sortName: 'model'
+                }
+                ,{
+                    field: 'unit',
+                    title: '商品计算单位',
+                    sortable: true,
+                    sortName: 'unit'
 
-            }
-            , {
-                field: 'unit',
-                title: '商品计算单位',
-                sortable: true,
-                sortName: 'unit'
+                }
+                ,{
+                    field: 'erpclassId',
+                    title: 'erp端分类id',
+                    sortable: true,
+                    sortName: 'erpclassId'
 
-            }
-            , {
-                field: 'erpclassId',
-                title: 'erp端分类id',
-                sortable: true,
-                sortName: 'erpclassId'
+                }
+                ,{
+                    field: 'modifyTime',
+                    title: '同步时间戳',
+                    sortable: true,
+                    sortName: 'modifyTime'
 
-            }
-            , {
-                field: 'modifyTime',
-                title: '同步时间戳',
-                sortable: true,
-                sortName: 'modifyTime'
+                }
+                ,{
+                    field: 'erpNote',
+                    title: 'erp备注',
+                    sortable: true,
+                    sortName: 'erpNote'
 
-            }
-            , {
-                field: 'erpNote',
-                title: 'erp备注',
-                sortable: true,
-                sortName: 'erpNote'
+                }
+                ,{
+                    field: 'status',
+                    title: '状态',
+                    sortable: true,
+                    sortName: 'status'
 
-            }
-            , {
-                field: 'status',
-                title: '状态',
-                sortable: true,
-                sortName: 'status'
+                }
+                ,{
+                    field: 'remarks',
+                    title: '备注信息',
+                    sortable: true,
+                    sortName: 'remarks'
 
-            }
-            , {
-                field: 'remarks',
-                title: '备注信息',
-                sortable: true,
-                sortName: 'remarks'
-
-            }, {
-                field: 'Button',
-                title: '操作',
-                // event: operateEvents,
-                formatter: function(value, row, index) {
-                    return [
-                        '<div class="btn-group">',
-                        '<button id=picGroupDetail" type="button" class="btn btn-default" onclick="picGroupDetail(\'' + row.id + '\')" singleSelected=true>图片详情</button>',
-                        '</div>'
-                    ].join('');
                 }
             }
         ]

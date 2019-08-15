@@ -201,10 +201,7 @@ public class SobillWechatController extends BaseController {
                 sobill.setCustId(jsonObject.getString("custId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
                 sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
-                sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
-                sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
-                sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));

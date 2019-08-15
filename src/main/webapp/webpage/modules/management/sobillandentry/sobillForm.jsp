@@ -268,7 +268,7 @@
 
 		   		<tr>
 					<td class="width-15 active"><label class="pull-right">备注：</label></td>
-					<td class="width-35">
+					<td class="width-35" colspan="3">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
 				</tr>
