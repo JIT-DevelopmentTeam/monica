@@ -374,28 +374,6 @@ public class SobillController extends BaseController {
 		return aj;
 	}
 
-	/**
-	 * 反审核订单
-	 */
-	@RequestMapping(value = "cancelCheckOrder")
-	@ResponseBody
-	public AjaxJson cancelCheckOrder(String id,Sobill sobill){
-		AjaxJson aj = new AjaxJson();
-		sobill = sobillService.get(id);
-		if ("0".equals(sobill.getCheckStatus().toString())){
-			aj.setSuccess(false);
-			aj.setMsg("反审核失败(请检查该订单是否待审核)!");
-		} else {
-			sobill.setCheckerId(null);
-			sobill.setCheckStatus(0);
-			sobill.setCheckTime(null);
-			sobillService.save(sobill);
-			aj.setSuccess(true);
-			aj.setMsg("反审核成功!");
-		}
-		return aj;
-	}
-
     /**
      * 订单明细列表
      * @param sobillentry

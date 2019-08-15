@@ -21,15 +21,17 @@
 <body>
 <div id="page" class="page">
     <div style="background: white;position: fixed;top: 0px;z-index: 10000;width: 100%;height: 5%;background: #f6f6f6;">
-        <div style="float: left; width: 80%;">
-            <input type="text" v-on:click="openStartCalendar" id="startTime" readonly class="weui-input"
-                   placeholder="请选择开始时间" style="text-align: center;width:45%;"/>
+        <div style="float: left; width: 90%;">
+            <input type="text" id="startTime" readonly class="weui-input"
+                   placeholder="请选择开始时间" style="text-align: center;width:47%;"/>
             至
-            <input type="text" v-on:click="openEndCalendar" id="endTime" readonly class="weui-input"
+            <input type="text" id="endTime" readonly class="weui-input"
                    placeholder="请选择结束时间" style="text-align: center;width:45%;"/>
         </div>
-        <div style="float: right;width: 20%;">
-            <a v-on:click="filterDate" class="weui-btn weui-btn_mini weui-btn_primary">搜索</a>
+        <div style="float: right;width: 10%;">
+            <a v-on:click="filterDate">
+                <img src="${ctxStatic}/image/wechat/icon-search_gray.png">
+            </a>
         </div>
     </div>
     <div class="page__bd" style="height: 100%;">
@@ -147,27 +149,21 @@
     <div class="weui-tabbar" style="position:fixed;bottom: 0px;">
         <a v-bind:href="addHref" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/icon-add.png" alt="">
+                <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
             </div>
             <p class="weui-tabbar__label">{{add}}</p>
         </a>
         <a v-on:click="editHref" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/icon-edit2_blue.png" alt="">
+                <img src="${ctxStatic}/image/wechat/edit.jpg" alt="">
             </div>
             <p class="weui-tabbar__label">{{edit}}</p>
         </a>
         <a v-on:click="delectById" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/icon-delete.png" alt="">
+                <img src="${ctxStatic}/image/wechat/delect.jpg" alt="">
             </div>
             <p class="weui-tabbar__label">{{del}}</p>
-        </a>
-        <a v-on:click="checkSobill" class="weui-tabbar__item">
-            <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/icon-search.png" alt="">
-            </div>
-            <p class="weui-tabbar__label">{{check}}</p>
         </a>
     </div>
 </div>
@@ -214,7 +210,6 @@
             addHref: '${ctxf}/wechat/sobill/goAdd',
             edit: '编辑',
             del: '删除',
-            check: '审核',
             toAuditList: [],
             historyList: []
         },
@@ -303,62 +298,6 @@
                     });
                 }, function () {
                     //点击取消后的回调函数
-                });
-            },
-            /* 审核订单 */
-            checkSobill: function () {
-                var historyIds = [];
-                $("input[name='history']:checked").each(function () {
-                    historyIds.push($(this).val());
-                });
-                var toAuditIds = [];
-                $("input[name='toAudit']:checked").each(function () {
-                    toAuditIds.push($(this).val());
-                });
-                if (toAuditIds.length == 0 && historyIds.length == 0) {
-                    $.alert("请至少选择一条数据!");
-                    return;
-                }
-                var idsStr = '';
-                if (toAuditIds.length > 0) {
-                    idsStr = toAuditIds.toString();
-                } else if (historyIds.length > 0) {
-                    idsStr = historyIds.toString();
-                }
-                $.confirm("您确定要审核选中订单吗?", function () {
-                    //点击确认后的回调函数
-                    $.ajax({
-                        async: false,
-                        cache: false,
-                        url: '${ctxf}/wechat/sobill/checkSobillByIds',
-                        type: 'post',
-                        data: {
-                            idsStr: idsStr
-                        },
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.success) {
-                                $.alert(res.msg);
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 3000);
-                            } else {
-                                $.alert(res.msg);
-                            }
-                        }
-                    });
-                }, function () {
-                    //点击取消后的回调函数
-                });
-            },
-            openStartCalendar: function () {
-                $("#startTime").calendar({
-                    dateFormat: "yyyy-mm-dd"
-                });
-            },
-            openEndCalendar: function () {
-                $("#endTime").calendar({
-                    dateFormat: "yyyy-mm-dd"
                 });
             },
             filterDate: function () {
@@ -456,6 +395,14 @@
     var endToAuditPage = 10;
     var startHistoryPage = 0;
     var endHistoryPage = 10;
+
+    $("#startTime").calendar({
+        dateFormat: "yyyy-mm-dd"
+    });
+
+    $("#endTime").calendar({
+        dateFormat: "yyyy-mm-dd"
+    });
 
     // 加载数据
     function loadDatas(Id) {

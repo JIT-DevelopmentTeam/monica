@@ -31,7 +31,6 @@
 		dept.name AS "deptName",
 		cus.f_name AS "cusName",
 		date_format(a.f_needtime, '%Y-%m-%d') AS "needTimeStr"
-		cus.f_name AS "cusName"
 		/*dict.label AS "typeName"*/
 	</sql>
 	
