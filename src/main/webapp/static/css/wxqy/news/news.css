@@ -77,6 +77,9 @@ img {
     width: 111.67px;
     height: 81.03px;
 }
+a:link {
+    color: #222;
+}
 a:visited {
     color: #222;
 }
@@ -107,6 +110,9 @@ strong {
     display: block;
     width: 32.56%;
     margin-left: .08rem;
+}
+.mo-lk:link {
+    color: #277de2;
 }
 .mo-lk:visited {
     color: #277de2;

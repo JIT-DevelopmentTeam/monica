@@ -73,6 +73,9 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
 			and a.f_ispublic = 1
+			<if test="headline != null">
+				and a.f_headline = #{headline}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
