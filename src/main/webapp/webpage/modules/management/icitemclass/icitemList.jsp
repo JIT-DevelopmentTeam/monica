@@ -9,8 +9,7 @@
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
 	<%@include file="/webpage/include/treeview.jsp" %>
 	<%@include file="icitemClassTreeList.js" %>
-	<%@include file="icitemList.js" %>
-	
+    <%@include file="icitemList.js" %>
 </head>
 <body>
 	<div class="wrapper wrapper-content">
@@ -111,7 +110,10 @@
                     </button>
                 </shiro:hasPermission>
                 <button  class="btn btn-default btn-sm"  onclick="synIcitem()">
-                    <i class="glyphicon glyphicon-refresh">同步物料</i>
+                    <i class="glyphicon glyphicon-refresh" aria-hidden="true"> 同步物料</i>
+                </button>
+                <button id="uploadItemId"  class="btn btn-default btn-sm"  onclick="icItemUpload()">
+                    <i class="fa fa-picture-o" aria-hidden="true"></i>  上传商品图片</i>
                 </button>
             </c:if>
 		    </div>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.messagesend.mapper.MessagesendMapper">
+    
+	<sql id="messagesendColumns">
+		a.id AS "id",
+		a.f_fromuserid AS "fromuserId",
+		a.f_touserid AS "touserId",
+		a.f_sendtime AS "sendTime",
+		a.f_isread AS "isRead",
+		a.f_readtime AS "readTime",
+		a.f_sendtextid AS "sendTextId",
+		a.f_title AS "title",
+		a.f_describe AS "describe",
+		a.f_issend AS "isSend",
+		a.f_issendtowx AS "isSendToWX",
+		a.f_sendtimewx AS "sendTimeWX",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="messagesendJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="Messagesend" >
+		SELECT 
+			<include refid="messagesendColumns"/>
+		FROM tb_messagesend a
+		<include refid="messagesendJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Messagesend" >
+		SELECT 
+			<include refid="messagesendColumns"/>
+		FROM tb_messagesend a
+		<include refid="messagesendJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="fromuserId != null and fromuserId != ''">
+				AND a.f_fromuserid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{fromuserId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{fromuserId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{fromuserId},'%')</if>
+			</if>
+			<if test="touserId != null and touserId != ''">
+				AND a.f_touserid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{touserId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{touserId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{touserId},'%')</if>
+			</if>
+			<if test="sendTime != null and sendTime != ''">
+				AND a.f_sendtime = #{sendTime}
+			</if>
+			<if test="isRead != null and isRead != ''">
+				AND a.f_isread = #{isRead}
+			</if>
+			<if test="title != null and title != ''">
+				AND a.f_title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Messagesend" >
+		SELECT 
+			<include refid="messagesendColumns"/>
+		FROM tb_messagesend a
+		<include refid="messagesendJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_messagesend(
+			id,
+			f_fromuserid,
+			f_touserid,
+			f_sendtime,
+			f_isread,
+			f_readtime,
+			f_sendtextid,
+			f_title,
+			f_describe,
+			f_issend,
+			f_issendtowx,
+			f_sendtimewx,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{fromuserId},
+			#{touserId},
+			#{sendTime},
+			#{isRead},
+			#{readTime},
+			#{sendTextId},
+			#{title},
+			#{describe},
+			#{isSend},
+			#{isSendToWX},
+			#{sendTimeWX},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_messagesend SET 	
+			f_fromuserid = #{fromuserId},
+			f_touserid = #{touserId},
+			f_sendtime = #{sendTime},
+			f_isread = #{isRead},
+			f_readtime = #{readTime},
+			f_sendtextid = #{sendTextId},
+			f_title = #{title},
+			f_describe = #{describe},
+			f_issend = #{isSend},
+			f_issendtowx = #{isSendToWX},
+			f_sendtimewx = #{sendTimeWX},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_messagesend
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_messagesend SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Messagesend" statementType="STATEMENT">
+		select * FROM tb_messagesend  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
