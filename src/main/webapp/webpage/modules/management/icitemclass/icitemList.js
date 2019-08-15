@@ -204,7 +204,7 @@ $(document).ready(function () {
                 formatter:function(value, row, index) {
                     return [
                         '<div class="btn-group">',
-                            '<button id="picGroupDetail" type="button" class="btn btn-default" onclick="picGroupDetail(\''+row.iid+'\')"  singleSelected=true>图片详情</button>',
+                            '<button id="picGroupDetail" type="button" class="btn btn-default" onclick="picGroupDetail(\''+row.id+'\')"  singleSelected=true>图片详情</button>',
                         '</div>'
                     ].join('');
                 }
