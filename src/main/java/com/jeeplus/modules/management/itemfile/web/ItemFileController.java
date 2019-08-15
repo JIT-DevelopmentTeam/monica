@@ -207,19 +207,6 @@ public class ItemFileController extends BaseController {
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(ItemFile itemFile) {
 		AjaxJson j = new AjaxJson();
-		String path=Global.getClasspath();
-		if(itemFile.getUrl()!=null && !"".equals(itemFile.getUrl())){
-            File file=new File(path+itemFile.getUrl());
-		    if(file.exists()){
-		        file.delete();
-            }
-        }
-        if(itemFile.getSmallUrl()!=null && !"".equals(itemFile.getSmallUrl())){
-            File filea=new File(path+itemFile.getSmallUrl());
-            if(filea.exists()){
-                filea.delete();
-            }
-        }
 		itemFileService.delete(itemFile);
 		j.setMsg("删除上传商品图片成功");
 		return j;
@@ -234,8 +221,22 @@ public class ItemFileController extends BaseController {
 	public AjaxJson deleteAll(String ids) {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
+		String path=Global.getClasspath();
 		for(String id : idArray){
-			itemFileService.delete(itemFileService.get(id));
+			ItemFile itemFile=itemFileService.get(id);
+			if(itemFile.getUrl()!=null && !"".equals(itemFile.getUrl())){
+				File file=new File(path+itemFile.getUrl());
+				if(file.exists()){
+					file.delete();
+				}
+			}
+			if(itemFile.getSmallUrl()!=null && !"".equals(itemFile.getSmallUrl())){
+				File filea=new File(path+itemFile.getSmallUrl());
+				if(filea.exists()){
+					filea.delete();
+				}
+			}
+			itemFileService.delete(itemFile);
 		}
 		j.setMsg("删除上传商品图片成功");
 		return j;
