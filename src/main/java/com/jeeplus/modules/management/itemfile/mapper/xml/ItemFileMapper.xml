@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.itemfile.mapper.ItemFileMapper">
+    
+	<sql id="itemFileColumns">
+		a.id AS "id",
+		a.f_originalname AS "originalName",
+		a.f_name AS "name",
+		a.f_size AS "size",
+		a.f_type AS "type",
+		a.f_isdown AS "isDown",
+		a.f_url AS "url",
+		a.f_smallurl AS "smallUrl",
+		a.f_server AS "server",
+		a.f_itemid AS "itemId",
+		a.f_downcount AS "downCount",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		item.`f_name` AS "icitem.name"
+	</sql>
+	
+	<sql id="itemFileJoins">
+		INNER JOIN tb_icitem item  ON a.`f_itemid` = item.`id`
+	</sql>
+	
+    
+	<select id="get" resultType="ItemFile" >
+		SELECT 
+			<include refid="itemFileColumns"/>
+		FROM tb_itemfile a
+		<include refid="itemFileJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ItemFile" >
+		SELECT 
+			<include refid="itemFileColumns"/>
+		FROM tb_itemfile a
+		<include refid="itemFileJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="originalName != null and originalName != ''">
+				AND a.f_originalname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{originalName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{originalName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{originalName},'%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.f_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="itemId != null and itemId != ''">
+				AND a.f_itemid LIKE 
+					<if test="dbName == 'oracle'">'%'||#{itemId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{itemId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{itemId},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ItemFile" >
+		SELECT 
+			<include refid="itemFileColumns"/>
+		FROM tb_itemfile a
+		<include refid="itemFileJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_itemfile(
+			id,
+			f_originalname,
+			f_name,
+			f_size,
+			f_type,
+			f_isdown,
+			f_url,
+			f_smallurl,
+			f_server,
+			f_itemid,
+			f_downcount,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{originalName},
+			#{name},
+			#{size},
+			#{type},
+			#{isDown},
+			#{url},
+			#{smallUrl},
+			#{server},
+			#{itemId},
+			#{downCount},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_itemfile SET 	
+			f_originalname = #{originalName},
+			f_name = #{name},
+			f_size = #{size},
+			f_type = #{type},
+			f_isdown = #{isDown},
+			f_url = #{url},
+			f_smallurl = #{smallUrl},
+			f_server = #{server},
+			f_itemid = #{itemId},
+			f_downcount = #{downCount},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_itemfile
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_itemfile SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!--下载-->
+	<update id="updateDonwload">
+		UPDATE tb_itemfile SET
+			f_downcount = #{downCount}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ItemFile" statementType="STATEMENT">
+		select * FROM tb_itemfile  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
