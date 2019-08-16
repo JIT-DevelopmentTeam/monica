@@ -15,7 +15,7 @@
 <body>
     <div class="weui-tab" id="page">
         <!-- 搜索栏 -->
-        <div class="weui-search-bar" id="searchBar">
+        <div class="weui-search-bar" id="searchBar" style="position: fixed;top: 0px;z-index: 10000;">
             <div class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <div class="weui-tabbar">
+        <div class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 10000;">
             <a id="myReviewTabbar" v-on:click="switchContent('myReview')" class="weui-tabbar__item weui-bar__item--on">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/icon-search.png" alt="">
