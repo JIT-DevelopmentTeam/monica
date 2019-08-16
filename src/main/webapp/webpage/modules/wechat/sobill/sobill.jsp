@@ -63,7 +63,7 @@
                                             <div class="order-list_item"><span>编号：</span> {{toAudit.billNo}}</div>
                                         </div>
                                         <div class="order-list">
-                                            <div class="order-list_item"><span>跟单：</span> {{toAudit.empName}}</div>
+                                            <div class="order-list_item"><span>跟单：</span> </div>
                                             <div class="order-list_item"><span>日期：</span> {{toAudit.needTimeStr}}</div>
                                         </div>
                                         <div class="order-list">

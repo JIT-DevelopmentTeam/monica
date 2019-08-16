@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "${adminPath}/wechat/main")
+@RequestMapping(value = "${frontPath}/wechat/main")
 public class MainController extends BaseController {
 
     /**

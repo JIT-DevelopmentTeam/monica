@@ -29,12 +29,18 @@
 				</form:select>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="流程节点用户：">流程节点用户：</label>
-                 <form:input path="approvalEmplId.name" htmlEscape="false"  class=" form-control"/>
+				<label class="label-item single-overflow pull-left" title="流程节点用户id：">流程节点用户id：</label>
+				<sys:userselect id="approvalEmplId" name="approvalEmplId" value="${orderApprove.approvalEmplId}" labelName="" labelValue="${orderApprove.}"
+							    cssClass="form-control required"/>
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="节点名称：">节点名称：</label>
 				<form:input path="name" htmlEscape="false" maxlength="100"  class=" form-control"/>
+			</div>
+			 <div class="col-xs-12 col-sm-6 col-md-4">
+				<label class="label-item single-overflow pull-left" title="订单id：">订单id：</label>
+				<sys:gridselect url="${ctx}/management/sobillandentry/sobill/data" id="sobillId" name="sobillId" value="${orderApprove.sobillId}" labelName="" labelValue="${orderApprove.}"
+					title="选择订单id" cssClass="form-control required" fieldLabels="" fieldKeys="" searchLabels="" searchKeys="" ></sys:gridselect>
 			</div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">

@@ -10,7 +10,7 @@ import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 /**
  * 订单流程绑定MAPPER接口
  * @author KicoChan
- * @version 2019-08-14
+ * @version 2019-08-15
  */
 @MyBatisMapper
 public interface OrderApproveMapper extends BaseMapper<OrderApprove> {
