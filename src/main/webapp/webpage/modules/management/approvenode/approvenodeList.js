@@ -132,7 +132,11 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'status',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-");
+		        	if (value == '1') {
+						return '<label style="color: green;">' + jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-") + '</label>';
+					} else {
+						return '<label style="color: red;">' + jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-") + '</label>';
+					}
 		        }
 		       
 		    }
