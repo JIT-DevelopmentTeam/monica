@@ -142,6 +142,20 @@ public class NewsController extends BaseController {
     }
 
     /**
+     * 查看新闻图片封面跳转页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "picMainpic")
+    public ModelAndView newsMainpic(News news) {
+        String path = Global.getClasspath()+news.getMainpic();
+        ModelAndView view = new ModelAndView();
+        view.addObject("news",news);
+        view.setViewName("modules/management/news/newsMainpic");
+        return view;
+    }
+
+    /**
      * 新闻图片封面上传跳转页面
      *
      * @return

@@ -325,7 +325,7 @@ $(document).ready(function() {
 
     //绑定点击事件
     window.operateEvents = { 'click .picMainpic': function (e, value, row, index) {
-        picMainpic(row.mainpic);
+        picMainpic(row.id);
     }
     };
         function operateFormatter(value, row, index) {
@@ -400,7 +400,7 @@ function formatTableUnit(value, row, index) {
      jp.openViewDialog('查看新闻公告', "${ctx}/management/news/news/form?id=" + id, '1050px', '850px');
  }
  function picMainpic(mainpic) {
-     jp.openViewDialog('查看新闻公告', "${pageContext.request.contextPath}"+mainpic, '500px', '500px');
+     jp.openViewDialog('查看新闻公告封面',"${ctx}/management/news/news/picMainpic?id="+mainpic, '500px', '500px');
  }
 
 
