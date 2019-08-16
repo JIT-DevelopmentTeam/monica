@@ -11,19 +11,23 @@
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
 		a.f_type AS "type",
-		a.f_approval_emplid AS "approvalEmplId",
+		a.f_approval_emplid AS "approvalEmplId.id",
 		a.f_index AS "index",
 		a.f_name AS "name",
 		a.f_status AS "status",
 		a.f_date AS "date",
 		a.f_remark AS "remark",
 		a.f_istoapp AS "isToapp",
-		a.f_islast AS "isLast"
+		a.f_islast AS "isLast",
+		a.f_sobillid AS "sobillId.id",
+	    date_format(a.create_date, '%Y-%m-%d %H:%m:%s') AS "createDateStr"
 	</sql>
 	
 	<sql id="orderApproveJoins">
 		
 		LEFT JOIN sys_user approvalEmplId ON approvalEmplId.id = a.f_approval_emplid
+		INNER JOIN ic_sobill sobillId ON sobillId.id = a.f_sobillid
+		LEFT JOIN tb_customer cus ON cus.id = sobillId.f_custid
 	</sql>
 	
     
@@ -43,14 +47,8 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="type != null and type != ''">
+			<if test="type != null">
 				AND a.f_type = #{type}
-			</if>
-			<if test="approvalEmplId != null and approvalEmplId != ''">
-				AND a.f_approval_emplid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{approvalEmplId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{approvalEmplId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{approvalEmplId},'%')</if>
 			</if>
 			<if test="name != null and name != ''">
 				AND a.f_name LIKE 
@@ -58,6 +56,26 @@
 					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
+            /* 待处理数据 */
+            <if test="unprocessed != null">
+                AND a.f_status = 0 AND a.f_istoapp = 1
+            </if>
+
+            /* 已处理数据 */
+            <if test="processed != null">
+                AND a.f_status IN (1,2)  AND a.f_istoapp = 0
+            </if>
+
+            <if test="approvalEmplId.id != null and approvalEmplId.id != ''">
+                AND a.f_approval_emplid = #{approvalEmplId.id}
+            </if>
+
+            <if test="cusName != null and cusName != ''">
+                AND cus.f_name LIKE
+                    <if test="dbName == 'oracle'">'%'||#{cusName}||'%'</if>
+                    <if test="dbName == 'mssql'">'%'+#{cusName}+'%'</if>
+                    <if test="dbName == 'mysql'">concat('%',#{cusName},'%')</if>
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -67,6 +85,9 @@
 				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
+        <if test="startPage != null and endPage != null">
+            LIMIT #{startPage},#{endPage}
+        </if>
 	</select>
 	
 	<select id="findAllList" resultType="OrderApprove" >
@@ -105,7 +126,8 @@
 			f_date,
 			f_remark,
 			f_istoapp,
-			f_islast
+			f_islast,
+			f_sobillid
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -122,7 +144,8 @@
 			#{date},
 			#{remark},
 			#{isToapp},
-			#{isLast}
+			#{isLast},
+			#{sobillId}
 		)
 	</insert>
 	
@@ -139,7 +162,8 @@
 			f_date = #{date},
 			f_remark = #{remark},
 			f_istoapp = #{isToapp},
-			f_islast = #{isLast}
+			f_islast = #{isLast},
+			f_sobillid = #{sobillId}
 		WHERE id = #{id}
 	</update>
 	

@@ -123,11 +123,11 @@
 				</button>
 			</shiro:hasPermission>
 
-            <shiro:hasPermission name="management:sobillandentry:sobill:check">
+            <%--<shiro:hasPermission name="management:sobillandentry:sobill:check">
                 <button id="check" class="btn btn-primary" onclick="checkOrder()">
                     <i class="glyphicon glyphicon-search"></i> 审核
                 </button>
-            </shiro:hasPermission>
+            </shiro:hasPermission>--%>
 
 			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
 				<button id="synchronization" class="btn btn-success" onclick="">

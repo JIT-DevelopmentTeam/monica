@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 
+import java.util.List;
+
 /**
  * 订单模块MAPPER接口
  * @author KicoChan
@@ -14,5 +16,12 @@ import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
  */
 @MyBatisMapper
 public interface SobillMapper extends BaseMapper<Sobill> {
+
+    /**
+     * 获取已提交审核订单数据
+     * @param sobill
+     * @return
+     */
+    List<Sobill> findSubmittedList(Sobill sobill);
 
 }

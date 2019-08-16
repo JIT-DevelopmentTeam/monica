@@ -180,6 +180,13 @@ $(document).ready(function() {
 		        }
 		       
 		    }
+			,{
+		        field: '',
+		        title: '订单id',
+		        sortable: true,
+		        sortName: ''
+		       
+		    }
 		     ]
 		
 		});

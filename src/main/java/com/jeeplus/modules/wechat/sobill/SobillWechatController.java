@@ -243,4 +243,16 @@ public class SobillWechatController extends BaseController {
         return aj;
     }
 
+    @RequestMapping(value = "submittedList")
+    @ResponseBody
+    public AjaxJson submittedList(Sobill sobill){
+        AjaxJson aj = new AjaxJson();
+        sobill.setDelFlag("0");
+        /* TODO 后续获取微信登录用户 */
+        sobill.setCreateBy(UserUtils.getUser());
+        List<Sobill> submittedList = sobillService.findSubmittedList(sobill);
+        aj.put("submittedList",submittedList);
+        return aj;
+    }
+
 }

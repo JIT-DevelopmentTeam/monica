@@ -48,6 +48,10 @@ public class Sobill extends DataEntity<Sobill> {
     private String needTimeStr;     // 发货日期字符串
     private String startTime;   // 开始时间
     private String endTime;     // 结束时间
+    private Integer approveType;    // 流程类型
+    private Integer approveStatus;  // 审批节点最高状态
+    private Integer isLast;     // 是否为最高审批人
+    private String initiateDateStr;     // 发起时间
 
 	public Sobill() {
 		super();
@@ -301,5 +305,37 @@ public class Sobill extends DataEntity<Sobill> {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public Integer getApproveStatus() {
+        return approveStatus;
+    }
+
+    public void setApproveStatus(Integer approveStatus) {
+        this.approveStatus = approveStatus;
+    }
+
+    public Integer getIsLast() {
+        return isLast;
+    }
+
+    public void setIsLast(Integer isLast) {
+        this.isLast = isLast;
+    }
+
+    public Integer getApproveType() {
+        return approveType;
+    }
+
+    public void setApproveType(Integer approveType) {
+        this.approveType = approveType;
+    }
+
+    public String getInitiateDateStr() {
+        return initiateDateStr;
+    }
+
+    public void setInitiateDateStr(String initiateDateStr) {
+        this.initiateDateStr = initiateDateStr;
     }
 }
