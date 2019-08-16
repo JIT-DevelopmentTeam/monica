@@ -198,9 +198,10 @@ $(document).ready(function () {
 
             }
             ,{
-                field: '',
+                field: 'remarks',
                 title: '操作',
-                sortable: true,
+                sortable: false,
+                sortName: 'remarks',
                 formatter:function(value, row, index) {
                     return [
                         '<div class="btn-group">',
