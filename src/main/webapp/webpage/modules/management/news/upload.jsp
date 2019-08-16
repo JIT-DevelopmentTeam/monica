@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-    <title>个人信息</title>
+    <title>新闻封面上传</title>
     <meta name="decorator" content="ani"/>
     <link rel="stylesheet" type="text/css" href="${ctxStatic}/plugin/webuploader-0.1.5/webuploader.css">
     <link rel="stylesheet" type="text/css" href="${ctxStatic}/plugin/webuploader-0.1.5/demo.css">

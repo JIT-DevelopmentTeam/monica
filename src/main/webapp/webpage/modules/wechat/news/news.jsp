@@ -8,33 +8,91 @@
     <meta charset="UTF-8">
     <title>新闻公告</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.css">
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/news/news.css">
     <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
     <script src="${ctxStatic}/js/jquery-weui.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
 
-    <style type="text/css">
-        .weui-media-box {
-            padding: 0px 20px;
-            position: relative;
-        }
-        .weui-panel:before {
-            content: " ";
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            height: 1px;
-            border-top: 0px solid #E5E5E5;
-            color: #E5E5E5;
-            -webkit-transform-origin: 0 0;
-            transform-origin: 0 0;
-            -webkit-transform: scaleY(0.5);
-            transform: scaleY(0.5);
-        }
-    </style>
 </head>
 <body>
-<div class="page">
+
+<div class="header">
+    <div>
+        <img src="${ctxStatic}/common/images/flat.png" class="icon">
+        <span>手机新闻</span>
+    </div>
+</div>
+
+<div class="interval"></div>
+
+<div class="body">
+    <div class="headlines">
+        <div class="label">
+            <span>头条</span>
+        </div>
+        <div v-for="(item, index) in headlinesItems" v-if="index < 5">
+            <div class="lists">
+                <div class="list">
+                    <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
+                        <div class="title">
+                            <strong>{{ item.title }}</strong>
+                            <div class="info">
+                                <span class="resource">{{ item.user.name }}</span>
+                            </div>
+                        </div>
+                        <div class="u-img">
+                            <div class="photo">
+                                <img v-bind:src="path + item.mainpic">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="more">
+            <a href="javascript:void(0)" @click="more('headlines')" class="mo-lk">
+                进入头条 〉
+            </a>
+        </div>
+    </div>
+
+    <div class="interval"></div>
+
+    <div class="ordinary">
+        <div class="label">
+            <span>新闻</span>
+        </div>
+        <div v-for="(item, index) in ordinaryItems" v-if="index < 5">
+            <div class="lists">
+                <div class="list">
+                    <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
+                        <div class="title">
+                            <strong>{{ item.title }}</strong>
+                            <div class="info">
+                                <span class="resource">{{ item.user.name }}</span>
+                            </div>
+                        </div>
+                        <div class="u-img">
+                            <div class="photo">
+                                <img v-bind:src="path + item.mainpic">
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="more">
+            <a href="javascript:void(0)" @click="more('ordinary')" class="mo-lk">
+                进入新闻 〉
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <span>©2019 JIT</span>
+</div>
+<%--<div class="page">
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">
             <div class="weui-panel__bd">
@@ -73,21 +131,21 @@
                 </div>
 
             </div>
-            <%--<div class="weui-panel__ft">--%>
-                <%--<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">--%>
-                    <%--<div class="weui-cell__bd">查看更多</div>--%>
-                    <%--<span class="weui-cell__ft"></span>--%>
-                <%--</a>--%>
-            <%--</div>--%>
+            &lt;%&ndash;<div class="weui-panel__ft">&ndash;%&gt;
+                &lt;%&ndash;<a href="javascript:void(0);" class="weui-cell weui-cell_access weui-cell_link">&ndash;%&gt;
+                    &lt;%&ndash;<div class="weui-cell__bd">查看更多</div>&ndash;%&gt;
+                    &lt;%&ndash;<span class="weui-cell__ft"></span>&ndash;%&gt;
+                &lt;%&ndash;</a>&ndash;%&gt;
+            &lt;%&ndash;</div>&ndash;%&gt;
         </div>
     </div>
 
-    <%--<div class="weui-loadmore">--%>
-        <%--<i class="weui-loading"></i>--%>
-        <%--<span class="weui-loadmore__tips">正在加载</span>--%>
-    <%--</div>--%>
+    &lt;%&ndash;<div class="weui-loadmore">&ndash;%&gt;
+        &lt;%&ndash;<i class="weui-loading"></i>&ndash;%&gt;
+        &lt;%&ndash;<span class="weui-loadmore__tips">正在加载</span>&ndash;%&gt;
+    &lt;%&ndash;</div>&ndash;%&gt;
 
-</div>
+</div>--%>
 
 <script type="text/javascript">
     // var loading = false;  //状态标记
@@ -101,9 +159,10 @@
     // });
 
     var vm = new Vue({
-        el: ".weui-panel__bd",
+        el: ".body",
         data: {
-            items: [],
+            headlinesItems: [],
+            ordinaryItems: [],
             path: '${path}'
         },
         methods: {
@@ -115,11 +174,21 @@
                     dataType: "json",
                     success: function(data) {
                         vm.items = data.newsList;
+                        for (let i = 0; i < data.newsList.length; i++) {
+                            if (data.newsList[i].headline == '1') {
+                                vm.headlinesItems.push(data.newsList[i]);
+                            } else if (data.newsList[i].headline == '0') {
+                                vm.ordinaryItems.push(data.newsList[i]);
+                            }
+                        }
                     }
                 });
             },
             detail: function (id) {
                 window.location = "${ctxf}/wechat/news/form?id=" + id;
+            },
+            more: function (type) {
+                window.location = "${ctxf}/wechat/news/moreList?type=" + type;
             },
             init: function () {
                 if ($('#headLine').height() != 20) {

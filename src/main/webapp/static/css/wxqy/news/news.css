@@ -1,0 +1,134 @@
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #edf5fa;
+    font-family: 微软雅黑;
+}
+.header {
+    width: 100%;
+    height: 50px;
+    background-color: #277de2;
+}
+.header span {
+    color: #fff;
+    line-height: 50px;
+    margin-left: 12%;
+    font-style: italic;
+    font-size: x-large;
+}
+.interval {
+    width: 100%;
+    height: 15px;
+    background-color: #edf5fa;
+}
+.body {
+    width: 100%;
+    background-color: #fff;
+}
+.label {
+    width: 100%;
+    height: 45px;
+}
+.label span {
+    line-height: 45px;
+    color: #277de2;
+    margin-left: 4%;
+    font-weight: bold;
+    font-size: larger;
+}
+hr {
+    border: 0;
+    height: 1px;
+    width: 90%;
+    background-image: -webkit-linear-gradient(left, #f0f0f0, #f0f0f0, #f0f0f0);
+    background-image: -moz-linear-gradient(left, #f0f0f0, #f0f0f0, #f0f0f0);
+    background-image: -ms-linear-gradient(left, #f0f0f0, #f0f0f0, #f0f0f0);
+    background-image: -o-linear-gradient(left, #f0f0f0, #f0f0f0, #f0f0f0);
+}
+.footer {
+    width: 100%;
+    height: 70px;
+    text-align: center;
+    position: absolute;
+    /*bottom: 0;*/
+}
+.footer span {
+    line-height: 70px;
+}
+.a-lk {
+    display: -webkit-box;
+    padding: .80rem 0;
+    margin: 0 .96rem;
+    border-bottom: 1px solid #f2f7fc;
+}
+.title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-flex: 1;
+    -webkit-box-pack: justify;
+}
+.photo {
+    position: relative;
+    display: block;
+    -webkit-background-size: .4rem .4rem;
+    border-radius: 1px;
+}
+img {
+    width: 111.67px;
+    height: 81.03px;
+}
+a:link {
+    color: #222;
+}
+a:visited {
+    color: #222;
+}
+strong {
+    font-weight: 400;
+    font-size: 17px;
+}
+.list {
+    width: 100%;
+    height: 116.84px;
+    background-color: #fff;
+}
+.info {
+    display: -webkit-box;
+    width: 100%;
+    margin-top: .04rem;
+    line-height: 1.33;
+    color: #888;
+}
+.info span {
+    display: block;
+    margin-right: .08rem;
+    font-size: .72rem;
+    color: #888;
+}
+.u-img {
+    position: relative;
+    display: block;
+    width: 32.56%;
+    margin-left: .08rem;
+}
+.mo-lk:link {
+    color: #277de2;
+}
+.mo-lk:visited {
+    color: #277de2;
+}
+.mo-lk {
+    display: block;
+    padding: .58rem 0 .52rem;
+    text-align: center;
+    line-height: 1.4;
+    font-size: 1.17rem;
+    color: #277de2;
+}
+.header img {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 1.3%;
+    left: 3%;
+}

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#approvenodeTable').bootstrapTable({
+	$('#itemFileTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -37,7 +37,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/management/approvenode/approvenode/data",
+               url: "${ctx}/management/itemfile/itemFile/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该流程节点记录吗？', function(){
+                        jp.confirm('确认要删除该上传商品图片记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/approvenode/approvenode/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/itemfile/itemFile/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#approvenodeTable').bootstrapTable('refresh');
+                   	  			$('#itemFileTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -83,61 +83,99 @@ $(document).ready(function() {
                columns: [{
 		        checkbox: true
 		       
-		    }
+		    },{
+                   field: 'icitem.name',
+                   title: '商品名称',
+                   sortable: true,
+                   sortName: 'icitem.name'
+
+               }
 			,{
-		        field: 'type',
-		        title: '流程类型',
+		        field: 'originalName',
+		        title: '文件原名称',
 		        sortable: true,
-		        sortName: 'type',
-		        formatter:function(value, row , index){
-		        	   value = jp.getDictLabel(${fns:toJson(fns:getDictList('process_type'))}, value, "-");
+		        sortName: 'originalName'
+		        ,formatter:function(value, row , index){
+		        	value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:approvenode:approvenode:edit')}">
+					   <c:when test="${fns:hasPermission('management:itemfile:itemFile:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
-					  <c:when test="${fns:hasPermission('management:approvenode:approvenode:view')}">
+					  <c:when test="${fns:hasPermission('management:itemfile:itemFile:view')}">
 					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
 					  <c:otherwise>
 					      return value;
 				      </c:otherwise>
 				   </c:choose>
-		        }
-		       
-		    }
-			,{
-		        field: 'user.name',
-		        title: '流程节点用户',
-		        sortable: true,
-		        sortName: 'user.name'
-		       
-		    }
-			,{
-		        field: 'index',
-		        title: '排序',
-		        sortable: true,
-		        sortName: 'index'
+		         }
 		       
 		    }
 			,{
 		        field: 'name',
-		        title: '节点名称',
+		        title: '上传编码名称',
 		        sortable: true,
 		        sortName: 'name'
 		       
 		    }
 			,{
-		        field: 'status',
-		        title: '使用状态',
+		        field: 'size',
+		        title: '文件大小',
 		        sortable: true,
-		        sortName: 'status',
-		        formatter:function(value, row , index){
-		        	if (value == '1') {
-						return '<label style="color: green;">' + jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-") + '</label>';
-					} else {
-						return '<label style="color: red;">' + jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-") + '</label>';
-					}
-		        }
+		        sortName: 'size',
+                formatter:function (value,row,index) {
+                    if(value != '' || value != null ){
+                        return value+"K";
+                    }else{
+                        return "-";
+                    }
+                }
+		    }
+			,{
+		        field: 'type',
+		        title: '文件类型',
+		        sortable: true,
+		        sortName: 'type'
+		    }
+			,{
+		        field: 'isDown',
+		        title: '是否允许下载',
+		        sortable: true,
+		        sortName: 'isDown',
+                formatter:function (value,row,index) {
+                    if(value == '1'){
+                        return "<a id='isDown_a' href='#' class='green' style='color: green;'>允许</a>";
+                    }else{
+                        return "<a id='isDown_a' href='#' class='red' style='color: red;'>不允许</a>";
+                    }
+                }
+		    }
+			/*,{
+		        field: 'url',
+		        title: '文件路径',
+		        sortable: true,
+		        sortName: 'url'
+		       
+		    }
+			,{
+		        field: 'smallUrl',
+		        title: '文件预览图路径',
+		        sortable: true,
+		        sortName: 'smallUrl'
+		       
+		    }*/
+			,{
+		        field: 'server',
+		        title: '文件服务器地址',
+		        sortable: true,
+		        sortName: 'server'
+		       
+		    }
+			,{
+		        field: 'downCount',
+		        title: '下载次数',
+		        sortable: true,
+		        sortName: 'downCount'
 		       
 		    }
 			,{
@@ -147,6 +185,14 @@ $(document).ready(function() {
 		        sortName: 'remarks'
 		       
 		    }
+		    ,{
+                field: 'download',
+                title: "下载",
+                sortable: true,
+                formatter:function (value,row,index) {
+                    return "<a id='' class='' href='${ctx}/management/itemfile/itemFile/download/template/"+row.id+"'>下载</a>";
+                }
+            }
 		     ]
 		
 		});
@@ -155,13 +201,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#approvenodeTable').bootstrapTable("toggleView");
+		  $('#itemFileTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#approvenodeTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#itemFileTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#approvenodeTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#approvenodeTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#itemFileTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#itemFileTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -173,11 +219,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/approvenode/approvenode/import/template');
+					  jp.downloadFile('${ctx}/management/itemfile/itemFile/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/approvenode/approvenode/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/management/itemfile/itemFile/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -200,8 +246,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#approvenodeTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#approvenodeTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#itemFileTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#itemFileTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -210,37 +256,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/approvenode/approvenode/export?'+values);
+			jp.downloadFile('${ctx}/management/itemfile/itemFile/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#approvenodeTable').bootstrapTable('refresh');
+		  $('#itemFileTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#approvenodeTable').bootstrapTable('refresh');
+		  $('#itemFileTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#approvenodeTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#itemFileTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该流程节点记录吗？', function(){
+		jp.confirm('确认要删除该上传商品图片记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/approvenode/approvenode/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/itemfile/itemFile/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#approvenodeTable').bootstrapTable('refresh');
+         	  			$('#itemFileTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -252,11 +298,11 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#approvenodeTable').bootstrapTable('refresh');
+  	$('#itemFileTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增流程节点', "${ctx}/management/approvenode/approvenode/form",'800px', '500px');
+	  jp.openSaveDialog('新增上传商品图片', "${ctx}/management/itemfile/itemFile/form",'800px', '500px');
   }
 
 
@@ -265,14 +311,14 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑流程节点', "${ctx}/management/approvenode/approvenode/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑上传商品图片', "${ctx}/management/itemfile/itemFile/form?id=" + id, '800px', '500px');
   }
-  
+
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看流程节点', "${ctx}/management/approvenode/approvenode/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看商品图片', "${ctx}/management/itemfile/itemFile/showPic?id="+id, '500px', '500px');
  }
 
 

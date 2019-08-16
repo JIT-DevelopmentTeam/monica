@@ -40,6 +40,10 @@
         <%--<span class="weui-loadmore__tips">正在加载</span>--%>
     <%--</div>--%>
 
+    <div class="weui-footer">
+        <p class="weui-footer__text">{{ copyright }}</p>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -60,7 +64,8 @@
             author: "",
             pushTime: "",
             content: "",
-            readCount: ""
+            readCount: "",
+            copyright: "Copyright © 2019 JIT"
         },
         methods: {
             showData: function(){

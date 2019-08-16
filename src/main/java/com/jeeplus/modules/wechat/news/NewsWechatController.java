@@ -60,4 +60,37 @@ public class NewsWechatController extends BaseController {
         return map;
     }
 
+    @RequestMapping(value = "moreList")
+    public ModelAndView moreList(HttpServletRequest request) {
+        ModelAndView mv = new ModelAndView();
+        String type = request.getParameter("type");
+        if ("headlines".equals(type)) {
+            mv.addObject("head", "头条");
+        } else {
+            mv.addObject("head", "新闻");
+        }
+        String path = request.getContextPath();
+        String filePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
+        mv.addObject("path", filePath);
+        mv.addObject("type", type);
+        mv.setViewName("modules/wechat/news/newsMoreList");
+        return mv;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "moreListData")
+    public Map<String, Object> moreListData(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        String type = request.getParameter("type");
+        News news = new News();
+        if ("headlines".equals(type)) {
+            news.setHeadline(1);
+        } else {
+            news.setHeadline(0);
+        }
+        List<News> newsList = newsService.findListWeChat(news);
+        map.put("newsList", newsList);
+        return map;
+    }
+
 }
