@@ -192,7 +192,7 @@
                 <span>*</span>跟单人员
             </div>
             <div class="addOrder-list_ft">
-                ${sobill.empName}
+
             </div>
         </div>
         <div class="addOrder-list">

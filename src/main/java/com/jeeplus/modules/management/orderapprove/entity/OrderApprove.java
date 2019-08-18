@@ -36,6 +36,7 @@ public class OrderApprove extends DataEntity<OrderApprove> {
     private String cusName;     // 客户名称
     private Integer startPage;		// 起始分页
     private Integer endPage;	// 结束分页
+    private String approvalEmpName;     // 审批人
 	
 	public OrderApprove() {
 		super();
@@ -186,5 +187,13 @@ public class OrderApprove extends DataEntity<OrderApprove> {
 
     public void setEndPage(Integer endPage) {
         this.endPage = endPage;
+    }
+
+    public String getApprovalEmpName() {
+        return approvalEmpName;
+    }
+
+    public void setApprovalEmpName(String approvalEmpName) {
+        this.approvalEmpName = approvalEmpName;
     }
 }

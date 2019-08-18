@@ -20,7 +20,8 @@
 		a.f_istoapp AS "isToapp",
 		a.f_islast AS "isLast",
 		a.f_sobillid AS "sobillId.id",
-	    date_format(a.create_date, '%Y-%m-%d %H:%m:%s') AS "createDateStr"
+	    date_format(a.create_date, '%Y-%m-%d %H:%m:%s') AS "createDateStr",
+	    approvalEmplId.name AS "approvalEmpName"
 	</sql>
 	
 	<sql id="orderApproveJoins">
@@ -66,7 +67,7 @@
                 AND a.f_status IN (1,2)  AND a.f_istoapp = 0
             </if>
 
-            <if test="approvalEmplId.id != null and approvalEmplId.id != ''">
+            <if test="approvalEmplId != null">
                 AND a.f_approval_emplid = #{approvalEmplId.id}
             </if>
 
@@ -76,13 +77,17 @@
                     <if test="dbName == 'mssql'">'%'+#{cusName}+'%'</if>
                     <if test="dbName == 'mysql'">concat('%',#{cusName},'%')</if>
             </if>
+
+            <if test="sobillId != null">
+                AND a.f_sobillid = #{sobillId.id}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.f_index ASC
 			</otherwise>
 		</choose>
         <if test="startPage != null and endPage != null">

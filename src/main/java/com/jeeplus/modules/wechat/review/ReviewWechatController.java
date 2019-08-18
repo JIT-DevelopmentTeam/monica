@@ -56,4 +56,18 @@ public class ReviewWechatController extends BaseController {
         return aj;
     }
 
+    @RequestMapping(value = "applicationDetail")
+    public ModelAndView applicationDetail(Sobill sobill) {
+        ModelAndView mv = new ModelAndView();
+        sobill = sobillService.get(sobill.getId());
+        OrderApprove orderApprove = new OrderApprove();
+        orderApprove.setDelFlag("0");
+        orderApprove.setSobillId(sobill);
+        List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
+        mv.addObject("sobill",sobill);
+        mv.addObject("orderApproveList",orderApproveList);
+        mv.setViewName("modules/wechat/review/applicationDetail");
+        return mv;
+    }
+
 }
