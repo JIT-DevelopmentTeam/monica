@@ -455,15 +455,15 @@
                                     check = true;
                                 }
                             }
-                            template += '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '">' +
-                                '<div class="weui-cell__hd" style="float: left;">';
+                            template += '<div class="pro-cell">' +
+                                '<div class="pro-list" style="padding: 0px;font-size: 12px;">' +
+                                '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '" style="padding:0%;margin-bottom: 2%;">';
                             if (check) {
                                 template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" checked class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             } else {
                                 template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             }
                             template += '<i class="weui-icon-checked"></i>' +
-                                '</div>' +
                                 '<div class="weui-cell__bd">' +
                                 '<p>编码:' + icitemList[i].number + '</p>' +
                                 '<p>名称:' + icitemList[i].name + '</p>' +
@@ -471,8 +471,11 @@
                                 '<p>型号:' + icitemList[i].model + '</p>' +
                                 '<p>单价:</p>' +
                                 '</div>' +
-                                '</label>';
+                                '</label>' +
+                                '</div>'+
+                                '</div>';
                         }
+                        template += '</div>';
                         template += '</div>';
                         $("#" + index).append(template);
                     }

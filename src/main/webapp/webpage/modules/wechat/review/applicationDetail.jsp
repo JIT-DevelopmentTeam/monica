@@ -185,7 +185,7 @@
         }
         $.confirm(confirmText, function() {
             //点击确认后的回调函数
-            $.prompt("请输入审核评议!(非必填)", function(text) {
+            $.prompt("请输入审核评议!", function(text) {
                 //点击确认后的回调函数
                 $.showLoading("数据加载中");
                 $.ajax({
@@ -209,12 +209,12 @@
                         } else {
                             setTimeout(function () {
                                 $.hideLoading();
-                                $.toast(res.msg);
+                                $.toast(res.msg,"cancel");
                             }, 3000);
                         }
                     },
                     error:function () {
-                        $.alert("操作出错!");
+                        $.toast("操作出错!","cancel");
                     }
                 });
             }, function() {
