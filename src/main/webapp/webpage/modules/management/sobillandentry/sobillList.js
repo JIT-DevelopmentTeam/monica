@@ -177,15 +177,8 @@ $(document).ready(function() {
 
 		    }
 			,{
-		        field: 'checkerName',
-		        title: '审核人',
-		        sortable: true,
-		        sortName: 'checkerName'
-
-		    }
-			,{
 		        field: 'checkTime',
-		        title: '审核时间',
+		        title: '审核通过时间',
 		        sortable: true,
 		        sortName: 'checkTime'
 
@@ -217,12 +210,12 @@ $(document).ready(function() {
 		        sortName: 'amount'
 
 		    }
-                   ,{
-                       field: 'remarks',
-                       title: '备注',
-                       sortable: true,
-                       sortName: 'remarks'
-                   }
+               ,{
+                   field: 'remarks',
+                   title: '备注',
+                   sortable: true,
+                   sortName: 'remarks'
+               }
 		     ]
 
 		});
