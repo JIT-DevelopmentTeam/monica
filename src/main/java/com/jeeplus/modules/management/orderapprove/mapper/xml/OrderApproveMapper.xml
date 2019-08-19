@@ -142,7 +142,7 @@
 			#{remarks},
 			#{delFlag},
 			#{type},
-			#{approvalEmplId},
+			#{approvalEmplId.id},
 			#{index},
 			#{name},
 			#{status},
@@ -150,7 +150,7 @@
 			#{remark},
 			#{isToapp},
 			#{isLast},
-			#{sobillId}
+			#{sobillId.id}
 		)
 	</insert>
 	
@@ -160,7 +160,7 @@
 			update_date = #{updateDate},
 			remarks = #{remarks},
 			f_type = #{type},
-			f_approval_emplid = #{approvalEmplId},
+			f_approval_emplid = #{approvalEmplId.id},
 			f_index = #{index},
 			f_name = #{name},
 			f_status = #{status},
@@ -168,7 +168,7 @@
 			f_remark = #{remark},
 			f_istoapp = #{isToapp},
 			f_islast = #{isLast},
-			f_sobillid = #{sobillId}
+			f_sobillid = #{sobillId.id}
 		WHERE id = #{id}
 	</update>
 	

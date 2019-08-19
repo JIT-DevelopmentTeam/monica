@@ -4,7 +4,11 @@ import com.jeeplus.common.utils.IdGen;
 
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.approvenode.entity.Approvenode;
+import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
+import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
+import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
@@ -41,6 +45,12 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private IcitemService icitemService;
+
+    @Autowired
+    private ApprovenodeService approvenodeService;
+
+    @Autowired
+    private OrderApproveService orderApproveService;
 
     @RequestMapping(value = "list")
     public ModelAndView list() {
@@ -136,32 +146,6 @@ public class SobillWechatController extends BaseController {
         return aj;
     }
 
-    @RequestMapping(value = "checkSobillByIds")
-    @ResponseBody
-    public AjaxJson checkSobill(@RequestParam("idsStr") String idsStr){
-        AjaxJson aj = new AjaxJson();
-        String[] ids = idsStr.split(",");
-        boolean check = true;
-        for (String id : ids) {
-            Sobill sobill = sobillService.get(id);
-            if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
-                /* TODO 审核人 */
-                sobill.setCheckTime(new Date());
-                sobill.setCheckStatus(1);
-                sobillService.save(sobill);
-            } else {
-                check = false;
-            }
-        }
-        aj.setSuccess(true);
-        if (check){
-            aj.setMsg("审核成功!");
-        } else {
-            aj.setMsg("操作成功!(部分订单已审核或已提交不允许操作!)");
-        }
-        return aj;
-    }
-
     @RequestMapping(value = "saveSob",produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public AjaxJson saveSob(@RequestBody Object object){
@@ -176,7 +160,11 @@ public class SobillWechatController extends BaseController {
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
-            sobill.setCheckStatus(Integer.parseInt(jsonObject.get("checkStatus").toString()));
+            if (sobill.getStatus() == 1) {
+                sobill.setCheckStatus(0);
+            } else {
+                sobill.setCheckStatus(2);
+            }
             sobill.setCreateDate(DateUtils.parseDate(jsonObject.get("createDate")));
             sobill.setId(IdGen.uuid());
             sobill.setIsNewRecord(true);
@@ -195,6 +183,7 @@ public class SobillWechatController extends BaseController {
             }
             sobill.setSobillentryList(sobillentryList);
             sobillService.save(sobill);
+            generateApproval(sobill);
         } else {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
@@ -202,6 +191,9 @@ public class SobillWechatController extends BaseController {
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
                 sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
+                if (sobill.getStatus() == 1) {
+                    sobill.setCheckStatus(0);
+                }
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
@@ -226,12 +218,52 @@ public class SobillWechatController extends BaseController {
                         sobillentryList.add(sobillentry);
                     }
                 }
+                sobillService.save(sobill);
+                generateApproval(sobill);
             }
-            sobillService.save(sobill);
         }
         aj.setSuccess(true);
         aj.setMsg("保存成功!");
         return aj;
+    }
+
+    /**
+     * 生成审批
+     * @param sobill
+     */
+    private void generateApproval(Sobill sobill){
+        if (sobill.getStatus() != null && sobill.getStatus() == 1) {
+            Approvenode approvenode = new Approvenode();
+            approvenode.setDelFlag("0");
+            approvenode.setStatus(1);
+            // 订单类型
+            approvenode.setType(1);
+            List<Approvenode> approvenodeList = approvenodeService.findList(approvenode);
+            for (int i = 0; i < approvenodeList.size(); i++) {
+                OrderApprove orderApprove = new OrderApprove();
+                orderApprove.setType(approvenodeList.get(i).getType());
+                User user = new User();
+                user.setId(approvenodeList.get(i).getApprovalEmplid());
+                orderApprove.setApprovalEmplId(user);
+                orderApprove.setIndex(approvenodeList.get(i).getIndex());
+                orderApprove.setName(approvenodeList.get(i).getName());
+                orderApprove.setStatus(0);
+                if (i == 0) {
+                    // 第一位审核人
+                    orderApprove.setIsToapp(1);
+                } else {
+                    orderApprove.setIsToapp(0);
+                }
+                if (i == approvenodeList.size() - 1) {
+                    // 最后一位审批人
+                    orderApprove.setIsLast(1);
+                } else {
+                    orderApprove.setIsLast(0);
+                }
+                orderApprove.setSobillId(sobill);
+                orderApproveService.save(orderApprove);
+            }
+        }
     }
 
     @RequestMapping(value = "getById")

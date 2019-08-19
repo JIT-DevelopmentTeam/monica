@@ -603,7 +603,6 @@
             "synStatus": 0,
             "status": status,
             "cancellation": 0,
-            "checkStatus": 0,
             "needTime": needTime,
             "type": type,
             "createDate": createDate,

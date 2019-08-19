@@ -43,7 +43,7 @@
 
                 <div id="unprocessedData" class="weui-tab__bd-item weui-tab__bd-item--active">
                     <div id="unprocessedDataList">
-                        <div v-on:click="applicationDetail(unprocessed.sobillId.id)" style="border-radius: 5px" class="review-list" v-for="unprocessed in unprocessedList">
+                        <div v-on:click="applicationDetail(unprocessed.sobillId.id,1)" style="border-radius: 5px" class="review-list" v-for="unprocessed in unprocessedList">
                             <div class="reviewInfo">
                                 <p style="color: #b2b2b2;">销售名称：{{unprocessed.sobillId.empName}}</p>
                                 <p style="color: #b2b2b2;">客户名称：{{unprocessed.sobillId.cusName}}</p>
@@ -69,7 +69,7 @@
                 </div>
                 <div id="processedData" class="weui-tab__bd-item">
                     <div id="processedDataList">
-                        <div v-on:click="applicationDetail(processed.sobillId.id)" style="border-radius: 5px" class="review-list" v-for="processed in processedList">
+                        <div v-on:click="applicationDetail(processed.sobillId.id,1)" style="border-radius: 5px" class="review-list" v-for="processed in processedList">
                             <div class="reviewInfo">
                                 <p style="color: #b2b2b2;">销售名称：{{processed.sobillId.empName}}</p>
                                 <p style="color: #b2b2b2;">客户名称：{{processed.sobillId.cusName}}</p>
@@ -96,7 +96,7 @@
             </div>
             <div id="submitted" class="weui-tab__bd-item">
                 <div id="submittedList">
-                    <div v-on:click="applicationDetail(submitted.id)" style="border-radius: 5px" class="review-list" v-for="submitted in submittedList">
+                    <div v-on:click="applicationDetail(submitted.id,2)" style="border-radius: 5px" class="review-list" v-for="submitted in submittedList">
                         <div class="reviewInfo">
                             <p style="color: #b2b2b2;">销售名称：{{submitted.empName}}</p>
                             <p style="color: #b2b2b2;">客户名称：{{submitted.cusName}}</p>
@@ -427,8 +427,12 @@
                     }
                 })
             },
-            applicationDetail:function (sobillId) {
-                window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId;
+            applicationDetail:function (sobillId,type) {
+                if (type == 1) {
+                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId+"&isApproval=1";
+                } else {
+                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId;
+                }
             }
         }
     });

@@ -19,7 +19,7 @@
         }
     </style>
 </head>
-<body ontouchstart>
+<body ontouchstart style="background-color: white;">
 <div id="page">
     <input type="hidden" id="sobillId" value="${sobill.id}"/>
     <%-- 表头 --%>
@@ -109,11 +109,11 @@
             <div class="reviewInfo">
                 <p style="color: #b2b2b2;">流程审批： </p>
                 <c:forEach items="${orderApproveList}" var="var">
-                    <div style="background-color: #8b91a03b;width: 100%;padding: 5px">
+                    <div style="background-color: rgb(238, 238, 238);width: 100%;padding: 5px">
                         <li style="margin-left: 8%">
                             <p style="height: 32px;width: 100%;line-height: 32px;font-size: 10px;color: #353535" class="center">
                                 <strong>${var.approvalEmpName}
-                                    <c:if test="${var.status == 0}">
+                                    <c:if test="${var.status == 0 && var.isToapp == 1}">
                                         ○  <span style="color:blue;">审批中</span>
                                     </c:if>
                                     <c:if test="${var.status == 1}">
@@ -131,22 +131,24 @@
         </div>
     </div>
 
-    <br><br><br>
+    <c:if test="${sobill.isApproval == 1}">
+        <br><br><br>
 
-    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
-        <a v-on:click="applicationApproved" class="weui-tabbar__item">
-            <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
-            </div>
-            <p class="weui-tabbar__label">{{pass}}</p>
-        </a>
-        <a v-on:click="rejectApplication" class="weui-tabbar__item">
-            <div class="weui-tabbar__icon">
-                <img src="${ctxStatic}/image/wechat/delect.jpg" alt="">
-            </div>
-            <p class="weui-tabbar__label">{{reject}}</p>
-        </a>
-    </div>
+        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+            <a v-on:click="applicationApproved" class="weui-tabbar__item">
+                <div class="weui-tabbar__icon">
+                    <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
+                </div>
+                <p class="weui-tabbar__label">{{pass}}</p>
+            </a>
+            <a v-on:click="rejectApplication" class="weui-tabbar__item">
+                <div class="weui-tabbar__icon">
+                    <img src="${ctxStatic}/image/wechat/delect.jpg" alt="">
+                </div>
+                <p class="weui-tabbar__label">{{reject}}</p>
+            </a>
+        </div>
+    </c:if>
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
@@ -161,13 +163,63 @@
         },
         methods: {
             applicationApproved:function () {
-
+                reviewOrder(1);
             },
             rejectApplication:function () {
-
+                reviewOrder(2);
             }
         }
     });
+
+    // 执行审核订单
+    function reviewOrder(status) {
+        var confirmText = '';
+        if (status == 1) {
+            confirmText = '您确定通过该订单吗?';
+        } else {
+            confirmText = '您确定驳回该订单吗?';
+        }
+        $.confirm(confirmText, function() {
+            //点击确认后的回调函数
+            $.prompt("请输入审核评议!(非必填)", function(text) {
+                //点击确认后的回调函数
+                $.showLoading("数据加载中");
+                $.ajax({
+                    async:false,
+                    cache:false,
+                    url:'${ctxf}/wechat/review/reviewOrder',
+                    type:'post',
+                    data:{
+                        sobillId:$("#sobillId").val(),
+                        status:status,
+                        remark:text
+                    },
+                    dataType:'json',
+                    success:function (res) {
+                        if (res.success) {
+                            setTimeout(function () {
+                                $.hideLoading();
+                                $.toast(res.msg);
+                                window.location.href = '${ctxf}/wechat/review/list';
+                            }, 3000);
+                        } else {
+                            setTimeout(function () {
+                                $.hideLoading();
+                                $.toast(res.msg);
+                            }, 3000);
+                        }
+                    },
+                    error:function () {
+                        $.alert("操作出错!");
+                    }
+                });
+            }, function() {
+                //点击取消后的回调函数
+            });
+        }, function() {
+            //点击取消后的回调函数
+        });
+    }
 
 </script>
 </body>

@@ -10,9 +10,11 @@ import com.jeeplus.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,17 +59,78 @@ public class ReviewWechatController extends BaseController {
     }
 
     @RequestMapping(value = "applicationDetail")
-    public ModelAndView applicationDetail(Sobill sobill) {
+    public ModelAndView applicationDetail(@RequestParam("id") String id, Integer isApproval) {
         ModelAndView mv = new ModelAndView();
-        sobill = sobillService.get(sobill.getId());
-        OrderApprove orderApprove = new OrderApprove();
-        orderApprove.setDelFlag("0");
-        orderApprove.setSobillId(sobill);
-        List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
-        mv.addObject("sobill",sobill);
-        mv.addObject("orderApproveList",orderApproveList);
+        Sobill sobill = sobillService.get(id);
+        if (sobill != null) {
+            if (isApproval != null) {
+                sobill.setIsApproval(isApproval);
+            }
+            OrderApprove orderApprove = new OrderApprove();
+            orderApprove.setDelFlag("0");
+            orderApprove.setSobillId(sobill);
+            List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
+            mv.addObject("sobill",sobill);
+            mv.addObject("orderApproveList",orderApproveList);
+        }
         mv.setViewName("modules/wechat/review/applicationDetail");
         return mv;
+    }
+
+    /**
+     * 审核订单
+     * @param sobillId 订单id
+     * @param status 审核状态
+     * @param remark 审核评议
+     * @return
+     */
+    @RequestMapping(value = "reviewOrder")
+    @ResponseBody
+    public AjaxJson reviewOrder(@RequestParam("sobillId") String sobillId,@RequestParam("status") Integer status, String remark) {
+        AjaxJson aj = new AjaxJson();
+        Sobill sobill = sobillService.get(sobillId);
+        if (sobill != null) {
+            OrderApprove orderApprove = new OrderApprove();
+            orderApprove.setDelFlag("0");
+            orderApprove.setSobillId(sobill);
+            List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
+            boolean allow = false;
+            for (int i = 0; i < orderApproveList.size(); i++) {
+                /* TODO 微信登录用户 */
+                if (orderApproveList.get(i).getApprovalEmplId().getId().equals(UserUtils.getUser().getId()) && orderApproveList.get(i).getIsToapp() == 1) {
+                    OrderApprove currentApprove = orderApproveList.get(i);
+                    currentApprove.setStatus(status);
+                    currentApprove.setRemark(remark);
+                    currentApprove.setIsToapp(0);
+                    orderApproveService.save(currentApprove);
+                    if (status == 2) {
+                        // 审核不通过
+                        sobill.setCheckStatus(3);
+                        sobillService.save(sobill);
+                    }
+                    if (currentApprove.getIsLast() != 1 && status != 2) {
+                        OrderApprove nextApprove = orderApproveList.get(i+1);
+                        nextApprove.setIsToapp(1);
+                        orderApproveService.save(nextApprove);
+                    }
+                    if (currentApprove.getIsLast() == 1 && status == 1) {
+                        // 审核通过
+                        sobill.setCheckStatus(1);
+                        sobill.setCheckTime(new Date());
+                        sobillService.save(sobill);
+                    }
+                    allow = true;
+                }
+            }
+            if (allow) {
+                aj.setSuccess(true);
+                aj.setMsg("操作成功!");
+            } else {
+                aj.setSuccess(false);
+                aj.setMsg("操作失败!(当前节点不允许操作!)");
+            }
+        }
+        return aj;
     }
 
 }

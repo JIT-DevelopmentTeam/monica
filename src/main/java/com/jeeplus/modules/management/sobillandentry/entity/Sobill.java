@@ -52,6 +52,7 @@ public class Sobill extends DataEntity<Sobill> {
     private Integer approveStatus;  // 审批节点最高状态
     private Integer isLast;     // 是否为最高审批人
     private String initiateDateStr;     // 发起时间
+    private Integer isApproval;     // 是否为审批
 
 	public Sobill() {
 		super();
@@ -337,5 +338,13 @@ public class Sobill extends DataEntity<Sobill> {
 
     public void setInitiateDateStr(String initiateDateStr) {
         this.initiateDateStr = initiateDateStr;
+    }
+
+    public Integer getIsApproval() {
+        return isApproval;
+    }
+
+    public void setIsApproval(Integer isApproval) {
+        this.isApproval = isApproval;
     }
 }
