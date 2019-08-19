@@ -141,13 +141,13 @@
         <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
             <a v-on:click="applicationApproved" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
+                    <img src="${ctxStatic}/image/wechat/receive.jpg" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{pass}}</p>
             </a>
             <a v-on:click="rejectApplication" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/delect.jpg" alt="">
+                    <img src="${ctxStatic}/image/wechat/reject.jpg" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{reject}}</p>
             </a>
