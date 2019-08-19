@@ -124,6 +124,10 @@
                                     </c:if>
                                 </strong>
                             </p>
+                            <p style="height: 32px;width: 100%;line-height: 32px;font-size: 10px;color: #353535" class="center">
+                                <strong>审核评议:</strong>
+                                    ${var.remark}
+                            </p>
                         </li>
                     </div>
                 </c:forEach>
