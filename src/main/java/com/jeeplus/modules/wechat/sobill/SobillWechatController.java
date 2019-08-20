@@ -160,6 +160,8 @@ public class SobillWechatController extends BaseController {
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
+            /* TODO 微信登录 */
+            sobill.setEmplId(UserUtils.getUser().getId());
             if (sobill.getStatus() == 1) {
                 sobill.setCheckStatus(0);
             } else {
@@ -281,7 +283,7 @@ public class SobillWechatController extends BaseController {
         AjaxJson aj = new AjaxJson();
         sobill.setDelFlag("0");
         /* TODO 后续获取微信登录用户 */
-        sobill.setCreateBy(UserUtils.getUser());
+        sobill.setEmplId(UserUtils.getUser().getId());
         List<Sobill> submittedList = sobillService.findSubmittedList(sobill);
         aj.put("submittedList",submittedList);
         return aj;

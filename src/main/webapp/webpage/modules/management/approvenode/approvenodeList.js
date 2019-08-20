@@ -85,12 +85,11 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'type',
-		        title: '流程类型',
-		        sortable: true,
-		        sortName: 'type',
+               field: 'user.name',
+               title: '流程节点用户',
+               sortable: true,
+               sortName: 'user.name',
 		        formatter:function(value, row , index){
-		        	   value = jp.getDictLabel(${fns:toJson(fns:getDictList('process_type'))}, value, "-");
 				   <c:choose>
 					   <c:when test="${fns:hasPermission('management:approvenode:approvenode:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
@@ -106,11 +105,13 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'user.name',
-		        title: '流程节点用户',
-		        sortable: true,
-		        sortName: 'user.name'
-		       
+               field: 'type',
+               title: '流程类型',
+               sortable: true,
+               sortName: 'type',
+               formatter:function(value, row , index){
+                   return jp.getDictLabel(${fns:toJson(fns:getDictList('order_Approve_Type'))}, value, "-");
+               }
 		    }
 			,{
 		        field: 'index',

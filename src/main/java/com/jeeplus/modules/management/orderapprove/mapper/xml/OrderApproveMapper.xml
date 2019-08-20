@@ -82,14 +82,15 @@
                 AND a.f_sobillid = #{sobillId.id}
             </if>
 		</where>
-		<choose>
+		<!--<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
 				ORDER BY a.f_index ASC
 			</otherwise>
-		</choose>
+		</choose>-->
+        ORDER BY a.f_index ASC
         <if test="startPage != null and endPage != null">
             LIMIT #{startPage},#{endPage}
         </if>

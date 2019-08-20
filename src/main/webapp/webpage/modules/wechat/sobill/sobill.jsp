@@ -147,6 +147,12 @@
     <br><br><br>
 
     <div class="weui-tabbar" style="position:fixed;bottom: 0px;">
+        <a v-on:click="backHome()" class="weui-tabbar__item">
+            <div class="weui-tabbar__icon">
+                <img src="${ctxStatic}/image/wechat/home.jpg" alt="">
+            </div>
+            <p class="weui-tabbar__label">{{ home }}</p>
+        </a>
         <a v-bind:href="addHref" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
@@ -210,6 +216,7 @@
             addHref: '${ctxf}/wechat/sobill/goAdd',
             edit: '编辑',
             del: '删除',
+            home:'首页',
             toAuditList: [],
             historyList: []
         },
@@ -365,6 +372,9 @@
                         $("#"+detail).append(template);
                     }
                 });
+            },
+            backHome:function () {
+                window.location.href = '${ctxf}/wechat/main/index';
             }
         }
     });

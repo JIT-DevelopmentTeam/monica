@@ -233,8 +233,8 @@
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
             AND a.id IN (SELECT approve.f_sobillid FROM ic_order_approve approve WHERE approve.del_flag = '0')
-            <if test="createBy.id != null and createBy.id != ''">
-                AND a.create_by = #{createBy.id}
+            <if test="emplId != null and emplId != ''">
+                AND a.f_emplid = #{emplId}
             </if>
 
             <if test="cusName != null and cusName != ''">

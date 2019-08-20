@@ -398,7 +398,7 @@ public class SobillController extends BaseController {
      * @param sobillentry
      * @return
      */
-    public Page<Sobillentry> findPage(Page<Sobillentry> page, Sobillentry sobillentry) {
+    private Page<Sobillentry> findPage(Page<Sobillentry> page, Sobillentry sobillentry) {
         sobillentry.setPage(page);
         if (sobillentry.getSobillId().getId() == null || "".equals(sobillentry.getSobillId().getId())){
             page.setList(null);

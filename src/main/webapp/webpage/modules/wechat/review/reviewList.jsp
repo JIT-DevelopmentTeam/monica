@@ -50,9 +50,9 @@
                                 <p style="color: #b2b2b2;">订单编号：{{unprocessed.sobillId.billNo}}</p>
                                 <p style="color: #b2b2b2;" v-if="unprocessed.type === 1">申请类型：订单审批</p>
                                 <p style="color: #b2b2b2;">审批状态：
-                                    <i v-if="unprocessed.status === 0" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
-                                    <i v-else-if="unprocessed.status === 1" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
-                                    <i v-else-if="unprocessed.status === 2" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
+                                    <i v-if="unprocessed.status === 0" style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
+                                    <i v-else-if="unprocessed.status === 1" style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
+                                    <i v-else-if="unprocessed.status === 2" style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
                                 </p>
                                 <p style="color: #b2b2b2;">发起时间：{{unprocessed.createDateStr}}</p>
                             </div>
@@ -76,9 +76,9 @@
                                 <p style="color: #b2b2b2;">订单编号：{{processed.sobillId.billNo}}</p>
                                 <p style="color: #b2b2b2;" v-if="processed.type === 1">申请类型：订单审批</p>
                                 <p style="color: #b2b2b2;">审批状态：
-                                    <i v-if="processed.status === 0" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
-                                    <i v-else-if="processed.status === 1" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
-                                    <i v-else-if="processed.status === 2" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
+                                    <i v-if="processed.status === 0" style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
+                                    <i v-else-if="processed.status === 1" style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
+                                    <i v-else-if="processed.status === 2" style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
                                 </p>
                                 <p style="color: #b2b2b2;">发起时间：{{processed.createDateStr}}</p>
                             </div>
@@ -103,9 +103,9 @@
                             <p style="color: #b2b2b2;">订单编号：{{submitted.billNo}}</p>
                             <p style="color: #b2b2b2;" v-if="submitted.approveType === 1">申请类型：订单审批</p>
                             <p style="color: #b2b2b2;">审批状态：
-                                <i v-if="(submitted.approveStatus === 1) && (submitted.isLast === 1)" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
-                                <i v-else-if="submitted.approveStatus === 2" style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
-                                <i v-else style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
+                                <i v-if="(submitted.approveStatus === 1) && (submitted.isLast === 1)" style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i>
+                                <i v-else-if="submitted.approveStatus === 2" style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i>
+                                <i v-else style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i>
                             </p>
                             <p style="color: #b2b2b2;">发起时间：{{submitted.initiateDateStr}}</p>
                         </div>
@@ -124,15 +124,21 @@
         </div>
 
         <div class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 10000;">
+            <a v-on:click="backHome()" class="weui-tabbar__item">
+                <div class="weui-tabbar__icon">
+                    <img src="${ctxStatic}/image/wechat/home.jpg" alt="">
+                </div>
+                <p class="weui-tabbar__label">{{ home }}</p>
+            </a>
             <a id="myReviewTabbar" v-on:click="switchContent('myReview')" class="weui-tabbar__item weui-bar__item--on">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-search.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/search.jpg" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{ myReview }}</p>
             </a>
             <a id="submittedTabbar" v-on:click="switchContent('submitted')" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/icon-transfer_blue.png" alt="">
+                    <img src="${ctxStatic}/image/wechat/upload.jpg" alt="">
                 </div>
                 <p class="weui-tabbar__label">{{ submitted }}</p>
             </a>
@@ -244,6 +250,7 @@
             search:'搜索',
             unprocessed:'待处理',
             processed:'已处理',
+            home:'首页',
             unprocessedList:[],
             processedList:[],
             submittedList:[]
@@ -393,14 +400,14 @@
                                         }
                                         switch (dataList[i].status) {
                                             case 0:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
                                                 break;
                                             case 1:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
 
                                                 break;
                                             case 2:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
                                                 break;
                                         }
                                         templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].createDateStr+'</p>'
@@ -412,11 +419,11 @@
                                             templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
                                         }
                                         if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
-                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
                                         } else if (dataList[i].approveStatus == 2) {
-                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
                                         } else {
-                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
                                         }
                                     templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].initiateDateStr+'</p>';
                                 }
@@ -433,6 +440,9 @@
                 } else {
                     window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId;
                 }
+            },
+            backHome:function () {
+                window.location.href = '${ctxf}/wechat/main/index';
             }
         }
     });
@@ -517,14 +527,14 @@
                        }
                        switch (dataList[i].status) {
                            case 0:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
                                break;
                            case 1:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
 
                                break;
                            case 2:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
                                break;
                        }
                        templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].createDateStr+'</p>'
@@ -536,11 +546,11 @@
                            templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
                        }
                        if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
                        } else if (dataList[i].approveStatus == 2) {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
                        } else {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="margin-left: 5%;font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
                        }
                        templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].initiateDateStr+'</p>';
                    }
