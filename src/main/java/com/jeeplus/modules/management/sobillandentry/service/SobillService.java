@@ -74,4 +74,8 @@ public class SobillService extends CrudService<SobillMapper, Sobill> {
 		sobillentryMapper.delete(new Sobillentry(sobill));
 	}
 
+	public List<Sobill> findSubmittedList(Sobill sobill){
+	    return super.mapper.findSubmittedList(sobill);
+    }
+
 }

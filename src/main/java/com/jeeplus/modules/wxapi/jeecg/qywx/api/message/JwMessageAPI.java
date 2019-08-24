@@ -1,10 +1,12 @@
 package com.jeeplus.modules.wxapi.jeecg.qywx.api.message;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.util.HttpUtil;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.util.WeiXinUtil;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,33 @@ public class JwMessageAPI {
 
 
         logger.info("[CREATEMENU]", "sendMessage response:{}", new Object[]{jsonObject.toJSONString()});
+        if (null != jsonObject) {
+            int errcode = jsonObject.getIntValue("errcode");
+            result = errcode;
+        }
+        return jsonObject;
+    }
+    /**
+     * 发送文本卡片消息
+     *
+     */
+    public static JSONObject SendTextcardMessage(TextCard textCard,String accessToken){
+        int result = 0;
+        //1.获取json字符串：将message对象转换为json字符串
+        Gson gson = new Gson();
+        String jsonMessage =gson.toJson(textCard);    //使用gson.toJson(user)即可将user对象顺序转成json
+        logger.info("[CREATEMENU]", "sendMessage param:jsonText:{}", new Object[]{jsonMessage});
+
+        //2.获取请求的url
+        message_send_url=message_send_url.replace("ACCESS_TOKEN", accessToken);
+
+        //3.调用接口，发送消息
+        JSONObject jsonObject = HttpUtil.sendPost(message_send_url, jsonMessage);
+        /*net.sf.json.JSONObject jsonObjects = WeiXinUtil.httpRequest(message_send_url, "POST", jsonMessage);
+        System.out.println("jsonObject:"+jsonObjects.toString());*/
+
+        logger.info("[CREATEMENU]", "sendMessage response:{}", new Object[]{jsonObject.toJSONString()});
+        //4.错误消息处理
         if (null != jsonObject) {
             int errcode = jsonObject.getIntValue("errcode");
             result = errcode;

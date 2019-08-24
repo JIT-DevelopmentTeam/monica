@@ -165,8 +165,8 @@
                 <span>*</span>客户
             </div>
             <div class="addOrder-list_ft">
-                <input placeholder="请选择客户" type="text" id="cusName" readonly class="weui-input"
-                       style="text-align: right;"/>
+                <input placeholder="请选择客户" type="text" id="cusName" readonly class="weui-input open-popup"
+                       data-target="#customer" style="text-align: right;"/>
             </div>
         </div>
         <div class="addOrder-list">
@@ -208,6 +208,44 @@
         </div>
     </div>
 
+    <%-- 客户选择 --%>
+    <div id="customer" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal">
+            <!-- 搜索框 -->
+            <div class="weui-search-bar" id="searchBar" style="height: 7%;">
+                <div v-on:click="open" class="weui-search-bar__form">
+                    <div class="weui-search-bar__box">
+                        <i class="weui-icon-search"></i>
+                        <input v-on:blur="searchCustomer($event.currentTarget.value)" type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+                        <a v-on:click="empty" class="weui-icon-clear" id="searchClear"></a>
+                    </div>
+                    <label class="weui-search-bar__label" id="searchText">
+                        <i class="weui-icon-search"></i>
+                        <span>搜索</span>
+                    </label>
+                </div>
+                <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            </div>
+
+            <div id="customerList" class="weui-cells weui-cells_radio">
+                <label class="weui-cell weui-check__label" :for="customer.id" v-for="customer in customerList">
+                    <div class="weui-cell__bd">
+                        <p>{{customer.name}}</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="customer" :id="customer.id" :value="customer.id">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="btn-cell">
+                <button v-on:click="saveCus" class="add-btn close-popup" data-target="#customer"><img src="${ctxStatic}/image/wechat/icon-add_white.png">{{saveCustomer}}</button>
+                <button v-on:click="cancelCus" class="back-btn close-popup" data-target="#customer"><img src="${ctxStatic}/image/wechat/icon-back_white.png">{{cancelCustomer}}</button>
+            </div>
+        </div>
+    </div>
+
     <%-- 表体 --%>
     <div id="detail">
 
@@ -217,21 +255,6 @@
         <div class="weui-popup__overlay"></div>
         <div class="weui-popup__modal">
             <div class="all">
-                <!-- 搜索框 -->
-                <%--<div class="weui-search-bar" id="searchBar" style="height: 7%;">
-                    <div v-on:click="open" class="weui-search-bar__form">
-                        <div class="weui-search-bar__box">
-                            <i class="weui-icon-search"></i>
-                            <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
-                            <a v-on:click="empty" class="weui-icon-clear" id="searchClear"></a>
-                        </div>
-                        <label class="weui-search-bar__label" id="searchText">
-                            <i class="weui-icon-search"></i>
-                            <span>搜索</span>
-                        </label>
-                    </div>
-                    <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
-                </div>--%>
                 <!-- 滑动门 -->
                 <div class="bg">
                     <ul>
@@ -252,6 +275,7 @@
             </div>
         </div>
     </div>
+
 
     <br><br><br>
 
@@ -295,19 +319,7 @@
                 this.icitemClassList = res.data.body.icitemClassList;
             });
             this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId', {}).then(function (res) {
-                var customerList = res.body.body.customerList;
-                var data = new Array();
-                for (var i = 0; i < customerList.length; i++) {
-                    var info = {"title": customerList[i].name, "value": customerList[i].id};
-                    data.push(info)
-                }
-                $("#cusName").select({
-                    title: "选择客户",
-                    items: data,
-                    onChange: function (result) {//选中触发事件
-                        $("#custId").val(result.values);
-                    }
-                });
+                this.customerList = res.body.body.customerList;
             });
             /* 订单类型 */
             this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30', {}).then(function (res) {
@@ -334,7 +346,10 @@
             del: '删除商品',
             saveItems: '保存',
             cancel: '取消',
-            icitemClassList: []
+            saveCustomer:'保存',
+            cancelCustomer:'取消',
+            icitemClassList: [],
+            customerList:[]
         },
         methods: {
             close() {
@@ -440,15 +455,15 @@
                                     check = true;
                                 }
                             }
-                            template += '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '">' +
-                                '<div class="weui-cell__hd" style="float: left;">';
+                            template += '<div class="pro-cell">' +
+                                '<div class="pro-list" style="padding: 0px;font-size: 12px;">' +
+                                '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '" style="padding:0%;margin-bottom: 2%;">';
                             if (check) {
                                 template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" checked class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             } else {
                                 template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
                             }
                             template += '<i class="weui-icon-checked"></i>' +
-                                '</div>' +
                                 '<div class="weui-cell__bd">' +
                                 '<p>编码:' + icitemList[i].number + '</p>' +
                                 '<p>名称:' + icitemList[i].name + '</p>' +
@@ -456,8 +471,11 @@
                                 '<p>型号:' + icitemList[i].model + '</p>' +
                                 '<p>单价:</p>' +
                                 '</div>' +
-                                '</label>';
+                                '</label>' +
+                                '</div>'+
+                                '</div>';
                         }
+                        template += '</div>';
                         template += '</div>';
                         $("#" + index).append(template);
                     }
@@ -523,6 +541,54 @@
                 });
             },
             cancelItems: function () {
+            },
+            saveCus: function () {
+                var id = $("input[name='customer']:checked").val();
+                $("#custId").val(id);
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/customer/getCustomerById',
+                   type:'post',
+                   data:{
+                       id:id
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                       $("#cusName").val(res.body.customer.name);
+                   }
+                });
+            },
+            cancelCus: function () {
+            },
+            searchCustomer:function (val) {
+                $.ajax({
+                   async:false,
+                   cache:false,
+                   url:'${ctxf}/wechat/customer/getCustomerListByEmpId',
+                   type:'post',
+                   data:{
+                       name:val
+                   },
+                   dataType:'json',
+                   success:function (res) {
+                       var templet = '';
+                       $("#customerList").empty();
+                       var customerList = res.body.customerList;
+                       for (var i = 0; i < customerList.length; i++) {
+                           templet += '<label class="weui-cell weui-check__label" for="'+customerList[i].id+'">' +
+                               '<div class="weui-cell__bd">' +
+                               '<p>'+customerList[i].name+'</p>' +
+                               '</div>' +
+                               '<div class="weui-cell__ft">' +
+                               '<input type="radio" class="weui-check" name="customer" id="'+customerList[i].id+'" value="'+customerList[i].id+'">' +
+                               '<span class="weui-icon-checked"></span>' +
+                               '</div>' +
+                               '</label>';
+                       }
+                       $("#customerList").append(templet);
+                   }
+                });
             }
         }
     });
@@ -603,7 +669,6 @@
             "synStatus": 0,
             "status": status,
             "cancellation": 0,
-            "checkStatus": 0,
             "needTime": needTime,
             "type": type,
             "createDate": createDate,

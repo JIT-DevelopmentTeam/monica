@@ -123,11 +123,11 @@
 				</button>
 			</shiro:hasPermission>
 
-            <shiro:hasPermission name="management:sobillandentry:sobill:check">
+            <%--<shiro:hasPermission name="management:sobillandentry:sobill:check">
                 <button id="check" class="btn btn-primary" onclick="checkOrder()">
                     <i class="glyphicon glyphicon-search"></i> 审核
                 </button>
-            </shiro:hasPermission>
+            </shiro:hasPermission>--%>
 
 			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
 				<button id="synchronization" class="btn btn-success" onclick="">
@@ -154,17 +154,28 @@
     </ul>  
 	</div>
 
-    <%-- 订单明细 --%>
-    <div class="row">
-        <div class="panel panel-default col-sm-12 col-md-12">
-            <div class="panel-heading"  style="background-color: rgba(128,128,128,0.07);">
-                <h3 class="panel-title"><label>订单明细</label></h3>
+        <%-- 导航 --%>
+        <div class="row">
+            <div class="tabs-container" style="margin-left: 0.8%;margin-right: 0.8%;">
+                <!-- 导航标签 -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#sobillentry" aria-controls="sobillentry" role="tab" data-toggle="tab">订单明细</a></li>
+                    <li role="presentation" class=""><a href="#review" aria-controls="review" role="tab" data-toggle="tab">审批明细</a></li>
+                </ul>
+                <!-- 标签窗格 -->
+                <div class="tab-content">
+                    <!-- 订单明细 -->
+                    <div role="tabpanel" class="tab-pane fade in active" id="sobillentry">
+                        <table id="sobillentryListTable" ></table>
+                    </div>
+
+                    <!-- 订单明细 -->
+                    <div role="tabpanel" class="tab-pane fade in" id="review">
+                        <table id="reviewListTable" ></table>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-sm-12 col-md-11">
-            <table id="sobillentryListTable" ></table>
-        </div>
-    </div>
 	</div>
 	</div>
 </body>

@@ -3,6 +3,8 @@
  */
 package com.jeeplus.modules.management.orderapprove.web;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 /**
  * 订单流程绑定Controller
  * @author KicoChan
- * @version 2019-08-14
+ * @version 2019-08-15
  */
 @Controller
 @RequestMapping(value = "${adminPath}/management/orderapprove/orderApprove")
@@ -218,6 +221,40 @@ public class OrderApproveController extends BaseController {
 			j.setMsg( "导入模板下载失败！失败信息："+e.getMessage());
 		}
 		return j;
+    }
+
+    /**
+     * 审批列表
+     * @param orderApprove
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "getOrderApproveListBySobillId")
+    @ResponseBody
+    public Map<String,Object> getOrderApproveListBySobillId(OrderApprove orderApprove, HttpServletRequest request, HttpServletResponse response){
+        orderApprove.setDelFlag("0");
+        if("".equals(orderApprove.getSobillId().getId().trim())){
+            orderApprove.getSobillId().setId(null);
+        }
+        Page<OrderApprove> page = findPage(new Page<OrderApprove>(request, response), orderApprove);
+        return getBootstrapData(page);
+    }
+
+    /**
+     * 查询分页数据
+     * @param page 分页对象
+     * @param orderApprove
+     * @return
+     */
+    private Page<OrderApprove> findPage(Page<OrderApprove> page, OrderApprove orderApprove) {
+        orderApprove.setPage(page);
+        if (orderApprove.getSobillId().getId() == null || "".equals(orderApprove.getSobillId().getId())){
+            page.setList(null);
+        } else {
+            page.setList(orderApproveService.findList(orderApprove));
+        }
+        return page;
     }
 
 }

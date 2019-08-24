@@ -1,0 +1,153 @@
+body{
+    background: #f6f6f6;
+    margin: 0;
+}
+.isHead{
+    background: #fff;
+    padding-top: 10px;
+}
+.head-nav{
+    text-align: center;
+}
+/*原先代码*/
+/*.nav-item{
+    padding:3px 15px;
+    border-radius: 5px 0 0 5px;
+    border-radius:5px 5px 5px 5px;
+    font-size: 14px;
+    border: 1px solid #0f76e0;
+    color:#0f76e0
+}*/
+/*更改代码*/
+.nav-item{
+    padding:3px 15px;
+    border-radius:5px 5px;
+    font-size: 14px;
+    border: 1px solid #0f76e0;
+    color:#0f76e0
+}
+
+.nav-item+.nav-item{
+    border-left: none;
+    margin-left: -5px;
+    border-radius: 0 5px 5px 0;
+}
+.nav-item.isChoosed{
+    background: #0f76e0;
+    color: #ffffff;
+}
+.switch-tab{
+    display: flex;
+    background: #fff;
+    margin: 10px 0 0;
+    padding: 3px 0;
+    border-top: 1px solid #f6f6f6;
+    font-size: 12px;
+}
+.tab-item{
+    flex: 1;
+    text-align: center;
+}
+.tab-item img{
+    width: 13px;
+    vertical-align: -2px;
+}
+.review-list{
+    background: #fff;
+    padding: 10px 15px;
+    color: #4a4a4a;
+    font-size: 14px;
+    margin-top: 8px;
+}
+.companyName{
+    font-size: 16px;
+}
+.dateInfo{
+    margin: 0 -15px;
+    border-top: 1px solid #f6f6f6;
+    padding: 5px 15px 0px 20px;
+    font-size: 14px;
+    color: #888;
+    height: 20px;
+}
+.reviewInfo{
+
+}
+.reviewInfo p{
+    margin: 5px;
+    position: relative;
+}
+.reviewInfo p img{
+    width: 15px;
+    vertical-align: -2px;
+    margin-right: 5px;
+}
+.icon-phone{
+    width: 22px;
+    height: 22px;
+    line-height: 30px;
+    position: absolute;
+    right: 0;
+    top: -30px;
+    border-radius: 30px;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+.reviewInfo p .icon-phone img{
+    width: 16px;
+    margin: 3px;
+    vertical-align: 10px;
+}
+.reviewInfo p .reviewGrade{
+    position: absolute;
+    left: 100px;
+    padding: 2px 13px;
+    background: #5bacff;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #fff;
+}
+.reviewInfo p .reviewPhone{
+    position: absolute;
+    left: 100px;
+    color: #797979;
+}
+.dateInfo span{
+    border-radius: 5px;
+    float: right;
+    padding: 2px 5px;
+    border: 1px solid #ddd;
+    color: #ff69607d;
+}
+.sort-box{
+    position: absolute;
+    z-index: 1000;
+    background: #fff;
+    width: 100%;
+
+    color: #999;
+    font-size: 14px;
+}
+.sort-list{
+    padding: 8px 15px;
+    border-top: 1px solid #f6f6f6;
+}
+.fiexd-list{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #fff;
+    padding: 5px 0;
+    border-top: 1px solid #eee;
+}
+.fiexd-item{
+    flex: 1;
+    text-align: center;
+}
+.fiexd-item p{
+    margin: -5px;
+    font-size: 14px;
+    color: #4a4a4a;
+}

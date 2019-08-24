@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import com.jeeplus.modules.sys.entity.User;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
@@ -14,7 +15,7 @@ import com.jeeplus.common.utils.excel.annotation.ExcelField;
 /**
  * 订单流程绑定Entity
  * @author KicoChan
- * @version 2019-08-14
+ * @version 2019-08-15
  */
 public class OrderApprove extends DataEntity<OrderApprove> {
 	
@@ -28,6 +29,14 @@ public class OrderApprove extends DataEntity<OrderApprove> {
 	private String remark;		// 审核评议
 	private Integer isToapp;		// 是否进入待审核状态
 	private Integer isLast;		// 是否为最后节点
+	private Sobill sobillId;		// 订单id
+    private Integer unprocessed;    // 是否为待处理数据
+    private Integer processed;      // 是否为已处理数据
+    private String createDateStr;       // 字符串格式创建时间
+    private String cusName;     // 客户名称
+    private Integer startPage;		// 起始分页
+    private Integer endPage;	// 结束分页
+    private String approvalEmpName;     // 审批人
 	
 	public OrderApprove() {
 		super();
@@ -122,4 +131,69 @@ public class OrderApprove extends DataEntity<OrderApprove> {
 		this.isLast = isLast;
 	}
 	
+	@NotNull(message="订单id不能为空")
+	@ExcelField(title="订单id", fieldType=Sobill.class, value="", align=2, sort=16)
+	public Sobill getSobillId() {
+		return sobillId;
+	}
+
+	public void setSobillId(Sobill sobillId) {
+		this.sobillId = sobillId;
+	}
+
+    public Integer getUnprocessed() {
+        return unprocessed;
+    }
+
+    public void setUnprocessed(Integer unprocessed) {
+        this.unprocessed = unprocessed;
+    }
+
+    public Integer getProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(Integer processed) {
+        this.processed = processed;
+    }
+
+    public String getCreateDateStr() {
+        return createDateStr;
+    }
+
+    public void setCreateDateStr(String createDateStr) {
+        this.createDateStr = createDateStr;
+    }
+
+    public String getCusName() {
+        return cusName;
+    }
+
+    public void setCusName(String cusName) {
+        this.cusName = cusName;
+    }
+
+    public Integer getStartPage() {
+        return startPage;
+    }
+
+    public void setStartPage(Integer startPage) {
+        this.startPage = startPage;
+    }
+
+    public Integer getEndPage() {
+        return endPage;
+    }
+
+    public void setEndPage(Integer endPage) {
+        this.endPage = endPage;
+    }
+
+    public String getApprovalEmpName() {
+        return approvalEmpName;
+    }
+
+    public void setApprovalEmpName(String approvalEmpName) {
+        this.approvalEmpName = approvalEmpName;
+    }
 }

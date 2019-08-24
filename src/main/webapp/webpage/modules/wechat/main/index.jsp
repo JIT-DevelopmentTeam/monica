@@ -44,24 +44,30 @@
             </div>
             <p class="weui-grid__label">{{ warning }}</p>
         </a>
-        <a v-bind:href="dataAnalysisHref" class="weui-grid">
+        <a v-bind:href="reviewHref" class="weui-grid">
+            <div class="weui-grid__icon">
+                <img src="${ctxStatic}/image/wechat/page_white_edit.png" alt="">
+            </div>
+            <p class="weui-grid__label">{{ review }}</p>
+        </a>
+        <%--<a v-bind:href="dataAnalysisHref" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/chart_curve.png" alt="">
             </div>
             <p class="weui-grid__label">{{ dataAnalysis }}</p>
-        </a>
-        <a v-bind:href="checkInHref" class="weui-grid">
+        </a>--%>
+        <%--<a v-bind:href="checkInHref" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/map.png" alt="">
             </div>
             <p class="weui-grid__label">{{ checkIn }}</p>
-        </a>
-        <a v-bind:href="reportHref" class="weui-grid">
+        </a>--%>
+        <%--<a v-bind:href="reportHref" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/page_white_edit.png" alt="">
             </div>
             <p class="weui-grid__label">{{ report }}</p>
-        </a>
+        </a>--%>
     </div>
 </div>
 </body>
@@ -80,12 +86,8 @@
             stockHref: "${ctxf}/wechat/stock/list",
             warning: "预警提醒",
             warningHref: "",
-            dataAnalysis: "数据分析",
-            dataAnalysisHref: "",
-            checkIn: "考勤签到",
-            checkInHref: "",
-            report: "工作报告",
-            reportHref: ""
+            review: "订单审核",
+            reviewHref: "${ctxf}/wechat/review/list"
         }
     });
 </script>

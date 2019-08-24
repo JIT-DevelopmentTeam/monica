@@ -41,7 +41,7 @@
 					<td class="width-35">
 						<form:select path="type" class="form-control required">
 							<form:option value="" label=""/>
-							<form:options items="${fns:getDictList('process_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+							<form:options items="${fns:getDictList('order_Approve_Type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>流程节点用户：</label></td>

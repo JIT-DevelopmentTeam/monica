@@ -40,13 +40,20 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+            <if test="type != null">
+                AND a.f_type = #{type}
+            </if>
+
+            <if test="status != null">
+                AND a.f_status = #{status}
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.f_index, a.update_date DESC
+				ORDER BY a.f_index ASC
 			</otherwise>
 		</choose>
 	</select>

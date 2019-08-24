@@ -31,7 +31,6 @@
 		dept.name AS "deptName",
 		cus.f_name AS "cusName",
 		date_format(a.f_needtime, '%Y-%m-%d') AS "needTimeStr"
-		/*dict.label AS "typeName"*/
 	</sql>
 	
 	<sql id="sobillJoins">
@@ -40,7 +39,6 @@
 		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
 		LEFT JOIN tb_customer AS cus ON a.f_custid = cus.id
 		LEFT JOIN sys_user AS creater ON a.create_by = creater.id
-		/*LEFT JOIN sys_dict_value AS dict ON a.f_type = dict.id*/
 	</sql>
 	
     
@@ -221,6 +219,35 @@
 	<select id="findUniqueByProperty" resultType="Sobill" statementType="STATEMENT">
 		select * FROM ic_sobill  where ${propertyName} = '${value}'
 	</select>
+
+    <select id="findSubmittedList" parameterType="Sobill" resultType="Sobill">
+        SELECT
+            (SELECT approve.f_type FROM ic_order_approve approve WHERE approve.del_flag = '0' AND approve.f_sobillid = a.id ORDER BY approve.f_status DESC,approve.f_index DESC LIMIT 0,1) AS "approveType",
+            (SELECT approve.f_status FROM ic_order_approve approve WHERE approve.del_flag = '0' AND approve.f_sobillid = a.id ORDER BY approve.f_status DESC,approve.f_index DESC LIMIT 0,1) AS "approveStatus",
+            (SELECT approve.f_islast FROM ic_order_approve approve WHERE approve.del_flag = '0' AND approve.f_sobillid = a.id ORDER BY approve.f_status DESC,approve.f_index DESC LIMIT 0,1) AS "isLast",
+            (SELECT date_format(approve.create_date, '%Y-%m-%d %H:%m:%s') FROM ic_order_approve approve WHERE approve.del_flag = '0' AND approve.f_sobillid = a.id ORDER BY approve.f_index ASC LIMIT 0,1) AS "initiateDateStr",
+            <include refid="sobillColumns"/>
+        FROM
+            ic_sobill a
+            <include refid="sobillJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            AND a.id IN (SELECT approve.f_sobillid FROM ic_order_approve approve WHERE approve.del_flag = '0')
+            <if test="emplId != null and emplId != ''">
+                AND a.f_emplid = #{emplId}
+            </if>
+
+            <if test="cusName != null and cusName != ''">
+                AND cus.f_name LIKE
+                <if test="dbName == 'oracle'">'%'||#{cusName}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{cusName}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{cusName},'%')</if>
+            </if>
+        </where>
+        <if test="startPage != null and endPage != null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
 
 
 </mapper>

@@ -17,8 +17,8 @@ import javax.validation.constraints.NotNull;
 public class Approvenode extends DataEntity<Approvenode> {
 	
 	private static final long serialVersionUID = 1L;
-	private String type;		// 流程类型
 	private String approvalEmplid;		// 流程节点用户id
+    private Integer type;       // 类型
 	private Integer index;		// 排序
 	private String name;		// 节点名称
 	private Integer status;		// 使用状态
@@ -32,15 +32,6 @@ public class Approvenode extends DataEntity<Approvenode> {
 		super(id);
 	}
 
-	@ExcelField(title="流程类型", dictType="", align=2, sort=1)
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
 	@ExcelField(title="流程节点用户id", fieldType=String.class, value="", align=2, sort=2)
 	public String getApprovalEmplid() {
 		return approvalEmplid;
@@ -86,4 +77,13 @@ public class Approvenode extends DataEntity<Approvenode> {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+    @ExcelField(title="流程类型", dictType="order_Approve_Type", align=2, sort=1)
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }

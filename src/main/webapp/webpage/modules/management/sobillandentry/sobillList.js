@@ -78,6 +78,7 @@ $(document).ready(function() {
                onClickRow: function(row, $el){
                    $("#sobillId").val(row.id);
                    $("#sobillentryListTable").bootstrapTable("refresh");
+                   $("#reviewListTable").bootstrapTable("refresh");
                },
                	onShowSearch: function () {
 			$("#search-collapse").slideToggle();
@@ -122,7 +123,16 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'synStatus',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('syn_status'))}, value, "-");
+                    var html;
+                    switch (value) {
+                        case 0:
+                            html = '<span style="color:red;">未同步</span>';
+                            break;
+                        case 1:
+                            html = '<span style="color: green;">已同步</span>';
+                            break;
+                    }
+                    return html;
 		        }
 
 		    }
@@ -163,7 +173,13 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'status',
 			    formatter:function(value, row , index){
-			 	   return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_status'))}, value, "-");
+		            var html;
+		            if (value == 0) {
+                        html = '<span style="color:red;">草稿</span>';
+                    } else {
+                        html = '<span style="color: green;">提交审核</span>';
+                    }
+			 	   return html;
 			    }
 		    }
 			,{
@@ -172,23 +188,24 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'cancellation',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_cancellation'))}, value, "-");
+                    var html;
+                    switch (value) {
+                        case 0:
+                            html = '<span style="color: green;">否</span>';
+                            break;
+                        case 1:
+                            html = '<span style="color:red;">是</span>';
+                            break;
+                    }
+		        	return html;
 		        }
 
 		    }
 			,{
-		        field: 'checkerName',
-		        title: '审核人',
-		        sortable: true,
-		        sortName: 'checkerName'
-
-		    }
-			,{
 		        field: 'checkTime',
-		        title: '审核时间',
+		        title: '审核通过时间',
 		        sortable: true,
 		        sortName: 'checkTime'
-
 		    }
 			,{
 		        field: 'checkStatus',
@@ -196,7 +213,22 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'checkStatus',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sobill_checkStatus'))}, value, "-");
+                    var html;
+                    switch (value) {
+                        case 0:
+                            html = '<span style="color:red;">待审核</span>';
+                            break;
+                        case 1:
+                            html = '<span style="color: green;">已审核</span>';
+                            break;
+                        case 2:
+                            html = '<span style="color: blue;">待提交审核</span>';
+                            break;
+                        case 3:
+                            html = '<span style="color:red;">审核不通过</span>';
+                            break;
+                    }
+                    return html;
 		        }
 
 		    }
@@ -217,18 +249,18 @@ $(document).ready(function() {
 		        sortName: 'amount'
 
 		    }
-                   ,{
-                       field: 'remarks',
-                       title: '备注',
-                       sortable: true,
-                       sortName: 'remarks'
-                   }
+               ,{
+                   field: 'remarks',
+                   title: '备注',
+                   sortable: true,
+                   sortName: 'remarks'
+               }
 		     ]
 
 		});
 
-        // 初始化订单明细
-        sobillentryList();
+        // 初始化订单明细和审核明细
+        init();
 
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
@@ -341,6 +373,7 @@ $(document).ready(function() {
   function refresh() {
       $('#sobillTable').bootstrapTable('refresh');
       $("#sobillentryListTable").bootstrapTable("refresh");
+      $("#reviewListTable").bootstrapTable("refresh");
   }
   function add(){
 	  jp.openSaveDialog('新增订单', "${ctx}/management/sobillandentry/sobill/form", window.innerWidth * 0.9+'px', window.innerWidth * 0.8+'px');
@@ -403,9 +436,8 @@ $(document).ready(function() {
         });
 	}
 
-// 订单明细列表
-function sobillentryList() {
-    //项目计划列表表格
+function init() {
+    //订单明细列表表格
     $("#sobillentryListTable").bootstrapTable({
         //请求方法
         method: 'post',
@@ -459,7 +491,7 @@ function sobillentryList() {
         contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
         contextMenu: '#context-menu',
         onContextMenuItem: function(row, $el){
-            if($el.data("item") == "edit"){
+            /*if($el.data("item") == "edit"){
                 edit(row.id);
             }else if($el.data("item") == "view"){
                 view(row.id);
@@ -477,7 +509,7 @@ function sobillentryList() {
 
                 });
 
-            }
+            }*/
         },
 
         onClickRow: function(row, $el){
@@ -491,7 +523,8 @@ function sobillentryList() {
         }
             ,{
                 title: "序号",
-                sortable: true
+                sortable: true,
+                width:'50px'
                 ,formatter:function(value, row , index){
                     return index+1;
                 }
@@ -553,6 +586,135 @@ function sobillentryList() {
                 sortable: true,
                 sortName: 'remarks'
 
+            }
+        ]
+    });
+
+    //审批流程列表表格
+    $("#reviewListTable").bootstrapTable({
+        //请求方法
+        method: 'post',
+        //类型json
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded",
+        //显示检索按钮
+        showSearch: false,
+        //显示刷新按钮
+        showRefresh: false,
+        //显示切换手机试图按钮
+        showToggle: false,
+        //显示 内容列下拉框
+        showColumns: false,
+        //显示到处按钮
+        showExport: false,
+        //显示切换分页按钮
+        showPaginationSwitch: false,
+        //最低显示2行
+        minimumCountColumns: 2,
+        //是否显示行间隔色
+        striped: true,
+        //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        cache: false,
+        //是否显示分页（*）
+        pagination: true,
+        //排序方式
+        sortOrder: "asc",
+        //初始化加载第一页，默认第一页
+        pageNumber:1,
+        //每页的记录行数（*）
+        pageSize: 10,
+        //可供选择的每页的行数（*）
+        pageList: [10, 25, 50, 100],
+        //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+        url: "${ctx}/management/orderapprove/orderApprove/getOrderApproveListBySobillId",
+        //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+        //queryParamsType:'',
+        ////查询参数,每次调用是会带上这个参数，可自定义
+        queryParams : function(params) {
+            var searchParam = $("#searchForm").serializeJSON();
+            searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+            searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+            searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
+            searchParam.sobillId = $("#sobillId").val() === undefined ? "" : $("#sobillId").val();
+            return searchParam;
+        },
+        //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination: "server",
+        contextMenuTrigger:"right",//pc端 按右键弹出菜单
+        contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
+        contextMenu: '#context-menu',
+        onContextMenuItem: function(row, $el){
+            /*if($el.data("item") == "edit"){
+                edit(row.id);
+            }else if($el.data("item") == "view"){
+                view(row.id);
+            } else if($el.data("item") == "delete"){
+                jp.confirm('确认要删除该合同管理记录吗？', function(){
+                    jp.loading();
+                    jp.get("${ctx}/management/contract/contract/delete?id="+row.id, function(data){
+                        if(data.success){
+                            $('#contractTable').bootstrapTable('refresh');
+                            jp.success(data.msg);
+                        }else{
+                            jp.error(data.msg);
+                        }
+                    })
+
+                });
+
+            }*/
+        },
+
+        onClickRow: function(row, $el){
+        },
+        onShowSearch: function () {
+            $("#search-collapse").slideToggle();
+        },
+        columns: [{
+            checkbox: true
+
+        }
+            ,{
+                title: "序号",
+                width:'50px'
+                ,formatter:function(value, row , index){
+                    return index+1;
+                }
+
+            }
+            ,{
+                field: 'approvalEmpName',
+                title: '审批人',
+                sortName: 'approvalEmpName'
+
+            }
+            ,{
+                field: 'name',
+                title: '节点名称',
+                sortName: 'name'
+            }
+            ,{
+                field: 'status',
+                title: '审批状态',
+                sortName: 'status'
+                ,formatter:function(value, row , index){
+                    var html;
+                    if (!(value == 0 && row.isToapp == 1)) {
+                        if (value == 1) {
+                            html = '<span style="color: green;">审核通过</span>';
+                        } else if (value == 2) {
+                            html = '<span style="color: red;">审核不通过</span>';
+                        }
+                    } else {
+                        html = '<span style="color: blue;">审核中</span>'
+                    }
+                    return html;
+                }
+            }
+            ,{
+                field: 'remark',
+                title: '审核评议',
+                sortName: 'remark'
             }
         ]
     });
