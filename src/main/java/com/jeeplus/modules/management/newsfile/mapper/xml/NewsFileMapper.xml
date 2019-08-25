@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.newsfile.mapper.NewsFileMapper">
+    
+	<sql id="newsFileColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.f_originalname AS "originalName",
+		a.f_name AS "name",
+		a.f_size AS "size",
+		a.f_type AS "type",
+		a.f_isdown AS "isDown",
+		a.f_url AS "url",
+		a.f_smallurl AS "smallUrl",
+		a.f_server AS "server",
+		a.f_newsid AS "newsId",
+		a.f_downcount AS "downCount"
+	</sql>
+	
+	<sql id="newsFileJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="NewsFile" >
+		SELECT 
+			<include refid="newsFileColumns"/>
+		FROM tb_newsfile a
+		<include refid="newsFileJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="NewsFile" >
+		SELECT 
+			<include refid="newsFileColumns"/>
+		FROM tb_newsfile a
+		<include refid="newsFileJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="NewsFile" >
+		SELECT 
+			<include refid="newsFileColumns"/>
+		FROM tb_newsfile a
+		<include refid="newsFileJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_newsfile(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			f_originalname,
+			f_name,
+			f_size,
+			f_type,
+			f_isdown,
+			f_url,
+			f_smallurl,
+			f_server,
+			f_newsid,
+			f_downcount
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{originalName},
+			#{name},
+			#{size},
+			#{type},
+			#{isDown},
+			#{url},
+			#{smallUrl},
+			#{server},
+			#{newsId},
+			#{downCount}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_newsfile SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			f_originalname = #{originalName},
+			f_name = #{name},
+			f_size = #{size},
+			f_type = #{type},
+			f_isdown = #{isDown},
+			f_url = #{url},
+			f_smallurl = #{smallUrl},
+			f_server = #{server},
+			f_newsid = #{newsId},
+			f_downcount = #{downCount}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_newsfile
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_newsfile SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="NewsFile" statementType="STATEMENT">
+		select * FROM tb_newsfile  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

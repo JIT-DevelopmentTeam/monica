@@ -352,8 +352,8 @@
                 this.customerList = res.body.body.customerList;
             });
             /* 订单类型 */
-            this.$http.get('${ctxf}/wechat/sys/dict/getDictValue?dictTypeId=29f9226efb3840c6a2bee6096c573a30', {}).then(function (res) {
-                var dictList = res.body.rows;
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
+                var dictList = res.body;
                 for (var i = 0; i < dictList.length; i++) {
                     if (dictList[i].value == ${sobill.type}) {
                         $("#typeSelect").val(dictList[i].label);

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.usedrecord.mapper.UsedRecordMapper">
+    
+	<sql id="usedRecordColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.f_tokenid AS "tokenId",
+		a.f_url AS "url",
+		a.f_purpose AS "purpose"
+	</sql>
+	
+	<sql id="usedRecordJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="UsedRecord" >
+		SELECT 
+			<include refid="usedRecordColumns"/>
+		FROM tb_usedrecord a
+		<include refid="usedRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UsedRecord" >
+		SELECT 
+			<include refid="usedRecordColumns"/>
+		FROM tb_usedrecord a
+		<include refid="usedRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UsedRecord" >
+		SELECT 
+			<include refid="usedRecordColumns"/>
+		FROM tb_usedrecord a
+		<include refid="usedRecordJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_usedrecord(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			f_tokenid,
+			f_url,
+			f_purpose
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{tokenId},
+			#{url},
+			#{purpose}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_usedrecord SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			f_tokenid = #{tokenId},
+			f_url = #{url},
+			f_purpose = #{purpose}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_usedrecord
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_usedrecord SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="UsedRecord" statementType="STATEMENT">
+		select * FROM tb_usedrecord  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

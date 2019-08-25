@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.token.mapper.TokenMapper">
+    
+	<sql id="tokenColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.f_token AS "token",
+		a.f_times AS "times",
+		a.f_emplid AS "emplId",
+		a.f_clientid AS "clientId",
+		a.f_clienttype AS "clientType",
+		a.f_rule AS "rule",
+		a.f_status AS "status",
+		a.f_timeout AS "timeOut",
+		a.f_starttime AS "startTime"
+	</sql>
+	
+	<sql id="tokenJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="Token" >
+		SELECT 
+			<include refid="tokenColumns"/>
+		FROM tb_token a
+		<include refid="tokenJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Token" >
+		SELECT 
+			<include refid="tokenColumns"/>
+		FROM tb_token a
+		<include refid="tokenJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Token" >
+		SELECT 
+			<include refid="tokenColumns"/>
+		FROM tb_token a
+		<include refid="tokenJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_token(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			f_token,
+			f_times,
+			f_emplid,
+			f_clientid,
+			f_clienttype,
+			f_rule,
+			f_status,
+			f_timeout,
+			f_starttime
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{token},
+			#{times},
+			#{emplId},
+			#{clientId},
+			#{clientType},
+			#{rule},
+			#{status},
+			#{timeOut},
+			#{startTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_token SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			f_token = #{token},
+			f_times = #{times},
+			f_emplid = #{emplId},
+			f_clientid = #{clientId},
+			f_clienttype = #{clientType},
+			f_rule = #{rule},
+			f_status = #{status},
+			f_timeout = #{timeOut},
+			f_starttime = #{startTime}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_token
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_token SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Token" statementType="STATEMENT">
+		select * FROM tb_token  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>
