@@ -355,13 +355,13 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
                 var dictList = res.body;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.type}) {
-                        $("#typeSelect").val(dictList[i].label);
+                    if (dictList[i].id == ${sobill.type}) {
+                        $("#typeSelect").val(dictList[i].description);
                     }
                 }
                 var data = [];
                 for (var i = 0; i < dictList.length; i++) {
-                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    var info = {"title": dictList[i].description, "value": dictList[i].id};
                     data.push(info);
                 }
 
