@@ -23,10 +23,24 @@ public class DictWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "listData")
-    public List<DictType> listData(@RequestParam(required=false) String type) {
+    public Map<String, Object> listData(@RequestParam(required=false) String type) {
         DictType dictType = new DictType();
         dictType.setType(type);
-        return dictTypeService.findList(dictType);
+        List<DictType> dictTypeList = dictTypeService.findList(dictType);
+        return getDictValue(dictTypeList.get(0).getId());
+    }
+
+    private Map<String, Object> getDictValue(String dictTypeId) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if(dictTypeId == null || "".equals(dictTypeId)){
+            map.put("rows","[]");
+            map.put("total",0);
+        }else{
+            List<DictValue> list = dictTypeService.get(dictTypeId).getDictValueList();
+            map.put("rows",list);
+            map.put("total", list.size());
+        }
+        return map;
     }
 
 }
