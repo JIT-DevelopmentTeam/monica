@@ -60,7 +60,7 @@ public class WarehouseController extends BaseController {
 	public Map<String,Object>  synWareHouse(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_stock?token_value=20190603","POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_stock?token_value=20190603","POST");
 
 		warehouseService.deleteAll();		// 同步数据前先清空仓库表
 		JSONObject jsonObject = new JSONObject();

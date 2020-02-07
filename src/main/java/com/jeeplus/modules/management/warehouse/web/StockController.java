@@ -84,9 +84,9 @@ public class StockController extends BaseController {
 			warehouseId = "";
 		}
 		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId + "&currentPage=" + pageNo,"POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId + "&currentPage=" + pageNo,"POST");
 		JSONArray jsonarrTotal =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_warehouse_stock_total?token_value=20190603&warehouseId=" + warehouseId,"POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&warehouseId=" + warehouseId,"POST");
 
 		JSONObject jsonObject = new JSONObject();
 		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());

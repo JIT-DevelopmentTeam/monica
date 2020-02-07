@@ -9,8 +9,6 @@ import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.web.BaseController;
-import com.jeeplus.modules.monitor.utils.Common;
-import com.jeeplus.modules.sys.entity.Area;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.service.AreaService;
@@ -21,9 +19,6 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.JwDepartmentAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +64,7 @@ public class OfficeController extends BaseController {
 	@RequestMapping(value = "synDept")
 	public Map<String,Object>  synDept(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
+		/*JSONArray jsonarr =
 				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
 		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
 
@@ -133,7 +128,7 @@ public class OfficeController extends BaseController {
 			office.setSynStatus(1);
 
 			officeService.save(office);
-		}
+		}*/
 		json.put("msg","success");
 		return json;
 	}
@@ -197,7 +192,7 @@ public class OfficeController extends BaseController {
 			return j;
 		}
 		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-		if ("".equals(office.getId())) {				// 新建
+		/*if ("".equals(office.getId())) {				// 新建
 			if ("".equals(office.getParent().getId())) {
 				office.setQyDeptParentId(1);
 			} else {
@@ -262,7 +257,7 @@ public class OfficeController extends BaseController {
 					office.setSynStatus(1);	// 同步完之后把状态改为已同步
 				}
 			}
-		}
+		}*/
 		officeService.save(office);
 		
 		if(office.getChildDeptList()!=null){

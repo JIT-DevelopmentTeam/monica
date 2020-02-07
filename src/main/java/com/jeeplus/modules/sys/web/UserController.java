@@ -203,7 +203,7 @@ public class UserController extends BaseController {
 				user.setMobile(unSynList.get(i).getMobile());
 				String officeId = unSynList.get(i).getOffice().getId();
 				Office office = officeService.get(officeId);
-				user.setDepartment(new Integer[]{office.getQyDeptId()});
+				user.setDepartment(new Integer[]{Integer.parseInt(office.getQyDeptId())});
 				int result = JwUserAPI.createUser(user, accessToken.getAccesstoken());
 				System.out.println(result==0 ? unSynList.get(i).getName() + "创建成功！" : "失败：" + result);
 				if (result == 0) {
@@ -220,7 +220,7 @@ public class UserController extends BaseController {
 				user.setMobile(needUpdateList.get(i).getMobile());
 				String officeId = needUpdateList.get(i).getOffice().getId();
 				Office office = officeService.get(officeId);
-				user.setDepartment(new Integer[]{office.getQyDeptId()});
+				user.setDepartment(new Integer[]{Integer.parseInt(office.getQyDeptId())});
 				int result = JwUserAPI.updateUser(user, accessToken.getAccesstoken());
 				System.out.println(result==0 ? needUpdateList.get(i).getName() + "修改成功！" : "失败：" + result);
 				if (result == 0) {
