@@ -177,11 +177,11 @@ public class Office extends TreeEntity<Office> {
 		return name;
 	}
 
-	public int getQyDeptId() {
+	public String getQyDeptId() {
 		return qyDeptId;
 	}
 
-	public void setQyDeptId(int qyDeptId) {
+	public void setQyDeptId(String qyDeptId) {
 		this.qyDeptId = qyDeptId;
 	}
 
@@ -192,5 +192,4 @@ public class Office extends TreeEntity<Office> {
     public void setErpDeptId(String erpDeptId) {
         this.erpDeptId = erpDeptId;
     }
-}
 }
