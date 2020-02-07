@@ -106,7 +106,7 @@
 			<li><a href="#" onclick="jp.openSaveDialog('修改机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')" ><i class="fa fa-edit"></i> 修改</a></li>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:office:del">
-            {{# if (d.parentId != '0') { }}
+            {{# if (d.id != '1') { }}
 			    <li><a  onclick="return del(this, '{{d.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
             {{# } }}
 		</shiro:hasPermission>
