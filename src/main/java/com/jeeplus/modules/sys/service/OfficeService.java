@@ -47,8 +47,7 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 	
 	@Transactional(readOnly = true)
 	public List<Office> findList(Office office){
-		office.setParentIds(office.getParentIds()+"%");
-		return officeMapper.findByParentIdsLike(office);
+        return officeMapper.findList(office);
 	}
 	
 	@Transactional(readOnly = true)

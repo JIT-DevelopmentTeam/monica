@@ -203,7 +203,6 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{qyDeptParentId},
 			#{qyDeptId},
 			#{erpDeptId},
 			#{delFlag},

@@ -7,14 +7,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.CacheUtils;
+import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.Area;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.AreaService;
 import com.jeeplus.modules.sys.service.OfficeService;
+import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.DictUtils;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
@@ -22,6 +26,8 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.JwDepartmentAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
+import net.oschina.j2cache.Cache;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
@@ -51,8 +57,9 @@ public class OfficeController extends BaseController {
 	private OfficeService officeService;
 
 	@Autowired
-	private AreaService areaService;
-	
+    private UserMapper userMapper;
+
+
 	@ModelAttribute("office")
 	public Office get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -60,82 +67,6 @@ public class OfficeController extends BaseController {
 		}else{
 			return new Office();
 		}
-	}
-
-	/**
-	 * 同步部门
-	 */
-	@ResponseBody
-	@RequestMapping(value = "synDept")
-	public Map<String,Object>  synDept(String parentId) throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_dept?token_value=20190603","POST");
-		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-
-		Office officeName = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
-		Area areaChina = areaService.findByName("中国");					// 按地域名查询地域信息
-		Area area = new Area();
-		List<Office> originalList = officeService.findByParentIds(0, officeName.getId());
-		officeService.deleteByParentId(officeName.getId());				// 导入之前先把企业里面的部门全部删除
-		List<Office> officeList = officeService.findList(new Office());
-		for (int i = 0; i < originalList.size(); i++) {
-			JwDepartmentAPI.deleteDepart(String.valueOf(originalList.get(i).getQyDeptId()), accessToken.getAccesstoken());
-		}
-
-		JSONObject jsonObject = new JSONObject();
-		for (int i = 0; i < jsonarr.size(); i++) {
-			jsonObject = jsonarr.getJSONObject(i);
-			Office office = new Office();
-			Office parent = new Office();
-			String parentID = jsonObject.getString("FParentID");
-			if ("0".equals(parentID)) {
-				parent.setId(officeName.getId());
-				parent.setName(officeName.getName());
-			} else {
-				parent.setId(parentID);
-				for (Office office1 : officeList) {
-					if (office1.getId().equals(parentID)) {
-						parent.setName(office1.getName());
-						break;
-					}
-				}
-			}
-
-			office.setParent(parent);
-			office.setId(jsonObject.getString("FItemID"));
-			office.setName(jsonObject.getString("FName"));
-			office.setCode(jsonObject.getString("FNumber"));
-			area.setId(areaChina.getId());
-			office.setArea(area);
-			office.setGrade("1");
-			office.setUseable("1");
-			Office findParentById = officeService.get(office.getParent().getId());
-			if (findParentById != null) {
-				office.setQyDeptParentId(findParentById.getQyDeptId());
-				List<Office> officeListByQyDeptParentId = officeService.findByQyDeptParentId(0, office.getQyDeptParentId());
-				int size = 0;
-				if (officeListByQyDeptParentId.size() > 0) {
-					size = officeListByQyDeptParentId.size() + 1;
-				} else {
-					size = 1;
-				}
-				office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
-			}
-			office.setSynStatus(0);
-			office.setIsSyntoent(1);
-			Department department = new Department();
-			department.setId(String.valueOf(office.getQyDeptId()));
-			department.setName(office.getName());
-			department.setOrder(String.valueOf(office.getSort()));
-			department.setParentid(String.valueOf(office.getQyDeptParentId()));
-			JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
-			office.setSynStatus(1);
-
-			officeService.save(office);
-		}
-		json.put("msg","success");
-		return json;
 	}
 
 	@RequiresPermissions("sys:office:list")
@@ -195,73 +126,6 @@ public class OfficeController extends BaseController {
 			j.setSuccess(false);
 			j.setMsg(errMsg);
 			return j;
-		}
-		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-		if ("".equals(office.getId())) {				// 新建
-			if ("".equals(office.getParent().getId())) {
-				office.setQyDeptParentId(1);
-			} else {
-				Office findParentById = officeService.get(office.getParent().getId());
-				office.setQyDeptParentId(findParentById.getQyDeptId());
-			}
-			List<Office> officeListByQyDeptParentId = officeService.findByQyDeptParentId(0, office.getQyDeptParentId());
-			int size = 0;
-			if (officeListByQyDeptParentId.size() > 0) {
-				size = officeListByQyDeptParentId.size() + 1;
-			} else {
-				size = 1;
-			}
-			office.setQyDeptId(Integer.parseInt(office.getQyDeptParentId() + "" + size));
-			office.setSynStatus(0);
-
-			// 同步到微信
-			if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
-				Department department = new Department();
-				department.setId(String.valueOf(office.getQyDeptId()));
-				department.setName(office.getName());
-				department.setOrder(String.valueOf(office.getSort()));
-				department.setParentid(String.valueOf(office.getQyDeptParentId()));
-				JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
-			}
-			office.setSynStatus(1);	// 同步完之后把状态改为已同步
-		} else {										// 修改
-			String hiddenisSyntoent = request.getParameter("hiddenisSyntoent");
-			if ("0".equals(hiddenisSyntoent)) {			// 第一次保存为不需要同步
-				if (!hiddenisSyntoent.equals(office.getIsSyntoent())) {		// 判断如果第一次为不需要同步，这一次为需要同步（执行创建）
-					office.setSynStatus(0);
-					// 同步到微信
-					if (office.getSynStatus() == 0 && office.getIsSyntoent() == 1) {
-						Department department = new Department();
-						department.setId(String.valueOf(office.getQyDeptId()));
-						department.setName(office.getName());
-						department.setOrder(String.valueOf(office.getSort()));
-						department.setParentid(String.valueOf(office.getQyDeptParentId()));
-						JwDepartmentAPI.createDepartment(department, accessToken.getAccesstoken());
-					}
-					office.setSynStatus(1);	// 同步完之后把状态改为已同步
-				}
-			} else {									// 第一次保存为需要同步
-				if (hiddenisSyntoent.equals(String.valueOf(office.getIsSyntoent()))) {		// 判断如果第一次为需要同步，这一次为需要同步（执行更新）
-					office.setSynStatus(2);
-					// 同步到微信
-					if (office.getSynStatus() == 2 && office.getIsSyntoent() == 1) {
-						Department department = new Department();
-						department.setId(String.valueOf(office.getQyDeptId()));
-						department.setName(office.getName());
-						department.setOrder(String.valueOf(office.getSort()));
-						department.setParentid(String.valueOf(office.getQyDeptParentId()));
-						JwDepartmentAPI.updateDepart(department, accessToken.getAccesstoken());
-					}
-					office.setSynStatus(1);	// 同步完之后把状态改为已同步
-				} else {													// 判断如果第一次为需要同步，这一次为不需要同步（执行删除）
-					office.setSynStatus(3);
-					// 同步到微信
-					if (office.getSynStatus() == 3 && office.getIsSyntoent() == 0) {
-						JwDepartmentAPI.deleteDepart(String.valueOf(office.getQyDeptId()), accessToken.getAccesstoken());
-					}
-					office.setSynStatus(1);	// 同步完之后把状态改为已同步
-				}
-			}
 		}
 		officeService.save(office);
 		
@@ -398,4 +262,175 @@ public class OfficeController extends BaseController {
 			map.put("children", arra);
 		}
 	}
+
+    @ResponseBody
+    @RequestMapping(value = "synchronize")
+    public AjaxJson synchronize() {
+        // 同步拦截
+        AjaxJson aj = new AjaxJson();
+        // 获取缓存通讯录token
+        if (CacheUtils.get("addressBookAccessToken") == null || StringUtils.isBlank(CacheUtils.get("addressBookAccessToken").toString())) {
+            aj.setSuccess(false);
+            aj.setMsg("同步失败,请联系管理员!");
+            return aj;
+        }
+        String addressBookAccessToken = CacheUtils.get("addressBookAccessToken").toString();
+        List<Office> delList = new ArrayList<>();
+        // 企业微信
+        List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
+        // 排序机构列表
+        sortOfficeList(departmentList);
+        // 新增/编辑
+        for (Department department : departmentList) {
+            if (!"1".equals(department.getId())) {
+                Office editOffice = new Office();
+                editOffice.setQyDeptId(department.getId());
+                editOffice = officeService.getEntity(editOffice);
+                Office localOffice = saveOffice(department.getId(),department.getName(),department.getParentid(),editOffice);
+                List<com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User> qywxUserList = JwUserAPI.getUsersByDepartid(department.getId(),"0",null,addressBookAccessToken);
+                for (com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User qywxUser : qywxUserList) {
+                    saveEnterpriseUser(qywxUser.getUserid(),qywxUser.getName(),qywxUser.getEmail(),null,qywxUser.getMobile(),qywxUser.getPosition(),qywxUser.getGender(),localOffice);
+                }
+            }
+        }
+        // 删除
+        Office office = new Office();
+        List<Office> officeList = officeService.findList(office);
+        for (Office officeEntity : officeList) {
+            boolean isDel = true;
+            for (Department department : departmentList) {
+                if (department.getId().equals(officeEntity.getQyDeptId()) || "1".equals(officeEntity.getId())) {
+                    isDel = false;
+                }
+            }
+            if (isDel) {
+                delList.add(officeEntity);
+            }
+        }
+        for (Office delOffice : delList) {
+            officeService.delete(delOffice);
+        }
+        aj.setMsg("同步成功!");
+        return aj;
+    }
+
+    /**
+     * 保存/编辑机构
+     * @param id 企业应用机构id
+     * @param name 机构名称
+     * @param parentId 企业应用机构父级id
+     * @param office 部门
+     */
+    private Office saveOffice(String id,String name,String parentId,Office office) {
+        if (office == null) {
+            // 新增
+            Office saveOffice = new Office();
+            saveOffice.setQyDeptId(id);
+            saveOffice.setName(name);
+            // 中国
+            Area area = new Area();
+            area.setId("a9beb8c645ff448d89e71f96dc97bc09");
+            saveOffice.setArea(area);
+            saveOffice.setGrade("1");
+            saveOffice.setUseable("1");
+            setParentOffice(parentId, saveOffice);
+            // 自动获取排序号
+            if (StringUtils.isBlank(saveOffice.getId())&&saveOffice.getParent()!=null){
+                int size = 0;
+                List<Office> list = officeService.findAll();
+                for (int i=0; i<list.size(); i++){
+                    Office e = list.get(i);
+                    if (e.getParent()!=null && e.getParent().getId()!=null
+                            && e.getParent().getId().equals(saveOffice.getParent().getId())){
+                        size++;
+                    }
+                }
+                saveOffice.setCode(saveOffice.getParent().getCode() + StringUtils.leftPad(String.valueOf(size > 0 ? size+1 : 1), 3, "0"));
+            }
+            officeService.save(saveOffice);
+            return saveOffice;
+        } else {
+            // 修改
+            office.setName(name);
+            setParentOffice(parentId, office);
+            officeService.save(office);
+        }
+        return office;
+    }
+
+    /**
+     * 设置父级机构
+     * @param parentId
+     * @param office
+     */
+    private void setParentOffice(String parentId,Office office){
+        if ("1".equals(parentId)) {
+            Office parent = officeService.get("1");
+            office.setParent(parent);
+        } else {
+            Office parentOffice = new Office();
+            parentOffice.setQyDeptId(parentId);
+            Office parent = officeService.getEntity(parentOffice);
+            if (parent != null) {
+                office.setParent(parent);
+            }
+        }
+    }
+
+    /**
+     * 保存/编辑企业通讯录应用用户
+     * @param userId 企业通讯录应用用户id
+     * @param name 用户名
+     * @param email 邮箱
+     * @param phone 电话
+     * @param mobile 手机
+     * @param position 职务
+     * @param sex 性别(0:待定,1:男;2:女)
+     * @param office 本地部门机构
+     */
+    private void saveEnterpriseUser(String userId,String name,String email,String phone,String mobile,String position,String sex,Office office) {
+        User editUser = userMapper.getEntity(userId);
+        if (editUser == null) {
+            // 新增
+            User saveUser = new User();
+            saveUser.setCompany(UserUtils.getUser().getCompany());
+            saveUser.setOffice(office);
+            saveUser.setLoginName(userId);
+            saveUser.setPassword(SystemService.entryptPassword("123456"));
+            saveUser.setQyUserId(userId);
+            saveUser.setNo(userId);
+            saveUser.setName(name);
+            saveUser.setEmail(email);
+            saveUser.setPhone(phone);
+            saveUser.setMobile(mobile);
+            saveUser.setPhoto("/jitcrm/static/common/images/flat-avatar.png");
+            saveUser.setId(IdGen.uuid());
+            saveUser.setIsNewRecord(true);
+            saveUser.setCreateBy(UserUtils.getUser());
+            saveUser.setCreateDate(new Date());
+            userMapper.insert(saveUser);
+        } else {
+            // 编辑
+            editUser.setOffice(office);
+            editUser.setLoginName(userId);
+            editUser.setNo(userId);
+            editUser.setName(name);
+            editUser.setEmail(email);
+            editUser.setPhone(phone);
+            editUser.setMobile(mobile);
+            userMapper.update(editUser);
+        }
+    }
+
+    /**
+     * 排序企业微信机构列表
+     * @param officeList 企业微信机构列表
+     */
+    private void sortOfficeList(List<Department> officeList) {
+        Collections.sort(officeList, (o1, o2) -> {
+            Integer parentid1 = Integer.valueOf(o1.getParentid());
+            Integer parentid2 = Integer.valueOf(o2.getParentid());
+            return parentid1.compareTo(parentid2);
+        });
+    }
 }

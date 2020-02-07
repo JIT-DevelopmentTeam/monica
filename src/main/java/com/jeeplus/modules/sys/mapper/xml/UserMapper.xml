@@ -48,8 +48,6 @@
 		a.sign,
 		a.open_id as "openId",
 		a.qy_user_id as "qyUserId",
-		a.synstatus as "synStatus",
-		a.issyntoent as "isSyntoent",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -246,17 +244,7 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
 
-	<!-- 根据同步状态查询用户信息 -->
-	<select id="findBySynStatus" resultMap="userResult">
-		SELECT
-			<include refid="userColumns"/>
-		FROM sys_user a
-		<include refid="userJoins"/>
-		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		AND a.synstatus = #{synStatus}
-		AND a.issyntoent = #{isSyntoent}
-	</select>
-	
+
 	<!-- 插入用户 -->
 	<insert id="insert">
 		INSERT INTO sys_user(
@@ -280,8 +268,6 @@
 			qrcode,
 			open_id,
 			qy_user_id,
-			synstatus,
-			issyntoent,
 			del_flag
 		) VALUES (
 			#{id}, 
@@ -304,8 +290,6 @@
 			#{qrCode},
 			#{openId},
 			#{qyUserId},
-			#{synStatus},
-			#{isSyntoent},
 			#{delFlag}
 		)
 	</insert>
@@ -329,9 +313,7 @@
 			photo = #{photo},
 			qrcode = #{qrCode},
 			open_id = #{openId},
-			qy_user_id = #{qyUserId},
-			synstatus = #{synStatus},
-			issyntoent = #{isSyntoent}
+			qy_user_id = #{qyUserId}
 		WHERE id = #{id}
 	</update>
 	
@@ -362,9 +344,7 @@
 			qrcode = #{qrCode},
 			sign = #{sign},
 			open_id = #{openId},
-			qy_user_id = #{qyUserId},
-			synstatus = #{synStatus},
-			issyntoent = #{isSyntoent}
+			qy_user_id = #{qyUserId}
 		WHERE id = #{id}
 	</update>
 	
@@ -483,10 +463,18 @@
 		ORDER BY  a.name
 	</select>
 
-	<!-- 更新同步状态 -->
-	<update id="updateSynstatus">
-		UPDATE sys_user SET
-			synstatus = #{synStatus}
-		WHERE id = #{id}
-	</update>
+    <select id="getEntity" resultMap="userResult">
+        SELECT
+          <include refid="userColumns"/>,
+            r.id AS "role.id",
+            r.name AS "role.name",
+            r.enname AS "role.enname"
+        FROM sys_user a
+          <include refid="userJoins"/>
+        LEFT JOIN sys_user_role ur ON ur.user_id = a.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id
+        WHERE
+          a.qy_user_id = #{qyUserId}
+    </select>
+
 </mapper>

@@ -16,6 +16,12 @@ import javax.validation.ValidationException;
 import javax.validation.Validator;
 
 import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.modules.sys.utils.UserUtils;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
+import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.slf4j.Logger;
@@ -237,6 +243,30 @@ public abstract class BaseController {
 		map.put("total", page.getCount());
 		return map;
 	}
-	
+
+    /**
+     * 拦截同步
+     * @param type 1:机构;2:用户
+     */
+    public AjaxJson interceptSynchronization(AjaxJson aj, int type){
+        String name = null;
+        switch (type) {
+            case 1:
+                name = "机构";
+                break;
+            case 2:
+                name = "用户";
+                break;
+        }
+
+        AccessToken addressBookToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.secret);
+        if (StringUtils.isBlank(addressBookToken.getAccesstoken())) {
+            aj.setSuccess(false);
+            aj.setMsg("同步失败,请联系管理员!");
+            logger.info("同步失败,该公司不存在通讯录应用Token");
+            return aj;
+        }
+        return aj;
+    }
 	
 }

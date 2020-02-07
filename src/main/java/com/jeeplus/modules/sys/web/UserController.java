@@ -108,139 +108,6 @@ public class UserController extends BaseController {
 		}
 	}
 
-	/**
-	 * 同步用户
-	 */
-	@ResponseBody
-	@RequestMapping(value = "synUser")
-	public Map<String,Object>  synUser(String parentId) throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_empl?token_value=20190603","POST");
-
-		JSONObject jsonObject = new JSONObject();
-		List<User> userList = systemService.findUser(new User());
-		Office company = officeService.getByName("莫尔卡");			// 按企业名查询企业资料
-		Office dept = new Office();
-		for (int i = 0; i < jsonarr.size(); i++) {
-			jsonObject = jsonarr.getJSONObject(i);
-			boolean unExists = true;
-			for (int j = 0; j < userList.size(); j++) {
-				if (jsonObject.getString("id").equals(userList.get(j).getId())) {
-					unExists = false;
-					break;
-				}
-			}
-			User user = new User();
-			if (unExists) {								// 不存在，执行新增
-				user.setId(jsonObject.getString("id"));
-				user.setCompany(company);
-				dept.setId(jsonObject.getString("f_deptid"));
-				user.setOffice(dept);
-				user.setNo(jsonObject.getString("f_number"));
-				user.setName(jsonObject.getString("f_name"));
-				user.setLoginName(CNToPinyin(jsonObject.getString("f_name")));
-				user.setPassword(SystemService.entryptPassword("123456"));
-				user.setLoginFlag("1");
-				user.setQyUserId(CNToPinyin(jsonObject.getString("f_name")));
-				user.setSynStatus(0);
-				user.setIsSyntoent(1);
-
-				//生成用户二维码，使用登录名
-				String realPath = Global.getAttachmentDir()+ "qrcode/";
-				FileUtils.createDirectory(realPath);
-				String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
-				String filePath = realPath + name;  //存放路径
-				TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
-				user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
-
-				// 保存用户信息
-				systemService.saveUser(user, true);
-			} else {									// 存在，执行修改
-				User dataUser = systemService.getUser(jsonObject.getString("id"));		// 查询数据库里的user信息
-				boolean isChange = false;		// 判断是否有修改过
-				if (!dataUser.getOffice().getId().equals(jsonObject.getString("f_deptid"))) {
-					dept.setId(jsonObject.getString("f_deptid"));
-					user.setOffice(dept);
-					isChange = true;
-				} else if (!dataUser.getName().equals(jsonObject.getString("f_name"))) {
-					user.setName(jsonObject.getString("f_name"));
-					user.setQyUserId(CNToPinyin(jsonObject.getString("f_name")));
-					isChange = true;
-				} else if (!dataUser.getNo().equals(jsonObject.getString("f_number"))) {
-					user.setNo(jsonObject.getString("f_number"));
-					isChange = true;
-				}
-				if (isChange) {
-					user.setSynStatus(2);
-					user.setIsSyntoent(1);
-					user.setId(jsonObject.getString("id"));
-					systemService.saveUser(user);
-				}
-			}
-		}
-		json.put("msg","success");
-		return json;
-	}
-
-	/**
-	 * 同步用户到企业微信
-	 */
-	@ResponseBody
-	@RequestMapping(value = "synToQYWeChat")
-	public Map<String,Object>  synToQYWeChat() throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		List<User> unSynList = systemService.findBySynStatus(0, 0, 1); // 未同步的员工
-		List<User> needUpdateList = systemService.findBySynStatus(0, 2, 1); // 需修改的员工
-		List<User> needDeleteList = systemService.findBySynStatus(0, 3, 1); // 需删除的员工
-		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
-        if (unSynList.size() > 0) {
-			for (int i = 0; i < unSynList.size(); i++) {
-				com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User user = new com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User();
-				String useId = CNToPinyin(unSynList.get(i).getName());
-				user.setUserid(useId);
-				user.setName(unSynList.get(i).getName());
-				user.setMobile(unSynList.get(i).getMobile());
-				String officeId = unSynList.get(i).getOffice().getId();
-				Office office = officeService.get(officeId);
-				user.setDepartment(new Integer[]{office.getQyDeptId()});
-				int result = JwUserAPI.createUser(user, accessToken.getAccesstoken());
-				System.out.println(result==0 ? unSynList.get(i).getName() + "创建成功！" : "失败：" + result);
-				if (result == 0) {
-					userMapper.updateSynstatus(1, unSynList.get(i).getId());
-				}
-			}
-		}
-        if (needUpdateList.size() > 0) {
-			for (int i = 0; i < needUpdateList.size(); i++) {
-				com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User user = new com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User();
-				String useId = CNToPinyin(needUpdateList.get(i).getName());
-				user.setUserid(useId);
-				user.setName(needUpdateList.get(i).getName());
-				user.setMobile(needUpdateList.get(i).getMobile());
-				String officeId = needUpdateList.get(i).getOffice().getId();
-				Office office = officeService.get(officeId);
-				user.setDepartment(new Integer[]{office.getQyDeptId()});
-				int result = JwUserAPI.updateUser(user, accessToken.getAccesstoken());
-				System.out.println(result==0 ? needUpdateList.get(i).getName() + "修改成功！" : "失败：" + result);
-				if (result == 0) {
-					userMapper.updateSynstatus(1, needUpdateList.get(i).getId());
-				}
-			}
-		}
-        if (needDeleteList.size() > 0) {
-			for (int i = 0; i < needDeleteList.size(); i++) {
-				String useId = CNToPinyin(needDeleteList.get(i).getName());
-				int result = JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
-				System.out.println(result==0 ? needDeleteList.get(i).getName() + "删除成功！" : "失败：" + result);
-				if (result == 0) {
-					userMapper.updateSynstatus(1, needDeleteList.get(i).getId());
-				}
-			}
-		}
-		return json;
-	}
-
 	@RequiresPermissions("sys:user:index")
 	@RequestMapping(value = "index")
 	public String index(User user, Model model) {
@@ -325,11 +192,6 @@ public class UserController extends BaseController {
 		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
 		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
 		user.setQyUserId(CNToPinyin(user.getName()));
-		if ("".equals(user.getId())) {
-			user.setSynStatus(0);
-		} else {
-			user.setSynStatus(2);
-		}
 		// 保存用户信息
 		systemService.saveUser(user);
 		// 清除当前用户缓存
@@ -361,9 +223,6 @@ public class UserController extends BaseController {
 			j.setMsg("删除失败，不允许删除超级管理员!");
 			return j;
 		}else{
-			AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-			String useId = user.getQyUserId();
-			JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
 			systemService.deleteUser(user);//删除用户成功
 			j.setSuccess(true);
 			j.setMsg("删除成功!");
@@ -394,9 +253,6 @@ public class UserController extends BaseController {
 				j.setSuccess(false);
 				j.setMsg("删除失败，不允许删除超级管理员!");//删除用户失败, 不允许删除超级管理员用户
 			}else{
-				AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.contactSecret);
-				String useId = user.getQyUserId();
-				JwUserAPI.deleteUser(useId, accessToken.getAccesstoken());
 				systemService.deleteUser(user);//删除用户成功
 				j.setSuccess(true);
 				j.setMsg("删除成功!");

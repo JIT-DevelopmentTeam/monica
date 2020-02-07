@@ -88,17 +88,6 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 
 	/**
-	 * 根据同步状态查询用户信息
-	 * @param DEL_FLAG_NORMAL
-	 * @param synStatus
-	 * @param isSyntoent
-	 * @return
-	 */
-	public List<User> findBySynStatus(int DEL_FLAG_NORMAL, int synStatus, int isSyntoent) {
-		return userMapper.findBySynStatus(DEL_FLAG_NORMAL, synStatus, isSyntoent);
-	}
-	
-	/**
 	 * 无分页查询人员列表
 	 * @param user
 	 * @return
@@ -205,11 +194,6 @@ public class SystemService extends BaseService implements InitializingBean {
 //		systemRealm.clearAllCachedAuthorizationInfo();
 	}
 
-	@Transactional(readOnly = false)
-	public void updateSynstatus(int synStatus, String id) {
-		userMapper.updateSynstatus(synStatus, id);
-	}
-	
 	@Transactional(readOnly = false)
 	public void deleteUser(User user) {
 		userMapper.deleteUserRole(user);

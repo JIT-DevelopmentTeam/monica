@@ -112,19 +112,11 @@ public interface UserMapper extends BaseMapper<User> {
 	 */
 	public List<User>  findListByUserOfficeList(User user);
 
-	/**
-	 * 根据同步状态查询用户信息
-	 * @param DEL_FLAG_NORMAL
-	 * @param synStatus
-	 * @param isSyntoent
-	 * @return
-	 */
-	List<User> findBySynStatus(@Param("DEL_FLAG_NORMAL") int DEL_FLAG_NORMAL, @Param("synStatus") int synStatus, @Param("isSyntoent") int isSyntoent);
-
-	/**
-	 * 更新同步状态
-	 */
-	void updateSynstatus(@Param("synStatus") int synStatus, @Param("id") String id);
-
+    /**
+     * 获取实体
+     * @param user
+     * @return
+     */
+    public User getEntity(String qyUserId);
 
 }

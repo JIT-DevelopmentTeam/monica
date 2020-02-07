@@ -70,16 +70,16 @@
         }
     }
 
-    /*同步ERP*/
+    /*同步企业微信*/
     function synDept() {
     	jp.confirm("同步数据可能需要一些时间，您确定要继续吗？", function () {
     		jp.loading("正在同步，请稍候...");
-			jp.post("${ctx}/sys/office/synDept", {}, function (data) {
-				if (data.msg == "success") {
+			jp.post("${ctx}/sys/office/synchronize", {}, function (data) {
+				if (data.success) {
 					refresh();
-					jp.success("同步成功");
+					jp.success(data.msg);
 				} else {
-					jp.error("同步失败");
+					jp.error(data.msg);
 				}
 			});
 		});
@@ -106,7 +106,9 @@
 			<li><a href="#" onclick="jp.openSaveDialog('修改机构', '${ctx}/sys/office/form?id={{d.id}}','800px', '600px')" ><i class="fa fa-edit"></i> 修改</a></li>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:office:del">
-			<li><a  onclick="return del(this, '{{d.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
+            {{# if (d.parentId != '0') { }}
+			    <li><a  onclick="return del(this, '{{d.id}}')"><i class="fa fa-trash"></i> 删除</a></li>
+            {{# } }}
 		</shiro:hasPermission>
 		<shiro:hasPermission name="sys:office:add">
 			<li><a href="#" onclick="jp.openSaveDialog('添加下级机构', '${ctx}/sys/office/form?parent.id={{d.id}}','800px', '600px')"><i class="fa fa-plus"></i> 添加下级机构</a></li>
