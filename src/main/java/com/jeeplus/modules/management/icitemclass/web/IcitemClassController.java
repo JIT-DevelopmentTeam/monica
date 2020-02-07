@@ -3,10 +3,7 @@
  */
 package com.jeeplus.modules.management.icitemclass.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.Office;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
@@ -67,7 +66,7 @@ public class IcitemClassController extends BaseController {
 	public Map<String,Object>  synIcitemClass(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
-				Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_icitem_class?token_value=122331111","POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_icitem_class?token_value=122331111","POST");
 
 		JSONObject jsonObject = new JSONObject();
 		for (int i = 0; i < jsonarr.size(); i++) {
@@ -195,5 +194,5 @@ public class IcitemClassController extends BaseController {
 		}
 		return mapList;
 	}
-	
+
 }

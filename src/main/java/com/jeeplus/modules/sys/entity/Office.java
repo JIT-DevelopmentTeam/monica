@@ -31,10 +31,8 @@ public class Office extends TreeEntity<Office> {
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
 	private List<String> childDeptList;//快速添加子部门
-	private int qyDeptParentId;	// 企业微信部门父级id
-	private int qyDeptId;	// 企业微信部门id
-	private int synStatus;	// 同步状态（0：未同步1：已同步2：待同步（修改过）3：删除）
-	private int isSyntoent; // 是否需要同步（0：不要同步1：要同步）
+	private String qyDeptId;	// 企业微信部门id
+    private String erpDeptId;    // erp部门id
 
 	public Office(){
 		super();
@@ -77,11 +75,11 @@ public class Office extends TreeEntity<Office> {
 		this.deputyPerson = deputyPerson;
 	}
 
-	public Office getParent() {
+    public Office getParent() {
 		return parent;
 	}
 
-	public void setParent(Office parent) {
+    public void setParent(Office parent) {
 		this.parent = parent;
 	}
 
@@ -179,14 +177,6 @@ public class Office extends TreeEntity<Office> {
 		return name;
 	}
 
-	public int getQyDeptParentId() {
-		return qyDeptParentId;
-	}
-
-	public void setQyDeptParentId(int qyDeptParentId) {
-		this.qyDeptParentId = qyDeptParentId;
-	}
-
 	public int getQyDeptId() {
 		return qyDeptId;
 	}
@@ -195,19 +185,12 @@ public class Office extends TreeEntity<Office> {
 		this.qyDeptId = qyDeptId;
 	}
 
-	public int getSynStatus() {
-		return synStatus;
-	}
+    public String getErpDeptId() {
+        return erpDeptId;
+    }
 
-	public void setSynStatus(int synStatus) {
-		this.synStatus = synStatus;
-	}
-
-	public int getIsSyntoent() {
-		return isSyntoent;
-	}
-
-	public void setIsSyntoent(int isSyntoent) {
-		this.isSyntoent = isSyntoent;
-	}
+    public void setErpDeptId(String erpDeptId) {
+        this.erpDeptId = erpDeptId;
+    }
+}
 }

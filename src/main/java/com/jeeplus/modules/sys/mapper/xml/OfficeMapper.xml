@@ -18,10 +18,8 @@
 		<result property="useable" column="useable" />
 		<result property="type" column="type" />
 		<result property="remarks" column="remarks" />
-		<result property="qyDeptParentId" column="qyDeptParentId" />
 		<result property="qyDeptId" column="qyDeptId" />
-		<result property="synStatus" column="synStatus" />
-		<result property="isSyntoent" column="isSyntoent" />
+        <result property="erpDeptId" column="erpDeptId"/>
 		<association property="area" column="area_id" select="getArea" />
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
@@ -45,10 +43,8 @@
 		a.fax,
 		a.email,
 		a.remarks,
-		a.qy_dept_parent_id as "qyDeptParentId",
 		a.qy_dept_id as "qyDeptId",
-		a.synstatus as "synStatus",
-		a.issyntoent as "isSyntoent",
+		a.erp_dept_id as "erpDeptId",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -180,10 +176,8 @@
 			update_by,
 			update_date,
 			remarks,
-			qy_dept_parent_id,
 			qy_dept_id,
-			synstatus,
-			issyntoent,
+			erp_dept_id,
 			del_flag,
 			useable,
 			primary_person,
@@ -211,8 +205,7 @@
 			#{remarks},
 			#{qyDeptParentId},
 			#{qyDeptId},
-			#{synStatus},
-			#{isSyntoent},
+			#{erpDeptId},
 			#{delFlag},
 			#{useable},
 			#{primaryPerson.id},
@@ -241,8 +234,7 @@
 			useable=#{useable},
 			primary_person=#{primaryPerson.id},
 			deputy_person=#{deputyPerson.id},
-			synstatus = #{synStatus},
-			issyntoent = #{isSyntoent}
+			erp_dept_id = #{erpDeptId}
 		WHERE id = #{id}
 	</update>
 	
@@ -282,5 +274,20 @@
         	synstatus = #{synStatus}
         WHERE id = #{id}
     </update>
-	
+
+    <select id="getEntity" resultType="Office" parameterType="Office">
+        SELECT
+        <include refid="officeColumns"/>
+        FROM sys_office a
+        <include refid="officeJoins"/>
+        WHERE 1=1
+        <if test="qyDeptId != null and qyDeptId != ''">
+            AND a.qy_dept_id = #{qyDeptId}
+        </if>
+        <if test="parent != null">
+            <if test="parent.id != null and parent.id != ''">
+                AND a.parent_id = #{parent.id}
+            </if>
+        </if>
+    </select>
 </mapper>

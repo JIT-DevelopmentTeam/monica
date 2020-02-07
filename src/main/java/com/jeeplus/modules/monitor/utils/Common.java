@@ -650,7 +650,7 @@ public class Common {
 		try {
 			URL httpclient =new URL(url);
 			HttpURLConnection conn =(HttpURLConnection) httpclient.openConnection();
-			conn.setConnectTimeout(5000);
+			conn.setConnectTimeout(50000);
 			conn.setReadTimeout(20000);
 			conn.setRequestMethod(type);
 			conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");

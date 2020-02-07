@@ -88,5 +88,10 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 		officeMapper.deleteLogical(office);
 		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
 	}
+
+    @Transactional(readOnly = true)
+    public Office getEntity(Office office){
+        return officeMapper.getEntity(office);
+    }
 	
 }

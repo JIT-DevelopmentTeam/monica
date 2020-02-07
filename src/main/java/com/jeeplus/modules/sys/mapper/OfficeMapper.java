@@ -33,4 +33,11 @@ public interface OfficeMapper extends TreeMapper<Office> {
 	 * @param office
 	 */
 	void deleteLogical(Office office);
+
+    /**
+     * 获取实体
+     * @param office
+     * @return
+     */
+    Office getEntity(Office office);
 }
