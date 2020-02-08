@@ -79,7 +79,7 @@
 <body><div id="app">
 <div class="weui-search-bar" id="searchBar">
     <a href="javascript:" class="weui-search-bar__box-btn" onclick="showFixed();">
-        <img src="${ctxStatic}/image/wechat/icon/icon-screen_gray.png">
+        <img src="${ctxStatic}/image/wechat/icon-screen_gray.png">
     </a>
     <form class="weui-search-bar__form" action="#">
         <div class="weui-search-bar__box">
