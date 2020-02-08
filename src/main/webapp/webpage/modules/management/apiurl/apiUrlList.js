@@ -36,7 +36,7 @@ $(document).ready(function() {
                pageSize: 10,  
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               //这个需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
                url: "${ctx}/management/apiurl/apiUrl/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
@@ -59,7 +59,7 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该接口管理记录吗？', function(){
+                        jp.confirm('确认要删除该管理记录吗？', function(){
                        	jp.loading();
                        	jp.get("${ctx}/management/apiurl/apiUrl/delete?id="+row.id, function(data){
                    	  		if(data.success){
@@ -86,7 +86,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'name',
-		        title: '接口名称',
+		        title: '名称',
 		        sortable: true,
 		        sortName: 'name'
 		        ,formatter:function(value, row , index){
@@ -105,6 +105,31 @@ $(document).ready(function() {
 		         }
 		       
 		    }
+           ,{
+               field: 'usefulness',
+               title: '端口编码',
+               sortable: true,
+               sortName: 'usefulness',
+               formatter:function (value, row , index) {
+                   let text;
+                   switch (value) {
+                       case "1":
+                           text = "物料分类同步";
+                           break;
+                       case "2":
+                           text = "物料信息同步";
+                           break;
+                       case "3":
+                           text = "客户资料同步";
+                           break;
+                       case "4":
+                           text = "订单信息同步";
+                           break;
+                   }
+                   return text != null && text != '' ? text : "-";
+               }
+
+           }
 			,{
 		        field: 'number',
 		        title: '端口编码',
@@ -114,21 +139,21 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'domain',
-		        title: '接口域名',
+		        title: '域名',
 		        sortable: true,
 		        sortName: 'domain'
 		       
 		    }
 			,{
 		        field: 'port',
-		        title: '接口端口',
+		        title: '端口',
 		        sortable: true,
 		        sortName: 'port'
 		       
 		    }
 			,{
 		        field: 'url',
-		        title: '接口url',
+		        title: 'url',
 		        sortable: true,
 		        sortName: 'url'
 		       
@@ -142,18 +167,18 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'describe',
-		        title: '接口描述',
+		        title: '描述',
 		        sortable: true,
 		        sortName: 'describe'
 		       
 		    }
 			,{
 		        field: 'status',
-		        title: '接口状态',
+		        title: '状态',
 		        sortable: true,
 		        sortName: 'status',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_status'))}, value, "-");
 		        }
 		       
 		    }
@@ -163,7 +188,7 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'isToken',
 		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList(''))}, value, "-");
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_need_token'))}, value, "-");
 		        }
 		       
 		    }
@@ -263,7 +288,7 @@ $(document).ready(function() {
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该接口管理记录吗？', function(){
+		jp.confirm('确认要删除该管理记录吗？', function(){
 			jp.loading();  	
 			jp.get("${ctx}/management/apiurl/apiUrl/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
@@ -283,7 +308,7 @@ $(document).ready(function() {
   }
   
    function add(){
-	  jp.openSaveDialog('新增接口管理', "${ctx}/management/apiurl/apiUrl/form",'800px', '500px');
+	  jp.openSaveDialog('新增管理', "${ctx}/management/apiurl/apiUrl/form",'800px', '500px');
   }
 
 
@@ -292,14 +317,14 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑接口管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看接口管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
  }
 
 

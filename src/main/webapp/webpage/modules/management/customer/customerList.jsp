@@ -22,10 +22,6 @@
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="customer" class="form form-horizontal well clearfix">
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                            <label class="label-item single-overflow pull-left" title="ERPId：">ERPId：</label>
-                            <form:input path="erpId" htmlEscape="false" maxlength="100" class=" form-control"/>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
                             <label class="label-item single-overflow pull-left" title="客户编码：">客户编码：</label>
                             <form:input path="number" htmlEscape="false" maxlength="100" class=" form-control"/>
                         </div>
@@ -78,7 +74,7 @@
                 <shiro:hasPermission name="management:customer:customer:synch">
                     <a id="sync" class="btn btn-success"
                        onclick="synch()"><i
-                            class="glyphicon glyphicon-refresh"></i> 同步ERP</a>
+                            class="glyphicon glyphicon-refresh"></i> 同步</a>
                 </shiro:hasPermission>
             </div>
 

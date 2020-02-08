@@ -88,32 +88,31 @@
                         <i class="glyphicon glyphicon-edit"></i> 修改
                     </button>
                 </shiro:hasPermission>
-                <button id="edit" class="btn btn-success" disabled onclick="edit()">
-                    <i class="glyphicon glyphicon-edit"></i> 修改
-                </button>
                 <shiro:hasPermission name="management:icitemclass:icitem:del">
                     <button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
                         <i class="glyphicon glyphicon-remove"></i> 删除
                     </button>
                 </shiro:hasPermission>
-                <shiro:hasPermission name="management:icitemclass:icitem:import">
+                <%--<shiro:hasPermission name="management:icitemclass:icitem:import">
                     <button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
                 </shiro:hasPermission>
                 <shiro:hasPermission name="management:icitemclass:icitem:export">
                     <button id="export" class="btn btn-warning">
                         <i class="fa fa-file-excel-o"></i> 导出
                     </button>
-                </shiro:hasPermission>
+                </shiro:hasPermission>--%>
                 <shiro:hasPermission name="management:icitemclass:icitem:view">
                     <button id="view" class="btn btn-default" disabled onclick="view()">
                         <i class="fa fa-search-plus"></i> 查看
                     </button>
                 </shiro:hasPermission>
-                <button  class="btn btn-default btn-sm"  onclick="synIcitem()">
-                    <i class="glyphicon glyphicon-refresh" aria-hidden="true"> 同步物料</i>
-                </button>
-                <button id="uploadItemId"  class="btn btn-default btn-sm"  onclick="icItemUpload()">
-                    <i class="fa fa-picture-o" aria-hidden="true"></i>  上传商品图片</i>
+                <shiro:hasPermission name="management:icitemclass:icitem:synIcitem">
+                    <button  class="btn btn-primary"  onclick="synIcitem()">
+                        <i class="glyphicon glyphicon-refresh" aria-hidden="true"> 同步物料</i>
+                    </button>
+                </shiro:hasPermission>
+                <button id="uploadItemId"  class="btn btn-primary"  onclick="icItemUpload()">
+                    <i class="fa fa-picture-o" aria-hidden="true"></i> 上传商品图片</i>
                 </button>
             </c:if>
 		    </div>

@@ -43,5 +43,10 @@ public class CustomerService extends CrudService<CustomerMapper, Customer> {
 	public void delete(Customer customer) {
 		super.delete(customer);
 	}
+
+	@Transactional(readOnly = false)
+    public void deleteAllData() {
+	    mapper.deleteAllData();
+    }
 	
 }

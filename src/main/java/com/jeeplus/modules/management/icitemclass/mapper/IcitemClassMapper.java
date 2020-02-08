@@ -18,5 +18,7 @@ import java.util.List;
 public interface IcitemClassMapper extends TreeMapper<IcitemClass> {
 
     List<IcitemClass> findListForWechat(IcitemClass icitemClass);
+
+    void deleteAllData();
 	
 }

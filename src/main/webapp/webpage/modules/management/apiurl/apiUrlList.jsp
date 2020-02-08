@@ -65,30 +65,22 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<shiro:hasPermission name="management:apiurl:apiUrl:add">
+			<%--<shiro:hasPermission name="management:apiurl:apiUrl:add">
 				<button id="add" class="btn btn-primary" onclick="add()">
 					<i class="glyphicon glyphicon-plus"></i> 新建
 				</button>
-			</shiro:hasPermission>
+			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:apiurl:apiUrl:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="management:apiurl:apiUrl:del">
+			<%--<shiro:hasPermission name="management:apiurl:apiUrl:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:apiurl:apiUrl:import">
-				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:apiurl:apiUrl:export">
-	        		<button id="export" class="btn btn-warning">
-					<i class="fa fa-file-excel-o"></i> 导出
-				</button>
-			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="management:apiurl:apiUrl:view">
+			</shiro:hasPermission>--%>
+             <shiro:hasPermission name="management:apiurl:apiUrl:view">
 				<button id="view" class="btn btn-default" disabled onclick="view()">
 					<i class="fa fa-search-plus"></i> 查看
 				</button>

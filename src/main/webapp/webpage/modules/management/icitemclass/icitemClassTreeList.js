@@ -95,6 +95,23 @@
 		});
 
 		function refreshTree() {
-	            $('#icitemClassjsTree').jstree("refresh");
-	        }
+            $('#icitemClassjsTree').jstree("refresh");
+        }
+
+        // 同步分类
+        function synIcitemClass() {
+            jp.confirm("您确定要同步商品分类吗?",function () {
+                var index = jp.loading("正在同步,请稍后...");
+                jp.get("${ctx}/management/icitemclass/icitemClass/synIcitemClass", function (res) {
+                    jp.close(index);
+                    if (res.success) {
+                        refreshTree();
+                        jp.success(res.msg);
+                    } else {
+                        jp.error(res.msg);
+                    }
+                });
+            });
+
+        }
 	</script>

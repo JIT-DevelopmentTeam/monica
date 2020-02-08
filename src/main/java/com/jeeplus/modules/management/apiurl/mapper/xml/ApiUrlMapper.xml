@@ -13,6 +13,7 @@
 		a.f_describe AS "describe",
 		a.f_status AS "status",
 		a.f_istoken AS "isToken",
+		a.f_usefulness AS "usefulness",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -102,6 +103,7 @@
 			f_describe,
 			f_status,
 			f_istoken,
+			f_usefulness,
 			create_by,
 			create_date,
 			update_by,
@@ -119,6 +121,7 @@
 			#{describe},
 			#{status},
 			#{isToken},
+			#{usefulness},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -139,6 +142,7 @@
 			f_describe = #{describe},
 			f_status = #{status},
 			f_istoken = #{isToken},
+			f_usefulness = #{usefulness},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
@@ -164,5 +168,15 @@
 	<select id="findUniqueByProperty" resultType="ApiUrl" statementType="STATEMENT">
 		select * FROM tb_apiurl  where ${propertyName} = '${value}'
 	</select>
+
+    <!-- 根据用途获取唯一数据 -->
+    <select id="getByUsefulness" resultType="ApiUrl">
+        SELECT
+        <include refid="apiUrlColumns"/>
+        FROM tb_apiurl a
+        <include refid="apiUrlJoins"/>
+        WHERE a.f_usefulness = #{usefulness}
+        AND a.f_status = '1'
+    </select>
 	
 </mapper>

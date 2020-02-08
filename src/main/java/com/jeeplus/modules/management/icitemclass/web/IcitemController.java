@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
 import com.jeeplus.modules.monitor.utils.Common;
 import net.sf.json.JSONArray;
@@ -51,6 +53,9 @@ public class IcitemController extends BaseController {
 
 	@Autowired
 	private IcitemService icitemService;
+
+    @Autowired
+    private ApiUrlService apiUrlService;
 	
 	@ModelAttribute
 	public Icitem get(@RequestParam(required=false) String id) {
@@ -69,27 +74,37 @@ public class IcitemController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "synIcitem")
-	public Map<String,Object>  synIcitem(String parentId) throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_icitem?token_value=122331111","POST");
-		Icitem icitem = new Icitem();
-		JSONObject jsonObject = new JSONObject();
-		for (int i = 0; i < jsonarr.size(); i++) {
-			jsonObject = jsonarr.getJSONObject(i);
-			icitem = new Icitem();
-			icitem.setName(jsonObject.getString("f_name"));
-			icitem.setErpId(jsonObject.getString("id"));
-			icitem.setNumber(jsonObject.getString("f_number"));
-			icitem.setUnit(jsonObject.getString("f_unitname"));
-			icitem.setModel(jsonObject.getString("f_model"));
-			IcitemClass icitemClass = new IcitemClass();
-			icitemClass.setId(jsonObject.getString("f_classid"));
-			icitem.setClassId(icitemClass);
-			icitemService.save(icitem,true);
-		}
-		json.put("Data",jsonarr);
-		return json;
+	public AjaxJson synIcitem(){
+        AjaxJson aj = new AjaxJson();
+        ApiUrl apiUrl = apiUrlService.getByUsefulness("2");
+        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请检查接口配置是否准确!");
+            return aj;
+        }
+        try {
+            JSONArray jsonarr =
+                    Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
+            icitemService.deleteAllData();
+            for (int i = 0; i < jsonarr.size(); i++) {
+                JSONObject jsonObject = jsonarr.getJSONObject(i);
+                Icitem icitem = new Icitem();
+                icitem.setName(jsonObject.getString("f_name"));
+                icitem.setErpId(jsonObject.getString("id"));
+                icitem.setNumber(jsonObject.getString("f_number"));
+                icitem.setUnit(jsonObject.getString("f_unitname"));
+                icitem.setModel(jsonObject.getString("f_model"));
+                IcitemClass icitemClass = new IcitemClass();
+                icitemClass.setId(jsonObject.getString("f_classid"));
+                icitem.setClassId(icitemClass);
+                icitemService.save(icitem,true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请联系管理员!");
+        }
+		return aj;
 	}
 	
 	/**

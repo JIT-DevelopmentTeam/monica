@@ -14,5 +14,7 @@ import com.jeeplus.modules.management.customer.entity.Customer;
  */
 @MyBatisMapper
 public interface CustomerMapper extends BaseMapper<Customer> {
+
+    void deleteAllData();
 	
 }

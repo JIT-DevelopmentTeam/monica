@@ -10,9 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jeeplus.common.utils.IdGen;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.utils.UserUtils;
+import io.swagger.annotations.Api;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
@@ -45,6 +48,8 @@ public class IcitemClassController extends BaseController {
 
 	@Autowired
 	private IcitemClassService icitemClassService;
+	@Autowired
+    private ApiUrlService apiUrlService;
 	
 	@ModelAttribute
 	public IcitemClass get(@RequestParam(required=false) String id) {
@@ -63,27 +68,38 @@ public class IcitemClassController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "synIcitemClass")
-	public Map<String,Object>  synIcitemClass(String parentId) throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_icitem_class?token_value=122331111","POST");
-
-		JSONObject jsonObject = new JSONObject();
-		for (int i = 0; i < jsonarr.size(); i++) {
-			jsonObject = jsonarr.getJSONObject(i);
-			IcitemClass icitemClass = new IcitemClass();
-			IcitemClass parent = new IcitemClass();
-			parent.setId(jsonObject.getString("f_parentid"));
-			parent.setName(jsonObject.getString("f_name"));
-			icitemClass.setParent(parent);
-			icitemClass.setErpId(jsonObject.getString("f_itemid"));
-			icitemClass.setId(jsonObject.getString("f_itemid"));
-			icitemClass.setNumber(jsonObject.getString("f_number"));
-			icitemClass.setName(jsonObject.getString("f_name"));
-			icitemClassService.save(icitemClass,true);
-		}
-		json.put("Data",jsonarr);
-		return json;
+	public AjaxJson  synIcitemClass() {
+		AjaxJson aj = new AjaxJson();
+        ApiUrl apiUrl = apiUrlService.getByUsefulness("1");
+        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请检查接口配置是否准确!");
+            return aj;
+        }
+        try {
+            JSONArray jsonarr =
+                    Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
+            icitemClassService.deleteAllData();
+            for (int i = 0; i < jsonarr.size(); i++) {
+                JSONObject jsonObject = jsonarr.getJSONObject(i);
+                IcitemClass icitemClass = new IcitemClass();
+                IcitemClass parent = new IcitemClass();
+                parent.setId(jsonObject.getString("f_parentid"));
+                parent.setName(jsonObject.getString("f_name"));
+                icitemClass.setParent(parent);
+                icitemClass.setErpId(jsonObject.getString("f_itemid"));
+                icitemClass.setId(jsonObject.getString("f_itemid"));
+                icitemClass.setNumber(jsonObject.getString("f_number"));
+                icitemClass.setName(jsonObject.getString("f_name"));
+                icitemClassService.save(icitemClass,true);
+            }
+            aj.setMsg("同步成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请联系管理员!");
+        }
+        return aj;
 	}
 	
 	/**

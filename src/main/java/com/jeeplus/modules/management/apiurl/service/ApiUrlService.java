@@ -43,5 +43,8 @@ public class ApiUrlService extends CrudService<ApiUrlMapper, ApiUrl> {
 	public void delete(ApiUrl apiUrl) {
 		super.delete(apiUrl);
 	}
-	
+
+	public ApiUrl getByUsefulness(String usefulness) {
+	    return mapper.getByUsefulness(usefulness);
+    }
 }

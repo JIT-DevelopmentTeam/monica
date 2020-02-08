@@ -216,5 +216,9 @@
 		<if test="dbName == 'mssql'">'%,'+#{id}+',%'</if>
         <if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 	</update>
+
+    <delete id="deleteAllData">
+        delete from tb_icitemclass
+    </delete>
 	
 </mapper>

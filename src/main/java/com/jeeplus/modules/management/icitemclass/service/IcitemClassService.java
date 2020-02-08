@@ -47,5 +47,8 @@ public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemCla
 	public List<IcitemClass> findListForWechat(IcitemClass icitemClass){
 	    return mapper.findListForWechat(icitemClass);
     }
+
+    @Transactional(readOnly = false)
+    public void deleteAllData() { mapper.deleteAllData();}
 	
 }

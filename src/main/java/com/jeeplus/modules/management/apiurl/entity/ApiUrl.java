@@ -24,6 +24,7 @@ public class ApiUrl extends DataEntity<ApiUrl> {
 	private String describe;		// 接口描述
 	private String status;		// 接口状态
 	private String isToken;		// 是否需要token
+    private String usefulness;  // 接口用处
 	
 	public ApiUrl() {
 		super();
@@ -113,5 +114,12 @@ public class ApiUrl extends DataEntity<ApiUrl> {
 	public void setIsToken(String isToken) {
 		this.isToken = isToken;
 	}
-	
+
+    public String getUsefulness() {
+        return usefulness;
+    }
+
+    public void setUsefulness(String usefulness) {
+        this.usefulness = usefulness;
+    }
 }

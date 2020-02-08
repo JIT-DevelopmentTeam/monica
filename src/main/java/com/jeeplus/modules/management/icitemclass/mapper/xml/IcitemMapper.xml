@@ -209,4 +209,8 @@
 		select * FROM tb_icitem  where ${propertyName} = '${value}'
 	</select>
 
+    <delete id="deleteAllData">
+        delete from tb_icitem
+    </delete>
+
 </mapper>

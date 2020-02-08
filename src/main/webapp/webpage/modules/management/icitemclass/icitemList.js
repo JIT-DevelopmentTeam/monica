@@ -296,15 +296,19 @@ function picGroupDetail(id) {
     jp.openViewDialog('商品图片详情', "${ctx}/management/itemfile/itemFile/list?itemId=" + id, '1100px', '600px');
 }
 
-function synIcitemClass() {
-    jp.post("${ctx}/management/icitemclass/icitemClass/synIcitemClass", null, function (callbackData) {
-        console.log(callbackData);
-    });
-}
 
 function synIcitem() {
-    jp.post("${ctx}/management/icitemclass/icitem/synIcitem", null, function (callbackData) {
-        console.log(callbackData);
+    jp.confirm("您确定要同步商品信息吗?",function () {
+        var index = jp.loading("正在同步,请稍后...");
+        jp.get("${ctx}/management/icitemclass/icitem/synIcitem", function (res) {
+            jp.close(index);
+            if (res.success) {
+                refresh();
+                jp.success(res.msg);
+            } else {
+                jp.error(res.msg);
+            }
+        });
     });
 }
 

@@ -24,4 +24,6 @@ public interface IcitemMapper extends BaseMapper<Icitem> {
      */
     Icitem findByNumber(@Param("DEL_FLAG_NORMAL") String DEL_FLAG_NORMAL, @Param("number") String number);
 
+    void deleteAllData();
+
 }

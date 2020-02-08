@@ -298,12 +298,16 @@ $(document).ready(function() {
  }
  //同步客户信息
 function synch() {
-    jp.confirm('确认要同步客户信息记录吗？', function(){
-        jp.loading();
-        jp.post("${ctx}/management/customer/customer/synchCustomerInfo", function(data){
-        	$('#customerTable').bootstrapTable('refresh');
-        	console.log("")
-			jp.success("同步成功");
+    jp.confirm('您确定要同步客户资料吗？', function(){
+        var index = jp.loading("正在同步,请稍后...");
+        jp.get("${ctx}/management/customer/customer/synchCustomerInfo", function(res){
+            jp.close(index);
+        	if (res.success) {
+        	    refresh();
+                jp.success(res.msg);
+            } else {
+        	    jp.error(res.msg);
+            }
         })
     })
 }

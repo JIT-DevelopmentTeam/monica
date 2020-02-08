@@ -85,6 +85,10 @@ public class ApiUrlController extends BaseController {
 	@RequiresPermissions(value={"management:apiurl:apiUrl:view","management:apiurl:apiUrl:add","management:apiurl:apiUrl:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(ApiUrl apiUrl, Model model) {
+	    if (StringUtils.isBlank(apiUrl.getId())) {
+	        apiUrl.setIsToken("1");
+	        apiUrl.setStatus("1");
+        }
 		model.addAttribute("apiUrl", apiUrl);
 		return "modules/management/apiurl/apiUrlForm";
 	}

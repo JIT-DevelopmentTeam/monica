@@ -14,5 +14,12 @@ import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
  */
 @MyBatisMapper
 public interface ApiUrlMapper extends BaseMapper<ApiUrl> {
+
+    /**
+     * 根据接口用途获取唯一实体
+     * @param usefulness
+     * @return
+     */
+    ApiUrl getByUsefulness(String usefulness);
 	
 }

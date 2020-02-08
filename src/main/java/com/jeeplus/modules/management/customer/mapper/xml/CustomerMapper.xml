@@ -164,5 +164,9 @@
 	<select id="findUniqueByProperty" resultType="Customer" statementType="STATEMENT">
 		select * FROM tb_customer  where ${propertyName} = '${value}'
 	</select>
+
+    <delete id="deleteAllData">
+        delete from tb_customer
+    </delete>
 	
 </mapper>

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.google.common.collect.Maps;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
@@ -53,6 +55,8 @@ public class CustomerController extends BaseController {
 	@Autowired
 	private CustomerService customerService;
 
+    @Autowired
+    private ApiUrlService apiUrlService;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -183,32 +187,38 @@ public class CustomerController extends BaseController {
 	 */
 	@ResponseBody
     @RequestMapping(value = "synchCustomerInfo")
-	public Map<String ,Object> synchCustomer(){
-		Map<String,Object> result=new HashMap<>();
-        JSONArray jsonArray = Common.executeInter("http://192.168.1.252:8080/monica_erp/erp_get/erp_cus?token_value=122331111","POST");
-        JSONObject jsonObject = new JSONObject();
-        Customer customer=null;
-        if(jsonArray != null && jsonArray.size() > 0){
+	public AjaxJson synchCustomer(){
+        AjaxJson aj = new AjaxJson();
+        ApiUrl apiUrl = apiUrlService.getByUsefulness("3");
+        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请检查接口配置是否准确!");
+            return aj;
+        }
+        try {
+            JSONArray jsonArray = Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
+            customerService.deleteAllData();
             for (int i = 0; i < jsonArray.size(); i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                customer=new Customer();
-				String emplId="";
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Customer customer = new Customer();
+                String emplId="";
+
                 if(jsonObject.getString("B_FName") != null || jsonObject.getString("B_FName") != ""){
-					 emplId=jsonObject.getString("B_FName");
-				}
+                    emplId=jsonObject.getString("B_FName");
+                }
                 customer.setId(jsonObject.getString("FEmpID"));
                 customer.setErpId(jsonObject.getString("FItemID"));
                 customer.setName(jsonObject.getString("A_FName"));
                 customer.setNumber(jsonObject.getString("FNumber"));
                 customer.setEmplId(emplId);
-
-                System.out.println(customer);
+                customerService.save(customer);
             }
-            result.put("jsonArray",jsonArray);
-        }else{
-            result.put("jsonArray",false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请联系管理员!");
         }
-		return result;
+		return aj;
 	}
 
 	/**

@@ -56,5 +56,10 @@ public class IcitemService extends CrudService<IcitemMapper, Icitem> {
 	public void delete(Icitem icitem) {
 		super.delete(icitem);
 	}
-	
+
+	@Transactional(readOnly = false)
+    public void deleteAllData() {
+	    mapper.deleteAllData();
+    }
+
 }
