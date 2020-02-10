@@ -9,7 +9,7 @@ $(document).ready(function() {
                dataType: "json",
                contentType: "application/x-www-form-urlencoded",
                //显示检索按钮
-	       showSearch: true,
+	       showSearch: false,
                //显示刷新按钮
                showRefresh: true,
                //显示切换手机试图按钮
@@ -19,7 +19,7 @@ $(document).ready(function() {
     	       //显示到处按钮
     	       showExport: true,
     	       //显示切换分页按钮
-    	       showPaginationSwitch: true,
+    	       showPaginationSwitch: false,
     	       //最低显示2行
     	       minimumCountColumns: 2,
                //是否显示行间隔色
@@ -85,46 +85,21 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'warehouse',
-		        title: '仓库',
+		        field: 'commodityNumber',
+		        title: '产品代码',
 		        sortable: true,
-		        sortName: 'warehouse'
+		        sortName: 'commodityNumber'
 		        ,formatter:function(value, row , index){
-			   if(value == null || value ==""){
-				   value = "-";
-			   }
-			   <c:choose>
-				   <c:when test="${fns:hasPermission('management:warehouse:stock:edit')}">
-				      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-			      </c:when>
-				  <c:when test="${fns:hasPermission('management:warehouse:stock:view')}">
-				      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-			      </c:when>
-				  <c:otherwise>
-				      return value;
-			      </c:otherwise>
-			   </c:choose>
-
+				   if(value == null || value ==""){
+					   value = "-";
+				   }
+				   return value;
 		        }
 		       
 		    }
 			,{
-		        field: 'warehousePosition',
-		        title: '仓位',
-		        sortable: true,
-		        sortName: 'warehousePosition'
-		       
-		    }
-			,{
-		        field: 'commodityNumber',
-		        title: '商品代码',
-		        sortable: true,
-		        sortName: 'commodityNumber'
-		       
-		    }
-			,{
 		        field: 'commodityName',
-		        title: '商品名称',
+		        title: '产品名称',
 		        sortable: true,
 		        sortName: 'commodityName'
 		       
@@ -144,19 +119,54 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'total',
-		        title: '库存总数',
+		        field: 'warehouse',
+		        title: '仓库',
 		        sortable: true,
-		        sortName: 'total'
+		        sortName: 'warehouse'
 		       
 		    }
-			/*,{
-		        field: 'remarks',
-		        title: '备注信息',
+			,{
+		        field: 'warehousePosition',
+		        title: '仓位',
 		        sortable: true,
-		        sortName: 'remarks'
+		        sortName: 'warehousePosition'
 		       
-		    }*/
+		    }
+			,{
+		        field: 'batchNumber',
+		        title: '批号',
+		        sortable: true,
+		        sortName: 'batchNumber'
+		       
+		    }
+			,{
+		        field: 'level',
+		        title: '等级',
+		        sortable: true,
+		        sortName: 'level'
+
+		    }
+		    ,{
+		 	   field: 'colorNumber',
+		 	   title: '色号',
+		 	   sortable: true,
+		 	   sortName: 'colorNumber'
+
+		    }
+		    ,{
+		 	   field: 'direction',
+		 	   title: '方向',
+		 	   sortable: true,
+		 	   sortName: 'direction'
+
+		    }
+		    ,{
+		 	   field: 'total',
+		 	   title: '数量',
+		 	   sortable: true,
+		 	   sortName: 'total'
+
+		    }
 		     ]
 		
 		});
@@ -215,7 +225,9 @@ $(document).ready(function() {
             var sortOrder = $('#stockTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
-                values = values + key + "=" + searchParam[key] + "&";
+            	if (searchParam[key] != '') {
+					values = values + key + "=" + searchParam[key] + "&";
+				}
             }
             if(sortName != undefined && sortOrder != undefined){
                 values = values + "orderBy=" + sortName + " "+sortOrder;
@@ -229,7 +241,7 @@ $(document).ready(function() {
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
-		  $("#searchForm  input").val("");
+		  $("#searchForm  input[type='text']").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
 		  $('#stockTable').bootstrapTable('refresh');

@@ -34,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -77,16 +79,14 @@ public class StockController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions("management:warehouse:stock:list")
 	@RequestMapping(value = "data")
-	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) {
-		String warehouseId = request.getParameter("warehouseId.id");
+	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) throws UnsupportedEncodingException {
+		String itemClassNumber = request.getParameter("itemClassNumber");
+		String item = request.getParameter("item");
 		String pageNo = request.getParameter("pageNo");
-		if (warehouseId == null) {
-			warehouseId = "";
-		}
 		JSONArray jsonarr =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&warehouseId=" + warehouseId + "&currentPage=" + pageNo,"POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8") + "&currentPage=" + pageNo,"POST");
 		JSONArray jsonarrTotal =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&warehouseId=" + warehouseId,"POST");
+				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8"),"POST");
 
 		JSONObject jsonObject = new JSONObject();
 		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
@@ -213,7 +213,14 @@ public class StockController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		try {
             String fileName = "库存查询"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx";
-            Page<Stock> page = stockService.findPage(new Page<Stock>(request, response, -1), stock);
+			String itemClassNumber = request.getParameter("itemClassNumber");
+			String item = request.getParameter("item");
+			JSONArray jsonarrTotal =
+					Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8"),"POST");
+			JSONArray jsonarr =
+					Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8") + "&showCount=" + jsonarrTotal.get(0),"POST");
+			List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
+			Page<Stock> page = findPage(new Page<Stock>(request, response), stock, stockList);
     		new ExportExcel("库存查询", Stock.class).setDataList(page.getList()).write(response, fileName).dispose();
     		j.setSuccess(true);
     		j.setMsg("导出成功！");

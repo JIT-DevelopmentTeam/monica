@@ -7,7 +7,7 @@
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
 	<%@include file="/webpage/include/treeview.jsp" %>
-	<%@include file="warehouseTreeList.js" %>
+	<%@include file="itemClassTreeList.js" %>
 	<%@include file="stockList.js" %>
 	
 </head>
@@ -22,7 +22,7 @@
 				<div class="col-sm-4 col-md-2" >
 					<div class="form-group">
 						<div class="row">
-							<div class="col-sm-6" >
+							<div class="col-sm-12" >
 								<div class="input-search">
 									<button type="submit" class="input-search-btn">
 										<i class="fa fa-search" aria-hidden="true"></i></button>
@@ -30,11 +30,11 @@
 
 								</div>
 							</div>
-							<div class="col-sm-4" >
+							<%--<div class="col-sm-4" >
 								<button  class="btn btn-default btn-sm"  onclick="synWareHouse()">
 									<i class="glyphicon glyphicon-refresh">同步仓库</i>
 								</button>
-							</div>
+							</div>--%>
 							<%--<div class="col-sm-2" >
 								<button  class="btn btn-default btn-sm"  onclick="jp.openSaveDialog('新建仓库管理表', '${ctx}/management/warehouse/warehouse/form','800px', '500px')">
 									<i class="fa fa-plus"></i>
@@ -42,15 +42,36 @@
 							</div>--%>
 						</div>
 					</div>
-					<div id="warehousejsTree" style="overflow-x:auto; border:0px; overflow-y: auto; height: 450px;"></div>
+					<div id="icitemClassjsTree" style="overflow-x:auto; border:0px; overflow-y: auto; height: 650px;"></div>
 				</div>
 				<div  class="col-sm-8 col-md-10">
 	
 	<!-- 搜索 -->
-	<div id="search-collapse" class="collapse">
+	<div id="search-collapse" class="collapse" style="display: block;">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="stock" class="form form-horizontal well clearfix">
-		 <div class="col-xs-12 col-sm-6 col-md-4">
+				<input type="hidden" id="itemClassNumber" name="itemClassNumber">
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label class="label-item single-overflow pull-left" title="产品信息：">产品信息：</label>
+					<input id="item" name="item" htmlEscape="false" maxlength="64"  class=" form-control" placeholder="请输入产品名称或者规格型号">
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label class="label-item single-overflow pull-left" title="批号：">批号：</label>
+					<form:input path="batchNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label class="label-item single-overflow pull-left" title="等级：">等级：</label>
+					<form:input path="level" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label class="label-item single-overflow pull-left" title="色号：">色号：</label>
+					<form:input path="colorNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<label class="label-item single-overflow pull-left" title="仓库：">仓库：</label>
+					<form:input path="warehouse" htmlEscape="false" maxlength="64"  class=" form-control"/>
+				</div>
+		 <div class="col-xs-12 col-sm-6 col-md-3">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
 			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
@@ -62,52 +83,16 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<shiro:hasPermission name="management:warehouse:stock:add">
-				<button id="add" class="btn btn-primary" onclick="add()">
-					<i class="glyphicon glyphicon-plus"></i> 新建
-				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:warehouse:stock:edit">
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 修改
-	        	</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:warehouse:stock:del">
-				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-	            	<i class="glyphicon glyphicon-remove"></i> 删除
-	        	</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:warehouse:stock:import">
-				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
 			<shiro:hasPermission name="management:warehouse:stock:export">
 	        		<button id="export" class="btn btn-warning">
 					<i class="fa fa-file-excel-o"></i> 导出
 				</button>
 			 </shiro:hasPermission>
-	                 <shiro:hasPermission name="management:warehouse:stock:view">
-				<button id="view" class="btn btn-default" disabled onclick="view()">
-					<i class="fa fa-search-plus"></i> 查看
-				</button>
-			</shiro:hasPermission>
-		    </div>
+	</div>
 		
 	<!-- 表格 -->
 	<table id="stockTable"   data-toolbar="#toolbar"></table>
 
-    <!-- context menu -->
-    <ul id="context-menu" class="dropdown-menu">
-    	<shiro:hasPermission name="management:warehouse:stock:view">
-        <li data-item="view"><a>查看</a></li>
-        </shiro:hasPermission>
-    	<shiro:hasPermission name="management:warehouse:stock:edit">
-        <li data-item="edit"><a>编辑</a></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="management:warehouse:stock:del">
-        <li data-item="delete"><a>删除</a></li>
-        </shiro:hasPermission>
-        <li data-item="action1"><a>取消</a></li>
-    </ul>  
 	</div>
 	</div>
 	</div>
