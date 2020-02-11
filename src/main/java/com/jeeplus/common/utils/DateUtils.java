@@ -5,6 +5,7 @@ package com.jeeplus.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -208,6 +209,17 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 			sDateTime = sDateTime.substring(0,10);
 		}
 		return sDateTime;
+	}
+
+	/***
+	 * yyyy年MM月dd日
+	 * @return
+	 */
+	public static String get_yyy_MM_dd(){
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+		String dateStr = sdf.format(calendar.getTime());
+		return dateStr;
 	}
 	
 	/**

@@ -24,7 +24,7 @@ public class JwUserAPI {
 	private static final Logger logger = LoggerFactory.getLogger(JwUserAPI.class);
 
 	//1 创建成员 
-	private static String user_create_url = "https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token=ACCESS_TOKEN";  
+	private static final String user_create_url = "https://qyapi.weixin.qq.com/cgi-bin/user/create?access_token=ACCESS_TOKEN";
 	//2 更新成员  
 	private static String user_update_url = "https://qyapi.weixin.qq.com/cgi-bin/user/update?access_token=ACCESS_TOKEN";  
 	//3 删除成员
