@@ -237,11 +237,14 @@ $(document).ready(function() {
 	  })
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
+		  $("#icitemClassjsTree").jstree('deselect_all');
+		  $("#itemClassNumber").val("");
 		  $('#stockTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
-		  $("#searchForm  input[type='text']").val("");
+	 	  $("#icitemClassjsTree").jstree('deselect_all');
+		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
 		  $('#stockTable').bootstrapTable('refresh');
