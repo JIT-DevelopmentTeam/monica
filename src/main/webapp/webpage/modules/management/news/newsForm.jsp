@@ -20,6 +20,12 @@
 	<script type="text/javascript">
 
 		$(document).ready(function() {
+            UE.getEditor('editor',{
+                initialFrameWidth :window.innerWidth*0.8,//设置编辑器宽度
+                initialFrameHeight:window.innerHeight*0.7,//设置编辑器高度
+                scaleEnabled:true//设置不自动调整高度
+                //scaleEnabled {Boolean} [默认值：false]//是否可以拉伸长高，(设置true开启时，自动长高失效)
+            });
 		    $("#obj").selectpicker({
                 'selectedText': 'cat',
                 'width': '350px',
@@ -29,7 +35,7 @@
             $("textarea").css("resize","none");
 
 
-            //富文本初始化
+            /*//富文本初始化
             var E = window.wangEditor;
             var editor = new E('#content');
             // 配置服务器端地址
@@ -115,7 +121,7 @@
             }
             editor.create();
             // 初始化 textarea 的值
-            $("[name=\"content\"]").val(editor.txt.html());
+            $("[name=\"content\"]").val(editor.txt.html());*/
 
             $("#starttime").datetimepicker({
                 format:"YYYY-MM-DD",
@@ -320,15 +326,15 @@
 						<form:textarea path="describe" htmlEscape="false" rows="4"    class="form-control required"/>
 					</td>
 				</tr>
-				<tr>
+				<%--<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>内容：</label></td>
 					<td colspan="3">
                         <input type="hidden" name="content" value="${news.content}"/>
 						<div id="content">
-                          ${fns:unescapeHtml(news.content)}
+
                         </div>
 					</td>
-				</tr>
+				</tr>--%>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否推送：</label></td>
 					<td class="width-35">
@@ -373,13 +379,21 @@
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
 		  		</tr>
+                <tr>
+					<td class="width-15 active"><label class="pull-right">文本内容：</label></td>
+					<td colspan="3">
+                        <script type="text/plain" id="editor" name="content" htmlEscape="false" >
+                            ${fns:unescapeHtml(news.content)}
+                        </script>
+					</td>
+		  		</tr>
 		 	</tbody>
 		</table>
 	</form:form>
     <%
         //获取application域中的count的值
         Integer count = (Integer)application.getAttribute("count");
-        //判断count是否为空
+        //判断count是否为空  https://zhidao.baidu.com/question/1754793497933447348.html 如何解决Ueditor Flash初始化失败
         if(count!=null){
             //不等于空
             count++;
@@ -392,5 +406,9 @@
             application.setAttribute("count", count);
         }
     %>
+        <!-- 百度富文本编辑框-->
+        <script type="text/javascript" charset="utf-8">window.UEDITOR_HOME_URL = "${ctxStatic}/plugin/ueditor/";</script>
+        <script type="text/javascript" charset="utf-8" src="${ctxStatic}/plugin/ueditor/ueditor.config.js"></script>
+        <script type="text/javascript" charset="utf-8" src="${ctxStatic}/plugin/ueditor/ueditor.all.js"></script>
 </body>
 </html>
