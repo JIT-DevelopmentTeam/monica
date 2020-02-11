@@ -265,11 +265,13 @@
             }
         },
         created: function(){
+            $.showLoading();
             this.$http.get('${ctxf}/wechat/stock/listData', {
                 params: {
                     pageNo: this.pageNo
                 }
             }).then(res => {
+                $.hideLoading();
                 this.itemList = res.body.body.stockList;
                 this.total = res.body.body.total;
             })
