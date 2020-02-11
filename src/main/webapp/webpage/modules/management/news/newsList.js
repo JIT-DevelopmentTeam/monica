@@ -74,15 +74,14 @@ $(document).ready(function() {
                       
                    } 
                },
-              
                onClickRow: function(row, $el){
+
                },
                	onShowSearch: function () {
-			$("#search-collapse").slideToggle();
-		},
+                    $("#search-collapse").slideToggle();
+                },
                columns: [{
 		        checkbox: true
-		       
 		    }
 			,{
 		        field: 'title',
@@ -257,6 +256,11 @@ $(document).ready(function() {
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#newsTable').bootstrapTable('getSelections').length);
             $('#view,#edit').prop('disabled', $('#newsTable').bootstrapTable('getSelections').length!=1);
+            $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
+                if(row.isPush == 1){
+                    $('#edit').prop('disabled',"true");
+                }
+            });
         });
 		  
 		$("#btnImport").click(function(){
@@ -355,6 +359,10 @@ function formatTableUnit(value, row, index) {
 
   function getIdSelections() {
         return $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
+                if(row.isPush == 1){
+                $('#edit').prop('disabled',"true");
+            }
+
             return row.id
         });
     }
