@@ -3,17 +3,19 @@
  */
 package com.jeeplus.modules.management.customer.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
 import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
+import com.jeeplus.modules.management.customer.entity.Customer;
+import com.jeeplus.modules.management.customer.service.CustomerService;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
@@ -26,22 +28,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.management.customer.entity.Customer;
-import com.jeeplus.modules.management.customer.service.CustomerService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 客户管理Controller
@@ -201,16 +196,12 @@ public class CustomerController extends BaseController {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Customer customer = new Customer();
-                String emplId="";
-
-                if(jsonObject.getString("B_FName") != null || jsonObject.getString("B_FName") != ""){
-                    emplId=jsonObject.getString("B_FName");
-                }
-                customer.setId(jsonObject.getString("FEmpID"));
+                customer.setId(jsonObject.getString("FItemID"));
                 customer.setErpId(jsonObject.getString("FItemID"));
                 customer.setName(jsonObject.getString("A_FName"));
                 customer.setNumber(jsonObject.getString("FNumber"));
-                customer.setEmplId(emplId);
+                customer.setEmplId(jsonObject.getString("FEmpID"));
+                customer.setIsNewRecord(true);
                 customerService.save(customer);
             }
         } catch (Exception e) {

@@ -122,7 +122,7 @@ public class WarehouseController extends BaseController {
 			warehouse.setSort(30);
 		}
 		model.addAttribute("warehouse", warehouse);
-		return "modules/management/warehouse/warehouseForm";
+		return "itemClassForm";
 	}
 
 	/**

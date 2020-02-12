@@ -14,6 +14,7 @@
     <script src="${ctxStatic}/js/fastclick.js"></script>
     <script src="${ctxStatic}/js/wechat/jweixin-1.2.0.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
+    <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
         body{
             background-color: #fff;
@@ -54,6 +55,10 @@
             /*color: #cfcfcf;*/
             color: #8a8a8a;
         }
+        .itemValue {
+            position: absolute;
+            left: 85px;
+        }
     </style>
 </head>
 <body>
@@ -67,70 +72,88 @@
                 <span class="weui-form-preview__value">
                     <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">商品代码：</label></div>
-                        <div class="weui-cell__bd">
-                          <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入商品代码"/>
+                        <div class="weui-cell__bd itemValue">
+                          {{stock.commodityNumber}}
                         </div>
                     </div>
                     <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">商品名称：</label></div>
-                        <div class="weui-cell__bd">
-                          <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入商品名称"/>
+                        <div class="weui-cell__bd itemValue">
+                          {{stock.commodityName}}
                         </div>
                     </div>
                     <div class="weui-cell">
                         <div class="weui-cell__hd"><label class="weui-label">规格型号：</label></div>
-                        <div class="weui-cell__bd">
-                          <input class="weui-input" type="number" pattern="[0-9]*" placeholder="请输入规格型号"/>
+                        <div class="weui-cell__bd itemValue">
+                          {{stock.specification}}
                         </div>
                     </div>
                    <div class="weui-cell weui-cell_access">
-                        <div class="weui-cell__bd">
-                            <label class="weui-label">当前库存：</label>
-                        </div>
-                        <div class="weui-cell__bd">
-                            <div class="weui-cell__ft">说明</div>
+                        <div class="weui-cell__hd"><label class="weui-label">当前库存：</label></div>
+                       <div class="weui-cell__bd itemValue">
+                          {{stock.total}}
                         </div>
                    </div>
                 </span>
-                <div class="weui-flex weui-cell">
-                    <div class="weui-flex__item">
-                        <div class="placeholder">等级A：60</div>
-                    </div>
-                    <div class="weui-flex__item">
-                        <div class="placeholder">等级B：70</div>
-                    </div>
-                    <div class="weui-flex__item">
-                        <div class="placeholder">等级C：80</div>
-                    </div>
-                </div>
+<%--                <div class="weui-flex weui-cell">--%>
+<%--                    <div class="weui-flex__item">--%>
+<%--                        <div class="placeholder">等级A：60</div>--%>
+<%--                    </div>--%>
+<%--                    <div class="weui-flex__item">--%>
+<%--                        <div class="placeholder">等级B：70</div>--%>
+<%--                    </div>--%>
+<%--                    <div class="weui-flex__item">--%>
+<%--                        <div class="placeholder">等级C：80</div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
     <%--  --%>
     <div class="weui-flex">
         <div class="weui-flex__item">
-            <div class="placeholder">仓库：C-E区</div>
+            <div class="placeholder">仓库：{{stock.warehouse}}</div>
         </div>
         <div class="weui-flex__item">
-            <div class="placeholder">仓位：5-9A</div>
-        </div>
-    </div>
-    <div class="weui-flex">
-        <div class="weui-flex__item">
-            <div class="placeholder">等级：A</div>
-        </div>
-        <div class="weui-flex__item">
-            <div class="placeholder">色号：#88995</div>
+            <div class="placeholder">仓位：{{stock.warehousePosition}}</div>
         </div>
     </div>
     <div class="weui-flex">
         <div class="weui-flex__item">
-            <div class="placeholder">批号：56GE855001</div>
+            <div class="placeholder">等级：{{stock.level}}</div>
         </div>
         <div class="weui-flex__item">
-            <div class="placeholder">数量：80000</div>
+            <div class="placeholder">色号：{{stock.colorNumber}}</div>
+        </div>
+    </div>
+    <div class="weui-flex">
+        <div class="weui-flex__item">
+            <div class="placeholder">批号：{{stock.batchNumber}}</div>
+        </div>
+        <div class="weui-flex__item">
+            <div class="placeholder">数量：{{stock.total}}</div>
         </div>
     </div>
 </div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            stock: {}
+        },
+        methods: {
+
+        },
+        created: function(){
+            this.$http.get('${ctxf}/wechat/stock/detailData', {
+                params: {
+                    commodityNumber: "${commodityNumber}"
+                }
+            }).then(res => {
+                this.stock = res.body.body.data[0]
+            })
+        }
+    });
+</script>
 </body>
 </html>

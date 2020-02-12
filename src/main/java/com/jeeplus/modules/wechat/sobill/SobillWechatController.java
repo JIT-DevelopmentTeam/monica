@@ -1,4 +1,5 @@
 package com.jeeplus.modules.wechat.sobill;
+import com.jeeplus.common.config.Global;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.IdGen;
 
@@ -7,6 +8,8 @@ import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
 import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
+import com.jeeplus.modules.management.messagesend.entity.Messagesend;
+import com.jeeplus.modules.management.messagesend.service.MessagesendService;
 import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,6 +55,10 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private OrderApproveService orderApproveService;
+
+    // 消息发送
+    @Autowired
+    private MessagesendService messagesendService;
 
     @RequestMapping(value = "list")
     public ModelAndView list() {
@@ -148,7 +156,9 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "saveSob",produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public AjaxJson saveSob(@RequestBody Object object){
+    public AjaxJson saveSob(@RequestBody Object object,HttpServletRequest request){
+        String path = request.getContextPath();
+        String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
         AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){
@@ -185,7 +195,7 @@ public class SobillWechatController extends BaseController {
             }
             sobill.setSobillentryList(sobillentryList);
             sobillService.save(sobill);
-            generateApproval(sobill);
+            generateApproval(sobill,request_url);
         } else {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
@@ -221,7 +231,7 @@ public class SobillWechatController extends BaseController {
                     }
                 }
                 sobillService.save(sobill);
-                generateApproval(sobill);
+                generateApproval(sobill,request_url);
             }
         }
         aj.setSuccess(true);
@@ -229,11 +239,13 @@ public class SobillWechatController extends BaseController {
         return aj;
     }
 
+
     /**
      * 生成审批
      * @param sobill
+     * @param request_url  请求路径url
      */
-    private void generateApproval(Sobill sobill){
+    private void generateApproval(Sobill sobill,String request_url){
         if (sobill.getStatus() != null && sobill.getStatus() == 1) {
             Approvenode approvenode = new Approvenode();
             approvenode.setDelFlag("0");
@@ -241,6 +253,7 @@ public class SobillWechatController extends BaseController {
             // 订单类型
             approvenode.setType(1);
             List<Approvenode> approvenodeList = approvenodeService.findList(approvenode);
+            Messagesend messagesend=null;
             for (int i = 0; i < approvenodeList.size(); i++) {
                 OrderApprove orderApprove = new OrderApprove();
                 orderApprove.setType(approvenodeList.get(i).getType());
@@ -264,6 +277,26 @@ public class SobillWechatController extends BaseController {
                 }
                 orderApprove.setSobillId(sobill);
                 orderApproveService.save(orderApprove);
+                if(i == 0 && orderApprove.getIsToapp()==1){
+                    String title="订单审核";
+                    // 获取发送给微信用户Id
+                    String toUser=orderApprove.getApprovalEmplId().getQyUserId();
+                    // 跳转详情url
+                    request_url += Global.getConfig("frontPath");
+                    // 消息发送到企业微信
+                    messagesendService.messageEend(sobill.getEmplId(),title,toUser,request_url,sobill.getId(),"1");
+                    Date date=new Date();
+                    messagesend =new Messagesend();
+                    messagesend.setFromuserId(sobill.getEmplId());
+                    messagesend.setTouserId(orderApprove.getApprovalEmplId().getId());
+                    messagesend.setSendTime(date);
+                    messagesend.setIsRead("0");
+                    messagesend.setTitle(title);
+                    messagesend.setIsSend("1");
+                    messagesend.setIsSendToWX("1");
+                    messagesend.setSendTimeWX(date);
+                    messagesendService.save(messagesend); // 保存发送消息系统表
+                }
             }
         }
     }
