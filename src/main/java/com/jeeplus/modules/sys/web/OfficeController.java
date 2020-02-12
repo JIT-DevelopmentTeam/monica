@@ -10,6 +10,7 @@ import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.token.AccessTokenUtils;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.Area;
@@ -268,47 +269,61 @@ public class OfficeController extends BaseController {
     public AjaxJson synchronize() {
         // 同步拦截
         AjaxJson aj = new AjaxJson();
-        // 获取缓存通讯录token
-        if (CacheUtils.get("addressBookAccessToken") == null || StringUtils.isBlank(CacheUtils.get("addressBookAccessToken").toString())) {
-            aj.setSuccess(false);
-            aj.setMsg("同步失败,请联系管理员!");
-            return aj;
-        }
-        String addressBookAccessToken = CacheUtils.get("addressBookAccessToken").toString();
-        List<Office> delList = new ArrayList<>();
-        // 企业微信
-        List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
-        // 排序机构列表
-        sortOfficeList(departmentList);
-        // 新增/编辑
-        for (Department department : departmentList) {
-            if (!"1".equals(department.getId())) {
-                Office editOffice = new Office();
-                editOffice.setQyDeptId(department.getId());
-                editOffice = officeService.getEntity(editOffice);
-                Office localOffice = saveOffice(department.getId(),department.getName(),department.getParentid(),editOffice);
-                List<com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User> qywxUserList = JwUserAPI.getUsersByDepartid(department.getId(),"0",null,addressBookAccessToken);
-                for (com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User qywxUser : qywxUserList) {
-                    saveEnterpriseUser(qywxUser.getUserid(),qywxUser.getName(),qywxUser.getEmail(),null,qywxUser.getMobile(),qywxUser.getPosition(),qywxUser.getGender(),localOffice);
+        try {
+            String addressBookAccessToken;
+            // 获取缓存通讯录token
+            if (CacheUtils.get("addressBookAccessToken") != null) {
+                addressBookAccessToken = CacheUtils.get("addressBookAccessToken").toString();
+            } else {
+                AccessTokenUtils.updateAgentToken();
+                if (CacheUtils.get("addressBookAccessToken") == null) {
+                    aj.setSuccess(false);
+                    aj.setMsg("同步出错,请联系管理员!");
+                    return aj;
+                } else {
+                    addressBookAccessToken = CacheUtils.get("addressBookAccessToken").toString();
                 }
             }
-        }
-        // 删除
-        Office office = new Office();
-        List<Office> officeList = officeService.findList(office);
-        for (Office officeEntity : officeList) {
-            boolean isDel = true;
+            List<Office> delList = new ArrayList<>();
+            // 企业微信
+            List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
+            // 排序机构列表
+            sortOfficeList(departmentList);
+            // 新增/编辑
             for (Department department : departmentList) {
-                if (department.getId().equals(officeEntity.getQyDeptId()) || "1".equals(officeEntity.getId())) {
-                    isDel = false;
+                if (!"1".equals(department.getId())) {
+                    Office editOffice = new Office();
+                    editOffice.setQyDeptId(department.getId());
+                    editOffice = officeService.getEntity(editOffice);
+                    Office localOffice = saveOffice(department.getId(),department.getName(),department.getParentid(),editOffice);
+                    List<com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User> qywxUserList = JwUserAPI.getUsersByDepartid(department.getId(),"0",null,addressBookAccessToken);
+                    for (com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User qywxUser : qywxUserList) {
+                        saveEnterpriseUser(qywxUser.getUserid(),qywxUser.getName(),qywxUser.getEmail(),null,qywxUser.getMobile(),qywxUser.getPosition(),qywxUser.getGender(),localOffice);
+                    }
                 }
             }
-            if (isDel) {
-                delList.add(officeEntity);
+            // 删除
+            Office office = new Office();
+            List<Office> officeList = officeService.findList(office);
+            for (Office officeEntity : officeList) {
+                boolean isDel = true;
+                for (Department department : departmentList) {
+                    if (department.getId().equals(officeEntity.getQyDeptId()) || "1".equals(officeEntity.getId())) {
+                        isDel = false;
+                    }
+                }
+                if (isDel) {
+                    delList.add(officeEntity);
+                }
             }
-        }
-        for (Office delOffice : delList) {
-            officeService.delete(delOffice);
+            for (Office delOffice : delList) {
+                officeService.delete(delOffice);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            aj.setSuccess(false);
+            aj.setMsg("同步出错,请联系管理员!");
+            return aj;
         }
         aj.setMsg("同步成功!");
         return aj;
