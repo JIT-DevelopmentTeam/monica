@@ -51,7 +51,7 @@
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="stock" class="form form-horizontal well clearfix">
 				<input type="hidden" id="itemClassNumber" name="itemClassNumber">
-				<div class="col-xs-12 col-sm-6 col-md-3">
+				<div class="col-xs-12 col-sm-6 col-md-2">
 					<label class="label-item single-overflow pull-left" title="产品信息：">产品信息：</label>
 					<input id="item" name="item" htmlEscape="false" maxlength="64"  class=" form-control" placeholder="请输入产品名称或者规格型号">
 				</div>
@@ -59,15 +59,15 @@
 					<label class="label-item single-overflow pull-left" title="批号：">批号：</label>
 					<form:input path="batchNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
+				<div class="col-xs-12 col-sm-6 col-md-1">
 					<label class="label-item single-overflow pull-left" title="等级：">等级：</label>
 					<form:input path="level" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
+				<div class="col-xs-12 col-sm-6 col-md-1">
 					<label class="label-item single-overflow pull-left" title="色号：">色号：</label>
 					<form:input path="colorNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
+				<div class="col-xs-12 col-sm-6 col-md-2">
 					<label class="label-item single-overflow pull-left" title="仓库：">仓库：</label>
 					<form:input path="warehouse" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
