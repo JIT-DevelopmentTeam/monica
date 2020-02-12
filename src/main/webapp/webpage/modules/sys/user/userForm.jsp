@@ -103,12 +103,6 @@
 		         	<form:checkboxes path="roleIdList" items="${allRoles}" itemLabel="name" itemValue="id" htmlEscape="false" cssClass="i-checks required"/>
 		         	<label id="roleIdList-error" class="error" for="roleIdList"></label>
 		         </td>
-		         <td class="active"><label class="pull-right"><font color="red">*</font>是否需要同步:</label></td>
-		         <td>
-					 <form:radiobutton path="isSyntoent" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>不需要
-					 <form:radiobutton path="isSyntoent" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>需要
-					 <label id="isSyntoent" class="error" for="isSyntoent"></label>
-				 </td>
 		      </tr>
 
 			  <tr>
