@@ -340,6 +340,7 @@ public class NewsController extends BaseController {
     /**
      * 上传图片封面
      *
+     *
      * @param request
      * @param myFile
      * @return
@@ -365,6 +366,7 @@ public class NewsController extends BaseController {
      * @return
      */
     @RequestMapping("/uploadEditorPic")
+
     @ResponseBody
     public Map<String, String> selectJpgUrl(@RequestParam(value = "fileName") MultipartFile mf, HttpServletRequest request)
             throws IOException {
