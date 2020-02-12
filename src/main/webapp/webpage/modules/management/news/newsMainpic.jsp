@@ -13,7 +13,7 @@
 </head>
 <body class="bg-white">
     <div class="row">
-        <img src="${cxt}${news.smallnrl}" id="img" class="img-polaroid" style="width: 505px;height: 400px;" title="${ news.title}" alt="无封面"/>
+        <img src="${cxt}${news.mainpic}" id="img" class="img-polaroid" style="width: 505px;height: 400px;" title="${ news.title}" alt="无封面"/>
     </div>
 </body>
 </html>
