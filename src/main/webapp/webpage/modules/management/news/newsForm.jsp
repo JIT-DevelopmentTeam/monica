@@ -69,25 +69,27 @@
 
 	        $("input[name='isPush']").each(function () {
 				if ($("input[name='isPush']:checked").val() == '0') {
-					$("input[name='push']").attr("readonly", "readonly");
+					$("input[name='push']").attr("disabled", "true");
 					$("#pushrule").attr("disabled", "true");
 					$("#objId").attr("disabled", "true");
 				}
 			});
             // 判断当前选中
             $("input[name='isPush']").on('ifChecked', function () {
-                debugger;
                 if (this.value == "0") {
-                    $("input[name='push']").attr("readonly", "readonly");
+                    var push= $("input[name='push']");
+                    push.attr("disabled", "true");
+                    push.attr("class","form-control ");
+
                     $("#pushrule").attr("disabled", "true");
                     $("#objId").attr("disabled", "true");
                     $("[name='push']").val("");
                 } else if (this.value == "1") {
                     // 推送时间
                     var push = $("[name='push']");
-                    push.removeAttr("readonly");
+                    push.removeAttr("disabled");
                     push.attr("class","form-control  required");
-					// 推送规则
+                    // 推送规则
                     var pushrule = $("#pushrule");
                     pushrule.removeAttr("disabled");
                     pushrule.attr("class","form-control  required");

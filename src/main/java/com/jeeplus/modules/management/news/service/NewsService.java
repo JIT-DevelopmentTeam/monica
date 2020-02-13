@@ -11,6 +11,7 @@ import com.jeeplus.modules.management.news.mapper.NewsMapper;
 import com.jeeplus.modules.management.news.schedule.NewsTask;
 import com.jeeplus.modules.management.newspush.entity.NewsPush;
 import com.jeeplus.modules.management.newspush.service.NewsPushService;
+import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import org.quartz.*;
@@ -117,9 +118,13 @@ public class NewsService extends CrudService<NewsMapper, News> {
 			} else {
 				userParam = new User();
 				if ("2".equals(news.getPushrule())) {
-					userParam.getOffice().setId(newsPushList.get(i).getObjId());// 部门推送
+					Office office =new Office();
+					office.setId(newsPushList.get(i).getObjId());
+					userParam.setOffice(office);// 部门推送
 				} else {
-					userParam.getCompany().setId(newsPushList.get(i).getObjId());// 企业下的所有部门的员工，全部推送
+					Office company = new Office();
+					company.setId(newsPushList.get(i).getObjId());
+					userParam.setCompany(company);// 企业下的所有部门的员工，全部推送
 				}
 				List<User> list = userMapper.findListByUserOfficeList(userParam);
 				if (list.size() > 0) {
