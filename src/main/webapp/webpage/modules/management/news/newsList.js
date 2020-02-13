@@ -53,6 +53,14 @@ $(document).ready(function() {
                contextMenuTrigger:"right",//pc端 按右键弹出菜单
                contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
                contextMenu: '#context-menu',
+                onLoadSuccess: function(data){
+                   console.log(data);
+                    if(data["rows"] != undefined){
+                        $("#newsTable").bootstrapTable("load",data);
+                    } else {
+                        $("#newsTable").bootstrapTable("removeAll");
+                    }
+                },
                onContextMenuItem: function(row, $el){
                    if($el.data("item") == "edit"){
                    		edit(row.id);
