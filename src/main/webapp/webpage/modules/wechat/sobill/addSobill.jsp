@@ -324,10 +324,9 @@
             /* 订单类型 */
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
                 var dictList = res.body.rows;
-                console.log(dictList);
                 var data = [];
                 for (var i = 0; i < dictList.length; i++) {
-                    var info = {"title": dictList[i].label, "value": dictList[i].id};
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
                     data.push(info);
                 }
                 $("#typeSelect").select({

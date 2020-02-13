@@ -97,7 +97,8 @@ public class IcitemController extends BaseController {
                 IcitemClass icitemClass = new IcitemClass();
                 icitemClass.setId(jsonObject.getString("f_classid"));
                 icitem.setClassId(icitemClass);
-                icitemService.save(icitem,true);
+                icitem.setIsNewRecord(true);
+                icitemService.save(icitem);
             }
         } catch (Exception e) {
             e.printStackTrace();

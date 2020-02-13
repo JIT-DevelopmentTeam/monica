@@ -138,7 +138,7 @@ public class SobillController extends BaseController {
             sobill.setBillNo(jsonObject.getString("billNo"));
             sobill.setCustId(jsonObject.getString("custId"));
             sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
-            sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
+            sobill.setType(jsonObject.get("type").toString());
             sobill.setCurrencyId(Integer.parseInt(jsonObject.get("currencyId").toString()));
             sobill.setAmount(Double.parseDouble(jsonObject.get("amount").toString()));
             sobill.setRemarks(jsonObject.getString("remarks"));
@@ -170,10 +170,9 @@ public class SobillController extends BaseController {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
                 sobill.setEmplId(jsonObject.getString("emplId"));
-                sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
                 sobill.setCustId(jsonObject.getString("custId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
-                sobill.setType(Integer.parseInt(jsonObject.get("type").toString()));
+                sobill.setType(jsonObject.get("type").toString());
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 sobill.setCurrencyId(Integer.parseInt(jsonObject.get("currencyId").toString()));
                 sobill.setAmount(Double.parseDouble(jsonObject.get("amount").toString()));
