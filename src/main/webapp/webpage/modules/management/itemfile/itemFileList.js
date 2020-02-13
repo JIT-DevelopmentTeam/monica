@@ -55,10 +55,10 @@ $(document).ready(function() {
                contextMenu: '#context-menu',
                 onLoadSuccess: function(data){
                     if(data["rows"] == undefined){
-                        $("#newsTable").bootstrapTable("removeAll");
+                        $("#itemFileTable").bootstrapTable("removeAll");
                         return;
                     }
-                    $("#newsTable").bootstrapTable("load",data);
+                    $("#itemFileTable").bootstrapTable("load",data);
                 },
                onContextMenuItem: function(row, $el){
                    if($el.data("item") == "edit"){
