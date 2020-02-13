@@ -54,11 +54,11 @@ $(document).ready(function() {
                contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
                contextMenu: '#context-menu',
                 onLoadSuccess: function(data){
-                    if(data["rows"] != undefined){
-                        $("#newsTable").bootstrapTable("load",data);
-                    } else {
+                    if(data["rows"] == undefined){
                         $("#newsTable").bootstrapTable("removeAll");
+                        return;
                     }
+                    $("#newsTable").bootstrapTable("load",data);
                 },
                onContextMenuItem: function(row, $el){
                    if($el.data("item") == "edit"){
