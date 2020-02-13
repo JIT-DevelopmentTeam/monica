@@ -21,7 +21,7 @@ public class Sobill extends DataEntity<Sobill> {
 	
 	private static final long serialVersionUID = 1L;
 	private String erpId;		// erpid
-	private Integer type;		// 订单类型
+	private String type;		// 订单类型
 	private String billNo;		// 订单编码
 	private Integer synStatus;		// 订单同步状态
 	private Date synTime;		// 订单同步时间
@@ -73,11 +73,11 @@ public class Sobill extends DataEntity<Sobill> {
 	
 	@NotNull(message="订单类型不能为空")
 	@ExcelField(title="订单类型", dictType="", align=2, sort=8)
-	public Integer getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	
