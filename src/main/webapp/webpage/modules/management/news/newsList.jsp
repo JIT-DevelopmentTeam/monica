@@ -22,6 +22,10 @@
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="news" class="form form-horizontal well clearfix">
                         <div class="col-xs-12 col-sm-6 col-md-4">
+                            <label class="label-item single-overflow pull-left" title="编号：">标题：</label>
+                            <form:input path="title" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
                             <div style="margin-top:26px">
                                 <a id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i
                                         class="fa fa-search"></i> 查询</a>
@@ -50,9 +54,9 @@
                         <i class="glyphicon glyphicon-remove"></i> 删除
                     </button>
                 </shiro:hasPermission>
-                <shiro:hasPermission name="management:news:news:import">
+                <%--<shiro:hasPermission name="management:news:news:import">
                     <button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-                </shiro:hasPermission>
+                </shiro:hasPermission>--%>
                 <shiro:hasPermission name="management:news:news:export">
                     <button id="export" class="btn btn-warning">
                         <i class="fa fa-file-excel-o"></i> 导出

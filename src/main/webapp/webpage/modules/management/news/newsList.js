@@ -2,7 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#newsTable').bootstrapTable({
-		 
+
 		  //请求方法
                method: 'post',
                //类型json
@@ -24,23 +24,23 @@ $(document).ready(function() {
     	       minimumCountColumns: 2,
                //是否显示行间隔色
                striped: true,
-               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
-               cache: false,    
-               //是否显示分页（*）  
-               pagination: true,   
-                //排序方式 
-               sortOrder: "asc",  
+               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+               cache: false,
+               //是否显示分页（*）
+               pagination: true,
+                //排序方式
+               sortOrder: "asc",
                //初始化加载第一页，默认第一页
-               pageNumber:1,   
-               //每页的记录行数（*）   
-               pageSize: 10,  
-               //可供选择的每页的行数（*）    
+               pageNumber:1,
+               //每页的记录行数（*）
+               pageSize: 10,
+               //可供选择的每页的行数（*）
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
                url: "${ctx}/management/news/news/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
-               //queryParamsType:'',   
-               ////查询参数,每次调用是会带上这个参数，可自定义                         
+               //queryParamsType:'',
+               ////查询参数,每次调用是会带上这个参数，可自定义
                queryParams : function(params) {
                	var searchParam = $("#searchForm").serializeJSON();
                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -77,10 +77,10 @@ $(document).ready(function() {
                    	  			jp.error(data.msg);
                    	  		}
                    	  	})
-                   	   
+
                    	});
-                      
-                   } 
+
+                   }
                },
                onClickRow: function(row, $el){
 
@@ -111,7 +111,7 @@ $(document).ready(function() {
 				      </c:otherwise>
 				   </c:choose>
 		         }
-		       
+
 		    }
             ,{
                 field: 'user.name',
@@ -167,27 +167,15 @@ $(document).ready(function() {
 		        sortName: 'describe',
 			    cellStyle: formatTableUnit,
 			    formatter: paramsMatter
-		       
+
 		    }
-
-		    /*,{
-		        field: 'content',
-		        title: '内容',
-		        sortable: true,
-		        sortName: 'content',
-		        formatter:function(value, row , index){
-		        	return jp.unescapeHTML(value);
-		        }
-		       
-		    }*/
-
 			,{
 		        field: 'starttime',
 		        title: '显示时间开始',
 				class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'starttime'
-		       
+
 		    }
 			,{
 		        field: 'endtime',
@@ -195,7 +183,7 @@ $(document).ready(function() {
 				class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'endtime'
-		       
+
 		    }
 			,{
 		        field: 'isPush',
@@ -203,6 +191,7 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'isPush',
 		        formatter:function(value, row , index){
+		            console.log(""+row.id);
                     var i = "-";
                     if(value == 0){
                         i = "否"
@@ -218,7 +207,7 @@ $(document).ready(function() {
                 class:"text-nowrap",
 		        sortable: true,
 		        sortName: 'push'
-		       
+
 		    },{
                 field: 'readCount',
                 title: '阅读次数',
@@ -234,29 +223,19 @@ $(document).ready(function() {
                 formatter: operateFormatter
             }
 
-			/*,{
+			,{
 		        field: 'pushrule',
 		        title: '推送规则',
 		        sortable: true,
 		        sortName: 'pushrule'
-		       
-		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-                class:"text-nowrap",
-		        sortable: true,
-		        sortName: 'remarks'
-		       
-		    }*/
-		     ]
-		
-		});
-		
-		  
-	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
-		 
+		    }
+		     ]
+
+		});
+
+
+	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 		  $('#newsTable').bootstrapTable("toggleView");
 		}
 	  
@@ -374,20 +353,21 @@ function formatTableUnit(value, row, index) {
             return row.id
         });
     }
-  
+
   function deleteAll(){
 
 		jp.confirm('确认要删除该新闻公告记录吗？', function(){
-			jp.loading();  	
+			jp.loading();
 			jp.get("${ctx}/management/news/news/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#newsTable').bootstrapTable('refresh');
+
+         	  			$('#newsTable').bootstrapTable('refresh',"${ctx}/management/news/news/data");
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
          	  		}
          	  	})
-          	   
+
 		})
   }
 

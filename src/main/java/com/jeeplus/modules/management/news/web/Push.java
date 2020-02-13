@@ -1,6 +1,7 @@
 package com.jeeplus.modules.management.news.web;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jeeplus.common.config.Global;
 import com.jeeplus.modules.management.news.entity.News;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
@@ -9,7 +10,12 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsArticle;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.NewsEntity;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class Push {
+
+
 
     /**
      * 新闻公告推送
@@ -18,7 +24,9 @@ public class Push {
      */
     public static void captainSendLoggingData(String ip, String port, News newsData, String toUser) {
         // 获取请求协议
-        String filePath =  "http://" + ip + ":" + port;
+        String messageServerUrl = Global.getConfig("messageServerUrl");
+        System.out.println("messageServerUrl : "+messageServerUrl);
+        String filePath =  "http://" + messageServerUrl;
         // 获取Token
         AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
         com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News news = new com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News();

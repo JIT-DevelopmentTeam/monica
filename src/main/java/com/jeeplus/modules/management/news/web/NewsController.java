@@ -103,6 +103,7 @@ public class NewsController extends BaseController {
     @RequiresPermissions("management:news:news:list")
     @RequestMapping(value = "data")
     public Map<String, Object> data(News news, HttpServletRequest request, HttpServletResponse response, Model model) {
+        news.setDelFlag("0");
         Page<News> page = newsService.findPage(new Page<News>(request, response), news);
         return getBootstrapData(page);
     }
@@ -188,8 +189,22 @@ public class NewsController extends BaseController {
             //新增或编辑表单保存
             newsService.save(news);//保存
             String objIds = news.getObjId();
+            String[] objIdArr = null;
+            if("0".equals(news.getPushrule())){
+                User user =new User();
+                user.setDelFlag("0");
+                List<User> allList = userMapper.findAllList(user);
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < allList.size(); i++) {
+                    list.add(allList.get(i).getId());
+                }
+                objIdArr = list.toArray(new String[list.size()]);
+                objIds = "0";  // 设置全部推送
+            }
             if(objIds != null){
-                String[] objIdArr = objIds.split(",");
+                if( !"0".equals(news.getPushrule())){
+                    objIdArr = objIds.split(",");
+                }
                 /*System.out.println("--->:"+objIds);*/
                 NewsPush newsPush = null;
                 NewsPush del = new NewsPush();
@@ -244,7 +259,7 @@ public class NewsController extends BaseController {
     public AjaxJson deleteAll(String ids) {
         AjaxJson j = new AjaxJson();
         String idArray[] = ids.split(",");
-        List<News> newsList = Lists.newArrayList();
+        //List<News> newsList = Lists.newArrayList();
         News news = null;
         for (String id : idArray) {
             news = newsService.get(id);
@@ -252,10 +267,11 @@ public class NewsController extends BaseController {
                 String realPath = Global.getClasspath() + news.getMainpic();
                 System.out.println(realPath);
                 FileUtils.deleteFile(realPath);
-                newsList.add(news);
+                newsService.delete(news);
+                //newsList.add(news);
             }
         }
-        newsService.deleteAllByLogic(newsList);
+        //newsService.deleteAllByLogic(newsList);
         j.setMsg("删除新闻公告成功");
         return j;
     }
