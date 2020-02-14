@@ -26,10 +26,12 @@
 		a.f_checktime AS "checkTime",
 		a.f_checkstatus AS "checkStatus",
 		a.f_amount AS "amount",
+		a.f_followerid AS "followerId",
 		emp.name AS "empName",
 		checker.name AS "checkerName",
 		dept.name AS "deptName",
 		cus.f_name AS "cusName",
+		follower.name AS "followerName",
 		date_format(a.f_needtime, '%Y-%m-%d') AS "needTimeStr"
 	</sql>
 	
@@ -39,6 +41,7 @@
 		LEFT JOIN sys_office AS dept ON emp.office_id = dept.id
 		LEFT JOIN tb_customer AS cus ON a.f_custid = cus.id
 		LEFT JOIN sys_user AS creater ON a.create_by = creater.id
+		LEFT JOIN sys_user AS follower ON a.f_followerid = follower.id
 	</sql>
 	
     
@@ -153,7 +156,8 @@
 			f_checkerid,
 			f_checktime,
 			f_checkstatus,
-			f_amount
+			f_amount,
+			f_followerid
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -176,7 +180,8 @@
 			#{checkerId},
 			#{checkTime},
 			#{checkStatus},
-			#{amount}
+			#{amount},
+			#{followerId}
 		)
 	</insert>
 	
@@ -196,7 +201,8 @@
 			f_checkerid = #{checkerId},
 			f_checktime = #{checkTime},
 			f_checkstatus = #{checkStatus},
-			f_amount = #{amount}
+			f_amount = #{amount},
+			f_followerid = #{followerId}
 		WHERE id = #{id}
 	</update>
 	

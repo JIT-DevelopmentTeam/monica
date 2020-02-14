@@ -53,6 +53,8 @@ public class Sobill extends DataEntity<Sobill> {
     private Integer isLast;     // 是否为最高审批人
     private String initiateDateStr;     // 发起时间
     private Integer isApproval;     // 是否为审批
+    private String followerId;      // 跟进人
+    private String followerName;    // 跟进人名称
 
 	public Sobill() {
 		super();
@@ -346,5 +348,21 @@ public class Sobill extends DataEntity<Sobill> {
 
     public void setIsApproval(Integer isApproval) {
         this.isApproval = isApproval;
+    }
+
+    public String getFollowerId() {
+        return followerId;
+    }
+
+    public void setFollowerId(String followerId) {
+        this.followerId = followerId;
+    }
+
+    public String getFollowerName() {
+        return followerName;
+    }
+
+    public void setFollowerName(String followerName) {
+        this.followerName = followerName;
     }
 }

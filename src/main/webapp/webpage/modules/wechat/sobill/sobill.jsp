@@ -197,7 +197,7 @@
                     endPage: 10
                 }
             }).then(function (res) {
-                this.toAuditList = res.data.body.sobillList;
+                this.toAuditList = res.body.sobillList;
             });
 
             // 历史数据
@@ -208,7 +208,7 @@
                     endPage: 10
                 }
             }).then(function (res) {
-                this.historyList = res.data.body.sobillList;
+                this.historyList = res.body.sobillList;
             });
         },
         data: {
