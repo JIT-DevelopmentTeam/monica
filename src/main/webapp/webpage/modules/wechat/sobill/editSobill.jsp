@@ -147,6 +147,7 @@
 <div id="page">
     <input type="hidden" id="id" name="id" value="${sobill.id}"/>
     <input type="hidden" id="custId" name="custId" value="${sobill.custId}"/>
+    <input type="hidden" id="followerId" name="followerId" value="${sobill.followerId}"/>
     <input type="hidden" id="type" name="type" value="${sobill.type}"/>
     <%-- 表头 --%>
     <div class="order-panel">
@@ -191,7 +192,8 @@
                 <span>*</span>跟单人员
             </div>
             <div class="addOrder-list_ft">
-
+                <input placeholder="请选择跟单人员" type="text" id="followerName" readonly class="weui-input open-popup"
+                       data-target="#follower" value="${sobill.followerName}" style="text-align: right;"/>
             </div>
         </div>
         <div class="addOrder-list">
@@ -202,30 +204,39 @@
                 <fmt:formatDate value="${sobill.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
             </div>
         </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                备注
+            </div>
+            <div class="addOrder-list_ft">
+                <input placeholder="请输入备注" type="text" id="remarks" name="remarks" class="weui-input"
+                       style="text-align: right;" value="${sobill.remarks}"/>
+            </div>
+        </div>
     </div>
 
     <%-- 客户选择 --%>
     <div id="customer" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
         <div class="weui-popup__overlay"></div>
-        <div class="weui-popup__modal">
+        <div class="weui-popup__modal" style="overflow: hidden;">
             <!-- 搜索框 -->
-            <div class="weui-search-bar" id="searchBar" style="height: 7%;">
-                <div v-on:click="open" class="weui-search-bar__form">
+            <div class="weui-search-bar" id="customerSearchBar" style="height: 7%;">
+                <div v-on:click="openCustomer" class="weui-search-bar__form">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
-                        <input v-on:blur="searchCustomer($event.currentTarget.value)" type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
-                        <a v-on:click="empty" class="weui-icon-clear" id="searchClear"></a>
+                        <input v-on:change="searchCustomer($event.currentTarget.value)" type="search" class="weui-search-bar__input" id="customerSearchInput" placeholder="搜索" required="">
+                        <a v-on:click="emptyCustomer" class="weui-icon-clear" id="customerSearchClear"></a>
                     </div>
-                    <label class="weui-search-bar__label" id="searchText">
+                    <label class="weui-search-bar__label" id="customerSearchText">
                         <i class="weui-icon-search"></i>
                         <span>搜索</span>
                     </label>
                 </div>
-                <a v-on:click="close" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+                <a v-on:click="closeCustomer" class="weui-search-bar__cancel-btn" id="customerSearchCancel">取消</a>
             </div>
 
-            <div id="customerList" class="weui-cells weui-cells_radio">
-                <label class="weui-cell weui-check__label" :for="customer.id" v-for="customer in customerList">
+            <div id="customerList" class="weui-cells weui-cells_radio" style="overflow: auto;">
+                <label class="weui-cell weui-check__label" :for="customer.id" v-for="customer in customerList" style="overflow: hidden;">
                     <div class="weui-cell__bd">
                         <p>{{customer.name}}</p>
                     </div>
@@ -235,9 +246,47 @@
                     </div>
                 </label>
             </div>
-            <div class="btn-cell">
+            <div class="btn-cell" style="z-index: 502;">
                 <button v-on:click="saveCus" class="add-btn close-popup" data-target="#customer"><img src="${ctxStatic}/image/wechat/icon-add_white.png">{{saveCustomer}}</button>
                 <button v-on:click="cancelCus" class="back-btn close-popup" data-target="#customer"><img src="${ctxStatic}/image/wechat/icon-back_white.png">{{cancelCustomer}}</button>
+            </div>
+        </div>
+    </div>
+
+    <%-- 跟单员选择 --%>
+    <div id="follower" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
+        <div class="weui-popup__overlay"></div>
+        <div class="weui-popup__modal" style="overflow: hidden;">
+            <!-- 搜索框 -->
+            <div class="weui-search-bar" id="searchBar" style="height: 7%;">
+                <div v-on:click="openFollower" class="weui-search-bar__form">
+                    <div class="weui-search-bar__box">
+                        <i class="weui-icon-search"></i>
+                        <input v-on:change="searchFollower($event.currentTarget.value)" type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
+                        <a v-on:click="emptyFollower" class="weui-icon-clear" id="searchClear"></a>
+                    </div>
+                    <label class="weui-search-bar__label" id="searchText">
+                        <i class="weui-icon-search"></i>
+                        <span>搜索</span>
+                    </label>
+                </div>
+                <a v-on:click="closeFollower" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            </div>
+
+            <div id="followerList" class="weui-cells weui-cells_radio" style="overflow: auto;">
+                <label class="weui-cell weui-check__label" :for="follower.id" v-for="follower in followerList" style="overflow: hidden;">
+                    <div class="weui-cell__bd">
+                        <p>{{follower.name}}</p>
+                    </div>
+                    <div class="weui-cell__ft">
+                        <input type="radio" class="weui-check" name="follower" :id="follower.id" :value="follower.id">
+                        <span class="weui-icon-checked"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="btn-cell" style="z-index: 502;">
+                <button v-on:click="saveFol" class="add-btn close-popup" data-target="#follower"><img src="${ctxStatic}/image/wechat/icon-add_white.png">{{saveFollower}}</button>
+                <button v-on:click="cancelFol" class="back-btn close-popup" data-target="#follower"><img src="${ctxStatic}/image/wechat/icon-back_white.png">{{cancelFollower}}</button>
             </div>
         </div>
     </div>
@@ -351,17 +400,20 @@
             this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId', {}).then(function (res) {
                 this.customerList = res.body.body.customerList;
             });
+            this.$http.get('${ctxf}/wechat/user/getUserList', null).then(function (res) {
+                this.followerList = res.body.body.userList;
+            });
             /* 订单类型 */
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].id == ${sobill.type}) {
+                    if (dictList[i].value == ${sobill.type}) {
                         $("#typeSelect").val(dictList[i].label);
                     }
                 }
                 var data = [];
                 for (var i = 0; i < dictList.length; i++) {
-                    var info = {"title": dictList[i].label, "value": dictList[i].id};
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
                     data.push(info);
                 }
 
@@ -384,18 +436,30 @@
             cancel: '取消',
             saveCustomer:'保存',
             cancelCustomer:'取消',
+            saveFollower:'保存',
+            cancelFollower:'取消',
             icitemClassList: [],
-            customerList: []
+            customerList: [],
+            followerList: []
         },
         methods: {
-            close() {
-                $("#searchBar").removeClass("weui-search-bar_focusing");
+            closeCustomer() {
+                $("#customerSearchBar").removeClass("weui-search-bar_focusing");
             },
-            open() {
-                $("#searchBar").addClass("weui-search-bar_focusing");
+            openCustomer() {
+                $("#customerSearchBar").addClass("weui-search-bar_focusing");
             },
-            empty() {
-                $("#searchInput").val('');
+            emptyCustomer() {
+                $("#customerSearchInput").val('');
+            },
+            closeFollower() {
+                $("#followerSearchBar").removeClass("weui-search-bar_focusing");
+            },
+            openFollower() {
+                $("#followerSearchBar").addClass("weui-search-bar_focusing");
+            },
+            emptyFollower() {
+                $("#followerSearchInput").val('');
             },
             /* 提交商品 */
             submitItems() {
@@ -625,6 +689,54 @@
                         $("#customerList").append(templet);
                     }
                 });
+            },
+            searchFollower:function (val) {
+                $.ajax({
+                    async:false,
+                    cache:false,
+                    url:'${ctxf}/wechat/user/getUserList',
+                    type:'post',
+                    data:{
+                        name:val
+                    },
+                    dataType:'json',
+                    success:function (res) {
+                        var templet = '';
+                        $("#followerList").empty();
+                        var followerList = res.body.userList;
+                        for (var i = 0; i < followerList.length; i++) {
+                            templet += '<label class="weui-cell weui-check__label" for="'+followerList[i].id+'">' +
+                                '<div class="weui-cell__bd">' +
+                                '<p>'+followerList[i].name+'</p>' +
+                                '</div>' +
+                                '<div class="weui-cell__ft">' +
+                                '<input type="radio" class="weui-check" name="follower" id="'+followerList[i].id+'" value="'+followerList[i].id+'">' +
+                                '<span class="weui-icon-checked"></span>' +
+                                '</div>' +
+                                '</label>';
+                        }
+                        $("#followerList").append(templet);
+                    }
+                });
+            },
+            saveFol: function () {
+                var id = $("input[name='follower']:checked").val();
+                $("#followerId").val(id);
+                $.ajax({
+                    async:false,
+                    cache:false,
+                    url:'${ctxf}/wechat/user/getUserById',
+                    type:'post',
+                    data:{
+                        id:id
+                    },
+                    dataType:'json',
+                    success:function (res) {
+                        $("#followerName").val(res.body.user.name);
+                    }
+                });
+            },
+            cancelFol: function () {
             }
         }
     });
@@ -656,8 +768,10 @@
     function save(status) {
         var id = $("#id").val();
         var custId = $("#custId").val();
+        var followerId = $("#followerId").val();
         var needTime = $("#needTime").val();
         var type = $("#type").val();
+        var remarks = $("#remarks").val();
         if (custId == null || custId == '') {
             $.alert("请选择客户!");
             return;
@@ -695,6 +809,8 @@
             "status": status,
             "needTime": needTime,
             "type": type,
+            "followerId":followerId,
+            "remarks":remarks,
             "sobillentryList": json
         };
         $.ajax({

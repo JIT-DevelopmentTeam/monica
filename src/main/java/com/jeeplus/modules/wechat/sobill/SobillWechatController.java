@@ -161,10 +161,11 @@ public class SobillWechatController extends BaseController {
         String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
         AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
-        if (jsonObject.getString("id") == null || "".equals(jsonObject.getString("id"))){
+        if (jsonObject.get("id") == null || "".equals(jsonObject.getString("id"))){
             Sobill sobill = new Sobill();
             sobill.setBillNo(jsonObject.getString("billNo"));
             sobill.setCustId(jsonObject.getString("custId"));
+            sobill.setFollowerId(jsonObject.getString("followerId"));
             sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
             sobill.setType(jsonObject.get("type").toString());
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
@@ -177,6 +178,7 @@ public class SobillWechatController extends BaseController {
             } else {
                 sobill.setCheckStatus(2);
             }
+            sobill.setRemarks(jsonObject.getString("remarks"));
             sobill.setCreateDate(DateUtils.parseDate(jsonObject.get("createDate")));
             sobill.setId(IdGen.uuid());
             sobill.setIsNewRecord(true);
@@ -200,6 +202,7 @@ public class SobillWechatController extends BaseController {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
                 sobill.setCustId(jsonObject.getString("custId"));
+                sobill.setFollowerId(jsonObject.getString("followerId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
                 sobill.setType(jsonObject.get("type").toString());
                 sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
@@ -207,6 +210,7 @@ public class SobillWechatController extends BaseController {
                     sobill.setCheckStatus(0);
                 }
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
+                sobill.setRemarks(jsonObject.getString("remarks"));
                 List<Sobillentry> sobillentryList = sobill.getSobillentryList();
                 JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("sobillentryList"));
                 SobillController.checkDelect(sobillentryList, jsonArray);
