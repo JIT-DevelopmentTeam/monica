@@ -91,27 +91,13 @@ $(document).ready(function() {
 		        checkbox: true
 		       
 		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:newsfile:newsFile:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('management:newsfile:newsFile:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
-		         }
-		       
-		    }
+             ,{
+                 field: 'news.title',
+                 title: '所属的新闻标题',
+                 sortable: true,
+                 sortName: 'news.title'
+
+             }
 			,{
 		        field: 'originalName',
 		        title: '文件原名称',
@@ -144,7 +130,17 @@ $(document).ready(function() {
 		        field: 'isDown',
 		        title: '文件是否允许下载',
 		        sortable: true,
-		        sortName: 'isDown'
+		        sortName: 'isDown',
+                formatter:function(value, row , index){
+                    console.log(""+row.id);
+                    var i = "-";
+                    if(value == 0){
+                        i = "否"
+                    }else if(value == 1){
+                        i = "是"
+                    }
+                    return i;
+                }
 		       
 		    }
 			,{
@@ -168,13 +164,7 @@ $(document).ready(function() {
 		        sortName: 'server'
 		       
 		    }
-			,{
-		        field: 'newsId',
-		        title: '新闻id',
-		        sortable: true,
-		        sortName: 'newsId'
-		       
-		    }
+
 			,{
 		        field: 'downCount',
 		        title: '下载次数',
@@ -182,6 +172,12 @@ $(document).ready(function() {
 		        sortName: 'downCount'
 		       
 		    }
+            ,{
+                field: 'remarks',
+                title: '备注信息',
+                sortable: true,
+                sortName: 'remarks'
+            }
 		     ]
 		
 		});
@@ -189,7 +185,6 @@ $(document).ready(function() {
 		  
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
-		 
 		  $('#newsFileTable').bootstrapTable("toggleView");
 		}
 	  

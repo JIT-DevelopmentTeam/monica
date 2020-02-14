@@ -29,6 +29,9 @@
 			}
 
         }
+        function getNewsList() {
+            jp.openSaveDialog('选择新闻', "${ctx}/management/news/news/list", '900px', '500px');
+        }
 	</script>
 </head>
 <body class="bg-white">
@@ -37,10 +40,21 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+					<td class="width-15 active"><label class="pull-right">所属新闻：</label></td>
 					<td class="width-35">
-						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+						<form:input path="newsId" htmlEscape="false"    class="form-control "/>
 					</td>
+					<%--<td class="width-35">--%>
+						<%--<div class="input-group">--%>
+							<%--<div class="input-icon-group">--%>
+								<%--<input type="text" class="form-control required" value="" data-clearbtn="true"/>--%>
+							<%--</div>--%>
+							<%--<span class="input-group-btn">--%>
+                                 <%--<button class="btn btn-primary" type="button" onclick="getNewsList();"><i class="fa fa-search" aria-hidden="true"></i></button>--%>
+                            <%--</span>--%>
+						<%--</div>--%>
+						<%--<form:hidden path="newsId" htmlEscape="false" class="form-control required"  value=""/>--%>
+					<%--</td>--%>
 					<td class="width-15 active"><label class="pull-right">文件原名称：</label></td>
 					<td class="width-35">
 						<form:input path="originalName" htmlEscape="false"    class="form-control "/>
@@ -53,7 +67,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">文件大小：</label></td>
 					<td class="width-35">
-						<form:input path="size" htmlEscape="false"    class="form-control "/>
+						<form:input path="size" type="number" min="0"  htmlEscape="false"    class="form-control "/>
 					</td>
 				</tr>
 				<tr>
@@ -63,7 +77,11 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">文件是否允许下载：</label></td>
 					<td class="width-35">
-						<form:input path="isDown" htmlEscape="false"    class="form-control "/>
+						<form:select path="isDown" htmlEscape="false"    class="form-control ">
+							<form:option value="" label="请选择"/>
+							<form:option value="0" label="否"/>
+							<form:option value="1" label="是"/>
+						</form:select>
 					</td>
 				</tr>
 				<tr>
@@ -81,19 +99,17 @@
 					<td class="width-35">
 						<form:input path="server" htmlEscape="false"    class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right">新闻id：</label></td>
-					<td class="width-35">
-						<form:input path="newsId" htmlEscape="false"    class="form-control "/>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">下载次数：</label></td>
 					<td class="width-35">
-						<form:input path="downCount" htmlEscape="false"    class="form-control "/>
+						<form:input path="downCount" type="number" min="0" htmlEscape="false"    class="form-control "/>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
-		  		</tr>
+				</tr>
+		   		<tr>
+					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+					<td class="width-35" colspan="3">
+						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+					</td>
+				</tr>
 		 	</tbody>
 		</table>
 	</form:form>

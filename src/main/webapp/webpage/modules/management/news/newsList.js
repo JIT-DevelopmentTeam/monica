@@ -190,7 +190,6 @@ $(document).ready(function() {
 		        sortable: true,
 		        sortName: 'isPush',
 		        formatter:function(value, row , index){
-		            console.log(""+row.id);
                     var i = "-";
                     if(value == 0){
                         i = "否"
@@ -200,6 +199,24 @@ $(document).ready(function() {
                     return i;
 		        }
 		    }
+            ,{
+                field: 'pushrule',
+                title: '推送规则',
+                sortable: true,
+                sortName: 'pushrule',
+                formatter:function(value, row , index){
+                    var i = "-";
+                    if(value == 0){
+                        i = "全部推送"
+                    }else if(value == 1){
+                        i = "人员推送"
+                    }else if(value == 2){
+                        i = "部门推送"
+                    }
+                    return i;
+                }
+
+            }
 			,{
 		        field: 'push',
 		        title: '推送时间',
@@ -221,14 +238,6 @@ $(document).ready(function() {
                 events: operateEvents,
                 formatter: operateFormatter
             }
-
-			,{
-		        field: 'pushrule',
-		        title: '推送规则',
-		        sortable: true,
-		        sortName: 'pushrule'
-
-		    }
 		     ]
 
 		});

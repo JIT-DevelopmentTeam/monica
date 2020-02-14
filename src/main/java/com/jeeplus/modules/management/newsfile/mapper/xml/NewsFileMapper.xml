@@ -19,11 +19,12 @@
 		a.f_smallurl AS "smallUrl",
 		a.f_server AS "server",
 		a.f_newsid AS "newsId",
-		a.f_downcount AS "downCount"
+		a.f_downcount AS "downCount",
+		n.f_title AS "news.title"
 	</sql>
 	
 	<sql id="newsFileJoins">
-		
+		LEFT JOIN tb_news n ON a.f_newsid = n.id
 	</sql>
 	
     
@@ -43,6 +44,9 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
+			<if test="originalName != null and originalName !=''">
+				a.f_originalname = #{originalName}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

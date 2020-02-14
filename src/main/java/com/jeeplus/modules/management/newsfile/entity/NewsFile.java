@@ -6,6 +6,7 @@ package com.jeeplus.modules.management.newsfile.entity;
 
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.modules.management.news.entity.News;
 
 /**
  * 新闻公告附件Entity
@@ -25,6 +26,7 @@ public class NewsFile extends DataEntity<NewsFile> {
 	private String server;		// 文件服务器地址
 	private String newsId;		// 新闻id
 	private Integer downCount;		// 下载次数
+	private News news;         // 新闻公告对象
 	
 	public NewsFile() {
 		super();
@@ -123,5 +125,12 @@ public class NewsFile extends DataEntity<NewsFile> {
 	public void setDownCount(Integer downCount) {
 		this.downCount = downCount;
 	}
-	
+
+	public News getNews() {
+		return news;
+	}
+
+	public void setNews(News news) {
+		this.news = news;
+	}
 }
