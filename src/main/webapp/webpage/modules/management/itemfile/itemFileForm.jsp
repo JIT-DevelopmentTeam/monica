@@ -38,62 +38,70 @@
     <table class="table table-bordered">
         <tbody>
         <tr>
+            <td class="width-15 active"><label class="pull-right">商品名称：</label></td>
+            <td class="width-35">
+                <form:hidden path="itemId" htmlEscape="false" class="form-control "/>
+                <form:input path="icitem.name" htmlEscape="false" class="form-control " readonly="true"/>
+            </td>
+
             <td class="width-15 active"><label class="pull-right">文件原名称：</label></td>
             <td class="width-35">
-                <form:input path="originalName" htmlEscape="false" class="form-control "/>
+                <form:input path="originalName" htmlEscape="false" class="form-control " readonly="true"/>
             </td>
+        </tr>
+        <tr>
             <td class="width-15 active"><label class="pull-right">上传编码名称：</label></td>
             <td class="width-35">
                 <form:input path="name" htmlEscape="false" class="form-control "/>
             </td>
-        </tr>
-        <tr>
+
             <td class="width-15 active"><label class="pull-right">文件大小：</label></td>
             <td class="width-35">
-                <form:input path="size" htmlEscape="false" class="form-control "/>
+                <form:input path="size" htmlEscape="false" class="form-control " readonly="true"/>
             </td>
+        </tr>
+        <tr>
             <td class="width-15 active"><label class="pull-right">文件类型：</label></td>
             <td class="width-35">
-                <form:input path="type" htmlEscape="false" class="form-control "/>
+                <form:input path="type" htmlEscape="false" class="form-control " readonly="true"/>
             </td>
-        </tr>
-        <tr>
+
             <td class="width-15 active"><label class="pull-right">文件是否允许下载：</label></td>
             <td class="width-35">
-                <form:input path="isDown" htmlEscape="false" class="form-control "/>
-            </td>
-            <td class="width-15 active"><label class="pull-right">文件路径：</label></td>
-            <td class="width-35">
-                <form:input path="url" htmlEscape="false" class="form-control "/>
+                <form:select path="isDown" htmlEscape="false"    class="form-control ">
+                    <form:option value="" label="请选择"/>
+                    <form:option value="0" label="否"/>
+                    <form:option value="1" label="是"/>
+                </form:select>
             </td>
         </tr>
         <tr>
+            <td class="width-15 active"><label class="pull-right">文件路径：</label></td>
+            <td class="width-35">
+                <form:input path="url" htmlEscape="false" class="form-control " readonly="true"/>
+            </td>
+
             <td class="width-15 active"><label class="pull-right">文件预览图路径：</label></td>
             <td class="width-35">
-                <form:input path="smallUrl" htmlEscape="false" class="form-control "/>
+                <form:input path="smallUrl" htmlEscape="false" class="form-control " readonly="true"/>
             </td>
+        </tr>
+        <tr>
             <td class="width-15 active"><label class="pull-right">文件服务器地址：</label></td>
             <td class="width-35">
                 <form:input path="server" htmlEscape="false" class="form-control "/>
             </td>
-        </tr>
-        <tr>
-            <td class="width-15 active"><label class="pull-right">商品id：</label></td>
-            <td class="width-35">
-                <form:input path="itemId" htmlEscape="false" class="form-control "/>
-            </td>
+
             <td class="width-15 active"><label class="pull-right">下载次数：</label></td>
             <td class="width-35">
-                <form:input path="downCount" htmlEscape="false" class="form-control "/>
+                <form:input path="downCount" type="number" min="0" htmlEscape="false" class="form-control " readonly="true"/>
             </td>
         </tr>
         <tr>
             <td class="width-15 active"><label class="pull-right">备注信息：</label></td>
-            <td class="width-35">
+            <td class="width-35" colspan="3">
                 <form:textarea path="remarks" htmlEscape="false" rows="4" class="form-control "/>
             </td>
-            <td class="width-15 active"></td>
-            <td class="width-35"></td>
         </tr>
         </tbody>
     </table>
