@@ -79,8 +79,8 @@
 					<td class="width-35">
 						<form:select path="isDown" htmlEscape="false"    class="form-control ">
 							<form:option value="" label="请选择"/>
-							<form:option value="0" label="否"/>
-							<form:option value="1" label="是"/>
+							<form:option value="0" label="不允许"/>
+							<form:option value="1" label="允许"/>
 						</form:select>
 					</td>
 				</tr>

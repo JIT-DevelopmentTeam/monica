@@ -2,7 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#itemFileTable').bootstrapTable({
-		 
+
 		  //请求方法
                method: 'post',
                //类型json
@@ -24,23 +24,23 @@ $(document).ready(function() {
     	       minimumCountColumns: 2,
                //是否显示行间隔色
                striped: true,
-               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
-               cache: false,    
-               //是否显示分页（*）  
-               pagination: true,   
-                //排序方式 
-               sortOrder: "asc",  
+               //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+               cache: false,
+               //是否显示分页（*）
+               pagination: true,
+                //排序方式
+               sortOrder: "asc",
                //初始化加载第一页，默认第一页
-               pageNumber:1,   
-               //每页的记录行数（*）   
-               pageSize: 10,  
-               //可供选择的每页的行数（*）    
+               pageNumber:1,
+               //每页的记录行数（*）
+               pageSize: 10,
+               //可供选择的每页的行数（*）
                pageList: [10, 25, 50, 100],
-               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
                url: "${ctx}/management/itemfile/itemFile/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
-               //queryParamsType:'',   
-               ////查询参数,每次调用是会带上这个参数，可自定义                         
+               //queryParamsType:'',
+               ////查询参数,每次调用是会带上这个参数，可自定义
                queryParams : function(params) {
                	var searchParam = $("#searchForm").serializeJSON();
                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -76,12 +76,12 @@ $(document).ready(function() {
                    	  			jp.error(data.msg);
                    	  		}
                    	  	})
-                   	   
+
                    	});
-                      
-                   } 
+
+                   }
                },
-              
+
                onClickRow: function(row, $el){
                },
                	onShowSearch: function () {
@@ -89,11 +89,12 @@ $(document).ready(function() {
 		},
                columns: [{
 		        checkbox: true
-		       
+
 		    },{
                    field: 'icitem.name',
                    title: '商品名称',
                    sortable: true,
+                   class:"text-nowrap",
                    sortName: 'icitem.name'
 
                }
@@ -116,14 +117,14 @@ $(document).ready(function() {
 				      </c:otherwise>
 				   </c:choose>
 		         }
-		       
+
 		    }
 			,{
 		        field: 'name',
 		        title: '上传编码名称',
 		        sortable: true,
 		        sortName: 'name'
-		       
+
 		    }
 			,{
 		        field: 'size',
@@ -162,35 +163,35 @@ $(document).ready(function() {
 		        title: '文件路径',
 		        sortable: true,
 		        sortName: 'url'
-		       
+
 		    }
 			,{
 		        field: 'smallUrl',
 		        title: '文件预览图路径',
 		        sortable: true,
 		        sortName: 'smallUrl'
-		       
+
 		    }*/
 			,{
 		        field: 'server',
 		        title: '文件服务器地址',
 		        sortable: true,
 		        sortName: 'server'
-		       
+
 		    }
 			,{
 		        field: 'downCount',
 		        title: '下载次数',
 		        sortable: true,
 		        sortName: 'downCount'
-		       
+
 		    }
 			,{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true,
 		        sortName: 'remarks'
-		       
+
 		    }
 		    ,{
                 field: 'download',
@@ -201,7 +202,7 @@ $(document).ready(function() {
                 }
             }
 		     ]
-		
+
 		});
 		
 		  
