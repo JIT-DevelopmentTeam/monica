@@ -88,21 +88,19 @@
 		LEFT JOIN sys_user ou2 ON ou2.id = o.deputy_person
     </sql>
 
-
-	
-	<!-- 根据编号获得用户 -->
-	<select id="get" resultMap="userResult">
-		SELECT
-			<include refid="userColumns"/>,
-			r.id AS "role.id",
-			r.name AS "role.name",
-			r.enname AS "role.enname"
-		FROM sys_user a
-		<include refid="userJoins"/>
-		LEFT JOIN sys_user_role ur ON ur.user_id = a.id
-		LEFT JOIN sys_role r ON r.id = ur.role_id
-		WHERE a.id = #{id}
-	</select>
+    <!-- 根据编号获得用户 -->
+    <select id="get" resultMap="userResult">
+        SELECT
+        <include refid="userColumns"/>,
+        r.id AS "role.id",
+        r.name AS "role.name",
+        r.enname AS "role.enname"
+        FROM sys_user a
+        <include refid="userJoins"/>
+        LEFT JOIN sys_user_role ur ON ur.user_id = a.id
+        LEFT JOIN sys_role r ON r.id = ur.role_id
+        WHERE a.id = #{id}
+    </select>
 	
 	<!-- 根据登录名查询用户 -->
 	<select id="getByLoginName" resultMap="userResult" parameterType="User">
@@ -463,7 +461,7 @@
 		ORDER BY  a.name
 	</select>
 
-    <select id="getEntity" resultMap="userResult">
+    <select id="getByQyUserId" resultMap="userResult">
         SELECT
           <include refid="userColumns"/>,
             r.id AS "role.id",

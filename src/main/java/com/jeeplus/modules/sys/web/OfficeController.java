@@ -404,7 +404,7 @@ public class OfficeController extends BaseController {
      * @param office 本地部门机构
      */
     private void saveEnterpriseUser(String userId,String name,String email,String phone,String mobile,String position,String sex,Office office) {
-        User editUser = userMapper.getEntity(userId);
+        User editUser = userMapper.getByQyUserId(userId);
         if (editUser == null) {
             // 新增
             User saveUser = new User();

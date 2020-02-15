@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div id="order-cell1" style="padding-top: 24%;">
+            <div id="order-cell1" style="padding-top: 18%;">
                 <div id="toAuditDetail">
                     <div class="order-cell" v-for="toAudit in toAuditList">
                         <div class="weui-cells_radio">
@@ -194,7 +194,8 @@
                 params: {
                     checkStatus: 0,
                     startPage: 0,
-                    endPage: 10
+                    endPage: 10,
+                    qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
                 this.toAuditList = res.body.sobillList;
@@ -205,7 +206,8 @@
                 params: {
                     isHistory: 1,
                     startPage: 0,
-                    endPage: 10
+                    endPage: 10,
+                    qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
                 this.historyList = res.body.sobillList;
@@ -213,7 +215,7 @@
         },
         data: {
             add: '新增',
-            addHref: '${ctxf}/wechat/sobill/goAdd',
+            addHref: '${ctxf}/wechat/sobill/goAdd?qyUserId=${qyUserId}',
             edit: '编辑',
             del: '删除',
             home:'首页',
@@ -333,7 +335,8 @@
                     data: {
                         startTime: startTime,
                         endTime: endTime,
-                        checkStatus: checkStatus
+                        checkStatus: checkStatus,
+                        qyUserId: '${qyUserId}'
                     },
                     dataType: 'json',
                     success: function (res) {
@@ -356,7 +359,7 @@
                                 '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
-                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
                                 '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
@@ -427,7 +430,8 @@
                     data: {
                         checkStatus: 0,
                         startPage: startToAuditPage,
-                        endPage: endToAuditPage
+                        endPage: endToAuditPage,
+                        qyUserId: '${qyUserId}'
                     },
                     dataType: 'json',
                     success: function (res) {
@@ -449,7 +453,7 @@
                                 '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
-                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
                                 '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
@@ -481,7 +485,8 @@
                     data: {
                         isHistory: 1,
                         startPage: startHistoryPage,
-                        endPage: endHistoryPage
+                        endPage: endHistoryPage,
+                        qyUserId: '${qyUserId}'
                     },
                     dataType: 'json',
                     success: function (res) {
@@ -503,7 +508,7 @@
                                 '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +
-                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].empName != null && sobillList[i].empName != '' ? sobillList[i].empName : "") + '</div>' +
+                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
                                 '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
                                 '</div>' +
                                 '<div class="order-list">' +

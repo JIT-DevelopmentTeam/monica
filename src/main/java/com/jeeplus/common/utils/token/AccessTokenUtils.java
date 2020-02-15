@@ -18,6 +18,7 @@ public class AccessTokenUtils {
      * 更新Token
      */
     public static void updateAgentToken() {
+        // 通讯录Token
         if (CacheUtils.get("addressBookAccessToken") == null) {
             AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.contactSecret);
             if (accessToken != null && StringUtils.isNotBlank(accessToken.getAccesstoken())) {
@@ -29,6 +30,19 @@ public class AccessTokenUtils {
             if (!accessToken.getAccesstoken().equals(addressBookAccessToken)) {
                 CacheUtils.remove("addressBookAccessToken");
                 CacheUtils.put("addressBookAccessToken",accessToken.getAccesstoken());
+            }
+        }
+        if (CacheUtils.get("monicaAccessToken") == null) {
+            AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.monicaSecret);
+            if (accessToken != null && StringUtils.isNotBlank(accessToken.getAccesstoken())) {
+                CacheUtils.put("monicaAccessToken",accessToken.getAccesstoken());
+            }
+        } else {
+            String addressBookAccessToken = CacheUtils.get("monicaAccessToken").toString();
+            AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId,JwParamesAPI.monicaSecret);
+            if (!accessToken.getAccesstoken().equals(addressBookAccessToken)) {
+                CacheUtils.remove("monicaAccessToken");
+                CacheUtils.put("monicaAccessToken",accessToken.getAccesstoken());
             }
         }
     }

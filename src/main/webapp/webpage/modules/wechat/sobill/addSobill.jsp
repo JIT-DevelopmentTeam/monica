@@ -144,6 +144,7 @@
 </head>
 <body ontouchstart>
 <div id="page">
+    <input type="hidden" id="emplId" name="emplId" value="${sobill.emplId}"/>
     <input type="hidden" id="status" name="status" value="0"/>
     <input type="hidden" id="billNo" name="billNo" value="${sobill.billNo}"/>
     <input type="hidden" id="custId" name="custId"/>
@@ -738,6 +739,7 @@
         var billNo = $("#billNo").val();
         var needTime = $("#needTime").val();
         var custId = $("#custId").val();
+        var emplId = $("#emplId").val();
         var followerId = $("#followerId").val();
         var createDate = $("#createDate").val();
         var type = $("#type").val();
@@ -780,6 +782,7 @@
         var data = {
             "id": "",
             "custId": custId,
+            "emplId":emplId,
             "followerId":followerId,
             "billNo": billNo,
             "needTime": needTime,
