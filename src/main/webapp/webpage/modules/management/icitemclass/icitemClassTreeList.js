@@ -81,13 +81,13 @@
 			}).bind("activate_node.jstree", function (obj, e) {
 				var node = $('#icitemClassjsTree').jstree(true).get_selected(true)[0];
 				var opt = {
-					silent: true,
 					query:{
 						'classId.id':node.id
 					}
 				};
 				$("#classIdId").val(node.id);
 				$("#classIdName").val(node.text);
+				$('#icitemTable').bootstrapTable('removeAll');
 				$('#icitemTable').bootstrapTable('refresh',opt);
 			}).on('loaded.jstree', function() {
 				$("#icitemClassjsTree").jstree('open_all');
