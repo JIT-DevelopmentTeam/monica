@@ -11,6 +11,7 @@ import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
@@ -47,20 +48,26 @@ public class ReviewWechatController extends BaseController {
     @Autowired
     private MessagesendService messagesendService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @RequestMapping(value = {"list",""})
-    public ModelAndView list() {
+    public ModelAndView list(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("modules/wechat/review/reviewList");
+        mv.addObject("qyUserId",request.getParameter("qyUserId"));
         return mv;
     }
 
     @RequestMapping(value = "myReviewList")
     @ResponseBody
-    public AjaxJson myReviewList(OrderApprove orderApprove) {
+    public AjaxJson myReviewList(OrderApprove orderApprove,@RequestParam("qyUserId") String qyUserId) {
         AjaxJson aj = new AjaxJson();
         orderApprove.setDelFlag("0");
-        /* TODO 后续获取微信登录用户信息 */
-        orderApprove.setApprovalEmplId(UserUtils.getUser());
+        User user = userMapper.getByQyUserId(qyUserId);
+        if (user != null) {
+            orderApprove.setApprovalEmplId(user);
+        }
         List<OrderApprove> myReviewList = orderApproveService.findList(orderApprove);
         for (int i = 0; i < myReviewList.size(); i++) {
             if (myReviewList.get(i).getSobillId().getId() != null && !"".equals(myReviewList.get(i).getSobillId().getId())) {
@@ -70,12 +77,15 @@ public class ReviewWechatController extends BaseController {
                 }
             }
         }
+        if (myReviewList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("myReviewList",myReviewList);
         return aj;
     }
 
     @RequestMapping(value = "applicationDetail")
-    public ModelAndView applicationDetail(@RequestParam("id") String id, Integer isApproval) {
+    public ModelAndView applicationDetail(@RequestParam("id") String id,@RequestParam("qyUserId") String qyUserId, Integer isApproval) {
         ModelAndView mv = new ModelAndView();
         Sobill sobill = sobillService.get(id);
         if (sobill != null) {
@@ -89,6 +99,7 @@ public class ReviewWechatController extends BaseController {
             mv.addObject("sobill",sobill);
             mv.addObject("orderApproveList",orderApproveList);
         }
+        mv.addObject("qyUserId",qyUserId);
         mv.setViewName("modules/wechat/review/applicationDetail");
         return mv;
     }
@@ -102,11 +113,16 @@ public class ReviewWechatController extends BaseController {
      */
     @RequestMapping(value = "reviewOrder")
     @ResponseBody
-    public AjaxJson reviewOrder(@RequestParam("sobillId") String sobillId, @RequestParam("status") Integer status, String remark, HttpServletRequest request) {
+    public AjaxJson reviewOrder(@RequestParam("sobillId") String sobillId,@RequestParam("qyUserId") String qyUserId,@RequestParam("status") Integer status, String remark, HttpServletRequest request) {
         String path = request.getContextPath();
         String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
         AjaxJson aj = new AjaxJson();
+        String userId = null;
         Sobill sobill = sobillService.get(sobillId);
+        User loginUser = userMapper.getByQyUserId(qyUserId);
+        if (loginUser != null) {
+            userId = loginUser.getId();
+        }
         if (sobill != null) {
             OrderApprove orderApprove = new OrderApprove();
             orderApprove.setDelFlag("0");
@@ -115,8 +131,7 @@ public class ReviewWechatController extends BaseController {
             boolean allow = false;
             Messagesend messagesend=null;
             for (int i = 0; i < orderApproveList.size(); i++) {
-                /* TODO 微信登录用户 */
-                if (orderApproveList.get(i).getApprovalEmplId().getId().equals(UserUtils.getUser().getId()) && orderApproveList.get(i).getIsToapp() == 1) {
+                if (orderApproveList.get(i).getApprovalEmplId().getId().equals(userId) && orderApproveList.get(i).getIsToapp() == 1) {
                     OrderApprove currentApprove = orderApproveList.get(i);
                     currentApprove.setStatus(status);
                     currentApprove.setRemark(remark);
@@ -125,15 +140,15 @@ public class ReviewWechatController extends BaseController {
                     String title="订单审核";
                     String toUser=sobill.getEmplId();
                     User user=new User(toUser);
-                    String userId=user.getQyUserId();
-                    String getEmplId=orderApprove.getApprovalEmplId().getId(); // 发送人Id
+                    String userQyUserId=user.getQyUserId();
+                    String getEmplId=orderApproveList.get(i).getApprovalEmplId().getId(); // 发送人Id
                     request_url += Global.getConfig("frontPath");// 跳转详情url
                     if (status == 2) {
                         // 审核不通过
                         sobill.setCheckStatus(3);
                         sobillService.save(sobill);
                         // 消息发送到企业微信
-                        messageEend(getEmplId,title,userId,request_url,sobill.getId(),"2"); // 驳回消息
+                        messageEend(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
                     }
                     // 走审核下一个节点
                     if (currentApprove.getIsLast() != 1 && status != 2) {
@@ -143,7 +158,7 @@ public class ReviewWechatController extends BaseController {
                         /**
                          * 提醒申请人
                          */
-                        sendMessageTips(getEmplId,title,userId,request_url,sobill.getId(),"2");// 消息发送到企业微信
+                        sendMessageTips(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
                         /**
                          * 发送下一个节点申请人
                          */

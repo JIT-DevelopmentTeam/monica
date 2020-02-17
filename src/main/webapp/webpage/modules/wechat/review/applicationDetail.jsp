@@ -196,6 +196,7 @@
                     data:{
                         sobillId:$("#sobillId").val(),
                         status:status,
+                        qyUserId:'${qyUserId}',
                         remark:text
                     },
                     dataType:'json',
@@ -204,7 +205,7 @@
                             setTimeout(function () {
                                 $.hideLoading();
                                 $.toast(res.msg);
-                                window.location.href = '${ctxf}/wechat/review/list';
+                                window.location.href = '${ctxf}/wechat/review/list?qyUserId=${qyUserId}';
                             }, 3000);
                         } else {
                             setTimeout(function () {

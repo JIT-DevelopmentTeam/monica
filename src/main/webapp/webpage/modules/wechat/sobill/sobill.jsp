@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div id="order-cell1" style="padding-top: 18%;">
+            <div id="order-cell1" style="padding-top: 25%;">
                 <div id="toAuditDetail">
                     <div class="order-cell" v-for="toAudit in toAuditList">
                         <div class="weui-cells_radio">
@@ -174,7 +174,6 @@
     </div>
 </div>
 
-<%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
 
@@ -198,7 +197,9 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                this.toAuditList = res.body.sobillList;
+                if (res.body.success) {
+                    this.toAuditList = res.body.sobillList;
+                }
             });
 
             // 历史数据
@@ -210,7 +211,9 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                this.historyList = res.body.sobillList;
+                if (res.body.success) {
+                    this.historyList = res.body.sobillList;
+                }
             });
         },
         data: {
@@ -340,6 +343,9 @@
                     },
                     dataType: 'json',
                     success: function (res) {
+                        if (!res.success) {
+                            return;
+                        }
                         var sobillList = res.body.sobillList;
                         $("#"+detail).empty();
                         var template = '';
@@ -435,6 +441,9 @@
                     },
                     dataType: 'json',
                     success: function (res) {
+                        if (!res.success) {
+                            return;
+                        }
                         var sobillList = res.body.sobillList;
                         var template = '';
                         for (let i = 0; i < sobillList.length; i++) {
@@ -490,6 +499,9 @@
                     },
                     dataType: 'json',
                     success: function (res) {
+                        if (!res.success) {
+                            return;
+                        }
                         var sobillList = res.body.sobillList;
                         var template = '';
                         for (let i = 0; i < sobillList.length; i++) {

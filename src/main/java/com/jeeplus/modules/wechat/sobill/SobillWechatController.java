@@ -90,6 +90,9 @@ public class SobillWechatController extends BaseController {
         sobill.setStartPage(startPage);
         sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
+        if (sobillList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("sobillList",sobillList);
         return aj;
     }
@@ -326,12 +329,17 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "submittedList")
     @ResponseBody
-    public AjaxJson submittedList(Sobill sobill){
+    public AjaxJson submittedList(Sobill sobill,@RequestParam("qyUserId") String qyUserId){
         AjaxJson aj = new AjaxJson();
         sobill.setDelFlag("0");
-        /* TODO 后续获取微信登录用户 */
-        sobill.setEmplId(UserUtils.getUser().getId());
+        User user = userMapper.getByQyUserId(qyUserId);
+        if (user != null) {
+            sobill.setEmplId(user.getId());
+        }
         List<Sobill> submittedList = sobillService.findSubmittedList(sobill);
+        if (submittedList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("submittedList",submittedList);
         return aj;
     }

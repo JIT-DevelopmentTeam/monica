@@ -26,6 +26,10 @@ public class UserWechatController {
     @ResponseBody
     public AjaxJson getUserList(User user) {
         AjaxJson aj = new AjaxJson();
+        // 过滤超级管理员
+        User filter = new User();
+        filter.setId("0");
+        user.setCurrentUser(filter);
         List<User> userList = userMapper.findList(user);
         aj.put("userList",userList);
         return aj;

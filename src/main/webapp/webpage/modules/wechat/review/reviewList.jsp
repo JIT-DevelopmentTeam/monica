@@ -216,10 +216,13 @@
                     type: 1,
                     unprocessed:1,
                     startPage: 0,
-                    endPage: 20
+                    endPage: 20,
+                    qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.unprocessedList = res.data.body.myReviewList;
+                if (res.body.success) {
+                    this.unprocessedList = res.body.body.myReviewList;
+                }
             });
 
             // 已处理
@@ -228,20 +231,26 @@
                     type: 1,
                     processed:1,
                     startPage: 0,
-                    endPage: 20
+                    endPage: 20,
+                    qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.processedList = res.data.body.myReviewList;
+                if (res.body.success) {
+                    this.processedList = res.body.body.myReviewList;
+                }
             });
 
             // 已提交
             this.$http.get('${ctxf}/wechat/sobill/submittedList', {
                 params: {
                     startPage: 0,
-                    endPage: 20
+                    endPage: 20,
+                    qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.submittedList = res.data.body.submittedList;
+                if (res.body.success) {
+                    this.submittedList = res.body.body.submittedList;
+                }
             });
         },
         data: {
@@ -321,10 +330,10 @@
                                 if (val == null || val == ''){
                                     startUnprocessedPage = 0;
                                     endUnprocessedPage = 20;
-                                    data = {type:1,unprocessed:1,startPage:startUnprocessedPage,endPage:endUnprocessedPage};
+                                    data = {type:1,unprocessed:1,startPage:startUnprocessedPage,endPage:endUnprocessedPage,qyUserId:'${qyUserId}'};
                                     loadUnprocessed = false;
                                 } else{
-                                    data = {type:1,unprocessed:1,cusName:val};
+                                    data = {type:1,unprocessed:1,cusName:val,qyUserId:'${qyUserId}'};
                                 }
                                 break;
                             case false:
@@ -334,10 +343,10 @@
                                 if (val == null || val == ''){
                                     startProcessedPage = 0;
                                     endProcessedPage = 20;
-                                    data = {type:1,processed:1,startPage:startProcessedPage,endPage:endProcessedPage};
+                                    data = {type:1,processed:1,startPage:startProcessedPage,endPage:endProcessedPage,qyUserId:'${qyUserId}'};
                                     loadProcessed = false;
                                 } else{
-                                    data = {type:1,processed:1,cusName:val};
+                                    data = {type:1,processed:1,cusName:val,qyUserId:'${qyUserId}'};
                                 }
                                 break;
                         }
@@ -349,10 +358,10 @@
                         if (val == null || val == ''){
                             startSubmittedPage = 0;
                             endSubmittedPage = 20;
-                            data = {startPage:startSubmittedPage,endPage:endSubmittedPage};
+                            data = {startPage:startSubmittedPage,endPage:endSubmittedPage,qyUserId:'${qyUserId}'};
                             loadSubmitted = false;
                         } else{
-                            data = {cusName:val};
+                            data = {cusName:val,qyUserId:'${qyUserId}'};
                         }
                         break;
                 }
@@ -360,31 +369,37 @@
                     async:false,
                     cache:false,
                     url:url,
-                    type:'post',
+                    type:'get',
                     data:data,
                     dataType:'json',
                     success:function (res) {
-                        var dataList;
+                        var dataList = [];
                         var listId;
                         var templet = '';
                         switch (type) {
                             case 1:
                                 listId = 'unprocessedData';
-                                dataList = res.body.myReviewList;
-                                $("#loadUnprocessed").hide();
-                                $("#endUnprocessed").hide();
+                                if (res.success) {
+                                    dataList = res.body.myReviewList;
+                                    $("#loadUnprocessed").hide();
+                                    $("#endUnprocessed").hide();
+                                }
                                 break;
                             case 2:
                                 listId = 'processedData';
-                                dataList = res.body.myReviewList;
-                                $("#loadProcessed").hide();
-                                $("#endProcessed").hide();
+                                if (res.success) {
+                                    dataList = res.body.myReviewList;
+                                    $("#loadProcessed").hide();
+                                    $("#endProcessed").hide();
+                                }
                                 break;
                             case 3:
                                 listId = 'submitted';
-                                dataList = res.body.submittedList;
-                                $("#loadSubmitted").hide();
-                                $("#endSubmitted").hide();
+                                if (res.success) {
+                                    dataList = res.body.submittedList;
+                                    $("#loadSubmitted").hide();
+                                    $("#endSubmitted").hide();
+                                }
                                 break;
                         }
                         $("#"+listId+"List").empty();
@@ -436,9 +451,9 @@
             },
             applicationDetail:function (sobillId,type) {
                 if (type == 1) {
-                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId+"&isApproval=1";
+                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId+"&isApproval=1&qyUserId=${qyUserId}";
                 } else {
-                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId;
+                    window.location.href = '${ctxf}/wechat/review/applicationDetail?id='+sobillId+"&qyUserId=${qyUserId}";
                 }
             },
             backHome:function () {
@@ -458,60 +473,81 @@
                 url = '${ctxf}/wechat/review/myReviewList';
                 startUnprocessedPage += 20;
                 endUnprocessedPage += 20;
-                data = {type:1,unprocessed:1,startPage:startUnprocessedPage,endPage:endUnprocessedPage};
+                data = {type:1,unprocessed:1,startPage:startUnprocessedPage,endPage:endUnprocessedPage,qyUserId:'${qyUserId}'};
                 break;
             case 'processed':
                 type = 2;
                 url = '${ctxf}/wechat/review/myReviewList';
                 startProcessedPage += 20;
                 endProcessedPage += 20;
-                data = {type:1,processed:1,startPage:startProcessedPage,endPage:endProcessedPage};
+                data = {type:1,processed:1,startPage:startProcessedPage,endPage:endProcessedPage,qyUserId:'${qyUserId}'};
                 break;
             case 'submitted':
                 type = 3;
                 url = '${ctxf}/wechat/sobill/submittedList';
                 startSubmittedPage += 20;
                 endSubmittedPage += 20;
-                data = {startPage:startSubmittedPage,endPage:endSubmittedPage};
+                data = {startPage:startSubmittedPage,endPage:endSubmittedPage,qyUserId:'${qyUserId}'};
                 break;
         }
         $.ajax({
            async:false,
            cache:false,
            url:url,
-           type:'post',
+           type:'get',
            data:data,
            dataType:'json',
            success:function(res) {
-               var dataList;
+               var dataList = [];
                var listId;
                var templet = '';
                switch (type) {
                    case 1:
                        listId = 'unprocessedData';
-                       dataList = res.body.myReviewList;
-                       if (dataList.length < 20) {
-                           loadUnprocessed = true;
+                       if (res.success) {
+                           dataList = res.body.myReviewList;
+                           if (dataList.length < 20) {
+                               loadUnprocessed = true;
+                               $("#loadUnprocessed").hide();
+                               $("#endUnprocessed").show();
+                           } else {
+                               $("#loadUnprocessed").hide();
+                           }
+                       } else {
                            $("#loadUnprocessed").hide();
                            $("#endUnprocessed").show();
                        }
                        break;
                    case 2:
                        listId = 'processedData';
-                       dataList = res.body.myReviewList;
-                       if (dataList.length < 20) {
-                           loadProcessed = true;
-                           $("#loadProcessed").hide();
-                           $("#endProcessed").show();
+                       if (res.success) {
+                           dataList = res.body.myReviewList;
+                           if (dataList.length < 20) {
+                               loadProcessed = true;
+                               $("#loadProcessed").hide();
+                               $("#endProcessed").show();
+                           } else {
+                               $("#loadUnprocessed").hide();
+                           }
+                       } else {
+                           $("#loadUnprocessed").hide();
+                           $("#endUnprocessed").show();
                        }
                        break;
                    case 3:
                        listId = 'submitted';
-                       dataList = res.body.submittedList;
-                       if (dataList.length < 20) {
-                           loadSubmitted = true;
-                           $("#loadSubmitted").hide();
-                           $("#endSubmitted").show();
+                       if (res.success) {
+                           dataList = res.body.submittedList;
+                           if (dataList.length < 20) {
+                               loadSubmitted = true;
+                               $("#loadSubmitted").hide();
+                               $("#endSubmitted").show();
+                           } else {
+                               $("#loadUnprocessed").hide();
+                           }
+                       } else {
+                           $("#loadUnprocessed").hide();
+                           $("#endUnprocessed").show();
                        }
                        break;
                }
