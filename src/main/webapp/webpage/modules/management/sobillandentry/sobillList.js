@@ -157,6 +157,13 @@ $(document).ready(function() {
 		        sortName: 'empName'
 
 		    }
+           ,{
+               field: 'followerName',
+               title: '跟单员',
+               sortable: true,
+               sortName: 'followerName'
+
+           }
 			,{
 		        field: 'needTime',
 		        title: '发货时间',

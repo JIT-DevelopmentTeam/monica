@@ -1,9 +1,11 @@
 package com.jeeplus.modules.wechat.sobill;
 import com.jeeplus.common.config.Global;
+import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.IdGen;
 
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
 import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
@@ -18,10 +20,12 @@ import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.management.sobillandentry.web.SobillController;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
@@ -45,12 +49,6 @@ public class SobillWechatController extends BaseController {
     private SobillService sobillService;
 
     @Autowired
-    private SobillentryMapper sobillentryMapper;
-
-    @Autowired
-    private IcitemService icitemService;
-
-    @Autowired
     private ApprovenodeService approvenodeService;
 
     @Autowired
@@ -60,16 +58,20 @@ public class SobillWechatController extends BaseController {
     @Autowired
     private MessagesendService messagesendService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @RequestMapping(value = "list")
-    public ModelAndView list() {
+    public ModelAndView list(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
+        mv.addObject("qyUserId",request.getParameter("qyUserId"));
         mv.setViewName("modules/wechat/sobill/sobill");
         return mv;
     }
 
     @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @Param("startPage") Integer startPage,@Param("endPage") Integer endPage, @Param("startTime") String startTime,@Param("endTime") String endTime){
+    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @Param("startPage") Integer startPage, @Param("endPage") Integer endPage, @Param("startTime") String startTime, @Param("endTime") String endTime, @RequestParam("qyUserId") String qyUserId){
         AjaxJson aj = new AjaxJson();
         Sobill sobill = new Sobill();
         sobill.setDelFlag("0");
@@ -79,19 +81,27 @@ public class SobillWechatController extends BaseController {
             // 历史订单
             sobill.setHistory(true);
         }
+        User user = userMapper.getByQyUserId(qyUserId);
+        if (user != null) {
+            sobill.setEmplId(user.getId());
+        }
         sobill.setStartTime(startTime);
         sobill.setEndTime(endTime);
         sobill.setStartPage(startPage);
         sobill.setEndPage(endPage);
         List<Sobill> sobillList = sobillService.findList(sobill);
+        if (sobillList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("sobillList",sobillList);
         return aj;
     }
 
     @RequestMapping(value = "goAdd")
-    public ModelAndView goAdd(Sobill sobill){
+    public ModelAndView goAdd(@RequestParam("qyUserId") String qyUserId){
         ModelAndView mv = new ModelAndView();
         Calendar now = Calendar.getInstance();
+        Sobill sobill = new Sobill();
         int year = now.get(Calendar.YEAR);
         String month = (now.get(Calendar.MONTH) + 1) + "";
         int day = now.get(Calendar.DAY_OF_MONTH);
@@ -102,6 +112,10 @@ public class SobillWechatController extends BaseController {
         sobill.setBillNo("SOB"+time);
         sobill.setCreateDate(new Date());
         sobill.setSynStatus(0);
+        User user = userMapper.getByQyUserId(qyUserId);
+        if (user != null) {
+            sobill.setEmplId(user.getId());
+        }
         mv.setViewName("modules/wechat/sobill/addSobill");
         mv.addObject("sobill",sobill);
         return mv;
@@ -171,8 +185,7 @@ public class SobillWechatController extends BaseController {
             sobill.setSynStatus(Integer.parseInt(jsonObject.get("synStatus").toString()));
             sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
             sobill.setCancellation(Integer.parseInt(jsonObject.get("cancellation").toString()));
-            /* TODO 微信登录 */
-            sobill.setEmplId(UserUtils.getUser().getId());
+            sobill.setEmplId(jsonObject.getString("emplId"));
             if (sobill.getStatus() == 1) {
                 sobill.setCheckStatus(0);
             } else {
@@ -316,12 +329,17 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "submittedList")
     @ResponseBody
-    public AjaxJson submittedList(Sobill sobill){
+    public AjaxJson submittedList(Sobill sobill,@RequestParam("qyUserId") String qyUserId){
         AjaxJson aj = new AjaxJson();
         sobill.setDelFlag("0");
-        /* TODO 后续获取微信登录用户 */
-        sobill.setEmplId(UserUtils.getUser().getId());
+        User user = userMapper.getByQyUserId(qyUserId);
+        if (user != null) {
+            sobill.setEmplId(user.getId());
+        }
         List<Sobill> submittedList = sobillService.findSubmittedList(sobill);
+        if (submittedList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("submittedList",submittedList);
         return aj;
     }

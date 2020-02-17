@@ -80,6 +80,13 @@ $(document).ready(function() {
                	onShowSearch: function () {
 			$("#search-collapse").slideToggle();
 		},
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#approvenodeTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#customerTable").bootstrapTable("load",data);
+        },
                columns: [{
 		        checkbox: true
 		       

@@ -68,7 +68,9 @@
             </if>
 
             <if test="approvalEmplId != null">
-                AND a.f_approval_emplid = #{approvalEmplId.id}
+                <if test="approvalEmplId.id != null and approvalEmplId.id != ''">
+                    AND a.f_approval_emplid = #{approvalEmplId.id}
+                </if>
             </if>
 
             <if test="cusName != null and cusName != ''">
@@ -79,17 +81,11 @@
             </if>
 
             <if test="sobillId != null">
-                AND a.f_sobillid = #{sobillId.id}
+                <if test="sobillId.id != null and sobillId.id != ''">
+                    AND a.f_sobillid = #{sobillId.id}
+                </if>
             </if>
 		</where>
-		<!--<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.f_index ASC
-			</otherwise>
-		</choose>-->
         ORDER BY a.f_index ASC
         <if test="startPage != null and endPage != null">
             LIMIT #{startPage},#{endPage}

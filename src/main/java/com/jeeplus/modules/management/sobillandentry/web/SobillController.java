@@ -95,22 +95,8 @@ public class SobillController extends BaseController {
 	@RequiresPermissions(value={"management:sobillandentry:sobill:view","management:sobillandentry:sobill:add","management:sobillandentry:sobill:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(Sobill sobill, Model model) {
-		if (sobill.getId() == null || "".equals(sobill.getId())){
-			User user = UserUtils.getUser();
-			sobill.setEmplId(user.getId());
-			sobill.setEmpName(user.getName());
-			sobill.setDeptName(user.getOffice().getName());
-            Calendar now = Calendar.getInstance();
-            int year = now.get(Calendar.YEAR);
-            String month = (now.get(Calendar.MONTH) + 1) + "";
-            int day = now.get(Calendar.DAY_OF_MONTH);
-            int hour = now.get(Calendar.HOUR_OF_DAY);
-            int min = now.get(Calendar.MINUTE);
-            int secound = now.get(Calendar.SECOND);
-            String time = year + month + day + hour + min + secound;
-            sobill.setBillNo("SOB"+time);
-		} else {
-		    StringBuffer itemIdsStr = new StringBuffer();
+		if (StringUtils.isNotBlank(sobill.getId())){
+            StringBuffer itemIdsStr = new StringBuffer();
             for (Sobillentry sobillentry : sobill.getSobillentryList()) {
                 itemIdsStr.append(sobillentry.getItemId()+",");
             }
@@ -118,7 +104,7 @@ public class SobillController extends BaseController {
                 itemIdsStr = itemIdsStr.deleteCharAt(itemIdsStr.length()-1);
                 model.addAttribute("itemIdsStr",itemIdsStr.toString());
             }
-        }
+		}
 		model.addAttribute("sobill", sobill);
 		return "modules/management/sobillandentry/sobillForm";
 	}

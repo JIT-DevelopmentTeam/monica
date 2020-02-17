@@ -88,6 +88,11 @@
 			<if test="checkStatus != null">
 				AND a.f_checkstatus = #{checkStatus}
 			</if>
+
+            <if test="emplId != null and emplId != ''">
+                AND a.f_emplid = #{emplId}
+            </if>
+
             <if test="isHistory == true">
                 AND a.create_date &lt; CURDATE()
             </if>

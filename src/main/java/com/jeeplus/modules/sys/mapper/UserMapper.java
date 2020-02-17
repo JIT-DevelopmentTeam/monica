@@ -113,10 +113,11 @@ public interface UserMapper extends BaseMapper<User> {
 	public List<User>  findListByUserOfficeList(User user);
 
     /**
-     * 获取实体
+     * 根据企业userId获取实体
      * @param user
      * @return
      */
-    public User getEntity(String qyUserId);
+    public User getByQyUserId(String qyUserId);
+
 
 }

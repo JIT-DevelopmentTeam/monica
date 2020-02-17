@@ -81,7 +81,6 @@
 		}).bind("activate_node.jstree", function (obj, e) {
 			var node = $('#icitemClassjsTree').jstree(true).get_selected(true)[0];
 			var opt = {
-				silent: true,
 				query:{
 					'itemClassNumber':node.original.number
 				}
