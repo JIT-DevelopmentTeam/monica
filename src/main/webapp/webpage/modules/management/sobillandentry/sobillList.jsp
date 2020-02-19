@@ -93,21 +93,6 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<%--<shiro:hasPermission name="management:sobillandentry:sobill:add">
-				<button id="add" class="btn btn-primary" onclick="add()">
-					<i class="glyphicon glyphicon-plus"></i> 新建
-				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:sobillandentry:sobill:edit">
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 修改
-	        	</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:sobillandentry:sobill:del">
-				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-	            	<i class="glyphicon glyphicon-remove"></i> 删除
-	        	</button>
-			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:sobillandentry:sobill:import">
 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
 			</shiro:hasPermission>
@@ -122,12 +107,6 @@
 					<i class="fa fa-search-plus"></i> 查看
 				</button>
 			</shiro:hasPermission>
-
-            <%--<shiro:hasPermission name="management:sobillandentry:sobill:check">
-                <button id="check" class="btn btn-primary" onclick="checkOrder()">
-                    <i class="glyphicon glyphicon-search"></i> 审核
-                </button>
-            </shiro:hasPermission>--%>
 
 			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
 				<button id="synchronization" class="btn btn-success" onclick="">
@@ -169,7 +148,7 @@
                         <table id="sobillentryListTable" ></table>
                     </div>
 
-                    <!-- 订单明细 -->
+                    <!-- 审核明细 -->
                     <div role="tabpanel" class="tab-pane fade in" id="review">
                         <table id="reviewListTable" ></table>
                     </div>

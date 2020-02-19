@@ -27,6 +27,16 @@
 		a.f_checkstatus AS "checkStatus",
 		a.f_amount AS "amount",
 		a.f_followerid AS "followerId",
+		a.f_remark01 AS "remark01",
+		a.f_remark02 AS "remark02",
+		a.f_remark03 AS "remark03",
+		a.f_remark04 AS "remark04",
+		a.f_remark05 AS "remark05",
+		a.f_remark06 AS "remark06",
+		a.f_remark07 AS "remark07",
+		a.f_remark08 AS "remark08",
+		a.f_remark09 AS "remark09",
+		a.f_remark10 AS "remark10",
 		emp.name AS "empName",
 		checker.name AS "checkerName",
 		dept.name AS "deptName",
@@ -162,7 +172,17 @@
 			f_checktime,
 			f_checkstatus,
 			f_amount,
-			f_followerid
+			f_followerid,
+			f_remark01,
+			f_remark02,
+			f_remark03,
+			f_remark04,
+			f_remark05,
+			f_remark06,
+			f_remark07,
+			f_remark08,
+			f_remark09,
+			f_remark10
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -186,7 +206,17 @@
 			#{checkTime},
 			#{checkStatus},
 			#{amount},
-			#{followerId}
+			#{followerId},
+			#{remark01},
+			#{remark02},
+			#{remark03},
+			#{remark04},
+			#{remark05},
+			#{remark06},
+			#{remark07},
+			#{remark08},
+			#{remark09},
+			#{remark10}
 		)
 	</insert>
 	
@@ -207,7 +237,17 @@
 			f_checktime = #{checkTime},
 			f_checkstatus = #{checkStatus},
 			f_amount = #{amount},
-			f_followerid = #{followerId}
+			f_followerid = #{followerId},
+			f_remark01 = #{remark01},
+			f_remark02 = #{remark02},
+			f_remark03 = #{remark03},
+			f_remark04 = #{remark04},
+			f_remark05 = #{remark05},
+			f_remark06 = #{remark06},
+			f_remark07 = #{remark07},
+			f_remark08 = #{remark08},
+			f_remark09 = #{remark09},
+			f_remark10 = #{remark10}
 		WHERE id = #{id}
 	</update>
 	

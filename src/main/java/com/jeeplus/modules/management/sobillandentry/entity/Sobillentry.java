@@ -22,7 +22,6 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	private String itemId;		// 商品id
 	private String unit;		// 商品单位
 	private String auxpropid;		// 辅助属性id
-	private String batchNo;		// 批号
 	private Double price;		// 单价
 	private Double auxqty;		// 数量
 	private Double amount;		// 总额
@@ -75,15 +74,6 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 
 	public void setAuxpropid(String auxpropid) {
 		this.auxpropid = auxpropid;
-	}
-	
-	@ExcelField(title="批号", align=2, sort=11)
-	public String getBatchNo() {
-		return batchNo;
-	}
-
-	public void setBatchNo(String batchNo) {
-		this.batchNo = batchNo;
 	}
 	
 	@NotNull(message="单价不能为空")
