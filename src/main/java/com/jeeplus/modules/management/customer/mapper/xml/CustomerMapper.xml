@@ -45,6 +45,9 @@
 			<if test="info != null and info != ''">
 				AND a.f_number LIKE concat('%',#{info},'%') or a.f_name LIKE concat('%',#{info},'%')
 			</if>
+            <if test="name != null and name != ''">
+                AND a.f_name LIKE concat('%',#{name},'%')
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
