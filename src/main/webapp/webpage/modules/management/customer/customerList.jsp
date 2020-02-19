@@ -21,21 +21,17 @@
             <div id="search-collapse" class="collapse">
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="customer" class="form form-horizontal well clearfix">
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <label class="label-item single-overflow pull-left" title="客户编码：">客户编码：</label>
-                            <form:input path="number" htmlEscape="false" maxlength="100" class=" form-control"/>
+                        <div class="col-xs-12 col-sm-6 col-md-1">
+                            <label class="label-item single-overflow pull-left" title="客户信息：">客户信息：</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
+                            <form:input path="info" htmlEscape="false" maxlength="100" class=" form-control"/>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                            <label class="label-item single-overflow pull-left" title="客户名称：">客户名称：</label>
-                            <form:input path="name" htmlEscape="false" maxlength="100" class=" form-control"/>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div style="margin-top:26px">
-                                <a id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i
-                                        class="fa fa-search"></i> 查询</a>
-                                <a id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i
-                                        class="fa fa-refresh"></i> 重置</a>
-                            </div>
+                            <a id="search" class="btn btn-primary btn-rounded "><i
+                                    class="fa fa-search"></i> 查询</a>
+                            <a id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i
+                                    class="fa fa-refresh"></i> 重置</a>
                         </div>
                     </form:form>
                 </div>
