@@ -80,9 +80,16 @@ $(document).ready(function() {
                    $("#sobillentryListTable").bootstrapTable("refresh");
                    $("#reviewListTable").bootstrapTable("refresh");
                },
-               	onShowSearch: function () {
+        onShowSearch: function () {
 			$("#search-collapse").slideToggle();
 		},
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#sobillTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#sobillTable").bootstrapTable("load",data);
+        },
                columns: [{
 		        checkbox: true
 
@@ -316,6 +323,8 @@ $(document).ready(function() {
 	  })
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#sobillTable').bootstrapTable('refresh');
+		  $('#sobillentryListTable').bootstrapTable('refresh');
+          $('#reviewListTable').bootstrapTable('refresh');
 		});
 
 	 $("#reset").click("click", function() {// 绑定查询按扭
@@ -510,6 +519,13 @@ function init() {
         onShowSearch: function () {
             $("#search-collapse").slideToggle();
         },
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#sobillentryListTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#sobillentryListTable").bootstrapTable("load",data);
+        },
         columns: [{
             checkbox: true
 
@@ -662,6 +678,13 @@ function init() {
         },
         onShowSearch: function () {
             $("#search-collapse").slideToggle();
+        },
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#reviewListTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#reviewListTable").bootstrapTable("load",data);
         },
         columns: [{
             checkbox: true
