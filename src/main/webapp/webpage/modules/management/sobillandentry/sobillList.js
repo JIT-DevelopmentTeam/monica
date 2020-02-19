@@ -183,25 +183,6 @@ $(document).ready(function() {
 			    }
 		    }
 			,{
-		        field: 'cancellation',
-		        title: '是否取消',
-		        sortable: true,
-		        sortName: 'cancellation',
-		        formatter:function(value, row , index){
-                    var html;
-                    switch (value) {
-                        case 0:
-                            html = '<span style="color: green;">否</span>';
-                            break;
-                        case 1:
-                            html = '<span style="color:red;">是</span>';
-                            break;
-                    }
-		        	return html;
-		        }
-
-		    }
-			,{
 		        field: 'checkTime',
 		        title: '审核通过时间',
 		        sortable: true,
@@ -249,12 +230,6 @@ $(document).ready(function() {
 		        sortName: 'amount'
 
 		    }
-               ,{
-                   field: 'remarks',
-                   title: '备注',
-                   sortable: true,
-                   sortName: 'remarks'
-               }
 		     ]
 
 		});
