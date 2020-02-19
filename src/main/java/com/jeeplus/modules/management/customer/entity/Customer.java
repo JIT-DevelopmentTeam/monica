@@ -24,6 +24,7 @@ public class Customer extends DataEntity<Customer> {
 	private String erpNote;		// ERP备注
 	private Integer status;		// 状态
 	private String crediTamt;		// 信用证
+	private String info;	// 客户信息（用途：条件搜索）
 	
 	public Customer() {
 		super();
@@ -113,5 +114,12 @@ public class Customer extends DataEntity<Customer> {
 	public void setCrediTamt(String crediTamt) {
 		this.crediTamt = crediTamt;
 	}
-	
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
+	}
 }

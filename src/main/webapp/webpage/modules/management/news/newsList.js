@@ -238,6 +238,20 @@ $(document).ready(function() {
                 events: operateEvents,
                 formatter: operateFormatter
             }
+            ,{
+                field: 'remarks',
+                title: '操作',
+                sortable: false,
+                sortName: 'remarks',
+                formatter:function(value, row, index) {
+                    return [
+                        '<div class="btn-group">',
+                        '<button id="filesNewsDetail" type="button" class="btn btn-default" onclick="newsFilesDetail(\''+row.id+'\')"  singleSelected=true>附件详情</button>',
+                        '</div>'
+                    ].join('');
+                }
+
+            }
 		     ]
 
 		});
@@ -406,7 +420,11 @@ function formatTableUnit(value, row, index) {
  function picMainpic(mainpic) {
      jp.openViewDialog('查看新闻公告封面',"${ctx}/management/news/news/picMainpic?id="+mainpic, '500px', '500px');
  }
-
+// 附件详情
+function newsFilesDetail(id) {
+    console.log(id);
+    jp.openViewDialog('新闻附件详情', "${ctx}/management/newsfile/newsFile/list?newsId="+ id, '1100px', '600px');
+}
 
 
 </script>

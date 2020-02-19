@@ -21,10 +21,15 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="newsFile" class="form form-horizontal well clearfix">
-		 <div class="col-xs-12 col-sm-6 col-md-4">
-			<div style="margin-top:26px">
-			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
-			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
+				<form:hidden path="newsId" htmlEscape="false" maxlength="100" class=" form-control" />
+				<div class="col-xs-12 col-sm-6 col-md-4">
+					<label class="label-item single-overflow pull-left" title="文件原名称：">文件原名称：</label>
+					<form:input path="originalName" htmlEscape="false" maxlength="100" class=" form-control"/>
+				</div>
+			 <div class="col-xs-12 col-sm-6 col-md-4">
+				<div style="margin-top:26px">
+				  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
+				  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
 			 </div>
 	    </div>	
 	</form:form>
@@ -33,11 +38,11 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<shiro:hasPermission name="management:newsfile:newsFile:add">
+			<%--<shiro:hasPermission name="management:newsfile:newsFile:add">
 				<button id="add" class="btn btn-primary" onclick="add()">
 					<i class="glyphicon glyphicon-plus"></i> 新建
 				</button>
-			</shiro:hasPermission>
+			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:newsfile:newsFile:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
@@ -48,9 +53,9 @@
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
 			</shiro:hasPermission>
-			<shiro:hasPermission name="management:newsfile:newsFile:import">
+			<%--<shiro:hasPermission name="management:newsfile:newsFile:import">
 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
-			</shiro:hasPermission>
+			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:newsfile:newsFile:export">
 	        		<button id="export" class="btn btn-warning">
 					<i class="fa fa-file-excel-o"></i> 导出

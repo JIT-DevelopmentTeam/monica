@@ -42,7 +42,8 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">所属新闻：</label></td>
 					<td class="width-35">
-						<form:input path="newsId" htmlEscape="false"    class="form-control "/>
+						<form:input path="news.title" htmlEscape="false"    class="form-control " readonly="true"/>
+						<form:hidden path="newsId" htmlEscape="false"    class="form-control " readonly="true"/>
 					</td>
 					<%--<td class="width-35">--%>
 						<%--<div class="input-group">--%>
@@ -57,7 +58,7 @@
 					<%--</td>--%>
 					<td class="width-15 active"><label class="pull-right">文件原名称：</label></td>
 					<td class="width-35">
-						<form:input path="originalName" htmlEscape="false"    class="form-control "/>
+						<form:input path="originalName" htmlEscape="false"    class="form-control "  readonly="true"/>
 					</td>
 				</tr>
 				<tr>
@@ -67,13 +68,13 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right">文件大小：</label></td>
 					<td class="width-35">
-						<form:input path="size" type="number" min="0"  htmlEscape="false"    class="form-control "/>
+						<form:input path="size" type="number" min="0"  htmlEscape="false" class="form-control "  readonly="true"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">文件类型：</label></td>
 					<td class="width-35">
-						<form:input path="type" htmlEscape="false"    class="form-control "/>
+						<form:input path="type" htmlEscape="false"    class="form-control "  readonly="true"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">文件是否允许下载：</label></td>
 					<td class="width-35">
@@ -87,21 +88,21 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">文件路径：</label></td>
 					<td class="width-35">
-						<form:input path="url" htmlEscape="false"    class="form-control "/>
+						<form:input path="url" htmlEscape="false"    class="form-control "  readonly="true"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">文件预览图路径：</label></td>
 					<td class="width-35">
-						<form:input path="smallUrl" htmlEscape="false"    class="form-control "/>
+						<form:input path="smallUrl" htmlEscape="false"    class="form-control " readonly="true"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">文件服务器地址：</label></td>
 					<td class="width-35">
-						<form:input path="server" htmlEscape="false"    class="form-control "/>
+						<form:input path="server" htmlEscape="false"    class="form-control "  readonly="true" />
 					</td>
 					<td class="width-15 active"><label class="pull-right">下载次数：</label></td>
 					<td class="width-35">
-						<form:input path="downCount" type="number" min="0" htmlEscape="false"    class="form-control "/>
+						<form:input path="downCount" type="number" min="0" htmlEscape="false"  class="form-control "  readonly="true"/>
 					</td>
 				</tr>
 		   		<tr>

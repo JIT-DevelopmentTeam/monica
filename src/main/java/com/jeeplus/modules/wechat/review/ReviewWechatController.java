@@ -1,5 +1,6 @@
 package com.jeeplus.modules.wechat.review;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.DateUtils;
@@ -215,14 +216,15 @@ public class ReviewWechatController extends BaseController {
         AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
         TextCard textCard = new TextCard();
         User user=new User(fromUser);
-        String fromUserName=user.getName();
+        User user1 = userMapper.get(user);
+        String fromUserName=user1.getName();
         String title="审核信息推送" ;
         String date = DateUtils.get_yyy_MM_dd();  // 推送时间
         String description=
                 "<div class=\"gray\">"+date+"</div>" +
                         "<div class=\"normal\">"+fromUserName+"驳回了你的"+titleCard+"申请</div>" +
                         "<div class=\"highlight\">驳回人:"+fromUserName+"</div>";
-        String url= path+"/wechat/review/applicationDetail?id="+orderId+"isApproval="+isApproval;   // 详情请求路径--url
+        String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
         textCard.setTouser(toUser);     // 接收人
         textCard.setMsgtype("textcard");  // 消息类型
         textCard.setAgentid(JwParamesAPI.monicaAgentid);   // 企业微信的应用agentId
@@ -233,7 +235,7 @@ public class ReviewWechatController extends BaseController {
         textCardEntity.setBtntxt("详情");
         textCard.setTextcard(textCardEntity);
         textCard.setEnable_id_trans("0");
-        JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
+        JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
         return;
     }
 
@@ -250,14 +252,15 @@ public class ReviewWechatController extends BaseController {
         AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
         TextCard textCard = new TextCard();
         User user=new User(fromUser);
-        String fromUserName=user.getName();
+        User user1 = userMapper.get(user);
+        String fromUserName=user1.getName();
         String title="审核信息推送" ;
         String date = DateUtils.get_yyy_MM_dd();  // 推送时间
         String description=
                 "<div class=\"gray\">"+date+"</div>" +
                         "<div class=\"normal\">你的"+titleCard+"申请已通过同意，请知晓</div>" +
                         "<div class=\"highlight\">发送人："+fromUserName+"</div>";
-        String url= path+"/wechat/review/applicationDetail?id="+orderId+"isApproval="+isApproval;   // 详情请求路径--url
+        String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
         textCard.setTouser(toUser);     // 接收人
         textCard.setMsgtype("textcard");  // 消息类型
         textCard.setAgentid(JwParamesAPI.monicaAgentid);   // 企业微信的应用agentId
@@ -268,7 +271,14 @@ public class ReviewWechatController extends BaseController {
         textCardEntity.setBtntxt("详情");
         textCard.setTextcard(textCardEntity);
         textCard.setEnable_id_trans("0");
-        JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
+        JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
         return;
+    }
+
+    @RequestMapping(value = "send")
+    @ResponseBody
+    public void test(){
+        sendMessageTips("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
     }
 }

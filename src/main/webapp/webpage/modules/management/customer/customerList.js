@@ -92,10 +92,10 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'erpId',
-		        title: 'ERPID',
+		        field: 'number',
+		        title: '客户编码',
 		        sortable: true,
-		        sortName: 'erpId'
+		        sortName: 'number'
 		        ,formatter:function(value, row , index){
 		        	value = jp.unescapeHTML(value);
 				   <c:choose>
@@ -110,13 +110,6 @@ $(document).ready(function() {
 				      </c:otherwise>
 				   </c:choose>
 		         }
-		       
-		    }
-			,{
-		        field: 'number',
-		        title: '客户编码',
-		        sortable: true,
-		        sortName: 'number'
 		       
 		    }
 			,{
@@ -164,12 +157,6 @@ $(document).ready(function() {
                 }
             }
 			,{
-		        field: 'erpNote',
-		        title: 'ERP备注',
-		        sortable: true,
-		        sortName: 'erpNote'
-		       
-		    },{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true,

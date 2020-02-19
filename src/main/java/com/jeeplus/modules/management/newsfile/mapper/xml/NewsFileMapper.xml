@@ -45,7 +45,10 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
 			<if test="originalName != null and originalName !=''">
-				a.f_originalname = #{originalName}
+				AND a.f_originalname = #{originalName}
+			</if>
+			<if test="newsId != null and newsId !=''">
+				AND a.f_newsid = #{newsId}
 			</if>
 		</where>
 		<choose>

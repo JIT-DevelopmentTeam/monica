@@ -12,12 +12,15 @@ import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCard;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCardEntity;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,9 @@ import com.jeeplus.modules.management.messagesend.mapper.MessagesendMapper;
 @Service
 @Transactional(readOnly = true)
 public class MessagesendService extends CrudService<MessagesendMapper, Messagesend> {
+
+	@Autowired
+	private UserMapper userMapper;
 
 	public Messagesend get(String id) {
 		return super.get(id);
@@ -70,14 +76,15 @@ public class MessagesendService extends CrudService<MessagesendMapper, Messagese
 		AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
 		TextCard textCard = new TextCard();
 		User user=new User(fromUser);
-		String fromUserName=user.getName();
+		User user1 = userMapper.get(user);
+		String fromUserName=user1.getName();
 		String title="审核信息推送" ;
 		String date = DateUtils.get_yyy_MM_dd();  // 推送时间
 		String description=
 				"<div class=\"gray\">"+date+"</div>" +
 				"<div class=\"normal\">有一条"+titleCard+"等待你审核申请</div>" +
 				"<div class=\"highlight\">发送人:"+fromUserName+"</div>";
-		String url= path+"/wechat/review/applicationDetail?id="+orderId+"isApproval="+isApproval;   // 详情请求路径--url
+		String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
 		textCard.setTouser(toUser);     // 接收人
 		textCard.setMsgtype("textcard");  // 消息类型
 		textCard.setAgentid(JwParamesAPI.monicaAgentid);   // 企业微信的应用agentId
@@ -88,7 +95,13 @@ public class MessagesendService extends CrudService<MessagesendMapper, Messagese
 		textCardEntity.setBtntxt("详情");
 		textCard.setTextcard(textCardEntity);
 		textCard.setEnable_id_trans("0");
-		JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
+		JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
+		System.out.println(jsonObject);
 		return;
+	}
+
+	@Test
+	public void test(){
+
 	}
 }

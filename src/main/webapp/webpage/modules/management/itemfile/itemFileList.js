@@ -99,45 +99,18 @@ $(document).ready(function() {
 
                }
 			,{
-		        field: 'originalName',
-		        title: '文件原名称',
+		        field: 'url',
+		        title: '预览',
 		        sortable: true,
-		        sortName: 'originalName'
+		        sortName: 'url'
 		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
-				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:itemfile:itemFile:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('management:itemfile:itemFile:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
-				   </c:choose>
+				   if(value ==''){
+					   return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
+				   }else{
+					   return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+				   }
 		         }
 
-		    }
-			,{
-		        field: 'name',
-		        title: '上传编码名称',
-		        sortable: true,
-		        sortName: 'name'
-
-		    }
-			,{
-		        field: 'size',
-		        title: '文件大小',
-		        sortable: true,
-		        sortName: 'size',
-                formatter:function (value,row,index) {
-                    if(value != '' || value != null ){
-                        return value+"K";
-                    }else{
-                        return "-";
-                    }
-                }
 		    }
 			,{
 		        field: 'type',
@@ -158,20 +131,6 @@ $(document).ready(function() {
                     }
                 }
 		    }
-			/*,{
-		        field: 'url',
-		        title: '文件路径',
-		        sortable: true,
-		        sortName: 'url'
-
-		    }
-			,{
-		        field: 'smallUrl',
-		        title: '文件预览图路径',
-		        sortable: true,
-		        sortName: 'smallUrl'
-
-		    }*/
 			,{
 		        field: 'server',
 		        title: '文件服务器地址',

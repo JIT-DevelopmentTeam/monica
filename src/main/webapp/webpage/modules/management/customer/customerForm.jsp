@@ -36,34 +36,29 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">ERPId：</label></td>
-					<td class="width-35">
-						<form:input path="erpId" htmlEscape="false"    class="form-control "/>
-					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户编码：</label></td>
 					<td class="width-35">
 						<form:input path="number" htmlEscape="false"    class="form-control required"/>
 					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>客户名称：</label></td>
 					<td class="width-35">
 						<form:input path="name" htmlEscape="false"    class="form-control required"/>
 					</td>
+				</tr>
+				<tr>
 					<td class="width-15 active">
 						<label class="pull-right"><font color="red">*</font>部门归属：</label>
 					</td>
 					<td class="width-35">
-						<%--<form:input path="deptId" htmlEscape="false"    class="form-control required"/>--%>
 							<sys:treeselect id="deptId" name="deptId" value="${user.id}" labelName="user.name" labelValue="${user.name}"
 											title="部门" url="/sys/office/treeData?type=2" allowClear="true" cssClass="form-control required"/>
 					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>员工所属：</label></td>
 					<td class="width-35">
 						<form:input path="emplId" htmlEscape="false"    class="form-control required"/>
 					</td>
+				</tr>
+				<tr>
 					<td class="width-15 active"><label class="pull-right">结算币种：</label></td>
 					<td class="width-35">
 						<form:select path="currencyId" class="form-control ">
@@ -71,20 +66,10 @@
 							<form:options items="${fns:getDictList('sobill_currency')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 						</form:select>
 					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
 						<form:radiobutton path="status" value="0" class="i-checks "/>停用
 						<form:radiobutton path="status" value="1" class="i-checks "/>使用
-					</td>
-					<td class="width-15 active"></td>
-					<td class="width-35"></td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right">ERP备注：</label></td>
-					<td colspan="3">
-						<form:textarea path="erpNote" htmlEscape="false" rows="4"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>

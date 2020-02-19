@@ -240,8 +240,8 @@ SWFUpload.prototype.initSettings = function (userSettings) {
 // Initializes the supported functionality based the Flash Player version, state, and event that occur during initialization
 SWFUpload.prototype.loadSupport = function () {
 	this.support = {
-		loading : swfobject.hasFlashPlayerVersion("9.0.28"),
-		imageResize : swfobject.hasFlashPlayerVersion("10.0.0")
+		loading : swfobject.hasFlashPlayerVersion("32.0.0.330"),
+		imageResize : swfobject.hasFlashPlayerVersion("32.0.0.330")
 	};
 	
 };
