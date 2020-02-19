@@ -25,6 +25,8 @@ public class Icitem extends DataEntity<Icitem> {
 	private String modifyTime;		// 同步时间戳
 	private String erpNote;		// erp备注
 	private String status;		// 状态
+	private String salePrice;	// 销售价格
+	private String describe;	// 商品描述
 	private String itemClassName;	// 分类名称
 	private Integer startPage;	// 起始分页
 	private Integer endPage;	// 结束分页
@@ -171,4 +173,20 @@ public class Icitem extends DataEntity<Icitem> {
     public void setIsSelect(Integer isSelect) {
         this.isSelect = isSelect;
     }
+
+	public String getSalePrice() {
+		return salePrice;
+	}
+
+	public void setSalePrice(String salePrice) {
+		this.salePrice = salePrice;
+	}
+
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
+	}
 }
