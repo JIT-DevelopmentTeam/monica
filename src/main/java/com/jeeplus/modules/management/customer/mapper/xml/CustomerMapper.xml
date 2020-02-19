@@ -42,23 +42,8 @@
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
-			<if test="erpId != null and erpId != ''">
-				AND a.f_erpid LIKE 
-					<if test="dbName == 'oracle'">'%'||#{erpId}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{erpId}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{erpId},'%')</if>
-			</if>
-			<if test="number != null and number != ''">
-				AND a.f_number LIKE 
-					<if test="dbName == 'oracle'">'%'||#{number}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{number}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{number},'%')</if>
-			</if>
-			<if test="name != null and name != ''">
-				AND a.f_name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			<if test="info != null and info != ''">
+				AND a.f_number LIKE concat('%',#{info},'%') or a.f_name LIKE concat('%',#{info},'%')
 			</if>
 		</where>
 		<choose>

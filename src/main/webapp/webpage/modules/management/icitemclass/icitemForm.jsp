@@ -4,9 +4,16 @@
 <head>
 	<title>商品资料管理</title>
 	<meta name="decorator" content="ani"/>
+	<script src="${ctxStatic}/plugin/wangEditor/js/wangEditor.js"></script>
 	<script type="text/javascript">
 
 		$(document).ready(function() {
+			UE.getEditor('editor',{
+				initialFrameWidth :window.innerWidth*0.8,//设置编辑器宽度
+				initialFrameHeight:window.innerHeight*0.7,//设置编辑器高度
+				scaleEnabled:true//设置不自动调整高度
+				//scaleEnabled {Boolean} [默认值：false]//是否可以拉伸长高，(设置true开启时，自动长高失效)
+			});
 
 		});
 
@@ -38,17 +45,6 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">erp端id：</label></td>
-					<td class="width-35">
-						<form:input path="erpId" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right">分类id：</label></td>
-					<td class="width-35">
-						<sys:treeselect id="classId" name="classId" value="${icitem.classId}" labelName="" labelValue="${icitem.classId}"
-							title="分类id" url="/management/icitemclass/icitemClass/treeData" extId="${icitem.id}" cssClass="form-control " allowClear="true"/>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">编号：</label></td>
 					<td class="width-35">
 						<form:input path="number" htmlEscape="false"    class="form-control "/>
@@ -69,16 +65,6 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">erp端分类id：</label></td>
-					<td class="width-35">
-						<form:input path="erpclassId" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right">同步时间戳：</label></td>
-					<td class="width-35">
-						<form:input path="modifyTime" htmlEscape="false"    class="form-control "/>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right">erp备注：</label></td>
 					<td class="width-35">
 						<form:input path="erpNote" htmlEscape="false"    class="form-control "/>
@@ -89,15 +75,30 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="width-15 active"><label class="pull-right">销售价格：</label></td>
+					<td class="width-35" >
+						<input type="number" id="salePrice" name="salePrice" htmlEscape="false"    class="form-control " onKeyPress="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(value))event.returnValue=false"/>
+					</td>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
 		  		</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">商品描述：</label></td>
+					<td colspan="3">
+						<script type="text/plain" id="editor" name="describe" htmlEscape="false" >
+                            ${fns:unescapeHtml(icitem.describe)}
+                        </script>
+					</td>
+				</tr>
 		 	</tbody>
 		</table>
 	</form:form>
+
+		<!-- 百度富文本编辑框-->
+		<script type="text/javascript" charset="utf-8">window.UEDITOR_HOME_URL = "${ctxStatic}/plugin/ueditor/";</script>
+		<script type="text/javascript" charset="utf-8" src="${ctxStatic}/plugin/ueditor/ueditor.config.js"></script>
+		<script type="text/javascript" charset="utf-8" src="${ctxStatic}/plugin/ueditor/ueditor.all.js"></script>
 </body>
 </html>

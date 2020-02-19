@@ -201,6 +201,7 @@ public class CustomerController extends BaseController {
                 customer.setName(jsonObject.getString("A_FName"));
                 customer.setNumber(jsonObject.getString("FNumber"));
                 customer.setEmplId(jsonObject.getString("FEmpID"));
+                customer.setStatus(1);
                 customer.setIsNewRecord(true);
                 customerService.save(customer);
             }

@@ -191,6 +191,20 @@ $(document).ready(function () {
 
             }
             ,{
+                field: 'salePrice',
+                title: '销售价格',
+                sortable: true,
+                sortName: 'salePrice'
+
+            }
+            ,{
+                field: 'describe',
+                title: '商品描述',
+                sortable: true,
+                sortName: 'describe'
+
+            }
+            ,{
                 field: 'remarks',
                 title: '备注信息',
                 sortable: true,
