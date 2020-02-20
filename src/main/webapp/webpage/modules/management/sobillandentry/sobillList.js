@@ -110,7 +110,7 @@ $(document).ready(function() {
 		        }
 
 		    }
-			,{
+			/*,{
 		        field: 'synStatus',
 		        title: '同步状态',
 		        sortable: true,
@@ -128,7 +128,7 @@ $(document).ready(function() {
                     return html;
 		        }
 
-		    }
+		    }*/
 			,{
 		        field: 'cusName',
 		        title: '客户',
@@ -307,6 +307,8 @@ $(document).ready(function() {
 		  $("#searchForm  select").val("");
 		   $("#searchForm  .select-item").html("");
 		  $('#sobillTable').bootstrapTable('refresh');
+         $('#sobillentryListTable').bootstrapTable('refresh');
+         $('#reviewListTable').bootstrapTable('refresh');
 		});
 
 				$('#beginNeedTime').datetimepicker({
