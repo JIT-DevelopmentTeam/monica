@@ -21,7 +21,7 @@
             <div id="search-collapse" class="collapse">
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="news" class="form form-horizontal well clearfix">
-                        <div class="col-xs-12 col-sm-6 col-md-1">
+                        <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
                             <label class="label-item single-overflow pull-right" title="编号：">标题：</label>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-2">

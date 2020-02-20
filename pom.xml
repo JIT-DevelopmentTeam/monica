@@ -905,6 +905,15 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>httpmime</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.3</version>
+            <systemPath>${lib.path}/httpmime-4.3.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+
         <dependency>
             <groupId>QRCoder</groupId>
             <artifactId>QRCoder</artifactId>
