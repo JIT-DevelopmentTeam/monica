@@ -49,7 +49,7 @@
                 headerData = JSON.stringify(headerData);
                 var bodyData = '"sobillentryList":[';
                 for (var i = 0; i < itemIds.length; i++) {
-                    bodyData += '{"itemId":"'+itemIds[i]+'","batchNo":"'+$("#"+itemIds[i]+"BatchNo").val()+'",' +
+                    bodyData += '{"itemId":"'+itemIds[i]+'",' +
                         '"auxqty":"'+$("#"+itemIds[i]+"Auxqty").val()+'","rowId":"'+$("#"+itemIds[i]+"RowId").val()+'",' +
                         '"remarks":"'+$("#"+itemIds[i]+"Remarks").val()+'"' +
                         '},';
@@ -133,7 +133,6 @@
                                    templet += '<tr id="'+icitemList[i].id+'Tr">'+
                                                 '<td class="hide"></td>'+
                                                 '<td>'+icitemList[i].name+'</td>'+
-                                                '<td><input type="text" id="'+icitemList[i].id+'BatchNo" class="form-control"/></td>'+
                                                 '<td></td>'+
                                                 '<td><input type="number" id="'+icitemList[i].id+'Auxqty" value="1.0" min="0" class="form-control required"/></td>'+
                                                 '<td></td>'+
@@ -265,13 +264,88 @@
 						<form:input path="amount" htmlEscape="false" class="form-control required isFloatGteZero"/>
 					</td>
 				</tr>
-
 		   		<tr>
 					<td class="width-15 active"><label class="pull-right">备注：</label></td>
 					<td class="width-35" colspan="3">
 						<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
 					</td>
 				</tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">包装：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark01" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark01')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">镜面抛：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark02" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark02')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">胶水：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark03" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark03')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">标识要求：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark04" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark04')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">喷码：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark05" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark05')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">客户验货：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark06" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark06')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">跟柜物品：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark07" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark07')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                    <td class="width-15 active"><label class="pull-right">物流：</label></td>
+                    <td class="width-35">
+                        <form:select path="remark08" class="form-control ">
+                            <form:option value="" label=""/>
+                            <form:options items="${fns:getDictList('sobill_remark08')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                        </form:select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">付款计划：</label></td>
+                    <td class="width-35" colspan="3">
+                        <form:textarea path="remark09" htmlEscape="false" rows="4"  cssStyle="resize: none;"  class="form-control "/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="width-15 active"><label class="pull-right">其他特殊要求：</label></td>
+                    <td class="width-35" colspan="3">
+                        <form:textarea path="remark10" htmlEscape="false" rows="4" cssStyle="resize: none;"   class="form-control "/>
+                    </td>
+                </tr>
 		 	</tbody>
 		</table>
         </form:form>
@@ -282,17 +356,17 @@
             </ul>
             <div class="tab-content">
 				<div id="tab-1" class="tab-pane fade in  active">
-			<a class="btn btn-white btn-sm" onclick="addItems();" title="新增"><i class="fa fa-plus"></i> 新增</a>
+			<%--<a class="btn btn-white btn-sm" onclick="addItems();" title="新增"><i class="fa fa-plus"></i> 新增</a>--%>
 			<table class="table table-striped table-bordered table-condensed">
 				<thead>
 					<tr>
 						<th class="hide"></th>
-						<th><font color="red">*</font>商品</th>
-						<th width="20%;">批号</th>
-						<th><font color="red">*</font>单价</th>
-						<th width="10%;"><font color="red">*</font>数量</th>
-						<th><font color="red">*</font>总额</th>
-						<th width="10%;"><font color="red">*</font>行序号</th>
+                        <th>编码</th>
+						<th>商品</th>
+						<th>单价</th>
+						<th width="10%;">数量</th>
+						<th>总额</th>
+						<th width="10%;">行序号</th>
 						<th>备注</th>
 						<th width="10">&nbsp;</th>
 					</tr>
@@ -301,8 +375,8 @@
                     <c:forEach items="${sobill.sobillentryList}" varStatus="vs" var="var">
                         <tr id="${var.itemId}Tr">
                             <td class="hide"></td>
+                            <td>${var.number}</td>
                             <td>${var.itemName}</td>
-                            <td><input type="text" id="${var.itemId}BatchNo" value="${var.batchNo}" class="form-control"/></td>
                             <td>${var.price}</td>
                             <td><input type="number" id="${var.itemId}Auxqty" value="${var.auxqty}" min="0" class="form-control required"/></td>
                             <td>${var.amount}</td>

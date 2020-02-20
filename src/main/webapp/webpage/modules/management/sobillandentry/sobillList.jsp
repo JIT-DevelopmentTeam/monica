@@ -22,67 +22,67 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="sobill" class="form form-horizontal well clearfix">
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="编码：">编码：</label>
-				<form:input path="billNo" htmlEscape="false" maxlength="100"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="同步状态：">同步状态：</label>
-				<form:select path="synStatus"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('syn_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="客户：">客户：</label>
-				<form:input path="cusName" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="归属员工：">归属员工：</label>
-				<form:input path="empName" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				 <div class="form-group">
-					<label class="label-item single-overflow pull-left" title="发货时间：">&nbsp;发货时间：</label>
-					<div class="col-xs-12">
-						   <div class="col-xs-12 col-sm-5">
-					        	  <div class='input-group date' id='beginNeedTime' style="left: -10px;" >
-					                   <input type='text'  name="beginNeedTime" class="form-control"  />
-					                   <span class="input-group-addon">
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="编码：">编码：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <form:input path="billNo" htmlEscape="false" maxlength="100"  class=" form-control"/>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="客户：">客户：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <form:input path="cusName" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="归属员工：">归属员工：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <form:input path="empName" htmlEscape="false" maxlength="64"  class=" form-control"/>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="审核状态：">审核状态：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <form:select path="checkStatus"  class="form-control m-b">
+                        <form:option value="" label=""/>
+                        <form:options items="${fns:getDictList('sobill_checkStatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+                    </form:select>
+                </div>
+
+                <br><br>
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="发货时间：">&nbsp;发货时间：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-5">
+                            <div class='input-group date' id='beginNeedTime' style="left: -10px;" >
+                                <input type='text'  name="beginNeedTime" class="form-control"  />
+                                <span class="input-group-addon">
 					                       <span class="glyphicon glyphicon-calendar"></span>
 					                   </span>
-					             </div>	
-					        </div>
-					        <div class="col-xs-12 col-sm-1">
-					        		~
-					       	</div>
-					        <div class="col-xs-12 col-sm-5">
-					          	<div class='input-group date' id='endNeedTime' style="left: -10px;" >
-					                   <input type='text'  name="endNeedTime" class="form-control" />
-					                   <span class="input-group-addon">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-1">
+                            ~
+                        </div>
+                        <div class="col-xs-12 col-sm-5">
+                            <div class='input-group date' id='endNeedTime' style="left: -10px;" >
+                                <input type='text'  name="endNeedTime" class="form-control" />
+                                <span class="input-group-addon">
 					                       <span class="glyphicon glyphicon-calendar"></span>
 					                   </span>
-					           	</div>	
-					        </div>
-					</div>
-				</div>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="是否已经取消：">是否已经取消：</label>
-				<form:select path="cancellation"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('sobill_cancellation')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="审核状态：">审核状态：</label>
-				<form:select path="checkStatus"  class="form-control m-b">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('sobill_checkStatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 		 <div class="col-xs-12 col-sm-6 col-md-4">
-			<div style="margin-top:26px">
+			<div>
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
 			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
 			 </div>
@@ -93,21 +93,6 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<%--<shiro:hasPermission name="management:sobillandentry:sobill:add">
-				<button id="add" class="btn btn-primary" onclick="add()">
-					<i class="glyphicon glyphicon-plus"></i> 新建
-				</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:sobillandentry:sobill:edit">
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 修改
-	        	</button>
-			</shiro:hasPermission>
-			<shiro:hasPermission name="management:sobillandentry:sobill:del">
-				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-	            	<i class="glyphicon glyphicon-remove"></i> 删除
-	        	</button>
-			</shiro:hasPermission>--%>
 			<shiro:hasPermission name="management:sobillandentry:sobill:import">
 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button>
 			</shiro:hasPermission>
@@ -123,17 +108,11 @@
 				</button>
 			</shiro:hasPermission>
 
-            <%--<shiro:hasPermission name="management:sobillandentry:sobill:check">
-                <button id="check" class="btn btn-primary" onclick="checkOrder()">
-                    <i class="glyphicon glyphicon-search"></i> 审核
-                </button>
-            </shiro:hasPermission>--%>
-
-			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
+			<%--<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
 				<button id="synchronization" class="btn btn-success" onclick="">
 					<i class="glyphicon glyphicon-refresh"></i> 同步
 				</button>
-			</shiro:hasPermission>
+			</shiro:hasPermission>--%>
 		    </div>
 		
 	<!-- 表格 -->
@@ -169,7 +148,7 @@
                         <table id="sobillentryListTable" ></table>
                     </div>
 
-                    <!-- 订单明细 -->
+                    <!-- 审核明细 -->
                     <div role="tabpanel" class="tab-pane fade in" id="review">
                         <table id="reviewListTable" ></table>
                     </div>

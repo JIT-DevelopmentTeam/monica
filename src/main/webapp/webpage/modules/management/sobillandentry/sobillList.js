@@ -80,9 +80,16 @@ $(document).ready(function() {
                    $("#sobillentryListTable").bootstrapTable("refresh");
                    $("#reviewListTable").bootstrapTable("refresh");
                },
-               	onShowSearch: function () {
+        onShowSearch: function () {
 			$("#search-collapse").slideToggle();
 		},
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#sobillTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#sobillTable").bootstrapTable("load",data);
+        },
                columns: [{
 		        checkbox: true
 
@@ -92,20 +99,6 @@ $(document).ready(function() {
                        title: '编码',
                        sortable: true,
                        sortName: 'billNo'
-                       ,formatter:function(value, row , index){
-                           value = jp.unescapeHTML(value);
-                       <c:choose>
-                           <c:when test="${fns:hasPermission('management:sobillandentry:sobill:edit')}">
-                           return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-                       </c:when>
-                           <c:when test="${fns:hasPermission('management:sobillandentry:sobill:view')}">
-                           return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-                       </c:when>
-                           <c:otherwise>
-                           return value;
-                       </c:otherwise>
-                           </c:choose>
-                       }
                    }
 			,{
 		        field: 'type',
@@ -117,7 +110,7 @@ $(document).ready(function() {
 		        }
 
 		    }
-			,{
+			/*,{
 		        field: 'synStatus',
 		        title: '同步状态',
 		        sortable: true,
@@ -135,7 +128,7 @@ $(document).ready(function() {
                     return html;
 		        }
 
-		    }
+		    }*/
 			,{
 		        field: 'cusName',
 		        title: '客户',
@@ -190,25 +183,6 @@ $(document).ready(function() {
 			    }
 		    }
 			,{
-		        field: 'cancellation',
-		        title: '是否取消',
-		        sortable: true,
-		        sortName: 'cancellation',
-		        formatter:function(value, row , index){
-                    var html;
-                    switch (value) {
-                        case 0:
-                            html = '<span style="color: green;">否</span>';
-                            break;
-                        case 1:
-                            html = '<span style="color:red;">是</span>';
-                            break;
-                    }
-		        	return html;
-		        }
-
-		    }
-			,{
 		        field: 'checkTime',
 		        title: '审核通过时间',
 		        sortable: true,
@@ -256,12 +230,6 @@ $(document).ready(function() {
 		        sortName: 'amount'
 
 		    }
-               ,{
-                   field: 'remarks',
-                   title: '备注',
-                   sortable: true,
-                   sortName: 'remarks'
-               }
 		     ]
 
 		});
@@ -330,6 +298,8 @@ $(document).ready(function() {
 	  })
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#sobillTable').bootstrapTable('refresh');
+		  $('#sobillentryListTable').bootstrapTable('refresh');
+          $('#reviewListTable').bootstrapTable('refresh');
 		});
 
 	 $("#reset").click("click", function() {// 绑定查询按扭
@@ -337,6 +307,8 @@ $(document).ready(function() {
 		  $("#searchForm  select").val("");
 		   $("#searchForm  .select-item").html("");
 		  $('#sobillTable').bootstrapTable('refresh');
+         $('#sobillentryListTable').bootstrapTable('refresh');
+         $('#reviewListTable').bootstrapTable('refresh');
 		});
 
 				$('#beginNeedTime').datetimepicker({
@@ -524,6 +496,13 @@ function init() {
         onShowSearch: function () {
             $("#search-collapse").slideToggle();
         },
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#sobillentryListTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#sobillentryListTable").bootstrapTable("load",data);
+        },
         columns: [{
             checkbox: true
 
@@ -538,17 +517,17 @@ function init() {
 
             }
             ,{
-                field: 'itemName',
-                title: '商品',
+                field: 'number',
+                title: '编码',
                 sortable: true,
-                sortName: 'itemName'
+                sortName: 'number'
 
             }
             ,{
-                field: 'unit',
-                title: '商品单位',
+                field: 'itemName',
+                title: '名称',
                 sortable: true,
-                sortName: 'unit'
+                sortName: 'itemName'
 
             }
             ,{
@@ -559,10 +538,10 @@ function init() {
 
             }
             ,{
-                field: 'batchNo',
-                title: '批号',
+                field: 'unit',
+                title: '单位',
                 sortable: true,
-                sortName: 'batchNo'
+                sortName: 'unit'
 
             }
             ,{
@@ -676,6 +655,13 @@ function init() {
         },
         onShowSearch: function () {
             $("#search-collapse").slideToggle();
+        },
+        onLoadSuccess: function(data){
+            if(data["rows"] == undefined){
+                $("#reviewListTable").bootstrapTable("removeAll");
+                return;
+            }
+            $("#reviewListTable").bootstrapTable("load",data);
         },
         columns: [{
             checkbox: true

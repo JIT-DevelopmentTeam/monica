@@ -191,8 +191,11 @@ public class CustomerController extends BaseController {
             return aj;
         }
         try {
-            JSONArray jsonArray = Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
-            customerService.deleteAllData();
+        	String maxModifyTime = customerService.findMaxModifyTime();
+        	if (maxModifyTime == null) {
+        		maxModifyTime = "";
+			}
+            JSONArray jsonArray = Common.executeInter(apiUrl.getUrl() + "&modifyTime=" + maxModifyTime, apiUrl.getProtocol());
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Customer customer = new Customer();
@@ -202,6 +205,7 @@ public class CustomerController extends BaseController {
                 customer.setNumber(jsonObject.getString("FNumber"));
                 customer.setEmplId(jsonObject.getString("FEmpID"));
                 customer.setStatus(1);
+                customer.setModifyTime(jsonObject.getString("FModifyTime"));
                 customer.setIsNewRecord(true);
                 customerService.save(customer);
             }

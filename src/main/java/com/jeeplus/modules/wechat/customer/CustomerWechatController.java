@@ -31,6 +31,9 @@ public class CustomerWechatController extends BaseController {
         AjaxJson aj = new AjaxJson();
         customer.setDelFlag("0");
         List<Customer> customerList = customerService.findList(customer);
+        if (customerList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("customerList",customerList);
         return aj;
     }

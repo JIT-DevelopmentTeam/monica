@@ -31,6 +31,9 @@ public class UserWechatController {
         filter.setId("0");
         user.setCurrentUser(filter);
         List<User> userList = userMapper.findList(user);
+        if(userList.isEmpty()) {
+            aj.setSuccess(false);
+        }
         aj.put("userList",userList);
         return aj;
     }

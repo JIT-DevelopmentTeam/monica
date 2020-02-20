@@ -55,6 +55,16 @@ public class Sobill extends DataEntity<Sobill> {
     private Integer isApproval;     // 是否为审批
     private String followerId;      // 跟进人
     private String followerName;    // 跟进人名称
+    private String remark01;		// 包装
+    private String remark02;		// 镜面抛
+    private String remark03;		// 胶水
+    private String remark04;		// 标识要求
+    private String remark05;		// 喷码
+    private String remark06;		// 客户验货
+    private String remark07;		// 跟柜物品
+    private String remark08;		// 物流
+    private String remark09;		// 付款计划
+    private String remark10;		// 其他特殊要求
 
 	public Sobill() {
 		super();
@@ -364,5 +374,95 @@ public class Sobill extends DataEntity<Sobill> {
 
     public void setFollowerName(String followerName) {
         this.followerName = followerName;
+    }
+
+    @ExcelField(title="包装", align=2, sort=23)
+    public String getRemark01() {
+        return remark01;
+    }
+
+    public void setRemark01(String remark01) {
+        this.remark01 = remark01;
+    }
+
+    @ExcelField(title="镜面抛", align=2, sort=24)
+    public String getRemark02() {
+        return remark02;
+    }
+
+    public void setRemark02(String remark02) {
+        this.remark02 = remark02;
+    }
+
+    @ExcelField(title="胶水", align=2, sort=25)
+    public String getRemark03() {
+        return remark03;
+    }
+
+    public void setRemark03(String remark03) {
+        this.remark03 = remark03;
+    }
+
+    @ExcelField(title="标识要求", align=2, sort=26)
+    public String getRemark04() {
+        return remark04;
+    }
+
+    public void setRemark04(String remark04) {
+        this.remark04 = remark04;
+    }
+
+    @ExcelField(title="喷码", align=2, sort=27)
+    public String getRemark05() {
+        return remark05;
+    }
+
+    public void setRemark05(String remark05) {
+        this.remark05 = remark05;
+    }
+
+    @ExcelField(title="客户验货", align=2, sort=28)
+    public String getRemark06() {
+        return remark06;
+    }
+
+    public void setRemark06(String remark06) {
+        this.remark06 = remark06;
+    }
+
+    @ExcelField(title="跟柜物品", align=2, sort=29)
+    public String getRemark07() {
+        return remark07;
+    }
+
+    public void setRemark07(String remark07) {
+        this.remark07 = remark07;
+    }
+
+    @ExcelField(title="物流", align=2, sort=30)
+    public String getRemark08() {
+        return remark08;
+    }
+
+    public void setRemark08(String remark08) {
+        this.remark08 = remark08;
+    }
+
+    @ExcelField(title="付款计划", align=2, sort=31)
+    public String getRemark09() {
+        return remark09;
+    }
+
+    public void setRemark09(String remark09) {
+        this.remark09 = remark09;
+    }
+
+    @ExcelField(title="其他特殊要求", align=2, sort=32)
+    public String getRemark10() {
+        return remark10;
+    }
+
+    public void setRemark10(String remark10) {
+        this.remark10 = remark10;
     }
 }

@@ -150,6 +150,15 @@
     <input type="hidden" id="custId" name="custId"/>
     <input type="hidden" id="followerId" name="followerId"/>
     <input type="hidden" id="type" name="type"/>
+    <input type="hidden" id="remark01" name="remark01"/>
+    <input type="hidden" id="remark02" name="remark02"/>
+    <input type="hidden" id="remark03" name="remark03"/>
+    <input type="hidden" id="remark04" name="remark04"/>
+    <input type="hidden" id="remark05" name="remark05"/>
+    <input type="hidden" id="remark06" name="remark06"/>
+    <input type="hidden" id="remark07" name="remark07"/>
+    <input type="hidden" id="remark08" name="remark08"/>
+
 
     <%-- 表头 --%>
     <div class="order-panel">
@@ -216,14 +225,93 @@
                         style="text-align: right;"/>
             </div>
         </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                包装
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark01Select" readonly type="text" placeholder="请选择包装"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                镜面抛
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark02Select" readonly type="text" placeholder="请选择镜面抛"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                胶水
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark03Select" readonly type="text" placeholder="请选择胶水"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                标识要求
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark04Select" readonly type="text" placeholder="请选择标识要求"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                喷码
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark05Select" readonly type="text" placeholder="请选择喷码"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                客户验货
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark06Select" readonly type="text" placeholder="请选择客户验货"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                跟柜物品
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark07Select" readonly type="text" placeholder="请选择跟柜物品"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list">
+            <div class="addOrder-list_bd">
+                物流
+            </div>
+            <div class="addOrder-list_ft">
+                <input class="weui-input" id="remark08Select" readonly type="text" placeholder="请选择物流"
+                       style="text-align: right;"/>
+            </div>
+        </div>
+        <div class="addOrder-list big-list">
+            <textarea class="addOrder-textarea" name="remark09" id="remark09" cols="30" rows="10" placeholder="其他特殊要求"></textarea>
+        </div>
+        <div class="addOrder-list big-list">
+            <textarea class="addOrder-textarea" name="remark10" id="remark10" cols="30" rows="10" placeholder="付款计划"></textarea>
+        </div>
     </div>
 
     <%-- 客户选择 --%>
-    <div id="customer" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
+    <div id="customer" class="weui-popup__container" style="z-index: 501;overflow: hidden;"><%-- 覆盖底部导航 --%>
         <div class="weui-popup__overlay"></div>
         <div class="weui-popup__modal" style="overflow: hidden;">
+            <div class="weui-cells__title"><span style="font-size: 14px;">选择客户</span></div>
             <!-- 搜索框 -->
-            <div class="weui-search-bar" id="customerSearchBar" style="height: 7%;">
+            <div class="weui-search-bar" id="customerSearchBar" style="height: 5%;margin-top: 2%;">
                 <div v-on:click="openCustomer" class="weui-search-bar__form">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
@@ -238,13 +326,13 @@
                 <a v-on:click="closeCustomer" class="weui-search-bar__cancel-btn" id="customerSearchCancel">取消</a>
             </div>
 
-            <div id="customerList" class="weui-cells weui-cells_radio" style="overflow: auto;">
-                <label class="weui-cell weui-check__label" :for="customer.id" v-for="customer in customerList" style="overflow: hidden;">
+            <div id="customerList" class="weui-cells weui-cells_radio">
+                <label :id="generateCustomerLabel(customer.id)" name="customerLabel" class="weui-cell weui-check__label" :for="customer.id" v-for="customer in customerList" style="overflow: hidden;">
                     <div class="weui-cell__bd">
                         <p>{{customer.name}}</p>
                     </div>
                     <div class="weui-cell__ft">
-                        <input type="radio" class="weui-check" name="customer" :id="customer.id" :value="customer.id">
+                        <input type="radio" class="weui-check" name="customer" :id="customer.id" v-on:click="selectCustomer(customer.id)" :value="customer.id">
                         <span class="weui-icon-checked"></span>
                     </div>
                 </label>
@@ -260,8 +348,9 @@
     <div id="follower" class="weui-popup__container" style="z-index: 501;"><%-- 覆盖底部导航 --%>
         <div class="weui-popup__overlay"></div>
         <div class="weui-popup__modal" style="overflow: hidden;">
+            <div class="weui-cells__title"><span style="font-size: 14px;">选择跟单员</span></div>
             <!-- 搜索框 -->
-            <div class="weui-search-bar" id="searchBar" style="height: 7%;">
+            <div class="weui-search-bar" id="searchBar" style="height: 5%;margin-top: 2%;">
                 <div v-on:click="openFollower" class="weui-search-bar__form">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
@@ -277,12 +366,12 @@
             </div>
 
             <div id="followerList" class="weui-cells weui-cells_radio" style="overflow: auto;">
-                <label class="weui-cell weui-check__label" :for="follower.id" v-for="follower in followerList" style="overflow: hidden;">
+                <label class="weui-cell weui-check__label" :id="generateFollowerLabel(follower.id)" name="followerLabel" :for="follower.id" v-for="follower in followerList" style="overflow: hidden;">
                     <div class="weui-cell__bd">
                         <p>{{follower.name}}</p>
                     </div>
                     <div class="weui-cell__ft">
-                        <input type="radio" class="weui-check" name="follower" :id="follower.id" :value="follower.id">
+                        <input type="radio" class="weui-check" name="follower" :id="follower.id" :value="follower.id" v-on:click="selectFollower(follower.id)">
                         <span class="weui-icon-checked"></span>
                     </div>
                 </label>
@@ -388,6 +477,134 @@
                     }
                 });
             });
+            /* 包装 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark01', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark01Select").select({
+                    title: "选择包装",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark01").val(result.values);
+                    }
+                });
+            });
+            /* 	镜面抛 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark02', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark02Select").select({
+                    title: "选择镜面抛",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark02").val(result.values);
+                    }
+                });
+            });
+            /* 	胶水 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark03', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark03Select").select({
+                    title: "选择胶水",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark03").val(result.values);
+                    }
+                });
+            });
+            /* 标识要求 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark04', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark04Select").select({
+                    title: "选择标识要求",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark04").val(result.values);
+                    }
+                });
+            });
+            /* 	喷码 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark05', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark05Select").select({
+                    title: "选择喷码",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark05").val(result.values);
+                    }
+                });
+            });
+            /* 客户验货 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark06', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark06Select").select({
+                    title: "选择客户验货",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark06").val(result.values);
+                    }
+                });
+            });
+            /* 	跟柜物品 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark07', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark07Select").select({
+                    title: "选择跟柜物品",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark07").val(result.values);
+                    }
+                });
+            });
+            /* 	物流 */
+            this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark08', {}).then(function (res) {
+                var dictList = res.body.rows;
+                var data = [];
+                for (var i = 0; i < dictList.length; i++) {
+                    var info = {"title": dictList[i].label, "value": dictList[i].value};
+                    data.push(info);
+                }
+                $("#remark08Select").select({
+                    title: "选择物流",
+                    items: data,
+                    onChange: function (result) {//选中触发事件
+                        $("#remark08").val(result.values);
+                    }
+                });
+            });
         },
         data: {
             itemDetail: '商品明细',
@@ -397,13 +614,21 @@
             del: '删除商品',
             saveItems: '保存',
             cancel: '取消',
-            saveCustomer:'保存',
+            saveCustomer:'提交',
             cancelCustomer:'取消',
-            saveFollower:'保存',
+            saveFollower:'提交',
             cancelFollower:'取消',
             icitemClassList: [],
             customerList:[],
-            followerList:[]
+            followerList:[],
+            remark01:[],
+            remark02:[],
+            remark03:[],
+            remark04:[],
+            remark05:[],
+            remark06:[],
+            remark07:[],
+            remark08:[]
         },
         methods: {
             closeCustomer() {
@@ -635,16 +860,19 @@
                    },
                    dataType:'json',
                    success:function (res) {
-                       var templet = '';
                        $("#customerList").empty();
+                       if (!res.success) {
+                           return;
+                       }
+                       var templet = '';
                        var customerList = res.body.customerList;
                        for (var i = 0; i < customerList.length; i++) {
-                           templet += '<label class="weui-cell weui-check__label" for="'+customerList[i].id+'">' +
+                           templet += '<label class="weui-cell weui-check__label" id="customer'+customerList[i].id+'" name="customerLabel" for="'+customerList[i].id+'">' +
                                '<div class="weui-cell__bd">' +
                                '<p>'+customerList[i].name+'</p>' +
                                '</div>' +
                                '<div class="weui-cell__ft">' +
-                               '<input type="radio" class="weui-check" name="customer" id="'+customerList[i].id+'" value="'+customerList[i].id+'">' +
+                               '<input type="radio" class="weui-check" onclick="selectCustomer(\''+customerList[i].id+'\')" name="customer" id="'+customerList[i].id+'" value="'+customerList[i].id+'">' +
                                '<span class="weui-icon-checked"></span>' +
                                '</div>' +
                                '</label>';
@@ -664,16 +892,19 @@
                     },
                     dataType:'json',
                     success:function (res) {
-                        var templet = '';
                         $("#followerList").empty();
+                        if (!res.success) {
+                            return;
+                        }
+                        var templet = '';
                         var followerList = res.body.userList;
                         for (var i = 0; i < followerList.length; i++) {
-                            templet += '<label class="weui-cell weui-check__label" for="'+followerList[i].id+'">' +
+                            templet += '<label class="weui-cell weui-check__label" id="follower'+followerList[i].id+'" name="followerLabel" for="'+followerList[i].id+'">' +
                                 '<div class="weui-cell__bd">' +
                                 '<p>'+followerList[i].name+'</p>' +
                                 '</div>' +
                                 '<div class="weui-cell__ft">' +
-                                '<input type="radio" class="weui-check" name="follower" id="'+followerList[i].id+'" value="'+followerList[i].id+'">' +
+                                '<input type="radio" class="weui-check" onclick="selectFollower(\''+followerList[i].id+'\')" name="follower" id="'+followerList[i].id+'" value="'+followerList[i].id+'">' +
                                 '<span class="weui-icon-checked"></span>' +
                                 '</div>' +
                                 '</label>';
@@ -701,8 +932,34 @@
             },
             cancelFol: function () {
             },
+            generateCustomerLabel: function (val) {
+              return 'customer'+val;
+            },
+            generateFollowerLabel: function (val) {
+                return 'follower'+val;
+            },
+            selectCustomer: function (val) {
+                $("[name='customerLabel']").css('background','');
+                $("#customer"+val).css('background','radial-gradient(#58b0fb, transparent)');
+            },
+            selectFollower: function (val) {
+                $("[name='followerLabel']").css('background','');
+                $("#follower"+val).css('background','radial-gradient(#58b0fb, transparent)');
+            }
         }
     });
+
+    /* 选择客户切换背景色 */
+    function selectCustomer(val) {
+        $("[name='customerLabel']").css('background','');
+        $("#customer"+val).css('background','radial-gradient(#58b0fb, transparent)');
+    }
+
+    /* 选择跟单员切换背景色 */
+    function selectFollower(val) {
+        $("[name='followerLabel']").css('background','');
+        $("#follower"+val).css('background','radial-gradient(#58b0fb, transparent)');
+    }
 
     $("#needTime").calendar({
         dateFormat: "yyyy-mm-dd"
@@ -744,6 +1001,16 @@
         var createDate = $("#createDate").val();
         var type = $("#type").val();
         var remarks = $("#remarks").val();
+        var remark01 = $("#remark01").val();
+        var remark02 = $("#remark02").val();
+        var remark03 = $("#remark03").val();
+        var remark04 = $("#remark04").val();
+        var remark05 = $("#remark05").val();
+        var remark06 = $("#remark06").val();
+        var remark07 = $("#remark07").val();
+        var remark08 = $("#remark08").val();
+        var remark09 = $("#remark09").val();
+        var remark10 = $("#remark10").val();
         if (custId == null || custId == '') {
             $.alert("请选择客户!");
             return;
@@ -793,6 +1060,16 @@
             "type": type,
             "createDate": createDate,
             "remarks":remarks,
+            "remark01":remark01,
+            "remark02":remark02,
+            "remark03":remark03,
+            "remark04":remark04,
+            "remark05":remark05,
+            "remark06":remark06,
+            "remark07":remark07,
+            "remark08":remark08,
+            "remark09":remark09,
+            "remark10":remark10,
             "sobillentryList": json
         };
         $.ajax({

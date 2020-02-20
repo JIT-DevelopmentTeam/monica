@@ -142,7 +142,6 @@ public class SobillController extends BaseController {
                 sobillentry.setSobillId(sobill);
                 sobillentry.setItemId(sobillEntryObject.getString("itemId"));
                 sobillentry.setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
-                sobillentry.setBatchNo(sobillEntryObject.getString("batchNo"));
                 sobillentry.setRowId(Integer.parseInt(sobillEntryObject.get("rowId").toString()));
                 sobillentry.setRemarks(sobillEntryObject.getString("remarks"));
                 sobillentry.setDelFlag("0");
@@ -173,7 +172,6 @@ public class SobillController extends BaseController {
                         if (sobillentryList.get(j).getItemId().equals(sobillEntryObject.getString("itemId"))){
                             exist = true;
                             sobillentryList.get(j).setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
-                            sobillentryList.get(j).setBatchNo(sobillEntryObject.getString("batchNo"));
                             sobillentryList.get(j).setRowId(Integer.parseInt(sobillEntryObject.get("rowId").toString()));
                             sobillentryList.get(j).setRemarks(sobillEntryObject.getString("remarks"));
                         }
@@ -182,7 +180,6 @@ public class SobillController extends BaseController {
                         Sobillentry sobillentry = new Sobillentry();
                         sobillentry.setSobillId(sobill);
                         sobillentry.setItemId(sobillEntryObject.getString("itemId"));
-                        sobillentry.setBatchNo(sobillEntryObject.getString("batchNo"));
                         sobillentry.setAuxqty(Double.parseDouble(sobillEntryObject.get("auxqty").toString()));
                         sobillentry.setRowId(Integer.parseInt(sobillEntryObject.get("rowId").toString()));
                         sobillentry.setRemarks(sobillEntryObject.getString("remarks"));

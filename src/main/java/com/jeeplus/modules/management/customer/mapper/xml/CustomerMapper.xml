@@ -13,6 +13,7 @@
 		a.f_erpnote AS "erpNote",
 		a.f_status AS "status",
 		a.f_creditamt AS "crediTamt",
+		a.f_modifytime AS "modifyTime",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -45,6 +46,9 @@
 			<if test="info != null and info != ''">
 				AND a.f_number LIKE concat('%',#{info},'%') or a.f_name LIKE concat('%',#{info},'%')
 			</if>
+            <if test="name != null and name != ''">
+                AND a.f_name LIKE concat('%',#{name},'%')
+            </if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -74,6 +78,10 @@
 			</otherwise>
 		</choose>
 	</select>
+
+	<select id="findMaxModifyTime" resultType="java.lang.String">
+		SELECT MAX(f_modifytime) FROM tb_customer
+	</select>
 	
 	<insert id="insert">
 		INSERT INTO tb_customer(
@@ -87,6 +95,7 @@
 			f_erpnote,
 			f_status,
 			f_creditamt,
+			f_modifytime,
 			create_by,
 			create_date,
 			update_by,
@@ -104,6 +113,7 @@
 			#{erpNote},
 			#{status},
 			#{crediTamt},
+			#{modifyTime},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -124,6 +134,7 @@
 			f_erpnote = #{erpNote},
 			f_status = #{status},
 			f_creditamt = #{crediTamt},
+			f_modifytime = #{modifyTime},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}

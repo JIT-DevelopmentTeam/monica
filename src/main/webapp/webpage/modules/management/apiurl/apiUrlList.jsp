@@ -21,38 +21,6 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="apiUrl" class="form form-horizontal well clearfix">
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="接口名称：">接口名称：</label>
-				<form:input path="name" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="端口编码：">端口编码：</label>
-				<form:input path="number" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="接口域名：">接口域名：</label>
-				<form:input path="domain" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="接口端口：">接口端口：</label>
-				<form:input path="port" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<div class="form-group">
-					<label class="label-item single-overflow pull-left" title="接口状态：">&nbsp;接口状态：</label>
-					<div class="col-xs-12">
-						<form:radiobuttons class="i-checks" path="status" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-					</div>
-				</div>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<div class="form-group">
-					<label class="label-item single-overflow pull-left" title="是否需要token：">&nbsp;是否需要token：</label>
-					<div class="col-xs-12">
-						<form:radiobuttons class="i-checks" path="isToken" items="${fns:getDictList('')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-					</div>
-				</div>
-			</div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
