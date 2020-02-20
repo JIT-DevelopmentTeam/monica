@@ -16,5 +16,11 @@ import com.jeeplus.modules.management.customer.entity.Customer;
 public interface CustomerMapper extends BaseMapper<Customer> {
 
     void deleteAllData();
+
+    /**
+     * 查询列表中最大的modifytime
+     * @return
+     */
+    String findMaxModifyTime();
 	
 }

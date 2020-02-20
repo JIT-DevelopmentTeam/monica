@@ -4,8 +4,8 @@
 package com.jeeplus.modules.management.customer.entity;
 
 
-import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
+import com.jeeplus.core.persistence.DataEntity;
 
 /**
  * 客户管理Entity
@@ -24,6 +24,7 @@ public class Customer extends DataEntity<Customer> {
 	private String erpNote;		// ERP备注
 	private Integer status;		// 状态
 	private String crediTamt;		// 信用证
+	private String modifyTime;
 	private String info;	// 客户信息（用途：条件搜索）
 	
 	public Customer() {
@@ -121,5 +122,13 @@ public class Customer extends DataEntity<Customer> {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public String getModifyTime() {
+		return modifyTime;
+	}
+
+	public void setModifyTime(String modifyTime) {
+		this.modifyTime = modifyTime;
 	}
 }

@@ -3,15 +3,15 @@
  */
 package com.jeeplus.modules.management.customer.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.service.CrudService;
 import com.jeeplus.modules.management.customer.entity.Customer;
 import com.jeeplus.modules.management.customer.mapper.CustomerMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 客户管理Service
@@ -21,6 +21,9 @@ import com.jeeplus.modules.management.customer.mapper.CustomerMapper;
 @Service
 @Transactional(readOnly = true)
 public class CustomerService extends CrudService<CustomerMapper, Customer> {
+
+	@Autowired
+	private CustomerMapper customerMapper;
 
 	public Customer get(String id) {
 		return super.get(id);
@@ -32,6 +35,14 @@ public class CustomerService extends CrudService<CustomerMapper, Customer> {
 	
 	public Page<Customer> findPage(Page<Customer> page, Customer customer) {
 		return super.findPage(page, customer);
+	}
+
+	/**
+	 * 查询列表中最大的modifytime
+	 * @return
+	 */
+	public String findMaxModifyTime() {
+		return customerMapper.findMaxModifyTime();
 	}
 	
 	@Transactional(readOnly = false)
