@@ -12,6 +12,8 @@ import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.BaseEntity;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.management.warehouse.entity.Stock;
 import com.jeeplus.modules.management.warehouse.service.StockService;
 import com.jeeplus.modules.monitor.utils.Common;
@@ -34,7 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,9 @@ public class StockController extends BaseController {
 
 	@Autowired
 	private StockService stockService;
+
+	@Autowired
+	private ApiUrlService apiUrlService;
 	
 	@ModelAttribute
 	public Stock get(@RequestParam(required=false) String id) {
@@ -79,14 +83,22 @@ public class StockController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions("management:warehouse:stock:list")
 	@RequestMapping(value = "data")
-	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) throws UnsupportedEncodingException {
+	public Map<String, Object> data(Stock stock, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+		ApiUrl apiUrlList = apiUrlService.getByUsefulness("5");
+		if (apiUrlList == null || StringUtils.isBlank(apiUrlList.getUrl())) {
+			throw new Exception("请检查库存列表查询接口配置是否准确!");
+		}
+		ApiUrl apiUrlTotal = apiUrlService.getByUsefulness("6");
+		if (apiUrlTotal == null || StringUtils.isBlank(apiUrlTotal.getUrl())) {
+			throw new Exception("请检查库存列表总量查询接口配置是否准确!");
+		}
 		String itemClassNumber = request.getParameter("itemClassNumber");
 		String item = request.getParameter("item");
 		String pageNo = request.getParameter("pageNo");
 		JSONArray jsonarr =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8") + "&currentPage=" + pageNo,"POST");
+				Common.executeInter(apiUrlList.getUrl() + "&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8") + "&currentPage=" + pageNo,"POST");
 		JSONArray jsonarrTotal =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8"),"POST");
+				Common.executeInter(apiUrlTotal.getUrl() + "&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse(), "utf-8"),"POST");
 
 		JSONObject jsonObject = new JSONObject();
 		List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
@@ -211,14 +223,26 @@ public class StockController extends BaseController {
     @RequestMapping(value = "export")
     public AjaxJson exportFile(Stock stock, HttpServletRequest request, HttpServletResponse response) {
 		AjaxJson j = new AjaxJson();
+		ApiUrl apiUrlList = apiUrlService.getByUsefulness("5");
+		if (apiUrlList == null || StringUtils.isBlank(apiUrlList.getUrl())) {
+			j.setSuccess(false);
+			j.setMsg("请检查库存列表查询接口配置是否准确!");
+			return j;
+		}
+		ApiUrl apiUrlTotal = apiUrlService.getByUsefulness("6");
+		if (apiUrlTotal == null || StringUtils.isBlank(apiUrlTotal.getUrl())) {
+			j.setSuccess(false);
+			j.setMsg("请检查库存列表总量查询接口配置是否准确!");
+			return j;
+		}
 		try {
             String fileName = "库存查询"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx";
 			String itemClassNumber = request.getParameter("itemClassNumber");
 			String item = request.getParameter("item");
 			JSONArray jsonarrTotal =
-					Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock_total?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8"),"POST");
+					Common.executeInter(apiUrlTotal.getUrl() + "&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8"),"POST");
 			JSONArray jsonarr =
-					Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_warehouse_stock?token_value=20190603&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8") + "&showCount=" + jsonarrTotal.get(0),"POST");
+					Common.executeInter(apiUrlList.getUrl() + "&itemClassNumber=" + itemClassNumber + "&item=" + item + "&batchNum=" + stock.getBatchNumber() + "&level=" + stock.getLevel() + "&colorNum=" + stock.getColorNumber() + "&warehouse=" + URLEncoder.encode(stock.getWarehouse() == null ? "" : stock.getWarehouse(), "utf-8") + "&showCount=" + jsonarrTotal.get(0),"POST");
 			List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
 			Page<Stock> page = findPage(new Page<Stock>(request, response), stock, stockList);
     		new ExportExcel("库存查询", Stock.class).setDataList(page.getList()).write(response, fileName).dispose();
