@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="col-sm-4" >
                                     <button  class="btn btn-default btn-sm"  onclick="synIcitemClass()">
-                                        <i class="glyphicon glyphicon-refresh">同步分类</i>
+                                        <i class="glyphicon glyphicon-refresh">同步</i>
                                     </button>
                                 </div>
                                 <%--<div class="col-sm-2" >
@@ -53,24 +53,16 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="icitem" class="form form-horizontal well clearfix">
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="编号：">编号：</label>
-				<form:input path="number" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="商品名称：">商品名称：</label>
-				<form:input path="name" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
-			 <div class="col-xs-12 col-sm-6 col-md-4">
-				<label class="label-item single-overflow pull-left" title="商品型号：">商品型号：</label>
-				<form:input path="model" htmlEscape="false" maxlength="64"  class=" form-control"/>
-			</div>
+                <div class="col-xs-12 col-sm-6 col-md-1">
+                    <label class="label-item single-overflow pull-left" title="商品信息：">商品信息：</label>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-2">
+                    <form:input path="info" htmlEscape="false" maxlength="100" class=" form-control" placeholder="编号、名称或型号"/>
+                </div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
-			<div style="margin-top:26px">
-			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
-			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
-			 </div>
-	    </div>	
+			  <a  id="search" class="btn btn-primary "><i class="fa fa-search"></i> 查询</a>
+			  <a  id="reset" class="btn btn-danger " ><i class="fa fa-refresh"></i> 重置</a>
+	    </div>
 	</form:form>
 	</div>
 	</div>
@@ -104,11 +96,6 @@
                 <shiro:hasPermission name="management:icitemclass:icitem:view">
                     <button id="view" class="btn btn-default" disabled onclick="view()">
                         <i class="fa fa-search-plus"></i> 查看
-                    </button>
-                </shiro:hasPermission>
-                <shiro:hasPermission name="management:icitemclass:icitem:synIcitem">
-                    <button  class="btn btn-primary"  onclick="synIcitem()">
-                        <i class="glyphicon glyphicon-refresh" aria-hidden="true"> 同步物料</i>
                     </button>
                 </shiro:hasPermission>
                 <button id="uploadItemId"  class="btn btn-primary"  onclick="icItemUpload()">

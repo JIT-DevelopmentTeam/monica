@@ -7,11 +7,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.service.BaseService;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
 import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
 import com.jeeplus.modules.management.icitemclass.service.IcitemClassService;
+import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.monitor.utils.Common;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,8 @@ public class IcitemClassController extends BaseController {
 	private IcitemClassService icitemClassService;
 	@Autowired
     private ApiUrlService apiUrlService;
+	@Autowired
+	private IcitemService icitemService;
 	
 	@ModelAttribute
 	public IcitemClass get(@RequestParam(required=false) String id) {
@@ -59,39 +65,98 @@ public class IcitemClassController extends BaseController {
 	 * 同步物料分类
 	 */
 	@ResponseBody
-	@RequestMapping(value = "synIcitemClass")
-	public AjaxJson  synIcitemClass() {
+	@RequestMapping(value = "synIcitem_Class")
+	public AjaxJson  synIcitem_Class() {
 		AjaxJson aj = new AjaxJson();
-        ApiUrl apiUrl = apiUrlService.getByUsefulness("1");
-        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
-            aj.setSuccess(false);
-            aj.setMsg("同步出错,请检查接口配置是否准确!");
-            return aj;
-        }
-        try {
-            JSONArray jsonarr =
-                    Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
-            icitemClassService.deleteAllData();
-            for (int i = 0; i < jsonarr.size(); i++) {
-                JSONObject jsonObject = jsonarr.getJSONObject(i);
-                IcitemClass icitemClass = new IcitemClass();
-                IcitemClass parent = new IcitemClass();
-                parent.setId(jsonObject.getString("f_parentid"));
-                parent.setName(jsonObject.getString("f_name"));
-                icitemClass.setParent(parent);
-                icitemClass.setErpId(jsonObject.getString("f_itemid"));
-                icitemClass.setId(jsonObject.getString("f_itemid"));
-                icitemClass.setNumber(jsonObject.getString("f_number"));
-                icitemClass.setName(jsonObject.getString("f_name"));
-                icitemClassService.save(icitemClass,true);
-            }
-            aj.setMsg("同步成功!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            aj.setSuccess(false);
-            aj.setMsg("同步出错,请联系管理员!");
-        }
-        return aj;
+		try {
+			String itemClassMsg = sync(apiUrlService, "1", icitemClassService);
+			aj.setMsg(itemClassMsg);
+			String itemMsg = sync(apiUrlService, "2", icitemService);
+			aj.setMsg(itemMsg);
+		} catch (Exception e) {
+			aj.setSuccess(false);
+			aj.setMsg(e.getMessage());
+			return aj;
+		}
+		return aj;
+	}
+
+	public String sync(ApiUrlService apiUrlService, String syncType, BaseService Service) throws Exception {
+		String Message = "";
+		ApiUrl apiUrl = apiUrlService.getByUsefulness(syncType);
+		if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+			throw new Exception("同步出错,请检查接口配置是否准确!");
+		}
+		try {
+			Method method = Service.getClass().getMethod("findMaxModifyTime");
+			Object maxModifyTime = method.invoke(Service);
+			if (maxModifyTime == null) {
+				maxModifyTime = "";
+			}
+			JSONArray jsonarr =
+					Common.executeInter(apiUrl.getUrl() + "&modifyTime=" + maxModifyTime, apiUrl.getProtocol());
+			for (int i = 0; i < jsonarr.size(); i++) {
+				JSONObject jsonObject = jsonarr.getJSONObject(i);
+				if (syncType == "1") {
+					/* 保存物料分类 */
+					saveIcitemClass(jsonObject, (IcitemClassService) Service);
+				} else if (syncType == "2") {
+					/* 保存物料 */
+					saveIcitem(jsonObject, (IcitemService) Service);
+				}
+			}
+			Message = "同步成功!";
+		} catch (Exception e) {
+			e.printStackTrace();
+			String msg = "";
+			if (syncType == "1") {
+				msg = "商品分类：";
+			} else if (syncType =="2") {
+				msg = "商品：";
+			}
+			throw new Exception(msg + "同步出错,请联系管理员!");
+		}
+		return Message;
+	}
+
+	/**
+	 * 保存物料分类
+	 * @param jsonObject
+	 * @param icitemClassService
+	 */
+	public void saveIcitemClass(JSONObject jsonObject, IcitemClassService icitemClassService) {
+		IcitemClass icitemClass = new IcitemClass();
+		IcitemClass parent = new IcitemClass();
+		parent.setId(jsonObject.getString("f_parentid"));
+		parent.setName(jsonObject.getString("f_name"));
+		icitemClass.setParent(parent);
+		icitemClass.setErpId(jsonObject.getString("f_itemid"));
+		icitemClass.setId(jsonObject.getString("f_itemid"));
+		icitemClass.setNumber(jsonObject.getString("f_number"));
+		icitemClass.setName(jsonObject.getString("f_name"));
+		icitemClass.setModifyTime(jsonObject.getString("f_modifytime"));
+		icitemClassService.save(icitemClass,true);
+	}
+
+	/**
+	 * 保存物料
+	 * @param jsonObject
+	 * @param icitemService
+	 */
+	public void saveIcitem(JSONObject jsonObject, IcitemService icitemService) {
+		Icitem icitem = new Icitem();
+		icitem.setId(jsonObject.getString("id"));
+		icitem.setName(jsonObject.getString("f_name"));
+		icitem.setErpId(jsonObject.getString("id"));
+		icitem.setNumber(jsonObject.getString("f_number"));
+		icitem.setUnit(jsonObject.getString("f_unitname"));
+		icitem.setModel(jsonObject.getString("f_model"));
+		icitem.setModifyTime(jsonObject.getString("f_modifytime"));
+		IcitemClass icitemClass = new IcitemClass();
+		icitemClass.setId(jsonObject.getString("f_classid"));
+		icitem.setClassId(icitemClass);
+		icitem.setIsNewRecord(true);
+		icitemService.save(icitem);
 	}
 	
 	/**

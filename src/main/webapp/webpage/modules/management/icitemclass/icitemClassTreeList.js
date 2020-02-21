@@ -100,12 +100,12 @@
 
         // 同步分类
         function synIcitemClass() {
-            jp.confirm("您确定要同步商品分类吗?",function () {
-                var index = jp.loading("正在同步,请稍后...");
-                jp.get("${ctx}/management/icitemclass/icitemClass/synIcitemClass", function (res) {
-                    jp.close(index);
+            jp.confirm("您确定要同步商品分类和商品吗?",function () {
+                jp.loading("正在同步,请稍后...");
+                jp.get("${ctx}/management/icitemclass/icitemClass/synIcitem_Class", function (res) {
                     if (res.success) {
                         refreshTree();
+						$('#icitemTable').bootstrapTable('refresh');
                         jp.success(res.msg);
                     } else {
                         jp.error(res.msg);

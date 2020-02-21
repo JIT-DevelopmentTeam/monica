@@ -46,6 +46,14 @@ public class IcitemService extends CrudService<IcitemMapper, Icitem> {
 	public Icitem findByNumber(String DEL_FLAG_NORMAL, String number) {
 		return icitemMapper.findByNumber(DEL_FLAG_NORMAL, number);
 	}
+
+	/**
+	 * 查询列表中最大的modifytime
+	 * @return
+	 */
+	public String findMaxModifyTime() {
+		return icitemMapper.findMaxModifyTime();
+	}
 	
 	@Transactional(readOnly = false)
 	public void save(Icitem icitem) {

@@ -3,21 +3,17 @@
  */
 package com.jeeplus.modules.management.icitemclass.web;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
-import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
-import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
-import com.jeeplus.modules.monitor.utils.Common;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import org.apache.ibatis.annotations.Param;
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
+import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +21,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.management.icitemclass.entity.Icitem;
-import com.jeeplus.modules.management.icitemclass.service.IcitemService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品资料Controller
@@ -69,45 +58,6 @@ public class IcitemController extends BaseController {
 		return entity;
 	}
 
-	/**
-	 * 同步物料分类
-	 */
-	@ResponseBody
-	@RequestMapping(value = "synIcitem")
-	public AjaxJson synIcitem(){
-        AjaxJson aj = new AjaxJson();
-        ApiUrl apiUrl = apiUrlService.getByUsefulness("2");
-        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
-            aj.setSuccess(false);
-            aj.setMsg("同步出错,请检查接口配置是否准确!");
-            return aj;
-        }
-        try {
-            JSONArray jsonarr =
-                    Common.executeInter(apiUrl.getUrl(),apiUrl.getProtocol());
-            icitemService.deleteAllData();
-            for (int i = 0; i < jsonarr.size(); i++) {
-                JSONObject jsonObject = jsonarr.getJSONObject(i);
-                Icitem icitem = new Icitem();
-                icitem.setName(jsonObject.getString("f_name"));
-                icitem.setErpId(jsonObject.getString("id"));
-                icitem.setNumber(jsonObject.getString("f_number"));
-                icitem.setUnit(jsonObject.getString("f_unitname"));
-                icitem.setModel(jsonObject.getString("f_model"));
-                IcitemClass icitemClass = new IcitemClass();
-                icitemClass.setId(jsonObject.getString("f_classid"));
-                icitem.setClassId(icitemClass);
-                icitem.setIsNewRecord(true);
-                icitemService.save(icitem);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            aj.setSuccess(false);
-            aj.setMsg("同步出错,请联系管理员!");
-        }
-		return aj;
-	}
-	
 	/**
 	 * 商品资料列表页面
 	 */
