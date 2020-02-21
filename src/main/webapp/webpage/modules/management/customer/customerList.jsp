@@ -21,8 +21,8 @@
             <div id="search-collapse" class="collapse">
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="customer" class="form form-horizontal well clearfix">
-                        <div class="col-xs-12 col-sm-6 col-md-1">
-                            <label class="label-item single-overflow pull-left" title="客户信息：">客户信息：</label>
+                        <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                            <label class="label-item single-overflow pull-right" title="客户信息：">客户信息：</label>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-2">
                             <form:input path="info" htmlEscape="false" maxlength="100" class=" form-control" placeholder="编码或名称"/>
