@@ -16,22 +16,24 @@
 </head>
 <body>
 
-<div class="header">
+<%--<div class="header">
     <div>
         <img src="${ctxStatic}/common/images/flat.png" class="icon">
         <span>手机新闻</span>
     </div>
-</div>
+</div>--%>
 
-<div class="interval"></div>
+<%--<div class="interval"></div>--%>
 
 <div class="body">
     <div class="headlines">
         <div class="label">
             <span>头条</span>
-
+            <a href="javascript:void(0)" @click="more('headlines')" class="mo-lk">
+                更多
+            </a>
         </div>
-        <div v-for="(item, index) in headlinesItems" v-if="index < 5">
+        <div v-for="(item, index) in headlinesItems" v-if="index < 3">
             <div class="lists">
                 <div class="list">
                     <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
@@ -49,11 +51,6 @@
                     </a>
                 </div>
             </div>
-        </div>
-        <div class="more">
-            <a href="javascript:void(0)" @click="more('headlines')" class="mo-lk">
-                进入头条 〉
-            </a>
         </div>
     </div>
 
@@ -63,7 +60,7 @@
         <div class="label">
             <span>新闻</span>
         </div>
-        <div v-for="(item, index) in ordinaryItems" v-if="index < 5">
+        <div v-for="(item, index) in ordinaryItems">
             <div class="lists">
                 <div class="list">
                     <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
@@ -82,17 +79,12 @@
                 </div>
             </div>
         </div>
-        <div class="more">
-            <a href="javascript:void(0)" @click="more('ordinary')" class="mo-lk">
-                进入新闻 〉
-            </a>
-        </div>
     </div>
 </div>
 
-<div class="footer">
+<%--<div class="footer">
     <span>©2019 JIT</span>
-</div>
+</div>--%>
 <%--<div class="page">
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">

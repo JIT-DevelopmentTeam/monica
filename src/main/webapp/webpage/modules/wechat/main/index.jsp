@@ -16,7 +16,7 @@
     <title>莫尔卡·移动应用平台</title>
 </head>
 <body>
-<%
+<%--<%
     Map<String,Object> wxuser = new HashMap<>();
     //请求身份认证信息,如果为空或失效,则启用公共回调页面
     String code = request.getParameter("code");
@@ -34,7 +34,7 @@
         wxuser = JwUserAPI.getWxuserInfo(code);
     }
 %>
-<input type="hidden" id="qyUserId" value="<%= wxuser.get("UserId") != null ? wxuser.get("UserId").toString() : null %>"/>
+<input type="hidden" id="qyUserId" value="<%= wxuser.get("UserId") != null ? wxuser.get("UserId").toString() : null %>"/>--%>
 <div class="page">
     <div class="weui-grids">
         <a v-bind:href="newsHref" class="weui-grid">

@@ -15,14 +15,15 @@
 
     <style>
         .header {
-            background: #fff;
+            background: #F5F5F5;
             text-align: center;
             border-bottom: 1px solid #edf5fa;
         }
         .header span {
-            color: #1a1a1a;
+            color: #277de2;
             margin-left: 0;
             font-style: normal;
+            font-weight: bold;
             font-size: larger;
         }
     </style>
@@ -31,10 +32,7 @@
 
 <div id="all">
     <div class="header">
-        <div>
-            <img src="${ctxStatic}/common/images/flat.png" @click="back()" class="icon">
-            <span>{{ head }}</span>
-        </div>
+        <span>{{ head }}</span>
     </div>
 
     <%--<div class="interval"></div>--%>
@@ -70,9 +68,9 @@
         <%--<i class="weui-loading"></i>--%>
         <%--<span class="weui-loadmore__tips">正在加载</span>--%>
     <%--</div>--%>
-    <div class="footer">
+    <%--<div class="footer">
         <span>©2019 JIT</span>
-    </div>
+    </div>--%>
 </div>
 
 <script type="text/javascript">
