@@ -21,12 +21,14 @@
             <div id="search-collapse" class="collapse">
                 <div class="accordion-inner">
                     <form:form id="searchForm" modelAttribute="news" class="form form-horizontal well clearfix">
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <label class="label-item single-overflow pull-left" title="编号：">标题：</label>
+                        <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                            <label class="label-item single-overflow pull-right" title="编号：">标题：</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2">
                             <form:input path="title" htmlEscape="false" maxlength="64"  class=" form-control"/>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div style="margin-top:26px">
+                            <div style="">
                                 <a id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i
                                         class="fa fa-search"></i> 查询</a>
                                 <a id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i

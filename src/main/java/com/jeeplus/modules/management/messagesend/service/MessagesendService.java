@@ -82,8 +82,8 @@ public class MessagesendService extends CrudService<MessagesendMapper, Messagese
 		String date = DateUtils.get_yyy_MM_dd();  // 推送时间
 		String description=
 				"<div class=\"gray\">"+date+"</div>" +
-				"<div class=\"normal\">有一条"+titleCard+"等待你审核申请</div>" +
-				"<div class=\"highlight\">发送人:"+fromUserName+"</div>";
+						"<div class=\"normal\">有一条"+titleCard+"等待你审核申请</div>" +
+						"<div class=\"highlight\">发送人:"+fromUserName+"</div>";
 		String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
 		textCard.setTouser(toUser);     // 接收人
 		textCard.setMsgtype("textcard");  // 消息类型
@@ -98,10 +98,5 @@ public class MessagesendService extends CrudService<MessagesendMapper, Messagese
 		JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
 		System.out.println(jsonObject);
 		return;
-	}
-
-	@Test
-	public void test(){
-
 	}
 }

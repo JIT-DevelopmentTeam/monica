@@ -29,6 +29,7 @@
     <div class="headlines">
         <div class="label">
             <span>头条</span>
+
         </div>
         <div v-for="(item, index) in headlinesItems" v-if="index < 5">
             <div class="lists">
