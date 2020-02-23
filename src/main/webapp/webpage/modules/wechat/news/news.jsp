@@ -28,10 +28,16 @@
 <div class="body">
     <div class="headlines">
         <div class="label">
-            <span>头条</span>
-
+            <div>
+                <span>头条</span>
+                <label class="label-more">
+                    <a href="javascript:void(0)" @click="more('headlines')" class="mo-lk">
+                        更多
+                    </a>
+                </label>
+            </div>
         </div>
-        <div v-for="(item, index) in headlinesItems" v-if="index < 5">
+        <div v-for="(item, index) in headlinesItems" v-if="index < 3">
             <div class="lists">
                 <div class="list">
                     <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
@@ -50,20 +56,27 @@
                 </div>
             </div>
         </div>
-        <div class="more">
+        <%--<div class="more">
             <a href="javascript:void(0)" @click="more('headlines')" class="mo-lk">
                 进入头条 〉
             </a>
-        </div>
+        </div>--%>
     </div>
 
     <div class="interval"></div>
 
     <div class="ordinary">
         <div class="label">
-            <span>新闻</span>
+            <div>
+                <span>新闻</span>
+                <label class="label-more">
+                    <a href="javascript:void(0)" @click="more('ordinary')" class="mo-lk">
+                        更多
+                    </a>
+                </label>
+            </div>
         </div>
-        <div v-for="(item, index) in ordinaryItems" v-if="index < 5">
+        <div v-for="(item, index) in ordinaryItems" v-if="index < 3">
             <div class="lists">
                 <div class="list">
                     <a href="javascript:void(0)" @click="detail(item.id)" class="a-lk">
@@ -82,17 +95,17 @@
                 </div>
             </div>
         </div>
-        <div class="more">
+        <%--<div class="more">
             <a href="javascript:void(0)" @click="more('ordinary')" class="mo-lk">
                 进入新闻 〉
             </a>
-        </div>
+        </div>--%>
     </div>
 </div>
 
-<div class="footer">
+<%--<div class="footer">
     <span>©2019 JIT</span>
-</div>
+</div>--%>
 <%--<div class="page">
     <div class="page__bd">
         <div class="weui-panel weui-panel_access">

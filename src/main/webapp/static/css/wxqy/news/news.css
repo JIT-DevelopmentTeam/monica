@@ -36,6 +36,13 @@ body {
     font-weight: bold;
     font-size: larger;
 }
+.label-more a{
+    line-height: 45px;
+    color: #277de2;
+    margin-left: 70%;
+    font-weight: initial;
+    font-size: initial;
+}
 hr {
     border: 0;
     height: 1px;
@@ -118,12 +125,12 @@ strong {
     color: #277de2;
 }
 .mo-lk {
-    display: block;
+    /*display: block;
     padding: .58rem 0 .52rem;
     text-align: center;
     line-height: 1.4;
     font-size: 1.17rem;
-    color: #277de2;
+    color: #277de2;*/
 }
 .header img {
     width: 30px;
