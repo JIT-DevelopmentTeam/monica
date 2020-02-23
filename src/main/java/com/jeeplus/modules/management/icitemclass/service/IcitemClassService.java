@@ -3,16 +3,15 @@
  */
 package com.jeeplus.modules.management.icitemclass.service;
 
-import java.util.List;
-
-import com.jeeplus.modules.management.icitemclass.entity.Icitem;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.service.TreeService;
+import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
+import com.jeeplus.modules.management.icitemclass.mapper.IcitemClassMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeeplus.core.service.TreeService;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.modules.management.icitemclass.entity.IcitemClass;
-import com.jeeplus.modules.management.icitemclass.mapper.IcitemClassMapper;
+import java.util.List;
 
 /**
  * 商品分类管理Service
@@ -23,6 +22,9 @@ import com.jeeplus.modules.management.icitemclass.mapper.IcitemClassMapper;
 @Transactional(readOnly = true)
 public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemClass> {
 
+	@Autowired
+	private IcitemClassMapper icitemClassMapper;
+
 	public IcitemClass get(String id) {
 		return super.get(id);
 	}
@@ -32,6 +34,14 @@ public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemCla
 			icitemClass.setParentIds(","+icitemClass.getParentIds()+",");
 		}
 		return super.findList(icitemClass);
+	}
+
+	/**
+	 * 查询列表中最大的modifytime
+	 * @return
+	 */
+	public String findMaxModifyTime() {
+		return icitemClassMapper.findMaxModifyTime();
 	}
 	
 	@Transactional(readOnly = false)

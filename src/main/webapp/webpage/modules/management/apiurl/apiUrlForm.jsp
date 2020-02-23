@@ -49,6 +49,9 @@
                             <form:option value="2" label="物料信息同步"/>
                             <form:option value="3" label="客户资料同步"/>
                             <form:option value="4" label="订单信息同步"/>
+                            <form:option value="5" label="库存列表查询"/>
+                            <form:option value="6" label="库存列表总量查询"/>
+                            <form:option value="7" label="库存详情查询"/>
                         </form:select>
                     </td>
 				</tr>

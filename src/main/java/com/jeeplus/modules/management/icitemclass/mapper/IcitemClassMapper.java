@@ -20,5 +20,11 @@ public interface IcitemClassMapper extends TreeMapper<IcitemClass> {
     List<IcitemClass> findListForWechat(IcitemClass icitemClass);
 
     void deleteAllData();
+
+    /**
+     * 查询列表中最大的modifytime
+     * @return
+     */
+    String findMaxModifyTime();
 	
 }

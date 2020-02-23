@@ -5,7 +5,7 @@
 	<sql id="icitemColumns">
 		a.id AS "id",
 		a.f_erpid AS "erpId",
-		a.f_classid AS "classId",
+		a.f_classid AS "classId.id",
 		a.f_number AS "number",
 		a.f_name AS "name",
 		a.f_model AS "model",
@@ -52,23 +52,8 @@
                 <if test="dbName == 'mysql'">CONCAT('%,', #{classId.id}, ',%'))</if>
                 <if test="dbName == 'mssql'">'%'+#{classId.id}+'%')</if>
             </if>
-			<if test="number != null and number != ''">
-				AND a.f_number LIKE 
-					<if test="dbName == 'oracle'">'%'||#{number}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{number}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{number},'%')</if>
-			</if>
-			<if test="name != null and name != ''">
-				AND a.f_name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
-			</if>
-			<if test="model != null and model != ''">
-				AND a.f_model LIKE 
-					<if test="dbName == 'oracle'">'%'||#{model}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{model}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{model},'%')</if>
+			<if test="info != null and info != ''">
+				AND a.f_number LIKE concat('%',#{info},'%') OR a.f_name LIKE concat('%',#{info},'%') OR a.f_model LIKE concat('%',#{info},'%')
 			</if>
             <if test="ids != null and ids != ''">
                 AND a.id IN (${ids})
@@ -117,6 +102,10 @@
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			AND a.f_number = #{number}
 		</where>
+	</select>
+
+	<select id="findMaxModifyTime" resultType="java.lang.String">
+		SELECT MAX(f_modifytime+0) FROM tb_icitem
 	</select>
 	
 	<insert id="insert">

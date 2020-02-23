@@ -51,32 +51,42 @@
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="stock" class="form form-horizontal well clearfix">
 				<input type="hidden" id="itemClassNumber" name="itemClassNumber">
-				<div class="col-xs-12 col-sm-6 col-md-2">
-					<label class="label-item single-overflow pull-left" title="产品信息：">产品信息：</label>
-					<input id="item" name="item" htmlEscape="false" maxlength="64"  class=" form-control" placeholder="请输入产品名称或者规格型号">
+				<div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+					<label class="label-item single-overflow pull-right" title="产品信息：">产品信息：</label>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-3">
-					<label class="label-item single-overflow pull-left" title="批号：">批号：</label>
+				<div class="col-xs-12 col-sm-6 col-md-2">
+					<input id="item" name="item" htmlEscape="false" maxlength="64"  class=" form-control" placeholder="名称或规格型号">
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+					<label class="label-item single-overflow pull-right" title="批号：">批号：</label>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-2">
 					<form:input path="batchNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
+				<div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+					<label class="label-item single-overflow pull-right" title="等级：">等级：</label>
+				</div>
 				<div class="col-xs-12 col-sm-6 col-md-1">
-					<label class="label-item single-overflow pull-left" title="等级：">等级：</label>
 					<form:input path="level" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
+				<div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+					<label class="label-item single-overflow pull-right" title="色号：">色号：</label>
+				</div>
 				<div class="col-xs-12 col-sm-6 col-md-1">
-					<label class="label-item single-overflow pull-left" title="色号：">色号：</label>
 					<form:input path="colorNumber" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-2">
-					<label class="label-item single-overflow pull-left" title="仓库：">仓库：</label>
+				<div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+					<label class="label-item single-overflow pull-right" title="仓库：">仓库：</label>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-1">
 					<form:input path="warehouse" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
 		 <div class="col-xs-12 col-sm-6 col-md-3">
-			<div style="margin-top:26px">
-			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
-			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
+			<div style="margin-top:15px">
+			  <a  id="search" class="btn btn-primary"><i class="fa fa-search"></i> 查询</a>
+			  <a  id="reset" class="btn btn-danger" ><i class="fa fa-refresh"></i> 重置</a>
 			 </div>
-	    </div>	
+	    </div>
 	</form:form>
 	</div>
 	</div>

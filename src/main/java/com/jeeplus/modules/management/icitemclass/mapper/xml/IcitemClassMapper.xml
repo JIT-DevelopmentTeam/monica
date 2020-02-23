@@ -135,6 +135,10 @@
 		</where>
 		ORDER BY a.sort ASC
 	</select>
+
+	<select id="findMaxModifyTime" resultType="java.lang.String">
+		SELECT MAX(f_modifytime+0) FROM tb_icitemclass
+	</select>
 	
 	<insert id="insert">
 		INSERT INTO tb_icitemclass(

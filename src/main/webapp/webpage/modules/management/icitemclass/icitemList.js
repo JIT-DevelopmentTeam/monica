@@ -106,10 +106,10 @@ $(document).ready(function () {
 
         }
             ,{
-                field: 'erpId',
-                title: 'erp端id',
+                field: 'number',
+                title: '编号',
                 sortable: true,
-                sortName: 'erpId'
+                sortName: 'number'
                 ,formatter:function(value, row , index){
                     value = jp.unescapeHTML(value);
                     <c:choose>
@@ -124,21 +124,6 @@ $(document).ready(function () {
                         </c:otherwise>
                     </c:choose>
                 }
-
-            }
-            ,{
-                field: '',
-                title: '分类id',
-                sortable: true,
-                width:'15',
-                sortName: ''
-
-            }
-            ,{
-                field: 'number',
-                title: '编号',
-                sortable: true,
-                sortName: 'number'
 
             }
             ,{
@@ -163,20 +148,6 @@ $(document).ready(function () {
 
             }
             ,{
-                field: 'erpclassId',
-                title: 'erp端分类id',
-                sortable: true,
-                sortName: 'erpclassId'
-
-            }
-            ,{
-                field: 'modifyTime',
-                title: '同步时间戳',
-                sortable: true,
-                sortName: 'modifyTime'
-
-            }
-            ,{
                 field: 'erpNote',
                 title: 'erp备注',
                 sortable: true,
@@ -192,7 +163,7 @@ $(document).ready(function () {
             }
             ,{
                 field: 'salePrice',
-                title: '销售价格',
+                title: '销售价格（元）',
                 sortable: true,
                 sortName: 'salePrice'
 
@@ -202,6 +173,11 @@ $(document).ready(function () {
                 title: '商品描述',
                 sortable: true,
                 sortName: 'describe'
+                ,formatter:function(value, row , index){
+                    if (value != undefined) {
+                        return jp.unescapeHTML(value);
+                    }
+                }
 
             }
             ,{
@@ -310,21 +286,6 @@ function picGroupDetail(id) {
     jp.openViewDialog('商品图片详情', "${ctx}/management/itemfile/itemFile/list?itemId=" + id, '1100px', '600px');
 }
 
-
-function synIcitem() {
-    jp.confirm("您确定要同步商品信息吗?",function () {
-        var index = jp.loading("正在同步,请稍后...");
-        jp.get("${ctx}/management/icitemclass/icitem/synIcitem", function (res) {
-            jp.close(index);
-            if (res.success) {
-                refresh();
-                jp.success(res.msg);
-            } else {
-                jp.error(res.msg);
-            }
-        });
-    });
-}
 
 function getIdSelections() {
     return $.map($("#icitemTable").bootstrapTable('getSelections'), function (row) {

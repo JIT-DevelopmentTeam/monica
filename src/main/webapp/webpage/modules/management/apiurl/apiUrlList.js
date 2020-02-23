@@ -125,6 +125,15 @@ $(document).ready(function() {
                        case "4":
                            text = "订单信息同步";
                            break;
+                       case "5":
+                           text = "库存列表查询";
+                           break;
+                       case "6":
+                           text = "库存列表总量查询";
+                           break;
+                       case "7":
+                           text = "库存详情查询";
+                           break;
                    }
                    return text != null && text != '' ? text : "-";
                }

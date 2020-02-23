@@ -41,7 +41,7 @@
 </head>
 <body class="bg-white">
 		<form:form id="inputForm" modelAttribute="icitem" class="form-horizontal">
-		<form:hidden path="id"/>	
+		<form:hidden path="id"/>
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
@@ -75,9 +75,9 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">销售价格：</label></td>
+					<td class="width-15 active"><label class="pull-right">销售价格（元）：</label></td>
 					<td class="width-35" >
-						<input type="number" id="salePrice" name="salePrice" htmlEscape="false"    class="form-control " onKeyPress="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(value))event.returnValue=false"/>
+						<input type="number" id="salePrice" name="salePrice" value="${icitem.salePrice}" htmlEscape="false"    class="form-control " onKeyPress="if((event.keyCode<48 || event.keyCode>57) && event.keyCode!=46 || /\.\d\d$/.test(value))event.returnValue=false"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">

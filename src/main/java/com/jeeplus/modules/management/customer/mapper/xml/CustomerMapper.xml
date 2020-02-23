@@ -80,7 +80,7 @@
 	</select>
 
 	<select id="findMaxModifyTime" resultType="java.lang.String">
-		SELECT MAX(f_modifytime) FROM tb_customer
+		SELECT MAX(f_modifytime+0) FROM tb_customer
 	</select>
 	
 	<insert id="insert">

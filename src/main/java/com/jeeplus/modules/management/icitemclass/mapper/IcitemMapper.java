@@ -26,4 +26,10 @@ public interface IcitemMapper extends BaseMapper<Icitem> {
 
     void deleteAllData();
 
+    /**
+     * 查询列表中最大的modifytime
+     * @return
+     */
+    String findMaxModifyTime();
+
 }

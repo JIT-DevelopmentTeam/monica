@@ -32,6 +32,7 @@ public class Icitem extends DataEntity<Icitem> {
 	private Integer endPage;	// 结束分页
     private String ids;         // ids
     private Integer isSelect;   // 是否为选择数据
+	private String info;	// 商品信息（用途：条件搜索）
 
 	public Icitem() {
 		super();
@@ -188,5 +189,13 @@ public class Icitem extends DataEntity<Icitem> {
 
 	public void setDescribe(String describe) {
 		this.describe = describe;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 }
