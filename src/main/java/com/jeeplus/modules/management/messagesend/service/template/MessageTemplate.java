@@ -9,6 +9,9 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCard;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCardEntity;
 
+/**
+ * @author 消息模板
+ */
 public abstract  class MessageTemplate {
 
     /**
