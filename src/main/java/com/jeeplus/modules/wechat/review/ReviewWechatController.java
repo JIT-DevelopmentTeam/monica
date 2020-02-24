@@ -202,7 +202,7 @@ public class ReviewWechatController extends BaseController {
                          * 提醒申请人
                          */
                         MessageTemplate msgRemindTemplate=msgRemind;
-                        msgRemindTemplate.send(getEmplId,title,userId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
+                        msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
                     }
                     allow = true;
                 }
