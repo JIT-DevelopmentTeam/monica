@@ -3,24 +3,8 @@
  */
 package com.jeeplus.modules.management.messagesend.service;
 
-import java.util.Date;
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
-import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
-import com.jeeplus.modules.sys.entity.User;
-import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCard;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCardEntity;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
