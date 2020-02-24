@@ -12,6 +12,8 @@ import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.management.messagesend.entity.Messagesend;
 import com.jeeplus.modules.management.messagesend.service.MessagesendService;
+import com.jeeplus.modules.management.messagesend.service.template.MessageTemplate;
+import com.jeeplus.modules.management.messagesend.service.template.impl.MsgRemind;
 import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
@@ -60,6 +62,12 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private UserMapper userMapper;
+
+    /**
+     * 消息提醒
+     */
+    @Autowired
+    private MsgRemind msgRemind;
 
     @RequestMapping(value = "list")
     public ModelAndView list(HttpServletRequest request) {
@@ -321,7 +329,8 @@ public class SobillWechatController extends BaseController {
                     // 跳转详情url
                     request_url += Global.getConfig("frontPath");
                     // 消息发送到企业微信
-                    messagesendService.messageEend(sobill.getEmplId(),title,toUser,request_url,sobill.getId(),"1");
+                    MessageTemplate msgRemindTemplate=msgRemind;
+                    msgRemindTemplate.send(sobill.getEmplId(),title,toUser,request_url,sobill.getId(),"1");
                     Date date=new Date();
                     messagesend =new Messagesend();
                     messagesend.setFromuserId(sobill.getEmplId());
