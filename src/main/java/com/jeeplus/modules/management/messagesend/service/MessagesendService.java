@@ -38,9 +38,6 @@ import com.jeeplus.modules.management.messagesend.mapper.MessagesendMapper;
 @Transactional(readOnly = true)
 public class MessagesendService extends CrudService<MessagesendMapper, Messagesend> {
 
-	@Autowired
-	private UserMapper userMapper;
-
 	public Messagesend get(String id) {
 		return super.get(id);
 	}
