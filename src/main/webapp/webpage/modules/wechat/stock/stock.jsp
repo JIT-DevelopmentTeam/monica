@@ -202,6 +202,10 @@
                 </div>
             </div>
         </div>
+        <div id="loadDiv" style="display: none;" class="weui-toast weui_loading_toast weui-toast--visible">
+            <div class="weui_loading"><i class="weui-loading weui-icon_toast"></i></div>
+            <p class="weui-toast_content">数据加载中</p>
+        </div>
     </div>
 <script>
     $(function() {
@@ -212,7 +216,7 @@
     $(document.body).infinite().on("infinite", function() {
         if(loading) return;
         loading = true;
-        if (vm.itemList.length === vm.total) {
+        if (vm.itemList.length === vm.total && $("#loadDiv").is(":hidden")) {
             vm.alled = true
         }
         if (!vm.alled) {
@@ -269,13 +273,15 @@
             }
         },
         created: function(){
-            $.showLoading();
+            // $.showLoading();
+            $("#loadDiv").show();
             this.$http.get('${ctxf}/wechat/stock/listData', {
                 params: {
                     pageNo: this.pageNo
                 }
             }).then(res => {
-                $.hideLoading();
+                // $.hideLoading();
+                $("#loadDiv").hide();
                 this.itemList = res.body.body.stockList;
                 this.total = res.body.body.total;
             })
