@@ -29,7 +29,7 @@ $(document).ready(function () {
         //是否显示分页（*）
         pagination: true,
         //固定高度，达到固定表头
-        height:$(window).height() * 0.8,
+        // height:$(window).height() * 0.8,
         //排序方式
         sortOrder: "asc",
         //初始化加载第一页，默认第一页
