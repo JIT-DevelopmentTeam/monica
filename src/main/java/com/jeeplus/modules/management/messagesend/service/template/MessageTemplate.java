@@ -10,7 +10,8 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCard;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCardEntity;
 
 /**
- * @author 消息模板
+ * @title 消息模板
+ * @author
  */
 public abstract  class MessageTemplate {
 
