@@ -7,6 +7,10 @@ import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.messagesend.entity.Messagesend;
 import com.jeeplus.modules.management.messagesend.service.MessagesendService;
+import com.jeeplus.modules.management.messagesend.service.template.MessageTemplate;
+import com.jeeplus.modules.management.messagesend.service.template.impl.MsgPass;
+import com.jeeplus.modules.management.messagesend.service.template.impl.MsgReject;
+import com.jeeplus.modules.management.messagesend.service.template.impl.MsgRemind;
 import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
@@ -51,6 +55,24 @@ public class ReviewWechatController extends BaseController {
 
     @Autowired
     private UserMapper userMapper;
+
+    /**
+     * 消息提醒
+     */
+    @Autowired
+    private MsgRemind msgRemind;
+
+    /**
+     * 消息驳回
+     */
+    @Autowired
+    private MsgReject msgReject;
+
+    /**
+     * 消息通过
+     */
+    @Autowired
+    private MsgPass msgPass;
 
     @RequestMapping(value = {"list",""})
     public ModelAndView list(HttpServletRequest request) {
@@ -149,7 +171,8 @@ public class ReviewWechatController extends BaseController {
                         sobill.setCheckStatus(3);
                         sobillService.save(sobill);
                         // 消息发送到企业微信
-                        messageEend(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
+                        MessageTemplate msgRejectTemplate = msgReject;
+                        msgRejectTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
                     }
                     // 走审核下一个节点
                     if (currentApprove.getIsLast() != 1 && status != 2) {
@@ -159,12 +182,14 @@ public class ReviewWechatController extends BaseController {
                         /**
                          * 提醒申请人
                          */
-                        sendMessageTips(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
+                        MessageTemplate msgRemindTemplate=msgRemind;
+                        msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
                         /**
                          * 发送下一个节点申请人
                          */
                         String nextToUserId=nextApprove.getApprovalEmplId().getQyUserId();// 下一个节点接收人
-                        messagesendService.messageEend(getEmplId,title,nextToUserId,request_url,sobill.getId(),"1");// 消息发送到企业微信
+                        MessageTemplate msgPassTemplate = msgPass;
+                        msgPassTemplate.send(getEmplId,title,nextToUserId,request_url,sobill.getId(),"1");// 消息发送到企业微信(下一个节点审批)
 
                     }
                     // 审核已走到最后节点
@@ -176,19 +201,9 @@ public class ReviewWechatController extends BaseController {
                         /**
                          * 提醒申请人
                          */
-                        sendMessageTips(getEmplId,title,userId,request_url,sobill.getId(),"2");// 消息发送到企业微信
+                        MessageTemplate msgRemindTemplate=msgRemind;
+                        msgRemindTemplate.send(getEmplId,title,userId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
                     }
-                    /*Date date=new Date();
-                    messagesend =new Messagesend();
-                    messagesend.setFromuserId(sobill.getEmplId());
-                    messagesend.setTouserId(orderApprove.getApprovalEmplId().getId());
-                    messagesend.setSendTime(date);
-                    messagesend.setIsRead("0");
-                    messagesend.setTitle(title);
-                    messagesend.setIsSend("1");
-                    messagesend.setIsSendToWX("1");
-                    messagesend.setSendTimeWX(date);
-                    messagesendService.save(messagesend); // 保存发送消息系统表*/
                     allow = true;
                 }
             }
@@ -203,82 +218,19 @@ public class ReviewWechatController extends BaseController {
         return aj;
     }
 
-    /**
-     * 消息驳回
-     * @param fromUser
-     * @param titleCard
-     * @param toUser
-     * @param path
-     * @param orderId
-     * @param isApproval
-     */
-    public void messageEend(String fromUser,String titleCard,String toUser,String path,String orderId,String isApproval){
-        AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
-        TextCard textCard = new TextCard();
-        User user=new User(fromUser);
-        User user1 = userMapper.get(user);
-        String fromUserName=user1.getName();
-        String title="审核信息推送" ;
-        String date = DateUtils.get_yyy_MM_dd();  // 推送时间
-        String description=
-                "<div class=\"gray\">"+date+"</div>" +
-                        "<div class=\"normal\">"+fromUserName+"驳回了你的"+titleCard+"申请</div>" +
-                        "<div class=\"highlight\">驳回人:"+fromUserName+"</div>";
-        String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
-        textCard.setTouser(toUser);     // 接收人
-        textCard.setMsgtype("textcard");  // 消息类型
-        textCard.setAgentid(JwParamesAPI.monicaAgentid);   // 企业微信的应用agentId
-        TextCardEntity textCardEntity=new TextCardEntity(); //消息文本对象
-        textCardEntity.setTitle(title);
-        textCardEntity.setDescription(description);
-        textCardEntity.setUrl(url);
-        textCardEntity.setBtntxt("详情");
-        textCard.setTextcard(textCardEntity);
-        textCard.setEnable_id_trans("0");
-        JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
-        return;
-    }
-
-    /**
-     * 消息提醒
-     * @param fromUser
-     * @param titleCard
-     * @param toUser
-     * @param path
-     * @param orderId
-     * @param isApproval
-     */
-    public void sendMessageTips(String fromUser,String titleCard,String toUser,String path,String orderId,String isApproval){
-        AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
-        TextCard textCard = new TextCard();
-        User user=new User(fromUser);
-        User user1 = userMapper.get(user);
-        String fromUserName=user1.getName();
-        String title="审核信息推送" ;
-        String date = DateUtils.get_yyy_MM_dd();  // 推送时间
-        String description=
-                "<div class=\"gray\">"+date+"</div>" +
-                        "<div class=\"normal\">你的"+titleCard+"申请已通过同意，请知晓</div>" +
-                        "<div class=\"highlight\">发送人："+fromUserName+"</div>";
-        String url= path+"/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
-        textCard.setTouser(toUser);     // 接收人
-        textCard.setMsgtype("textcard");  // 消息类型
-        textCard.setAgentid(JwParamesAPI.monicaAgentid);   // 企业微信的应用agentId
-        TextCardEntity textCardEntity=new TextCardEntity(); //消息文本对象
-        textCardEntity.setTitle(title);
-        textCardEntity.setDescription(description);
-        textCardEntity.setUrl(url);
-        textCardEntity.setBtntxt("详情");
-        textCard.setTextcard(textCardEntity);
-        textCard.setEnable_id_trans("0");
-        JSONObject jsonObject = JwMessageAPI.SendTextcardMessage(textCard, accessToken.getAccesstoken());
-        return;
-    }
-
     @RequestMapping(value = "send")
     @ResponseBody
     public void test(){
-        sendMessageTips("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+        MessageTemplate msgRemindTemplate=msgRemind;
+        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
+
+        MessageTemplate msgPassTemplate = msgPass;
+        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
+
+        MessageTemplate msgRejectTemplate = msgReject;
+        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
     }
 }
