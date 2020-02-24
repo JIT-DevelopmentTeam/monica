@@ -140,14 +140,14 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class='demos-content-padded'>
-            <div class="weui-loadmore" v-show="loading">
-                <i class="weui-loading"></i>
-                <span class="weui-loadmore__tips">正在加载</span>
-            </div>
-            <div class="weui-loadmore weui-loadmore_line" v-show="alled">
-                <span class="weui-loadmore__tips">暂无数据</span>
+            <div class='demos-content-padded'>
+                <div class="weui-loadmore" v-show="loading">
+                    <i class="weui-loading"></i>
+                    <span class="weui-loadmore__tips">正在加载</span>
+                </div>
+                <div class="weui-loadmore weui-loadmore_line" v-show="alled">
+                    <span class="weui-loadmore__tips">暂无数据</span>
+                </div>
             </div>
         </div>
 
@@ -210,31 +210,35 @@
 
     var loading = false;
     $(document.body).infinite().on("infinite", function() {
+        if(loading) return;
+        loading = true;
         if (vm.itemList.length === vm.total) {
             vm.alled = true
         }
         if (!vm.alled) {
-            if(loading) return;
-            loading = true;
+            vm.pageNo += 1;
             vm.loading = true;
             setTimeout(function() {
-                vm.pageNo += 1;
-                var result = [];
-                vm.$http.get('${ctxf}/wechat/stock/listData', {
-                    params: {
-                        pageNo: vm.pageNo
-                    }
-                }).then(res => {
-                    result = res.body.body.stockList;
-                    for (let i = 0; i < result.length; i++) {
-                        vm.itemList.push(result[i]);
-                    }
-                });
+                loadList();
                 loading = false;
-                vm.loading = false;
             }, 2000);
         }
     });
+    
+    function loadList() {
+        var result = [];
+        vm.$http.get('${ctxf}/wechat/stock/listData', {
+            params: {
+                pageNo: vm.pageNo
+            }
+        }).then(res => {
+            vm.loading = false;
+            result = res.body.body.stockList;
+            for (let i = 0; i < result.length; i++) {
+                vm.itemList.push(result[i]);
+            }
+        });
+    }
 </script>
 <script >
     var vm = new Vue({

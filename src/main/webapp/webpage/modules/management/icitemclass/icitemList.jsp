@@ -45,7 +45,7 @@
                             </div>
                         </c:if>
 					</div>
-					<div id="icitemClassjsTree" style="border:0px;overflow-y: auto;height: 450px;"></div>
+					<div id="icitemClassjsTree" style="overflow-x:auto; border:0px; overflow-y: auto; height: 600px;"></div>
 				</div>
 				<div  class="col-sm-8 col-md-10">
 	
