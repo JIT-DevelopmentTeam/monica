@@ -222,15 +222,15 @@ public class ReviewWechatController extends BaseController {
     @ResponseBody
     public void test(){
         MessageTemplate msgRemindTemplate=msgRemind;
-        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
 
         MessageTemplate msgPassTemplate = msgPass;
-        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
 
         MessageTemplate msgRejectTemplate = msgReject;
-        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiShenWen","http://120.77.40.245:8080/monica/f/"
+        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
     }
 }
