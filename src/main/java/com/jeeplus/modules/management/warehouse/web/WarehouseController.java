@@ -81,8 +81,8 @@ public class WarehouseController extends BaseController {
 			} else if (status == "false") {
 				warehouse.setStatus(0);
 			}
-
-			warehouseService.save(warehouse, true);
+			warehouse.setIsNewRecord(true);
+			warehouseService.save(warehouse);
 		}
 		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);

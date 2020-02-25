@@ -3,16 +3,15 @@
  */
 package com.jeeplus.core.service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.core.persistence.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service基类
@@ -92,26 +91,6 @@ public abstract class CrudService<M extends BaseMapper<T>, T extends DataEntity<
 		}else{
 			entity.preUpdate();
 			 mapper.update(entity);
-		}
-	}
-
-	/**
-	 * 保存数据（插入或更新）
-	 * @param entity
-	 */
-	@Transactional(readOnly = false)
-	public void save(T entity,Boolean isId) {
-		if(isId){
-			entity.preInsert();
-			mapper.insert(entity);
-		}else {
-			if (entity.getIsNewRecord()){
-				entity.preInsert();
-				mapper.insert(entity);
-			}else{
-				entity.preUpdate();
-				mapper.update(entity);
-			}
 		}
 	}
 
