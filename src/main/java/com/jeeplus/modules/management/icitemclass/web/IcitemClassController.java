@@ -149,7 +149,8 @@ public class IcitemClassController extends BaseController {
 		icitemClass.setNumber(jsonObject.getString("f_number"));
 		icitemClass.setName(jsonObject.getString("f_name"));
 		icitemClass.setModifyTime(jsonObject.getString("f_modifytime"));
-		icitemClassService.save(icitemClass,true);
+		icitemClass.setIsNewRecord(true);
+		icitemClassService.save(icitemClass);
 	}
 
 	/**
