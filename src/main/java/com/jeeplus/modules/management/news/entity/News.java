@@ -35,6 +35,7 @@ public class News extends DataEntity<News> {
 	private Date push;		// 推送时间
 	private String pushrule;		// 推送规则
 	private Integer readCount;		// 阅读次数
+	private String sendType;        // 推送端类型，0：企业微信，1：微信服务号
 	private User user;
 	private Office office;
 	private String objId;
@@ -186,6 +187,14 @@ public class News extends DataEntity<News> {
 
 	public void setReadCount(Integer readCount) {
 		this.readCount = readCount;
+	}
+
+	public String getSendType() {
+		return sendType;
+	}
+
+	public void setSendType(String sendType) {
+		this.sendType = sendType;
 	}
 
 	public User getUser() {

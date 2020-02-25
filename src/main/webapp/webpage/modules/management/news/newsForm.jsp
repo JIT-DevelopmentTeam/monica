@@ -84,6 +84,10 @@
                     $("#pushrule").attr("disabled", "true");
                     $("#objId").attr("disabled", "true");
                     $("[name='push']").val("");
+                    var $sendType = $("[name='sendType']");
+                    $sendType.attr("disabled","true");
+                    var $sendType_div =$("#sendType-div div");
+                    $sendType_div.attr("class","iradio_square-blue disabled");
                 } else if (this.value == "1") {
                     // 推送时间
                     var push = $("[name='push']");
@@ -98,6 +102,11 @@
                     objId.removeAttr("disabled");
                     objId.attr("class","selectpicker required show-tick  form-control  required");
 
+                    var $sendType = $("[name='sendType']");
+                    $sendType.removeAttr("disabled");
+
+                    var $sendType_div =$("#sendType-div div");
+                    $sendType_div.attr("class","iradio_square-blue ");
                 }
             });
 		});
@@ -224,7 +233,7 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否设置为头条：</label></td>
 					<td class="width-35">
 						<form:radiobutton path="headline" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" checked="${checked}"/>否
-						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
+						<form:radiobutton path="headline" itemLabel="label" value="1" htmlEscape="false" class="i-checks required" />是
                         <label class="error" for="headline" id="headline"></label>
 					</td>
 				</tr>
@@ -262,6 +271,14 @@
 						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPush" id="isPush"></label>
 					</td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>推送类型：</label></td>
+					<td class="width-35" id="sendType-div">
+						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" disabled="true"/>服务号
+						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required" disabled="true"/>企业微信
+						<label class="error" for="sendType" id="sendType"></label>
+					</td>
+				</tr>
+				<tr>
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
 						<div class='input-group form_datetime' id='push'>
@@ -271,8 +288,7 @@
 							</span>
 						</div>
 					</td>
-				</tr>
-				<tr>
+
 					<td class="width-15 active"><label class="pull-right">推送规则：</label></td>
 					<td class="width-35">
                         <form:select path="pushrule" htmlEscape="false" class="form-control " onchange="newsPushRule(this.value)">
@@ -281,6 +297,8 @@
                             <form:option value="1">人员推送</form:option>
                             <form:option value="2">部门推送</form:option>
                         </form:select>
+				</tr>
+				<tr>
                     <td  class="width-15 active"><label class="pull-right">推送对象：</label></td>
                     <td class="width-35">
 						<div>
@@ -290,12 +308,11 @@
 						</div>
 
                     </td>
-                </tr>
-                <tr>
+
                     </td>
                     <td class="width-15 active"><label class="pull-right">阅读次数：</label></td>
                     <td class="width-35">
-                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="0" step="1"  class="form-control "/>
+                        <form:input path="readCount" readonly="true" htmlEscape="false" type="number" min="0" step="1"  class="form-control " />
                     </td>
                 </tr>
 				<tr>
