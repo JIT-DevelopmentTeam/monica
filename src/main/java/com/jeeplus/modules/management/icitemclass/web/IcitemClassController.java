@@ -95,24 +95,30 @@ public class IcitemClassController extends BaseController {
 			}
 			JSONArray jsonarr =
 					Common.executeInter(apiUrl.getUrl() + "&modifyTime=" + maxModifyTime, apiUrl.getProtocol());
+			Method saveMethod = null;
+			switch (syncType){
+				case "1" :/* 保存物料分类 */
+					saveMethod = this.getClass().getMethod("saveIcitemClass", JSONObject.class, IcitemClassService.class);
+					break;
+				case "2" :/* 保存物料 */
+					saveMethod = this.getClass().getMethod("saveIcitem", JSONObject.class, IcitemService.class);
+					break;
+			}
 			for (int i = 0; i < jsonarr.size(); i++) {
 				JSONObject jsonObject = jsonarr.getJSONObject(i);
-				if (syncType == "1") {
-					/* 保存物料分类 */
-					saveIcitemClass(jsonObject, (IcitemClassService) Service);
-				} else if (syncType == "2") {
-					/* 保存物料 */
-					saveIcitem(jsonObject, (IcitemService) Service);
-				}
+				saveMethod.invoke(this, jsonObject, Service);
 			}
 			Message = "同步成功!";
 		} catch (Exception e) {
 			e.printStackTrace();
 			String msg = "";
-			if (syncType == "1") {
-				msg = "商品分类：";
-			} else if (syncType =="2") {
-				msg = "商品：";
+			switch (syncType) {
+				case "1":
+					msg = "商品分类：";
+					break;
+				case "2":
+					msg = "商品：";
+					break;
 			}
 			throw new Exception(msg + "同步出错,请联系管理员!");
 		}
