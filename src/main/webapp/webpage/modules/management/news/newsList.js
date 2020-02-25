@@ -267,7 +267,7 @@ $(document).ready(function() {
             $('#view,#edit').prop('disabled', $('#newsTable').bootstrapTable('getSelections').length!=1);
             $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
                 if(row.isPush == 1){
-                    $('#edit').prop('disabled',"true");
+                    //$('#edit').prop('disabled',"true");
                 }
             });
         });
