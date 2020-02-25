@@ -81,6 +81,14 @@ public class IcitemClassController extends BaseController {
 		return aj;
 	}
 
+	/**
+	 * 同步物料和分类的业务
+	 * @param apiUrlService
+	 * @param syncType	1为同步分类；2为同步物料
+	 * @param Service
+	 * @return
+	 * @throws Exception
+	 */
 	public String sync(ApiUrlService apiUrlService, String syncType, BaseService Service) throws Exception {
 		String Message = "";
 		ApiUrl apiUrl = apiUrlService.getByUsefulness(syncType);
