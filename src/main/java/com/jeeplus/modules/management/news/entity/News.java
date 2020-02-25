@@ -36,6 +36,7 @@ public class News extends DataEntity<News> {
 	private String pushrule;		// 推送规则
 	private Integer readCount;		// 阅读次数
 	private String sendType;        // 推送端类型，0：企业微信，1：微信服务号
+	private String serviceUrl;  // 装载请求地址
 	private User user;
 	private Office office;
 	private String objId;
@@ -219,5 +220,13 @@ public class News extends DataEntity<News> {
 
 	public void setObjId(String objId) {
 		this.objId = objId;
+	}
+
+	public String getServiceUrl() {
+		return serviceUrl;
+	}
+
+	public void setServiceUrl(String serviceUrl) {
+		this.serviceUrl = serviceUrl;
 	}
 }

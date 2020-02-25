@@ -175,6 +175,8 @@ public class NewsController extends BaseController {
     @RequiresPermissions(value = {"management:news:news:add", "management:news:news:edit"}, logical = Logical.OR)
     @RequestMapping(value = "save")
     public AjaxJson save(News news,HttpServletRequest request,Model model) throws Exception {
+        String origin = request.getHeader("Origin");
+        news.setServiceUrl(origin + "/monica");
         AjaxJson j = new AjaxJson();
         /**
          * 后台hibernate-validation插件校验

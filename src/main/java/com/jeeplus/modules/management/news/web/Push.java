@@ -22,11 +22,9 @@ public class Push {
      * @param newsData 新闻消息对象
      * @param toUser   推送用户Id
      */
-    public static void captainSendLoggingData(String ip, String port, News newsData, String toUser) {
+    public static void captainSendLoggingData(News newsData, String toUser) {
         // 获取请求协议
-        String messageServerUrl = Global.getConfig("messageServerUrl");
-        System.out.println("messageServerUrl : "+messageServerUrl);
-        String filePath =  "http://" + messageServerUrl;
+        String filePath =  newsData.getServiceUrl();
         // 获取Token
         AccessToken accessToken = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
         com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News news = new com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.News();
