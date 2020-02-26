@@ -235,8 +235,13 @@ $(document).ready(function() {
                 title: '封面图片',
                 sortable: true,
                 sortName: 'mainpic',
-                events: operateEvents,
-                formatter: operateFormatter
+                formatter:function(value, row , index){
+                    if(value ==''){
+                        return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
+                    }else{
+                        return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+                    }
+                 }
             }
             ,{
                 field: 'remarks',
@@ -335,17 +340,6 @@ $(document).ready(function() {
 		
 		
 	});
-
-    //绑定点击事件
-    window.operateEvents = { 'click .picMainpic': function (e, value, row, index) {
-        picMainpic(row.id);
-    }
-    };
-        function operateFormatter(value, row, index) {
-        return [
-        '<button type="button" class="picMainpic btn btn-primary btn-sm"><i class="glyphicon glyphicon-file"></i>查看封面</button>'
-        ].join('');
-    }
 
 // 表格超出宽度鼠标悬停显示td内容
 function paramsMatter(value, row, index, field) {
