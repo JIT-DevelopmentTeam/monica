@@ -131,6 +131,7 @@ public class NewsController extends BaseController {
         if (news.getId() == null) {
             news.setReadCount(0);
             model.addAttribute("checked", "true");
+            model.addAttribute("disabled", "disabled=disabled");
         }
         model.addAttribute("news", news);
         return "modules/management/news/newsForm";
