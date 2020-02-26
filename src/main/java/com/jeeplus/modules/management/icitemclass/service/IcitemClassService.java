@@ -48,6 +48,15 @@ public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemCla
 	public void save(IcitemClass icitemClass) {
 		super.save(icitemClass);
 	}
+
+	/**
+	 * 批量插入数据
+	 * @param list
+	 */
+	@Transactional(readOnly = false)
+	public void batchInsert(List<IcitemClass> list) {
+		icitemClassMapper.batchInsert(list);
+	}
 	
 	@Transactional(readOnly = false)
 	public void delete(IcitemClass icitemClass) {

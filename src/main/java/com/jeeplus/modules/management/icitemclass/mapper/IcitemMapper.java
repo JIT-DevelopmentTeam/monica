@@ -8,6 +8,8 @@ import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 商品资料MAPPER接口
  * @author JiaChe
@@ -31,5 +33,11 @@ public interface IcitemMapper extends BaseMapper<Icitem> {
      * @return
      */
     String findMaxModifyTime();
+
+    /**
+     * 批量插入数据
+     * @param list
+     */
+    void batchInsert(List<Icitem> list);
 
 }
