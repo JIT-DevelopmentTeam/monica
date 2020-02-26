@@ -3,20 +3,19 @@
  */
 package com.jeeplus.modules.management.itemfile.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.jeeplus.common.config.Global;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.common.utils.file.dwnload.DownloadFile;
 import com.jeeplus.common.utils.file.upland.UploadFiles;
-import com.jeeplus.modules.management.icitemclass.entity.Icitem;
-import com.jeeplus.modules.management.icitemclass.service.IcitemService;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.itemfile.entity.ItemFile;
+import com.jeeplus.modules.management.itemfile.service.ItemFileService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +23,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.management.itemfile.entity.ItemFile;
-import com.jeeplus.modules.management.itemfile.service.ItemFileService;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 商品图片附件管理Controller
@@ -114,7 +109,7 @@ public class ItemFileController extends BaseController {
                             itemFile.setType(entry.getValue().toString());
                             continue;
                         case "url":
-                            itemFile.setUrl(entry.getValue().toString());
+                            itemFile.setUrl(request.getContextPath() != "" ? "/" : "" + request.getContextPath() + entry.getValue().toString());
                             continue;
                         case "smallUrl":
                             itemFile.setSmallUrl(entry.getValue().toString());
