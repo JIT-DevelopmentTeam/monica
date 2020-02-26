@@ -26,5 +26,11 @@ public interface IcitemClassMapper extends TreeMapper<IcitemClass> {
      * @return
      */
     String findMaxModifyTime();
+
+    /**
+     * 批量插入数据
+     * @param list
+     */
+    void batchInsert(List<IcitemClass> list);
 	
 }

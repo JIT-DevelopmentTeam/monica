@@ -59,6 +59,15 @@ public class IcitemService extends CrudService<IcitemMapper, Icitem> {
 	public void save(Icitem icitem) {
 		super.save(icitem);
 	}
+
+	/**
+	 * 批量插入数据
+	 * @param list
+	 */
+	@Transactional(readOnly = false)
+	public void batchInsert(List<Icitem> list) {
+		icitemMapper.batchInsert(list);
+	}
 	
 	@Transactional(readOnly = false)
 	public void delete(Icitem icitem) {

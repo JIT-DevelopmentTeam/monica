@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.core.service.BaseService;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,9 +71,9 @@ public class IcitemClassController extends BaseController {
 	public AjaxJson  synIcitem_Class() {
 		AjaxJson aj = new AjaxJson();
 		try {
-			String itemClassMsg = sync(apiUrlService, "1", icitemClassService);
+			String itemClassMsg = sync(IcitemClass.class, apiUrlService, "1", icitemClassService);
 			aj.setMsg(itemClassMsg);
-			String itemMsg = sync(apiUrlService, "2", icitemService);
+			String itemMsg = sync(Icitem.class, apiUrlService, "2", icitemService);
 			aj.setMsg(itemMsg);
 		} catch (Exception e) {
 			aj.setSuccess(false);
@@ -89,7 +91,7 @@ public class IcitemClassController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	public String sync(ApiUrlService apiUrlService, String syncType, BaseService Service) throws Exception {
+	public <T extends DataEntity> String sync(Class<T> clazz, ApiUrlService apiUrlService, String syncType, BaseService Service) throws Exception {
 		String Message = "";
 		ApiUrl apiUrl = apiUrlService.getByUsefulness(syncType);
 		if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
@@ -106,15 +108,22 @@ public class IcitemClassController extends BaseController {
 			Method saveMethod = null;
 			switch (syncType){
 				case "1" :/* 保存物料分类 */
-					saveMethod = this.getClass().getMethod("saveIcitemClass", JSONObject.class, IcitemClassService.class);
+					saveMethod = this.getClass().getMethod("saveIcitemClass", JSONObject.class);
 					break;
 				case "2" :/* 保存物料 */
-					saveMethod = this.getClass().getMethod("saveIcitem", JSONObject.class, IcitemService.class);
+					saveMethod = this.getClass().getMethod("saveIcitem", JSONObject.class);
 					break;
 			}
+			List<T> dataList = new ArrayList<>();
 			for (int i = 0; i < jsonarr.size(); i++) {
 				JSONObject jsonObject = jsonarr.getJSONObject(i);
-				saveMethod.invoke(this, jsonObject, Service);
+				T obj =(T) saveMethod.invoke(this, jsonObject);
+				dataList.add(obj);
+				if (i % 1000 == 0 || i == jsonarr.size() - 1) {
+					Method batchSaveMethod = Service.getClass().getMethod("batchInsert", List.class);
+					batchSaveMethod.invoke(Service, dataList);
+					dataList.clear();
+				}
 			}
 			Message = "同步成功!";
 		} catch (Exception e) {
@@ -136,9 +145,8 @@ public class IcitemClassController extends BaseController {
 	/**
 	 * 保存物料分类
 	 * @param jsonObject
-	 * @param icitemClassService
 	 */
-	public void saveIcitemClass(JSONObject jsonObject, IcitemClassService icitemClassService) {
+	public IcitemClass saveIcitemClass(JSONObject jsonObject) {
 		IcitemClass icitemClass = new IcitemClass();
 		IcitemClass parent = new IcitemClass();
 		parent.setId(jsonObject.getString("f_parentid"));
@@ -150,15 +158,15 @@ public class IcitemClassController extends BaseController {
 		icitemClass.setName(jsonObject.getString("f_name"));
 		icitemClass.setModifyTime(jsonObject.getString("f_modifytime"));
 		icitemClass.setIsNewRecord(true);
-		icitemClassService.save(icitemClass);
+		icitemClass.preInsert();
+		return icitemClass;
 	}
 
 	/**
 	 * 保存物料
 	 * @param jsonObject
-	 * @param icitemService
 	 */
-	public void saveIcitem(JSONObject jsonObject, IcitemService icitemService) {
+	public Icitem saveIcitem(JSONObject jsonObject) {
 		Icitem icitem = new Icitem();
 		icitem.setId(jsonObject.getString("id"));
 		icitem.setName(jsonObject.getString("f_name"));
@@ -171,7 +179,8 @@ public class IcitemClassController extends BaseController {
 		icitemClass.setId(jsonObject.getString("f_classid"));
 		icitem.setClassId(icitemClass);
 		icitem.setIsNewRecord(true);
-		icitemService.save(icitem);
+		icitem.preInsert();
+		return icitem;
 	}
 	
 	/**

@@ -151,6 +151,53 @@
 			#{delFlag}
 		)
 	</insert>
+
+	<insert id="batchInsert">
+		INSERT INTO tb_icitem(
+			id,
+			f_erpid,
+			f_classid,
+			f_number,
+			f_name,
+			f_model,
+			f_unit,
+			f_erpclassid,
+			f_modifytime,
+			f_erpnote,
+			f_status,
+			f_salePrice,
+			f_describe,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+			<trim prefix="(" suffix=")">
+				#{item.id},
+				#{item.erpId},
+				#{item.classId.id},
+				#{item.number},
+				#{item.name},
+				#{item.model},
+				#{item.unit},
+				#{item.erpclassId},
+				#{item.modifyTime},
+				#{item.erpNote},
+				#{item.status},
+				#{item.salePrice},
+				#{item.describe},
+				#{item.createBy.id},
+				#{item.createDate},
+				#{item.updateBy.id},
+				#{item.updateDate},
+				#{item.remarks},
+				#{item.delFlag}
+			</trim>
+		</foreach>
+	</insert>
 	
 	<update id="update">
 		UPDATE tb_icitem SET 	
