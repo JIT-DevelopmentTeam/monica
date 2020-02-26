@@ -108,16 +108,16 @@ public class IcitemClassController extends BaseController {
 			Method saveMethod = null;
 			switch (syncType){
 				case "1" :/* 保存物料分类 */
-					saveMethod = this.getClass().getMethod("saveIcitemClass", JSONObject.class, IcitemClassService.class);
+					saveMethod = this.getClass().getMethod("saveIcitemClass", JSONObject.class);
 					break;
 				case "2" :/* 保存物料 */
-					saveMethod = this.getClass().getMethod("saveIcitem", JSONObject.class, IcitemService.class);
+					saveMethod = this.getClass().getMethod("saveIcitem", JSONObject.class);
 					break;
 			}
 			List<T> dataList = new ArrayList<>();
 			for (int i = 0; i < jsonarr.size(); i++) {
 				JSONObject jsonObject = jsonarr.getJSONObject(i);
-				T obj =(T) saveMethod.invoke(this, jsonObject, Service);
+				T obj =(T) saveMethod.invoke(this, jsonObject);
 				dataList.add(obj);
 				if (i % 1000 == 0 || i == jsonarr.size() - 1) {
 					Method batchSaveMethod = Service.getClass().getMethod("batchInsert", List.class);
@@ -145,9 +145,8 @@ public class IcitemClassController extends BaseController {
 	/**
 	 * 保存物料分类
 	 * @param jsonObject
-	 * @param icitemClassService
 	 */
-	public IcitemClass saveIcitemClass(JSONObject jsonObject, IcitemClassService icitemClassService) {
+	public IcitemClass saveIcitemClass(JSONObject jsonObject) {
 		IcitemClass icitemClass = new IcitemClass();
 		IcitemClass parent = new IcitemClass();
 		parent.setId(jsonObject.getString("f_parentid"));
@@ -166,9 +165,8 @@ public class IcitemClassController extends BaseController {
 	/**
 	 * 保存物料
 	 * @param jsonObject
-	 * @param icitemService
 	 */
-	public Icitem saveIcitem(JSONObject jsonObject, IcitemService icitemService) {
+	public Icitem saveIcitem(JSONObject jsonObject) {
 		Icitem icitem = new Icitem();
 		icitem.setId(jsonObject.getString("id"));
 		icitem.setName(jsonObject.getString("f_name"));
