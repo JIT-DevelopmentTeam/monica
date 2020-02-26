@@ -38,26 +38,7 @@ public class NewsTask  implements Job {
                     } else
                         getObjId += userList.get(i).getQyUserId() + "|";
                 }
-                //System.out.println(" 新闻推送 UserID : " + getObjId);
-                // 新闻推送
-                Map map=SystemInfo.SystemProperty();
-                String ip="";
-                String port="";
-                try {
-                    ip=SystemInfo.getHostAddress();
-                    port=SystemInfo.getServerPort(false);
-                } catch (AttributeNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InstanceNotFoundException e) {
-                    e.printStackTrace();
-                } catch (MBeanException e) {
-                    e.printStackTrace();
-                } catch (ReflectionException e) {
-                    e.printStackTrace();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                Push.captainSendLoggingData(ip,port,news,getObjId);
+                Push.captainSendLoggingData(news,getObjId);
             }
 
         }
