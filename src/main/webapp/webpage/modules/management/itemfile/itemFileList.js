@@ -107,7 +107,7 @@ $(document).ready(function() {
 				   if(value ==''){
 					   return '<img height="40px" src="${ctxStatic}/common/images/flat-avatar.png">';
 				   }else{
-					   return '<img   onclick="jp.showPic(\''+value+'\')"'+' height="40px" src="'+value+'">';
+					   return '<img   onclick="jp.showPic(\'${pageContext.request.contextPath}'+value+'\')"'+' height="40px" src="${pageContext.request.contextPath}'+value+'">';
 				   }
 		         }
 

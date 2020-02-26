@@ -109,7 +109,7 @@ public class ItemFileController extends BaseController {
                             itemFile.setType(entry.getValue().toString());
                             continue;
                         case "url":
-                            itemFile.setUrl(request.getContextPath() != "" ? "/" : "" + request.getContextPath() + entry.getValue().toString());
+                            itemFile.setUrl(entry.getValue().toString());
                             continue;
                         case "smallUrl":
                             itemFile.setSmallUrl(entry.getValue().toString());
