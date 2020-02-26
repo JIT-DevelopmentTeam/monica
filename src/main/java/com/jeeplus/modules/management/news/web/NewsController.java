@@ -148,8 +148,23 @@ public class NewsController extends BaseController {
      * @return
      */
     @RequestMapping(value = "picMainpic")
-    public ModelAndView newsMainpic(News news) {
-        String path = Global.getClasspath()+news.getMainpic();
+    public ModelAndView newsMainpic(HttpServletRequest request,News news) {
+        /*String getServerName=request.getServerName();//获取服务器名，localhost；
+        Integer getServerPort=request.getServerPort();//获取服务器端口号，8080；
+        String getContextPath=request.getContextPath();//获取项目名，/Example；
+        String getServletPath=request.getServletPath();//获取Servlet路径，/AServlet；
+        String getQueryString=request.getQueryString();//获取参数部分，即问号后面的部分：username=zhangsan
+        String getRequestURI=request.getRequestURI();//获取请求URI，等于项目名+Servlet路径：/Example/AServlet
+        StringBuffer getRequestURL=request.getRequestURL();//获取请求URL，等于不包含参数的整个请求路径：http://localhost:8080/Example/AServlet
+        String getRemoteAddr=request.getRemoteAddr();//获取服务器的IP，如localhost对应ip为127.0.0.1
+        System.out.println("getServerName  " + getServerName);
+        System.out.println("getServerPort  " + getServerPort);
+        System.out.println("getContextPath " + getContextPath);
+        System.out.println("getServletPath " + getServletPath);
+        System.out.println("getQueryString " + getQueryString);
+        System.out.println("getRequestURI  " + getRequestURI);
+        System.out.println("getRequestURL  " + getRequestURL);
+        System.out.println("getRemoteAddr  " + getRemoteAddr);*/
         ModelAndView view = new ModelAndView();
         view.addObject("news",news);
         view.setViewName("modules/management/news/newsMainpic");
@@ -176,7 +191,9 @@ public class NewsController extends BaseController {
     @RequestMapping(value = "save")
     public AjaxJson save(News news,HttpServletRequest request,Model model) throws Exception {
         String origin = request.getHeader("Origin");
-        news.setServiceUrl(origin + "/monica");
+        String contextPath = request.getContextPath();
+        String requestPath = contextPath == null ? "" : "/" + contextPath;
+        news.setServiceUrl(origin + requestPath);
         AjaxJson j = new AjaxJson();
         /**
          * 后台hibernate-validation插件校验
