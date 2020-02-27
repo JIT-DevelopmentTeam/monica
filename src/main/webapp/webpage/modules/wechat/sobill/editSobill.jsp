@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>编辑订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
