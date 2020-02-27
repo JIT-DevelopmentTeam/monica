@@ -3,12 +3,14 @@
 <html>
 <head>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>新增订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/editOrder.css">
+    <%-- 全面屏iphone适配 --%>
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/iphoneadaptation/iphoneadaptation.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -416,7 +418,7 @@
 
     <br><br><br>
 
-    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+    <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
         <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
             <div class="weui-tabbar__icon">
                 <img width="12px;" height="12px;" src="${ctxStatic}/image/wechat/add.jpg" alt="">

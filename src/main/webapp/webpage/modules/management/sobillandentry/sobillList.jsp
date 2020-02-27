@@ -22,28 +22,28 @@
 	<div id="search-collapse" class="collapse">
 		<div class="accordion-inner">
 			<form:form id="searchForm" modelAttribute="sobill" class="form form-horizontal well clearfix">
-                <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                <div class="col-xs-12 col-sm-6 col-md-1">
                     <label class="label-item single-overflow pull-right" title="编码：">编码：</label>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-2">
                     <form:input path="billNo" htmlEscape="false" maxlength="100"  class=" form-control"/>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                <div class="col-xs-12 col-sm-6 col-md-1">
                     <label class="label-item single-overflow pull-right" title="客户：">客户：</label>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-2">
                     <form:input path="cusName" htmlEscape="false" maxlength="64"  class=" form-control"/>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                <div class="col-xs-12 col-sm-6 col-md-1">
                     <label class="label-item single-overflow pull-right" title="归属员工：">归属员工：</label>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-2">
                     <form:input path="empName" htmlEscape="false" maxlength="64"  class=" form-control"/>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                <div class="col-xs-12 col-sm-6 col-md-1">
                     <label class="label-item single-overflow pull-right" title="审核状态：">审核状态：</label>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-2">
@@ -54,7 +54,7 @@
                 </div>
 
                 <br><br>
-                <div class="col-xs-12 col-sm-6 col-md-1" style="margin-top:4px">
+                <div class="col-xs-12 col-sm-6 col-md-1">
                     <label class="label-item single-overflow pull-right" title="发货时间：">&nbsp;发货时间：</label>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4">
@@ -83,8 +83,8 @@
 
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div>
-			  <a  id="search" class="btn btn-primary"><i class="fa fa-search"></i> 查询</a>
-			  <a  id="reset" class="btn btn-danger" ><i class="fa fa-refresh"></i> 重置</a>
+			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
+			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
 			 </div>
 	    </div>	
 	</form:form>
