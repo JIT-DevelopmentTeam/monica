@@ -1132,7 +1132,7 @@
                     setTimeout(function () {
                         $.hideLoading();
                         $.toast("操作成功!");
-                        window.location.href = '${ctxf}/wechat/sobill/list';
+                        window.history.go(-1);
                     }, 3000);
                 }
             },

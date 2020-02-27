@@ -207,7 +207,7 @@
                             setTimeout(function () {
                                 $.hideLoading();
                                 $.toast(res.msg);
-                                window.location.href = '${ctxf}/wechat/review/list?qyUserId=${qyUserId}';
+                                window.history.go(-1);
                             }, 3000);
                         } else {
                             setTimeout(function () {
