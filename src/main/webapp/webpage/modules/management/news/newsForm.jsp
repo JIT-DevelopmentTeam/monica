@@ -74,7 +74,19 @@
 					$("#objId").attr("disabled", "true");
 				}
 			});
-            // 判断当前选中
+
+	        // 是否推送 = 1  时，则可以选择推送类型
+            /*console.log("---->>  "+$("input[name='isPush']").val());
+            if(${news.isPush eq 1}){
+                var $sendType = $("[name='sendType']");
+                $sendType.removeAttr("disabled");
+
+                var $sendType_div =$("#sendType-div div");
+                $sendType_div.attr("class","iradio_square-blue ");
+            }*/
+
+
+            // 判断是否推送，当前选中值
             $("input[name='isPush']").on('ifChecked', function () {
                 if (this.value == "0") {
                     var push= $("input[name='push']");
@@ -154,7 +166,7 @@
                             //console.log(value.id+":"+value.name);
                             option +="<option  value=\""+value.id+"\"   data-tokens=\""+ value.name+"\">"+value.name+"</option>";
                         });
-                        console.log(option);
+                        //console.log(option);
                     }
                 }
                 //部门列表
@@ -273,8 +285,8 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>推送类型：</label></td>
 					<td class="width-35" id="sendType-div">
-						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required" />服务号
-						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required" />企业微信
+						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"  disabled="true"/>服务号
+						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"  disabled="true"/>企业微信
 						<label class="error" for="sendType" id="sendType"></label>
 					</td>
 				</tr>
