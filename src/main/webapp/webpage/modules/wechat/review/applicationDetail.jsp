@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>申请详细</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/editOrder.css">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/saleOrder.css">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/reviewList.css">
+    <%-- 全面屏iphone适配 --%>
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/iphoneadaptation/iphoneadaptation.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -138,7 +140,7 @@
     <c:if test="${sobill.isApproval == 1}">
         <br><br><br>
 
-        <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+        <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
             <a v-on:click="applicationApproved" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/receive.jpg" alt="">
@@ -205,7 +207,7 @@
                             setTimeout(function () {
                                 $.hideLoading();
                                 $.toast(res.msg);
-                                window.location.href = '${ctxf}/wechat/review/list?qyUserId=${qyUserId}';
+                                window.history.go(-1);
                             }, 3000);
                         } else {
                             setTimeout(function () {

@@ -1,0 +1,24 @@
+/*iPhone X 适配*/
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    #footer{
+        padding-bottom: 20px;
+        position:fixed;
+        z-index: 500;
+    }
+}
+/*iPhone XS max 适配*/
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio:3) {
+    #footer{
+        padding-bottom: 20px;
+        position:fixed;
+        z-index: 500;
+    }
+}
+/*iPhone XR max 适配*/
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio:2) {
+    #footer{
+        padding-bottom: 20px;
+        position:fixed;
+        z-index: 500;
+    }
+}

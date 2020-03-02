@@ -4,12 +4,14 @@
 <html lang="en">
 <head>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>订单管理</title>
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/orderList.css">
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
+    <%-- 全面屏iphone适配 --%>
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/iphoneadaptation/iphoneadaptation.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -146,7 +148,7 @@
 
     <br><br><br>
 
-    <div class="weui-tabbar" style="position:fixed;bottom: 0px;">
+    <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;">
         <a v-on:click="backHome()" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/home.jpg" alt="">

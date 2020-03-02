@@ -3,13 +3,15 @@
 <html>
 <head>
     <meta name="viewport"
-          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,viewport-fit=cover">
     <meta charset="UTF-8">
     <title>编辑订单</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/editOrder.css">
     <link rel="stylesheet" href="${ctxStatic}/css/wxqy/saleOrder.css">
+    <%-- 全面屏iphone适配 --%>
+    <link rel="stylesheet" href="${ctxStatic}/css/wxqy/iphoneadaptation/iphoneadaptation.css">
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -443,7 +445,7 @@
 
     <br><br><br>
 
-    <div id="function" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+    <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
         <a onclick="cleanSelect();" class="weui-tabbar__item open-popup" data-target="#items">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/add.jpg" alt="">
@@ -472,7 +474,6 @@
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
-<%--<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>--%>
 <script type="text/javascript">
 
     var itemIds = new Array();
@@ -1131,7 +1132,7 @@
                     setTimeout(function () {
                         $.hideLoading();
                         $.toast("操作成功!");
-                        window.location.href = '${ctxf}/wechat/sobill/list';
+                        window.history.go(-1);
                     }, 3000);
                 }
             },
