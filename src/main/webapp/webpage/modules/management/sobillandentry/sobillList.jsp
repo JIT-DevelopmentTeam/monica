@@ -83,8 +83,8 @@
 
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div>
-			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
-			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
+			  <a  id="search" class="btn btn-primary"><i class="fa fa-search"></i> 查询</a>
+			  <a  id="reset" class="btn btn-danger" ><i class="fa fa-refresh"></i> 重置</a>
 			 </div>
 	    </div>	
 	</form:form>
