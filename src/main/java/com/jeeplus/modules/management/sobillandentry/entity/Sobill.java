@@ -20,7 +20,7 @@ import com.jeeplus.common.utils.excel.annotation.ExcelField;
 public class Sobill extends DataEntity<Sobill> {
 	
 	private static final long serialVersionUID = 1L;
-	private String erpId;		// erpid
+	private String erpCode;		// erp编码
 	private String type;		// 订单类型
 	private String billNo;		// 订单编码
 	private Integer synStatus;		// 订单同步状态
@@ -44,7 +44,6 @@ public class Sobill extends DataEntity<Sobill> {
 	private String cusName;		// 客户名称
 	private Integer startPage;		// 起始分页
 	private Integer endPage;	// 结束分页
-    private boolean isHistory;  // 是否为历史订单
     private String needTimeStr;     // 发货日期字符串
     private String startTime;   // 开始时间
     private String endTime;     // 结束时间
@@ -53,8 +52,8 @@ public class Sobill extends DataEntity<Sobill> {
     private Integer isLast;     // 是否为最高审批人
     private String initiateDateStr;     // 发起时间
     private Integer isApproval;     // 是否为审批
-    private String followerId;      // 跟进人
-    private String followerName;    // 跟进人名称
+    private String followerId;      // 跟单人员
+    private String followerName;    // 跟单人员名称
     private String remark01;		// 包装
     private String remark02;		// 镜面抛
     private String remark03;		// 胶水
@@ -74,13 +73,13 @@ public class Sobill extends DataEntity<Sobill> {
 		super(id);
 	}
 
-	@ExcelField(title="erpid", align=2, sort=7)
-	public String getErpId() {
-		return erpId;
+	@ExcelField(title="erp编码", align=2, sort=7)
+	public String getErpCode() {
+		return erpCode;
 	}
 
-	public void setErpId(String erpId) {
-		this.erpId = erpId;
+	public void setErpCode(String erpCode) {
+		this.erpCode = erpCode;
 	}
 	
 	@NotNull(message="订单类型不能为空")
@@ -287,14 +286,6 @@ public class Sobill extends DataEntity<Sobill> {
 	public void setEndPage(Integer endPage) {
 		this.endPage = endPage;
 	}
-
-    public boolean isHistory() {
-        return isHistory;
-    }
-
-    public void setHistory(boolean history) {
-        isHistory = history;
-    }
 
     public String getNeedTimeStr() {
         return needTimeStr;

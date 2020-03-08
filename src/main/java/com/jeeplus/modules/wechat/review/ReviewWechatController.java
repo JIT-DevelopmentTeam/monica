@@ -1,10 +1,19 @@
 package com.jeeplus.modules.wechat.review;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.collection.ListUtil;
+import com.jeeplus.common.utils.collection.MapUtil;
+import com.jeeplus.common.utils.k3.K3SOUtils;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.customer.entity.Customer;
+import com.jeeplus.modules.management.customer.service.CustomerService;
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
+import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.management.messagesend.entity.Messagesend;
 import com.jeeplus.modules.management.messagesend.service.MessagesendService;
 import com.jeeplus.modules.management.messagesend.service.template.MessageTemplate;
@@ -14,26 +23,20 @@ import com.jeeplus.modules.management.messagesend.service.template.impl.MsgRemin
 import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.sys.utils.UserUtils;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.JwMessageAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCard;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.message.vo.TextCardEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 订单审核
@@ -73,6 +76,12 @@ public class ReviewWechatController extends BaseController {
      */
     @Autowired
     private MsgPass msgPass;
+
+    @Autowired
+    private IcitemService icitemService;
+
+    @Autowired
+    private CustomerService customerService;
 
     @RequestMapping(value = {"list",""})
     public ModelAndView list(HttpServletRequest request) {
@@ -194,17 +203,26 @@ public class ReviewWechatController extends BaseController {
                     }
                     // 审核已走到最后节点
                     if (currentApprove.getIsLast() == 1 && status == 1) {
-                        // 审核通过
-                        sobill.setCheckStatus(1);
-                        sobill.setCheckTime(new Date());
-                        sobillService.save(sobill);
-                        /**
-                         * 提醒申请人
-                         */
-                        MessageTemplate msgRemindTemplate=msgRemind;
-                        msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
+                        // 同步成功后才允许审核
+                        JSONObject jsonObject = syncOrder(sobill);
+                        if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
+                            JSONObject dataJson = jsonObject.getJSONObject("Data");
+                            // 审核通过
+                            sobill.setCheckStatus(1);
+                            sobill.setCheckerId(userId);
+                            sobill.setCheckTime(new Date());
+                            sobill.setErpCode(dataJson.get("BillNo").toString());
+                            sobill.setSynStatus(1);
+                            sobill.setSynTime(new Date());
+                            sobillService.save(sobill);
+                            /**
+                             * 提醒申请人
+                             */
+                            MessageTemplate msgRemindTemplate=msgRemind;
+                            msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
+                            allow = true;
+                        }
                     }
-                    allow = true;
                 }
             }
             if (allow) {
@@ -212,7 +230,7 @@ public class ReviewWechatController extends BaseController {
                 aj.setMsg("操作成功!");
             } else {
                 aj.setSuccess(false);
-                aj.setMsg("操作失败!(当前节点不允许操作!)");
+                aj.setMsg("操作失败!");
             }
         }
         return aj;
@@ -233,4 +251,76 @@ public class ReviewWechatController extends BaseController {
         msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
     }
+
+    /**
+     * 同步订单
+     * @param sobill
+     */
+    private JSONObject syncOrder(Sobill sobill) {
+        Map<String,Object> allDataMap = MapUtil.newHashMap();
+        Map<String,Object> dataMap = MapUtil.newHashMap();
+        List<Map<String,Object>> page1List = ListUtil.newArrayList();
+        Map<String,Object> page1Map = MapUtil.newHashMap();
+        List<Map<String,Object>> page2List = ListUtil.newArrayList();
+        page1Map.put("FCancellation","0");
+        page1Map.put("Fdate",DateUtils.formatDateTime(sobill.getCreateDate()));
+        Customer customer = customerService.get(sobill.getCustId());
+        if (!ObjectUtils.isEmpty(customer)) {
+            Map<String,String> custMap = MapUtil.newHashMap();
+            custMap.put("FNumber",customer.getId());
+            custMap.put("FName",customer.getName());
+            page1Map.put("FCustID",custMap);
+        }
+        /* TODO 测试信息 后期需绑定部门 员工erp编码 */
+        Map<String,Object> deptIDMap = new HashMap<>();
+        deptIDMap.put("FNumber","01");
+        deptIDMap.put("FName","销售部");
+        page1Map.put("FDeptID",deptIDMap);
+        Map<String,Object> empIDMap = new HashMap<>();
+        empIDMap.put("FNumber","00001");
+        empIDMap.put("FName","陈锦泮");
+        page1Map.put("FEmpID",empIDMap);
+        if (StringUtils.isNotBlank(sobill.getErpCode())) {
+            page1Map.put("FBillNo",sobill.getErpCode());
+        }
+        page1List.add(page1Map);
+        for (Sobillentry sobillentry : sobill.getSobillentryList()) {
+            Map<String,Object> page2Map = MapUtil.newHashMap();
+            Map<String,Object> unitIDMap = MapUtil.newHashMap();
+            unitIDMap.put("FNumber","004");
+            unitIDMap.put("FName","个");
+            page2Map.put("FUnitID",unitIDMap);
+            page2Map.put("FDate1",DateUtils.formatDateTime(sobill.getNeedTime()));
+            Icitem item = icitemService.get(sobillentry.getItemId());
+            if (!ObjectUtils.isEmpty(item)) {
+                Map<String,Object> itemIDMap = MapUtil.newHashMap();
+                itemIDMap.put("FNumber",item.getNumber());
+                itemIDMap.put("FName",item.getName());
+                page2Map.put("FItemID",itemIDMap);
+                page2Map.put("FItemName",item.getName());
+                page2Map.put("FItemModel",item.getModel());
+                page2Map.put("FBaseUnit",item.getUnit());
+            }
+            page2Map.put("Fauxqty",sobillentry.getAuxqty().toString());
+            if (sobillentry.getPrice() != null) {
+                page2Map.put("Fauxprice",sobillentry.getPrice().toString());
+            }
+            if (sobillentry.getAmount() != null) {
+                page2Map.put("Famount",sobillentry.getAmount().toString());
+            }
+            if (StringUtils.isNotBlank(sobillentry.getRemarks())) {
+                page2Map.put("Fnote",sobillentry.getRemarks());
+            }
+            page2List.add(page2Map);
+        }
+        dataMap.put("Page1",page1List);
+        dataMap.put("Page2",page2List);
+        if (StringUtils.isNotBlank(sobill.getErpCode())) {
+            allDataMap.put("FBillNo",sobill.getErpCode());
+        }
+        allDataMap.put("Data",dataMap);
+        JSONObject jsonObject = K3SOUtils.saveSO(allDataMap);
+        return jsonObject;
+    }
+
 }

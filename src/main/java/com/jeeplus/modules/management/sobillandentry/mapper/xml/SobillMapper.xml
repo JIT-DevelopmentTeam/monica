@@ -11,7 +11,7 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		a.f_erpid AS "erpId",
+		a.f_erp_code AS "erpCode",
 		a.f_type AS "type",
 		a.f_billno AS "billNo",
 		a.f_synstatus AS "synStatus",
@@ -99,12 +99,16 @@
 				AND a.f_checkstatus = #{checkStatus}
 			</if>
 
-            <if test="emplId != null and emplId != ''">
-                AND a.f_emplid = #{emplId}
+            <if test="status != null">
+                AND a.f_status = #{status}
             </if>
 
-            <if test="isHistory == true">
-                AND a.create_date &lt; CURDATE()
+            <if test="synStatus != null">
+                AND a.f_synstatus = #{synStatus}
+            </if>
+
+            <if test="emplId != null and emplId != ''">
+                AND a.f_emplid = #{emplId}
             </if>
 
             <if test="startTime != null and startTime != ''">
@@ -123,10 +127,6 @@
 				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
-
-		<if test="startPage != null and endPage != null">
-			LIMIT #{startPage},#{endPage}
-		</if>
 	</select>
 	
 	<select id="findAllList" resultType="Sobill" >
@@ -157,7 +157,7 @@
 			update_date,
 			remarks,
 			del_flag,
-			f_erpid,
+			f_erp_code,
 			f_type,
 			f_billno,
 			f_synstatus,
@@ -191,7 +191,7 @@
 			#{updateDate},
 			#{remarks},
 			#{delFlag},
-			#{erpId},
+			#{erpCode},
 			#{type},
 			#{billNo},
 			#{synStatus},
@@ -225,7 +225,7 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			f_erpid = #{erpId},
+			f_erp_code = #{erpCode},
 			f_type = #{type},
 			f_billno = #{billNo},
 			f_custid = #{custId},
@@ -236,6 +236,8 @@
 			f_checkerid = #{checkerId},
 			f_checktime = #{checkTime},
 			f_checkstatus = #{checkStatus},
+			f_synstatus = #{synStatus},
+			f_syntime = #{synTime},
 			f_amount = #{amount},
 			f_followerid = #{followerId},
 			f_remark01 = #{remark01},

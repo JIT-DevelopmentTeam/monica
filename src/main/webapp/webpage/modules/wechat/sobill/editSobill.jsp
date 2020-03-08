@@ -486,7 +486,7 @@
             this.$http.get('${ctxf}/wechat/icitem/getItemClass', {}).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
             });
-            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId', {}).then(function (res) {
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId?emplId=${sobill.emplId}', {}).then(function (res) {
                 this.customerList = res.body.body.customerList;
             });
             this.$http.get('${ctxf}/wechat/user/getUserList', null).then(function (res) {
@@ -496,7 +496,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.type}) {
+                    if (dictList[i].value == '${sobill.type}') {
                         $("#typeSelect").val(dictList[i].label);
                     }
                 }
@@ -518,7 +518,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark01', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark01}) {
+                    if (dictList[i].value == '${sobill.remark01}') {
                         $("#remark01Select").val(dictList[i].label);
                     }
                 }
@@ -539,7 +539,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark02', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark02}) {
+                    if (dictList[i].value == '${sobill.remark02}') {
                         $("#remark02Select").val(dictList[i].label);
                     }
                 }
@@ -560,7 +560,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark03', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark03}) {
+                    if (dictList[i].value == '${sobill.remark03}') {
                         $("#remark03Select").val(dictList[i].label);
                     }
                 }
@@ -581,7 +581,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark04', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark04}) {
+                    if (dictList[i].value == '${sobill.remark04}') {
                         $("#remark04Select").val(dictList[i].label);
                     }
                 }
@@ -602,7 +602,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark05', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark05}) {
+                    if (dictList[i].value == '${sobill.remark05}') {
                         $("#remark05Select").val(dictList[i].label);
                     }
                 }
@@ -623,7 +623,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark06', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark06}) {
+                    if (dictList[i].value == '${sobill.remark06}') {
                         $("#remark06Select").val(dictList[i].label);
                     }
                 }
@@ -644,7 +644,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark07', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark07}) {
+                    if (dictList[i].value == '${sobill.remark07}') {
                         $("#remark07Select").val(dictList[i].label);
                     }
                 }
@@ -665,7 +665,7 @@
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_remark08', {}).then(function (res) {
                 var dictList = res.body.rows;
                 for (var i = 0; i < dictList.length; i++) {
-                    if (dictList[i].value == ${sobill.remark08}) {
+                    if (dictList[i].value == '${sobill.remark08}') {
                         $("#remark08Select").val(dictList[i].label);
                     }
                 }
@@ -1131,8 +1131,13 @@
                 if (res.success) {
                     setTimeout(function () {
                         $.hideLoading();
-                        $.toast("操作成功!");
-                        window.history.go(-1);
+                        $.toast(res.msg);
+                        window.location.href=document.referrer;
+                    }, 3000);
+                } else {
+                    setTimeout(function () {
+                        $.hideLoading();
+                        $.toast(res.msg,"cancel");
                     }, 3000);
                 }
             },

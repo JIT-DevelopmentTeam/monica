@@ -183,6 +183,12 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
+
+    <!-- 根据订单id清除审核记录 -->
+    <delete id="deleteBySobillId" parameterType="String">
+        DELETE FROM ic_order_approve
+		WHERE f_sobillid = #{sobillId}
+    </delete>
 	
 	
 	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
