@@ -28,7 +28,7 @@
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
   </listener>
     <listener>
-        <listener-class>com.jeeplus.modules.sys.listener.token.AccessTokenListener</listener-class>
+        <listener-class>com.jeeplus.modules.sys.listener.token.TokenListener</listener-class>
     </listener>
   <filter>
     <filter-name>encodingFilter</filter-name>

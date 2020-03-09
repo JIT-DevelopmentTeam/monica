@@ -6,6 +6,7 @@ import com.jeeplus.common.utils.IdGen;
 
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
 import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
@@ -79,29 +80,17 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillList(@Param("checkStatus") Integer checkStatus, @Param("isHistory") Integer isHistory, @Param("startPage") Integer startPage, @Param("endPage") Integer endPage, @Param("startTime") String startTime, @Param("endTime") String endTime, @RequestParam("qyUserId") String qyUserId){
+    public AjaxJson getSobillList(Page page,Sobill sobill, @RequestParam("qyUserId") String qyUserId){
         AjaxJson aj = new AjaxJson();
-        Sobill sobill = new Sobill();
-        sobill.setDelFlag("0");
-        // 待审核
-        sobill.setCheckStatus(checkStatus);
-        if (isHistory != null){
-            // 历史订单
-            sobill.setHistory(true);
-        }
         User user = userMapper.getByQyUserId(qyUserId);
         if (user != null) {
             sobill.setEmplId(user.getId());
         }
-        sobill.setStartTime(startTime);
-        sobill.setEndTime(endTime);
-        sobill.setStartPage(startPage);
-        sobill.setEndPage(endPage);
-        List<Sobill> sobillList = sobillService.findList(sobill);
-        if (sobillList.isEmpty()) {
+        Page<Sobill> sobillPage = sobillService.findPage(page,sobill);
+        if (sobillPage.getList().isEmpty()) {
             aj.setSuccess(false);
         }
-        aj.put("sobillList",sobillList);
+        aj.put("sobillList",sobillPage.getList());
         return aj;
     }
 
@@ -126,6 +115,7 @@ public class SobillWechatController extends BaseController {
         }
         mv.setViewName("modules/wechat/sobill/addSobill");
         mv.addObject("sobill",sobill);
+        mv.addObject("qyUserId",qyUserId);
         return mv;
     }
 
@@ -163,6 +153,7 @@ public class SobillWechatController extends BaseController {
             Sobill sobill = sobillService.get(id);
             if (sobill != null && sobill.getCheckStatus() != 1 && sobill.getStatus() != 1){
                 sobillService.delete(sobill);
+                orderApproveService.deleteBySobillId(sobill.getId());
             } else {
                 delect = false;
             }
@@ -232,14 +223,57 @@ public class SobillWechatController extends BaseController {
         } else {
             Sobill sobill = sobillService.get(jsonObject.getString("id"));
             if (sobill != null){
+                if (sobill.getCancellation() == 1) {
+                    aj.setSuccess(false);
+                    aj.setMsg("订单已关闭,无法编辑!");
+                    return aj;
+                }
+                switch (sobill.getCheckStatus()) {
+                    case 0:
+                        if (sobill.getStatus() == 1) {
+                            aj.setSuccess(false);
+                            aj.setMsg("订单已提交审核,无法操作!");
+                            return aj;
+                        }
+                        break;
+                    case 1:
+                        if (Integer.parseInt(jsonObject.getString("status")) == 0) {
+                            aj.setSuccess(false);
+                            aj.setMsg("订单已通过审核,无法保存!");
+                            return aj;
+                        }
+                        break;
+                    case 3:
+                        if (Integer.parseInt(jsonObject.getString("status")) == 0) {
+                            aj.setSuccess(false);
+                            aj.setMsg("订单未通过审核,无法保存!");
+                            return aj;
+                        }
+                        break;
+                }
+                switch (Integer.parseInt(jsonObject.getString("status"))) {
+                    case 0:
+                        sobill.setCheckStatus(2);
+                        sobill.setCheckTime(null);
+                        break;
+                    case 1:
+                        // 重复提交审核 则清除旧审核记录
+                        if (sobill.getCheckStatus() == 1 || sobill.getCheckStatus() == 3) {
+                            orderApproveService.deleteBySobillId(sobill.getId());
+                        }
+                        sobill.setCheckStatus(0);
+                        sobill.setCheckTime(null);
+                        break;
+                }
+                if (sobill.getSynStatus() == 1) {
+                    sobill.setSynStatus(0);
+                    sobill.setSynTime(null);
+                }
                 sobill.setCustId(jsonObject.getString("custId"));
                 sobill.setFollowerId(jsonObject.getString("followerId"));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.getString("needTime")));
                 sobill.setType(jsonObject.get("type").toString());
-                sobill.setStatus(Integer.parseInt(jsonObject.get("status").toString()));
-                if (sobill.getStatus() == 1) {
-                    sobill.setCheckStatus(0);
-                }
+                sobill.setStatus(Integer.parseInt(jsonObject.getString("status")));
                 sobill.setNeedTime(DateUtils.parseDate(jsonObject.get("needTime")));
                 sobill.setRemarks(jsonObject.getString("remarks"));
                 sobill.setRemark01(jsonObject.getString("remark01"));

@@ -110,7 +110,7 @@ $(document).ready(function() {
 		        }
 
 		    }
-			/*,{
+			,{
 		        field: 'synStatus',
 		        title: '同步状态',
 		        sortable: true,
@@ -128,7 +128,7 @@ $(document).ready(function() {
                     return html;
 		        }
 
-		    }*/
+		    }
 			,{
 		        field: 'cusName',
 		        title: '客户',
@@ -213,6 +213,13 @@ $(document).ready(function() {
 		        }
 
 		    }
+           ,{
+               field: 'erpCode',
+               title: 'ERP订单编码',
+               sortable: true,
+               sortName: 'erpCode'
+
+           }
 		   ,{
 			   field: 'currencyId',
 			   title: '币别',
@@ -414,6 +421,22 @@ $(document).ready(function() {
             });
         });
 	}
+
+	// 同步订单
+	function synchronization() {
+        jp.confirm("您确定要同步所有已审核订单吗?", function () {
+            var index = jp.loading("正在同步,请稍后!");
+            jp.get("${ctx}/management/sobillandentry/sobill/synchronization", function(data){
+                if(data.success){
+                    jp.success(data.msg);
+                    refresh();
+                }else{
+                    jp.error(data.msg);
+                }
+                jp.close(index);
+            });
+        });
+    }
 
 function init() {
     //订单明细列表表格

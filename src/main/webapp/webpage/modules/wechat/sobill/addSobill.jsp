@@ -457,7 +457,7 @@
             this.$http.get('${ctxf}/wechat/icitem/getItemClass', null).then(function (res) {
                 this.icitemClassList = res.data.body.icitemClassList;
             });
-            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId', null).then(function (res) {
+            this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId?emplId=${sobill.emplId}', null).then(function (res) {
                 this.customerList = res.body.body.customerList;
             });
             this.$http.get('${ctxf}/wechat/user/getUserList', null).then(function (res) {
@@ -1087,13 +1087,13 @@
                 if (res.success) {
                     setTimeout(function () {
                         $.hideLoading();
-                        $.toast("操作成功!");
-                        window.history.go(-1);
+                        $.toast(res.msg);
+                        window.location.href=document.referrer;
                     }, 3000);
                 }
             },
             error: function () {
-                $.toast("保存出错!");
+                $.toast("保存出错", "forbidden");
             }
         });
     }

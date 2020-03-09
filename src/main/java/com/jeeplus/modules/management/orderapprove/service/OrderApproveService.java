@@ -43,5 +43,10 @@ public class OrderApproveService extends CrudService<OrderApproveMapper, OrderAp
 	public void delete(OrderApprove orderApprove) {
 		super.delete(orderApprove);
 	}
+
+	@Transactional(readOnly = false)
+	public void deleteBySobillId(String sobillId) {
+	    super.mapper.deleteBySobillId(sobillId);
+    }
 	
 }

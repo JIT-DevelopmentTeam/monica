@@ -108,11 +108,11 @@
 				</button>
 			</shiro:hasPermission>
 
-			<%--<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
-				<button id="synchronization" class="btn btn-success" onclick="">
+			<shiro:hasPermission name="management:sobillandentry:sobill:synchronization">
+				<button id="synchronization" class="btn btn-success" onclick="synchronization();">
 					<i class="glyphicon glyphicon-refresh"></i> 同步
 				</button>
-			</shiro:hasPermission>--%>
+			</shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->

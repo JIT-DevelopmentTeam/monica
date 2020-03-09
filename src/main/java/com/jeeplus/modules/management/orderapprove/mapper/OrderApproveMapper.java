@@ -14,5 +14,7 @@ import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
  */
 @MyBatisMapper
 public interface OrderApproveMapper extends BaseMapper<OrderApprove> {
+
+    void deleteBySobillId(String sobillId);
 	
 }
