@@ -60,12 +60,11 @@ public class WarehouseController extends BaseController {
 	public Map<String,Object>  synWareHouse(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
 		JSONArray jsonarr =
-				Common.executeInter("http://120.77.40.245:8080/interface_monica/erp_get/erp_stock?token_value=20190603","POST");
+				Common.executeInter("http://monica.justinit.cn/interface_monica/erp_get/erp_stock?token_value=20190603","POST");
 
 		warehouseService.deleteAll();		// 同步数据前先清空仓库表
-		JSONObject jsonObject = new JSONObject();
+		JSONObject jsonObject;
 		for (int i = 0; i < jsonarr.size(); i++) {
-			System.out.println(jsonarr.get(i));
 			jsonObject = jsonarr.getJSONObject(i);
 			Warehouse warehouse = new Warehouse();
 			Warehouse parent = new Warehouse();
@@ -84,7 +83,6 @@ public class WarehouseController extends BaseController {
 			warehouse.setIsNewRecord(true);
 			warehouseService.save(warehouse);
 		}
-		System.out.println("================插入成功================");
 		json.put("Data",jsonarr);
 		return json;
 	}

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.changeversionandlog.mapper.ChangeLogMapper">
+    
+	<sql id="changeLogColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.name AS "name",
+		a.before_change AS "beforeChange",
+		a.after_change AS "afterChange",
+		a.change_version AS "changeVersion.id",
+		a.item_id AS "item.id",
+		item.f_number AS "item.number",
+		item.f_name AS "item.name"
+	</sql>
+	
+	<sql id="changeLogJoins">
+		INNER JOIN ic_change_version AS changeVersion ON changeVersion.id = a.change_version
+		INNER JOIN tb_icitem AS item ON item.id = a.item_id
+	</sql>
+	
+    
+	<select id="get" resultType="ChangeLog" >
+		SELECT 
+			<include refid="changeLogColumns"/>
+		FROM ic_change_log a
+		<include refid="changeLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ChangeLog" >
+		SELECT 
+			<include refid="changeLogColumns"/>
+		FROM ic_change_log a
+		<include refid="changeLogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ChangeLog" >
+		SELECT 
+			<include refid="changeLogColumns"/>
+		FROM ic_change_log a
+		<include refid="changeLogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ic_change_log(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			name,
+			before_change,
+			after_change,
+			change_version,
+			item_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{name},
+			#{beforeChange},
+			#{afterChange},
+			#{changeVersion.id},
+			#{item.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ic_change_log SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			name = #{name},
+			before_change = #{beforeChange},
+			after_change = #{afterChange},
+			change_version = #{changeVersion.id},
+			item_id = #{item.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM ic_change_log
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE ic_change_log SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ChangeLog" statementType="STATEMENT">
+		select * FROM ic_change_log  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

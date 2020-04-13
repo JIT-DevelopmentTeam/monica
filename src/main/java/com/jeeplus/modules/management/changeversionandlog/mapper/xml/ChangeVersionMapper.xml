@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.changeversionandlog.mapper.ChangeVersionMapper">
+    
+	<sql id="changeVersionColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.user_id AS "user.id",
+		a.date AS "date",
+		a.version AS "version",
+		a.sobill_id AS "sobill.id",
+		user.name AS "user.name"
+	</sql>
+	
+	<sql id="changeVersionJoins">
+		INNER JOIN ic_sobill AS sobill ON sobill.id = a.sobill_id
+		LEFT JOIN sys_user AS user ON user.id = a.user_id
+	</sql>
+	
+    
+	<select id="get" resultType="ChangeVersion" >
+		SELECT 
+			<include refid="changeVersionColumns"/>
+		FROM ic_change_version a
+		<include refid="changeVersionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ChangeVersion" >
+		SELECT 
+			<include refid="changeVersionColumns"/>
+		FROM ic_change_version a
+		<include refid="changeVersionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+            <if test="sobill != null">
+                <if test="sobill.id != null and sobill.id != ''">
+                    AND a.sobill_id = #{sobill.id}
+                </if>
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.version DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ChangeVersion" >
+		SELECT 
+			<include refid="changeVersionColumns"/>
+		FROM ic_change_version a
+		<include refid="changeVersionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ic_change_version(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			user_id,
+			date,
+			sobill_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{user.id},
+			#{date},
+			#{sobill.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ic_change_version SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			sobill_id = #{sobill.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM ic_change_version
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE ic_change_version SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ChangeVersion" statementType="STATEMENT">
+		select * FROM ic_change_version  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

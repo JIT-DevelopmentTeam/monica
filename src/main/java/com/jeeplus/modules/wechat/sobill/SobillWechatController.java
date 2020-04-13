@@ -1,4 +1,5 @@
 package com.jeeplus.modules.wechat.sobill;
+import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.DateUtils;
@@ -10,6 +11,10 @@ import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
 import com.jeeplus.modules.management.approvenode.service.ApprovenodeService;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeLog;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
+import com.jeeplus.modules.management.changeversionandlog.service.ChangeVersionService;
+import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
 import com.jeeplus.modules.management.messagesend.entity.Messagesend;
 import com.jeeplus.modules.management.messagesend.service.MessagesendService;
@@ -29,6 +34,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.session.Session;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
@@ -39,6 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +70,12 @@ public class SobillWechatController extends BaseController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IcitemService icitemService;
+
+    @Autowired
+    private ChangeVersionService changeVersionService;
 
     /**
      * 消息提醒
@@ -171,7 +184,7 @@ public class SobillWechatController extends BaseController {
     @ResponseBody
     public AjaxJson saveSob(@RequestBody Object object,HttpServletRequest request){
         String path = request.getContextPath();
-        String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+        String request_url = request.getScheme()+"://"+request.getServerName()+path;
         AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.get("id") == null || "".equals(jsonObject.getString("id"))){
@@ -261,6 +274,8 @@ public class SobillWechatController extends BaseController {
                         if (sobill.getCheckStatus() == 1 || sobill.getCheckStatus() == 3) {
                             orderApproveService.deleteBySobillId(sobill.getId());
                         }
+                        // 生成变更日志
+                        generateChangeLog(sobill,JSONArray.fromObject(jsonObject.get("sobillentryList")));
                         sobill.setCheckStatus(0);
                         sobill.setCheckTime(null);
                         break;
@@ -377,6 +392,50 @@ public class SobillWechatController extends BaseController {
                     messagesend.setSendTimeWX(date);
                     messagesendService.save(messagesend); // 保存发送消息系统表
                 }
+            }
+        }
+    }
+
+    /**
+     * 生成变更记录
+     * @param sobill 原订单
+     * @param jsonArray 新订单
+     */
+    private void generateChangeLog(Sobill sobill,JSONArray jsonArray) {
+        // 订单已提交审核通过/不通过后或
+        if (sobill.getStatus() == 1 && (sobill.getCheckStatus() == 1 || sobill.getCheckStatus() == 3)){
+            boolean isChange = false;
+            User user = userMapper.get(sobill.getEmplId());
+            // 新增
+            ChangeVersion changeVersion = new ChangeVersion();
+            changeVersion.setSobill(sobill);
+            changeVersion.setDate(new Date());
+            changeVersion.setUser(user);
+            changeVersion.setId(IdGen.uuid());
+            changeVersion.setIsNewRecord(true);
+            List<ChangeLog> changeLogList = Lists.newArrayList();
+            for (Sobillentry sobillentry : sobill.getSobillentryList()) {
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    if (StringUtils.equals(sobillentry.getItemId(),jsonArray.getJSONObject(i).getString("itemId"))) {
+                        Double newQty = jsonArray.getJSONObject(i).getDouble("auxqty");
+                        if (!sobillentry.getAuxqty().equals(newQty)) {
+                            isChange = true;
+                            Icitem item = icitemService.get(sobillentry.getItemId());
+                            ChangeLog changeLog = new ChangeLog();
+                            changeLog.setName("数量");
+                            changeLog.setBeforeChange(sobillentry.getAuxqty().toString());
+                            changeLog.setAfterChange(newQty.toString());
+                            changeLog.setChangeVersion(changeVersion);
+                            changeLog.setItem(item);
+                            changeLog.setId("");
+                            changeLog.setIsNewRecord(true);
+                            changeLogList.add(changeLog);
+                        }
+                    }
+                }
+            }
+            if (isChange) {
+                changeVersionService.save(changeVersion);
             }
         }
     }

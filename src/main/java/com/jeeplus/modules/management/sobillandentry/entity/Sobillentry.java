@@ -33,10 +33,10 @@ public class Sobillentry extends DataEntity<Sobillentry> {
 	public Sobillentry() {
 		super();
 	}
+    public Sobillentry(String id){
+        super(id);
+    }
 
-	public Sobillentry(String id){
-		super(id);
-	}
 
 	public Sobillentry(Sobill sobillId){
 		this.sobillId = sobillId;

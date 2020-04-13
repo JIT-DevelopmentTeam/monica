@@ -139,7 +139,8 @@
                 <!-- 导航标签 -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#sobillentry" aria-controls="sobillentry" role="tab" data-toggle="tab">订单明细</a></li>
-                    <li role="presentation" class=""><a href="#review" aria-controls="review" role="tab" data-toggle="tab">审批明细</a></li>
+                    <li role="presentation" class=""><a href="#review" aria-controls="review" role="tab" data-toggle="tab">审核明细</a></li>
+                    <li role="presentation" class=""><a href="#changeVersion" aria-controls="changeVersion" role="tab" data-toggle="tab">变更日志</a></li>
                 </ul>
                 <!-- 标签窗格 -->
                 <div class="tab-content">
@@ -151,6 +152,16 @@
                     <!-- 审核明细 -->
                     <div role="tabpanel" class="tab-pane fade in" id="review">
                         <table id="reviewListTable" ></table>
+                    </div>
+
+                    <!-- 变更日志 -->
+                    <div role="tabpanel" class="tab-pane fade in" id="changeVersion">
+                        <shiro:hasPermission name="management:changeversionandlog:changeVersion:list">
+                            <button id="changeLogView" class="btn btn-default" disabled onclick="changeLogView()">
+                                <i class="fa fa-search-plus"></i> 变更记录
+                            </button>
+                        </shiro:hasPermission>
+                        <table id="changeVersionListTable" ></table>
                     </div>
                 </div>
             </div>

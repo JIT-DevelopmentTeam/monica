@@ -147,7 +147,7 @@ public class ReviewWechatController extends BaseController {
     @ResponseBody
     public AjaxJson reviewOrder(@RequestParam("sobillId") String sobillId,@RequestParam("qyUserId") String qyUserId,@RequestParam("status") Integer status, String remark, HttpServletRequest request) {
         String path = request.getContextPath();
-        String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+        String request_url = request.getScheme()+"://"+request.getServerName()+path+"/";
         AjaxJson aj = new AjaxJson();
         String userId = null;
         Sobill sobill = sobillService.get(sobillId);
@@ -157,7 +157,6 @@ public class ReviewWechatController extends BaseController {
         }
         if (sobill != null) {
             OrderApprove orderApprove = new OrderApprove();
-            orderApprove.setDelFlag("0");
             orderApprove.setSobillId(sobill);
             List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
             boolean allow = false;
@@ -182,6 +181,7 @@ public class ReviewWechatController extends BaseController {
                         // 消息发送到企业微信
                         MessageTemplate msgRejectTemplate = msgReject;
                         msgRejectTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
+                        break;
                     }
                     // 走审核下一个节点
                     if (currentApprove.getIsLast() != 1 && status != 2) {
@@ -203,6 +203,7 @@ public class ReviewWechatController extends BaseController {
                     }
                     // 审核已走到最后节点
                     if (currentApprove.getIsLast() == 1 && status == 1) {
+                        allow = true;
                         // 同步成功后才允许审核
                         JSONObject jsonObject = syncOrder(sobill);
                         if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
@@ -220,7 +221,8 @@ public class ReviewWechatController extends BaseController {
                              */
                             MessageTemplate msgRemindTemplate=msgRemind;
                             msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
-                            allow = true;
+                        } else {
+                            allow = false;
                         }
                     }
                 }
@@ -240,15 +242,15 @@ public class ReviewWechatController extends BaseController {
     @ResponseBody
     public void test(){
         MessageTemplate msgRemindTemplate=msgRemind;
-        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
+        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
 
         MessageTemplate msgPassTemplate = msgPass;
-        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
+        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
 
         MessageTemplate msgRejectTemplate = msgReject;
-        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://120.77.40.245:8080/monica/f/"
+        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
                 ,"974b95221f2f4b37b4f7fdfec40355f9","1");
     }
 

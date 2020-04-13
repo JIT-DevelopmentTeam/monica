@@ -1,6 +1,5 @@
 package com.jeeplus.common.utils.k3;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.http.HttpHelper;
@@ -31,9 +30,7 @@ public class K3SOUtils {
         } else {
             url = SO_EDIT_URL;
         }
-        System.out.println(JSON.toJSONString(dataMap));
         JSONObject resultObject = HttpHelper.httpPost(url.replace("TOKEN", token),dataMap);
-        System.out.println(resultObject);
         return resultObject;
     }
 
