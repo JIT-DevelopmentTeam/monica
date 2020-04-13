@@ -134,6 +134,9 @@ $(document).ready(function() {
                        case "7":
                            text = "库存详情查询";
                            break;
+					   case "8":
+						   text = "库存等级查询";
+						   break;
                    }
                    return text != null && text != '' ? text : "-";
                }

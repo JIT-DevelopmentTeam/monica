@@ -40,6 +40,7 @@
                 <thead>
                 <tr>
                     <th>机构名称</th>
+                    <th>ERP编码</th>
                     <th>归属区域</th>
                     <th>机构编码</th>
                     <th>机构类型</th>

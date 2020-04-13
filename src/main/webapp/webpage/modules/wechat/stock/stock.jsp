@@ -9,10 +9,6 @@
     <title>库存查询</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">
-    <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
-    <script src="${ctxStatic}/js/jquery-weui.js"></script>
-    <script src="${ctxStatic}/js/fastclick.js"></script>
-    <script src="${ctxStatic}/js/wechat/jweixin-1.2.0.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue.js"></script>
     <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
     <style type="text/css">
@@ -84,17 +80,17 @@
 <body ontouchstart>
     <div id="app">
         <div class="weui-search-bar" id="searchBar">
-            <a href="javascript:" class="weui-search-bar__box-btn" onclick="showFixed();">
+            <a href="javascript:" class="weui-search-bar__box-btn" @click="showFixed()">
                 <img src="${ctxStatic}/image/wechat/icon-screen_gray.png">
             </a>
-            <form class="weui-search-bar__form" action="#">
+            <%--<form class="weui-search-bar__form" action="#">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
                     <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required="">
                     <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
                 </div>
             </form>
-            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>--%>
         </div>
         <div id="list">
             <div v-for="(item, index) in itemList">
@@ -151,53 +147,56 @@
             </div>
         </div>
 
-        <div class="fixed-body" id="fixed" style="display: none;">
+        <div class="fixed-body" id="fixed" :style="fixedDisplay">
             <div class="fixed-cell">
-                <div class="fixed-cell_item weui-cells weui-cells_radio">
+                <div class="fixed-cell_item weui-cells">
+                    <div class="fixed-cell_title">商品信息</div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input class="weui-input" v-model="item" type="text" placeholder="请输入名称、代码、规格，%号分隔" style="text-align: center;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="fixed-cell_item weui-cells_checkbox">
                     <div class="fixed-cell_title">等级信息</div>
-
-                    <label class="weui-cell weui-check__label" for="x11">
-                        <div class="weui-cell__bd">
-                            <p>A</p>
+                    <div class="weui-flex">
+                        <div class="weui-flex__item" v-for="(item, index) in levelList">
+                            <label class="weui-cell weui-check__label" :for="index">
+                                <div class="weui-cell__hd">
+                                    <input type="checkbox" class="weui-check" name="checkbox" :value="item.FGrade" :id="index" :checked="item.checked" @change="changeState(item.FGrade)">
+                                    <i class="weui-icon-checked"></i>
+                                </div>
+                                <div class="weui-cell__bd">
+                                    <p>{{ item.FGrade }}</p>
+                                </div>
+                            </label>
                         </div>
-                        <div class="weui-cell__ft" style="position: fixed; right: 2%;">
-                            <input type="checkbox" class="weui-check" name="checkbox1" id="x11">
-                            <span class="weui-icon-checked"></span>
-                        </div>
-                    </label>
-                    <label class="weui-cell weui-check__label" for="x12">
-                        <div class="weui-cell__bd">
-                            <p>B</p>
-                        </div>
-                        <div class="weui-cell__ft" style="position: fixed; right: 2%;">
-                            <input type="checkbox" name="checkbox1" class="weui-check" id="x12">
-                            <span class="weui-icon-checked"></span>
-                        </div>
-                    </label>
-                    <label class="weui-cell weui-check__label" for="x13">
-                        <div class="weui-cell__bd">
-                            <p>C</p>
-                        </div>
-                        <div class="weui-cell__ft" style="position: fixed; right: 2%;">
-                            <input type="checkbox" name="checkbox1" class="weui-check" id="x13">
-                            <span class="weui-icon-checked"></span>
-                        </div>
-                    </label>
+                    </div>
                 </div>
                 <div class="fixed-cell_item">
                     <div class="fixed-cell_title">色号信息</div>
                     <div class="weui-cell">
-                        <div class="weui-cell__hd weui-label"></div>
                         <div class="weui-cell__bd">
-                            <input class="weui-input" id="color" name="color" type="text" placeholder="请输入色号" style="text-align: center;" />
+                            <input class="weui-input" v-model="color" type="text" placeholder="请输入色号" style="text-align: center;" />
                         </div>
-                        <div class="weui-cell__hd weui-label"></div>
+                    </div>
+                </div>
+                <div class="fixed-cell_item">
+                    <div class="fixed-cell_title">生产日期</div>
+                    <div class="weui-cell">
+                        <div class="weui-cell__bd">
+                            <input type="text" id="startTime" ref="startTime" readonly class="weui-input"
+                                   placeholder="请选择开始时间" style="text-align: center;width:47%;"/>
+                            至
+                            <input type="text" id="endTime" ref="endTime" readonly class="weui-input"
+                                   placeholder="请选择结束时间" style="text-align: center;width:45%;"/>
+                        </div>
                     </div>
                 </div>
                 <div class="fixed-cell_item">
                     <div class="button_sp_area" style="text-align: center;">
-                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="close" onclick="cancel()">关闭</a>
-                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="open" onclick="confirm()">确定</a>
+                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_primary" id="open" @click="confirm()">确定</a>
+                        <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" id="close" @click="cancel()">取消</a>
                     </div>
                 </div>
             </div>
@@ -207,11 +206,15 @@
             <p class="weui-toast_content">数据加载中</p>
         </div>
     </div>
+<script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
+<script src="${ctxStatic}/js/fastclick.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
     });
-
+</script>
+<script src="${ctxStatic}/js/jquery-weui.js"></script>
+<script>
     var loading = false;
     $(document.body).infinite().on("infinite", function() {
         if(loading) return;
@@ -231,9 +234,20 @@
     
     function loadList() {
         var result = [];
+        var checked = [];
+        for (let i = 0; i < vm.levelList.length; i++) {
+            if (vm.levelList[i].checked) {
+                checked.push(vm.levelList[i].FGrade)
+            }
+        }
         vm.$http.get('${ctxf}/wechat/stock/listData', {
             params: {
-                pageNo: vm.pageNo
+                pageNo: vm.pageNo,
+                item: vm.item,
+                levelArr: checked,
+                color: vm.color,
+                startTime: vm.$refs.startTime.value,
+                endTime: vm.$refs.endTime.value
             }
         }).then(res => {
             vm.loading = false;
@@ -252,58 +266,89 @@
             itemList: [],
             loading: false,
             alled: false,
-            total: 0
+            total: 0,
+            levelList: [],
+            item: '',
+            color: '',
+            fixedDisplay: {display: 'block'}
         },
         methods: {
-            /*//打开筛选
-            showFixed:function(){
-                d.getElementById('fixed').style.cssText  = "display:block"
-            },
-            // 筛选取消
-            cancel:function(){
-                d.getElementById('fixed').style.cssText  = "display:none"
-            },
-            // 筛选确认
-            confirm:function(){
-                d.getElementById('fixed').style.cssText  = "display:none"
-            },*/
             // 跳转详情页面
             goStockDetail:function(commodityNumber) {
                 window.location ="${ctxf}/wechat/stock/detail?commodityNumber=" + commodityNumber;
+            },
+            // 条件筛选显示与否
+            showFixed: function () {
+                if (this.fixedDisplay.display == 'none') {
+                    this.fixedDisplay.display = 'block';
+                } else {
+                    this.fixedDisplay.display = 'none';
+                }
+            },
+            // 取消按钮
+            cancel: function () {
+                this.fixedDisplay.display = 'none';
+            },
+            // 确认按钮
+            confirm: function () {
+                this.fixedDisplay.display = 'none';
+                this.itemList = [];
+                var checked = [];
+                for (let i = 0; i < this.levelList.length; i++) {
+                    if (this.levelList[i].checked) {
+                        checked.push(this.levelList[i].FGrade)
+                    }
+                }
+
+                $("#loadDiv").show();
+                this.$http.get('${ctxf}/wechat/stock/listData', {
+                    params: {
+                        pageNo: this.pageNo,
+                        item: this.item,
+                        levelArr: checked,
+                        color: this.color,
+                        startTime: this.$refs.startTime.value,
+                        endTime: this.$refs.endTime.value
+                    }
+                }).then(res => {
+                    $("#loadDiv").hide();
+                    console.log("itemList.size: " + res.body.body.stockList.length + "\ntotal: " + res.body.body.total)
+                    this.itemList = res.body.body.stockList;
+                    this.total = res.body.body.total;
+                })
+            },
+            changeState: function (value) {
+                for (let i = 0; i < this.levelList.length; i++) {
+                    if (this.levelList[i].FGrade == value) {
+                        if (this.levelList[i].checked) {
+                            this.levelList[i].checked = false;
+                            console.log('未选中')
+                        } else {
+                            this.levelList[i].checked = true;
+                            console.log('选中')
+                        }
+                    }
+                }
             }
         },
         created: function(){
-            // $.showLoading();
-            $("#loadDiv").show();
-            this.$http.get('${ctxf}/wechat/stock/listData', {
-                params: {
-                    pageNo: this.pageNo
-                }
-            }).then(res => {
-                // $.hideLoading();
-                $("#loadDiv").hide();
-                this.itemList = res.body.body.stockList;
-                this.total = res.body.body.total;
-            })
+            this.$http.get('${ctxf}/wechat/stock/getLeval')
+                .then(res => {
+                    var dataList = res.data.body.data
+                    for (let i = 0; i < dataList.length; i++) {
+                        dataList[i].checked = false;
+                    }
+                    this.levelList = dataList
+                })
         }
     });
 
-    //打开筛选
-    function showFixed(){
-        if ($("#fixed").css("display") == "none") {
-            $("#fixed").css("display", "block");
-        } else {
-            $("#fixed").css("display", "none");
-        }
-    }
-    // 筛选取消
-    function cancel(){
-        $("#fixed").css("display", "none");
-    }
-    // 筛选确认
-    function confirm(){
-        $("#fixed").css("display", "none");
-    }
+    $("#startTime").calendar({
+        dateFormat: "yyyy-mm-dd"
+    });
+    $("#endTime").calendar({
+        dateFormat: "yyyy-mm-dd"
+    });
 
 </script>
 </body>

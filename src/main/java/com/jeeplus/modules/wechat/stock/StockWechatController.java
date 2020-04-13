@@ -54,10 +54,20 @@ public class StockWechatController extends BaseController {
             return j;
         }
         String pageNo = request.getParameter("pageNo");
+        String item = request.getParameter("item");
+        item = item.replace("%", "%25");
+        String[] levelArr = request.getParameterValues("levelArr[]");
+        String color = request.getParameter("color");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
+        String level = "";
+        if (levelArr != null) {
+            level = levelArr[0];
+        }
         JSONArray jsonarr =
-                Common.executeInter(apiUrlList.getUrl() + "&currentPage=" + pageNo,"POST");
+                Common.executeInter(apiUrlList.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color + "&currentPage=" + pageNo,"POST");
         JSONArray jsonarrTotal =
-                Common.executeInter(apiUrlTotal.getUrl(),"POST");
+                Common.executeInter(apiUrlTotal.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color,"POST");
         List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
         j.put("stockList", stockList);
         j.put("total", jsonarrTotal.get(0));
@@ -77,6 +87,22 @@ public class StockWechatController extends BaseController {
         String commodityNumber = request.getParameter("commodityNumber");
         JSONArray jsonarr =
                 Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber,"POST");
+        j.put("data", jsonarr);
+        return j;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "getLeval")
+    public AjaxJson getLeval() {
+        AjaxJson j = new AjaxJson();
+        ApiUrl apiUrl = apiUrlService.getByUsefulness("8");
+        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+            j.setSuccess(false);
+            j.setMsg("同步出错,请检查接口配置是否准确!");
+            return j;
+        }
+        JSONArray jsonarr =
+                Common.executeInter(apiUrl.getUrl(),"POST");
         j.put("data", jsonarr);
         return j;
     }

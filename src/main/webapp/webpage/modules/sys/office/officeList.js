@@ -113,6 +113,9 @@
 		<shiro:hasPermission name="sys:office:add">
 			<li><a href="#" onclick="jp.openSaveDialog('添加下级机构', '${ctx}/sys/office/form?parent.id={{d.id}}','800px', '600px')"><i class="fa fa-plus"></i> 添加下级机构</a></li>
 		</shiro:hasPermission>
+		<shiro:hasPermission name="sys:office:band">
+			<li><a href="#" onClick="jp.openSaveDialog('绑定ERP部门', '${ctx}/sys/office/form?parent.id={{d.id}}','800px', '600px')"><i class="fa fa-link"></i> 绑定ERP部门</a></li>
+		</shiro:hasPermission>
 	  </ul>
 	</div>
 </td>

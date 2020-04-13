@@ -88,12 +88,12 @@
                           {{stock.specification}}
                         </div>
                     </div>
-                   <div class="weui-cell weui-cell_access">
-                        <div class="weui-cell__hd"><label class="weui-label">当前库存：</label></div>
-                       <div class="weui-cell__bd itemValue">
-                          {{stock.total}}
-                        </div>
-                   </div>
+<%--                   <div class="weui-cell weui-cell_access">--%>
+<%--                        <div class="weui-cell__hd"><label class="weui-label">当前库存：</label></div>--%>
+<%--                       <div class="weui-cell__bd itemValue">--%>
+<%--                          {{stock.total}}--%>
+<%--                        </div>--%>
+<%--                   </div>--%>
                 </span>
 <%--                <div class="weui-flex weui-cell">--%>
 <%--                    <div class="weui-flex__item">--%>
