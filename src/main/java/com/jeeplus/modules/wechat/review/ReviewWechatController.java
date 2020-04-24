@@ -279,7 +279,7 @@ public class ReviewWechatController extends BaseController {
             page1Map.put("FCustID",custMap);
         }
         User user = userMapper.get(sobill.getEmplId());
-        Office office = officeService.getEntity(user.getOffice());
+        Office office = officeService.get(user.getOffice().getId());
         Map<String,Object> deptIDMap = new HashMap<>();
         deptIDMap.put("FNumber",office.getErpDeptNumber());
         deptIDMap.put("FName",office.getErpDeptName());
