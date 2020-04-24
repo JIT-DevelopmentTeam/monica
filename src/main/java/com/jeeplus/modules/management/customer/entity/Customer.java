@@ -6,6 +6,8 @@ package com.jeeplus.modules.management.customer.entity;
 
 import com.jeeplus.common.utils.excel.annotation.ExcelField;
 import com.jeeplus.core.persistence.DataEntity;
+import com.jeeplus.modules.sys.entity.Office;
+import com.jeeplus.modules.sys.entity.User;
 
 /**
  * 客户管理Entity
@@ -26,6 +28,8 @@ public class Customer extends DataEntity<Customer> {
 	private String crediTamt;		// 信用证
 	private String modifyTime;
 	private String info;	// 客户信息（用途：条件搜索）
+	private Office office;
+	private User user;
 	
 	public Customer() {
 		super();
@@ -130,5 +134,21 @@ public class Customer extends DataEntity<Customer> {
 
 	public void setModifyTime(String modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+
+	public Office getOffice() {
+		return office;
+	}
+
+	public void setOffice(Office office) {
+		this.office = office;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

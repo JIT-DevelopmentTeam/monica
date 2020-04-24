@@ -50,12 +50,13 @@
 						<label class="pull-right"><font color="red">*</font>部门归属：</label>
 					</td>
 					<td class="width-35">
-							<sys:treeselect id="deptId" name="deptId" value="${user.id}" labelName="user.name" labelValue="${user.name}"
+							<sys:treeselect id="deptId" name="deptId" value="${customer.deptId}" labelName="office.name" labelValue="${customer.office.name}"
 											title="部门" url="/sys/office/treeData?type=2" allowClear="true" cssClass="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>员工所属：</label></td>
 					<td class="width-35">
-						<form:input path="emplId" htmlEscape="false"    class="form-control required"/>
+						<sys:userselect id="emplId" name="emplId" value="${customer.emplId}" labelName="user.name" labelValue="${customer.user.name}"
+										cssClass="form-control" isMultiSelected="false"/>
 					</td>
 				</tr>
 				<tr>

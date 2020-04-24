@@ -19,11 +19,14 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		office.name AS "office.name",
+		user.name AS "user.name"
 	</sql>
 	
 	<sql id="customerJoins">
-		
+		LEFT JOIN sys_office office ON office.id = a.f_deptid
+		LEFT JOIN sys_user user ON user.id = a.f_emplid
 	</sql>
 	
     

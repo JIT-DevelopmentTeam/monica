@@ -120,17 +120,17 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'deptId',
+		        field: 'office.name',
 		        title: '部门归属',
 		        sortable: true,
-		        sortName: 'deptId'
+		        sortName: 'office.name'
 
 		    }
 			,{
-		        field: 'emplId',
+		        field: 'user.name',
 		        title: '员工所属',
 		        sortable: true,
-		        sortName: 'emplId'
+		        sortName: 'user.name'
 		       
 		    }
 			,{
