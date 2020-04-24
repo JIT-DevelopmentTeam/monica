@@ -30,8 +30,7 @@ public class JwUserAPI {
 	private static Logger logger = LoggerFactory.getLogger(JwUserAPI.class);
 	//获取用户基本信息（包括UnionID机制）
     private static String GET_USER_URL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
-    //获取访问用户身份 , 使用应用的token ,得到UserId(企业用户)   或  OpenId (非企业用户)
-    public static String GET_USER_INFO_BY_CODE_URL	= "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=ACCESS_TOKEN&code=CODE";
+
 
     
 	/**
@@ -55,33 +54,6 @@ public class JwUserAPI {
 		return null;
 	}
 
-    /**
-     * 根据user_openid 获取关注用户的基本信息
-     *
-     * @param shelf_id
-     * @return
-     * @throws WexinReqException
-     */
-    public static Map<String,Object> getWxuserInfo(String code) throws WexinReqException {
-        Map<String,Object> userMap = new HashMap<>();
-        String accesstoken;
-        if (CacheUtils.get("monicaAccessToken") != null) {
-            accesstoken = CacheUtils.get("monicaAccessToken").toString();
-        } else {
-            AccessTokenUtils.updateAgentToken();
-            accesstoken = CacheUtils.get("monicaAccessToken").toString();
-        }
-        if (accesstoken != null) {
-            String requestUrl = GET_USER_INFO_BY_CODE_URL.replace("ACCESS_TOKEN", accesstoken).replace("CODE", code);
-            JSONObject result = WxstoreUtils.httpRequest(requestUrl, "POST", null);
-            userMap.put("UserId",result.getString("UserId"));
-            logger.info(result.toString());
-            // 正常返回
-            Object error = result.get("errcode");
-            return userMap;
-        }
-        return null;
-    }
 
 	/**
 	 * 获取所有关注用户信息信息

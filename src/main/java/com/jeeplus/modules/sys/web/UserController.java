@@ -3,18 +3,27 @@
  */
 package com.jeeplus.modules.sys.web;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jeeplus.common.beanvalidator.BeanValidators;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.base.ObjectUtil;
+import com.jeeplus.common.utils.collection.ListUtil;
 import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
+import com.jeeplus.common.utils.http.HttpHelper;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
+import com.jeeplus.modules.management.erp.ERPUser;
 import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.Role;
@@ -30,8 +39,6 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -45,6 +52,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +80,9 @@ public class UserController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private UserMapper userMapper;
+
+    @Autowired
+    private ApiUrlService apiUrlService;
 
 	@Autowired
 	private OfficeService officeService;
@@ -663,5 +674,58 @@ public class UserController extends BaseController {
 		}
 		return j;
 	}
-	
+
+	@RequestMapping(value = "/listPageERPUsers")
+    public ModelAndView listPageERPUsers(@RequestParam("userId") String userId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("userId",userId);
+        mv.setViewName("modules/sys/user/listPageERPUsers");
+	    return mv;
+    }
+
+	@ResponseBody
+    @RequestMapping(value = "/listERPUsers")
+    public Map<String, Object> listERPUsers(ERPUser erpUser, HttpServletRequest request, HttpServletResponse response) {
+        Page<ERPUser> page = new Page<>();
+        List<ERPUser> erpUserList = ListUtil.newArrayList();
+        if (CacheUtils.get("ERPUserList") == null) {
+            ApiUrl apiUrl = apiUrlService.getByUsefulness("10");
+            JSONObject result = HttpHelper.httpGet(apiUrl.getUrl());
+            JSONArray dataArray = result.getJSONArray("Data");
+            for (int i = 0; i < dataArray.size(); i++) {
+                ERPUser addErpUser = new ERPUser();
+                addErpUser.setNumber(dataArray.getJSONObject(i).getString("f_number"));
+                addErpUser.setName(dataArray.getJSONObject(i).getString("f_name"));
+                erpUserList.add(addErpUser);
+            }
+            CacheUtils.put("ERPUserList",erpUserList);
+        } else {
+            erpUserList = (List<ERPUser>) CacheUtils.get("ERPUserList");
+        }
+        int pageNo = Integer.parseInt(request.getParameter("pageNo"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        List<ERPUser> erpUserPageList = ListUtil.newArrayList();
+        for (int i = pageNo * pageSize - pageSize; i < pageNo * pageSize; i++) {
+            if (i < erpUserList.size()) {
+                erpUserPageList.add(erpUserList.get(i));
+            }
+        }
+        page.setCount(erpUserList.size());
+        page.setList(erpUserPageList);
+        return getBootstrapData(page);
+    }
+
+    @RequestMapping(value = "/bindingERPUser")
+    @ResponseBody
+    public AjaxJson bindingERPUser(@RequestParam("userId") String userId,@RequestParam("erpUserNumber") String erpUserNumber,@RequestParam("erpUserName") String erpUserName) {
+	    AjaxJson aj = new AjaxJson();
+        User user = userMapper.get(userId);
+        user.setErpUserNumber(erpUserNumber);
+        user.setErpUserName(erpUserName);
+        userMapper.updateUserInfo(user);
+        aj.setMsg("绑定成功!");
+	    return aj;
+    }
+
+
 }

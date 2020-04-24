@@ -15,6 +15,8 @@
 		<result property="photo" column="photo"/>
 		<result property="openId" column="openId"/>
 		<result property="qyUserId" column="qyUserId"/>
+        <result property="erpUserNumber" column="erpUserNumber"/>
+        <result property="erpUserName" column="erpUserName"/>
 		<result property="synStatus" column="synStatus"/>
 		<result property="isSyntoent" column="isSyntoent"/>
 		<result property="company.name" column="company.name" />
@@ -48,6 +50,8 @@
 		a.sign,
 		a.open_id as "openId",
 		a.qy_user_id as "qyUserId",
+		a.erp_user_number as "erpUserNumber",
+		a.erp_user_name as "erpUserName",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -342,7 +346,9 @@
 			qrcode = #{qrCode},
 			sign = #{sign},
 			open_id = #{openId},
-			qy_user_id = #{qyUserId}
+			qy_user_id = #{qyUserId},
+			erp_user_number = #{erpUserNumber},
+			erp_user_name = #{erpUserName}
 		WHERE id = #{id}
 	</update>
 	

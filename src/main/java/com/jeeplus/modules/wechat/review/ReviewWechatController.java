@@ -25,8 +25,10 @@ import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
+import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -82,6 +84,9 @@ public class ReviewWechatController extends BaseController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private OfficeService officeService;
 
     @RequestMapping(value = {"list",""})
     public ModelAndView list(HttpServletRequest request) {
@@ -273,14 +278,15 @@ public class ReviewWechatController extends BaseController {
             custMap.put("FName",customer.getName());
             page1Map.put("FCustID",custMap);
         }
-        /* TODO 测试信息 后期需绑定部门 员工erp编码 */
+        User user = userMapper.get(sobill.getEmplId());
+        Office office = officeService.getEntity(user.getOffice());
         Map<String,Object> deptIDMap = new HashMap<>();
-        deptIDMap.put("FNumber","01");
-        deptIDMap.put("FName","销售部");
+        deptIDMap.put("FNumber",office.getErpDeptNumber());
+        deptIDMap.put("FName",office.getErpDeptName());
         page1Map.put("FDeptID",deptIDMap);
         Map<String,Object> empIDMap = new HashMap<>();
-        empIDMap.put("FNumber","00001");
-        empIDMap.put("FName","陈锦泮");
+        empIDMap.put("FNumber",user.getErpUserNumber());
+        empIDMap.put("FName",user.getErpUserName());
         page1Map.put("FEmpID",empIDMap);
         if (StringUtils.isNotBlank(sobill.getErpCode())) {
             page1Map.put("FBillNo",sobill.getErpCode());

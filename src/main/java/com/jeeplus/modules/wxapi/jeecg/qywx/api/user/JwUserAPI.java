@@ -2,6 +2,10 @@ package com.jeeplus.modules.wxapi.jeecg.qywx.api.user;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jeeplus.common.utils.CacheUtils;
+import com.jeeplus.common.utils.token.AccessTokenUtils;
+import com.jeeplus.modules.wxapi.api.core.common.WxstoreUtils;
+import com.jeeplus.modules.wxapi.api.core.exception.WexinReqException;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
@@ -36,7 +40,9 @@ public class JwUserAPI {
 	//6 获取部门下的成员
 	private static String user_get_dep_all_url = "https://qyapi.weixin.qq.com/cgi-bin/user/simplelist?access_token=ACCESS_TOKEN&department_id=DEPARTMENT_ID&fetch_child=FETCH_CHILD&status=STATUS";  
 	//7 获取部门成员(详情)
-	private static String user_get_url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=ACCESS_TOKEN&department_id=DEPARTMENT_ID&fetch_child=FETCH_CHILD&status=STATUS";  
+	private static String user_get_url = "https://qyapi.weixin.qq.com/cgi-bin/user/list?access_token=ACCESS_TOKEN&department_id=DEPARTMENT_ID&fetch_child=FETCH_CHILD&status=STATUS";
+    //获取访问用户身份 , 使用应用的token ,得到UserId(企业用户)   或  OpenId (非企业用户)
+    public static String GET_USER_INFO_BY_CODE_URL	= "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token=ACCESS_TOKEN&code=CODE";
 	
 	
 	//1创建成员
@@ -229,6 +235,30 @@ public class JwUserAPI {
 	    }  
 		return null;
 	}
+
+    /**
+     * 根据Code获取用户信息
+     * @return
+     */
+    public static Map<String,Object> getWxuserInfo(String code) {
+        Map<String,Object> userMap = new HashMap<>();
+        String accesstoken;
+        if (CacheUtils.get("monicaAccessToken") != null) {
+            accesstoken = CacheUtils.get("monicaAccessToken").toString();
+        } else {
+            AccessTokenUtils.updateAgentToken();
+            accesstoken = CacheUtils.get("monicaAccessToken").toString();
+        }
+        if (accesstoken != null) {
+            String requestUrl = GET_USER_INFO_BY_CODE_URL.replace("ACCESS_TOKEN", accesstoken).replace("CODE", code);
+            net.sf.json.JSONObject result = WxstoreUtils.httpRequest(requestUrl, "GET", null);
+            userMap.put("UserId",result.getString("UserId"));
+            logger.info(result.toString());
+            // 正常返回
+            return userMap;
+        }
+        return null;
+    }
 	
 	
 	public static void main(String[] args) {

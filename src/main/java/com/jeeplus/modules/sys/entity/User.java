@@ -51,6 +51,8 @@ public class User extends DataEntity<User> {
 	private Date oldLoginDate;	// 上次登陆日期
 
 	private Role role;	// 根据角色查询用户条件
+    private String erpUserNumber; // erp编号
+    private String erpUserName; // erp名称
 
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
 
@@ -349,4 +351,19 @@ public class User extends DataEntity<User> {
 		this.qyUserId = qyUserId;
 	}
 
+    public String getErpUserNumber() {
+        return erpUserNumber;
+    }
+
+    public void setErpUserNumber(String erpUserNumber) {
+        this.erpUserNumber = erpUserNumber;
+    }
+
+    public String getErpUserName() {
+        return erpUserName;
+    }
+
+    public void setErpUserName(String erpUserName) {
+        this.erpUserName = erpUserName;
+    }
 }
