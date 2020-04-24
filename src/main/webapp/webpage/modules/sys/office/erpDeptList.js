@@ -9,17 +9,17 @@ $(document).ready(function() {
         dataType: "json",
         contentType: "application/x-www-form-urlencoded",
         //显示检索按钮
-        showSearch: true,
+        showSearch: false,
         //显示刷新按钮
-        showRefresh: true,
+        showRefresh: false,
         //显示切换手机试图按钮
-        showToggle: true,
+        showToggle: false,
         //显示 内容列下拉框
-        showColumns: true,
+        showColumns: false,
         //显示到处按钮
-        showExport: true,
+        showExport: false,
         //显示切换分页按钮
-        showPaginationSwitch: true,
+        showPaginationSwitch: false,
         //最低显示2行
         minimumCountColumns: 2,
         //是否显示行间隔色
