@@ -29,7 +29,6 @@
 <body class="bg-white">
 	<form:form id="inputForm" modelAttribute="office"  method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<input type="hidden" name="hiddenisSyntoent" value="${office.isSyntoent}"/>
 		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
 		   <tbody>
 		      <tr>
@@ -88,11 +87,9 @@
 		      <tr>
 		         <td class="width-15 active"><label class="pull-right">邮箱:</label></td>
 		         <td class="width-35"><form:input path="email" htmlEscape="false" maxlength="50" cssClass="form-control" /></td>
-				<td class="active"><label class="pull-right"><font color="red">*</font>是否需要同步:</label></td>
+				<td class="width-15"><label class="pull-right">erp部门:</label></td>
 				<td>
-					<form:radiobutton path="isSyntoent" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"/>不需要
-					<form:radiobutton path="isSyntoent" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>需要
-					<label id="isSyntoent" class="error" for="isSyntoent"></label>
+					<form:input path="erpDeptName" htmlEscape="false" readonly="true" maxlength="50" cssClass="form-control" />
 				</td>
 		      </tr>
 		      <tr>

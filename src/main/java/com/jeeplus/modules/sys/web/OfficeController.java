@@ -11,13 +11,18 @@ import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.common.utils.token.AccessTokenUtils;
+import com.jeeplus.core.persistence.BaseEntity;
+import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.dto.ErpDeptDTO;
 import com.jeeplus.modules.sys.entity.Area;
+import com.jeeplus.modules.sys.entity.DataRule;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.sys.service.AreaService;
 import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.DictUtils;
@@ -28,9 +33,8 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.JwDepartmentAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
-import net.oschina.j2cache.Cache;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +63,9 @@ public class OfficeController extends BaseController {
 
 	@Autowired
     private UserMapper userMapper;
+
+	@Autowired
+	private ApiUrlService apiUrlService;
 
 
 	@ModelAttribute("office")
@@ -448,4 +455,85 @@ public class OfficeController extends BaseController {
             return parentid1.compareTo(parentid2);
         });
     }
+
+	/**
+	 * 跳转ERP部门列表页
+	 * @return
+	 */
+	@RequestMapping(value = {"erpDeptList", ""})
+	public String erpDeptList(String id, Model model) {
+		model.addAttribute("id", id);
+		return "modules/sys/office/erpDeptList";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "erpDeptData")
+	public Map<String, Object> erpDeptData(ErpDeptDTO erpDeptDTO, HttpServletRequest request, HttpServletResponse response, Model model) {
+		ApiUrl apiUrlList = apiUrlService.getByUsefulness("9");
+		ApiUrl apiUrlTotal = apiUrlService.getByUsefulness("11");
+		String pageNo = request.getParameter("pageNo");
+		JSONArray jsonArray = Common.executeInter(apiUrlList.getUrl() + "&currentPage=" + pageNo, apiUrlList.getProtocol());
+		JSONArray jsonArrayTotal = Common.executeInter(apiUrlTotal.getUrl(), apiUrlTotal.getProtocol());
+		List<ErpDeptDTO> erpDeptDTOList = JSONArray.toList(jsonArray, erpDeptDTO, new JsonConfig());
+		Page<ErpDeptDTO> page = findPage(new Page<ErpDeptDTO>(request, response), erpDeptDTO, erpDeptDTOList);
+		for (int i = 0; i < jsonArrayTotal.size(); i++) {
+			page.setCount(Integer.parseInt(jsonArrayTotal.get(i).toString()));
+		}
+		return getBootstrapData(page);
+	}
+
+	/**
+	 * 数据范围过滤
+	 * @param entity 当前过滤的实体类
+	 */
+	public static void dataRuleFilter(BaseEntity<?> entity) {
+
+		entity.setCurrentUser(UserUtils.getUser());
+		List<DataRule> dataRuleList = UserUtils.getDataRuleList();
+
+		// 如果是超级管理员，则不过滤数据
+		if (dataRuleList.size() == 0) {
+			return;
+		}
+
+		// 数据范围
+		StringBuilder sqlString = new StringBuilder();
+
+
+		for(DataRule dataRule : dataRuleList){
+			if(entity.getClass().getSimpleName().equals(dataRule.getClassName())){
+				sqlString.append(dataRule.getDataScopeSql());
+			}
+
+		}
+
+		entity.setDataScope(sqlString.toString());
+
+	}
+
+	/**
+	 * 查询分页数据
+	 * @param page 分页对象
+	 * @return
+	 */
+	public Page<ErpDeptDTO> findPage(Page<ErpDeptDTO> page, ErpDeptDTO erpDeptDTO, List<ErpDeptDTO> list) {
+		dataRuleFilter(erpDeptDTO);
+		erpDeptDTO.setPage(page);
+		page.setList(list);
+		return page;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/updateErp")
+	public AjaxJson updateErp(HttpServletRequest request) {
+		AjaxJson j = new AjaxJson();
+		String id = request.getParameter("id");
+		String number = request.getParameter("number");
+		String name = request.getParameter("name");
+		officeService.updateERP(id, number, name);
+		j.setSuccess(true);
+		j.setMsg("绑定成功");
+		return j;
+	}
+
 }

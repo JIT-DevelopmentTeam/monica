@@ -19,7 +19,8 @@
 		<result property="type" column="type" />
 		<result property="remarks" column="remarks" />
 		<result property="qyDeptId" column="qyDeptId" />
-        <result property="erpDeptId" column="erpDeptId"/>
+        <result property="erpDeptNumber" column="erpDeptNumber"/>
+        <result property="erpDeptName" column="erpDeptName"/>
 		<association property="area" column="area_id" select="getArea" />
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
@@ -44,7 +45,8 @@
 		a.email,
 		a.remarks,
 		a.qy_dept_id as "qyDeptId",
-		a.erp_dept_id as "erpDeptId",
+		a.erp_dept_number as "erpDeptNumber",
+		a.erp_dept_name as "erpDeptName",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -177,7 +179,8 @@
 			update_date,
 			remarks,
 			qy_dept_id,
-			erp_dept_id,
+			erp_dept_number,
+			erp_dept_name,
 			del_flag,
 			useable,
 			primary_person,
@@ -204,7 +207,8 @@
 			#{updateDate},
 			#{remarks},
 			#{qyDeptId},
-			#{erpDeptId},
+			#{erpDeptNumber},
+			#{erpDeptName},
 			#{delFlag},
 			#{useable},
 			#{primaryPerson.id},
@@ -233,7 +237,8 @@
 			useable=#{useable},
 			primary_person=#{primaryPerson.id},
 			deputy_person=#{deputyPerson.id},
-			erp_dept_id = #{erpDeptId}
+			erp_dept_number = #{erpDeptNumber},
+			erp_dept_name = #{erpDeptName}
 		WHERE id = #{id}
 	</update>
 	
@@ -243,10 +248,17 @@
 			parent_ids = #{parentIds}
 		WHERE id = #{id}
 	</update>
-	
+
+	<update id="updateERP">
+		UPDATE sys_office SET
+			erp_dept_number = #{erpDeptNumber},
+			erp_dept_name = #{erpDeptName}
+		WHERE id = #{id}
+	</update>
+
 	<update id="delete">
-		DELETE FROM sys_office 
-		WHERE id = #{id} OR parent_ids LIKE 
+		DELETE FROM sys_office
+		WHERE id = #{id} OR parent_ids LIKE
 					<if test="dbName == 'oracle'">'%,'||#{id}||',%'</if>
 					<if test="dbName == 'mysql'">CONCAT('%,', #{id}, ',%')</if>
 					<if test="dbName == 'mssql'">'%'+#{id}+'%'</if>

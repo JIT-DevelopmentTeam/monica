@@ -53,6 +53,9 @@
                             <form:option value="6" label="库存列表总量查询"/>
                             <form:option value="7" label="库存详情查询"/>
 							<form:option value="8" label="库存等级查询"/>
+							<form:option value="9" label="部门信息查询"/>
+							<form:option value="10" label="职员信息查询"/>
+							<form:option value="11" label="部门信息查询总数"/>
                         </form:select>
                     </td>
 				</tr>

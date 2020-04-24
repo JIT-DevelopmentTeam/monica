@@ -92,5 +92,10 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
     public Office getEntity(Office office){
         return officeMapper.getEntity(office);
     }
+
+	@Transactional(readOnly = false)
+	public void updateERP(String id, String erpDeptNumber, String erpDeptName) {
+		officeMapper.updateERP(id, erpDeptNumber, erpDeptName);
+	}
 	
 }

@@ -40,4 +40,12 @@ public interface OfficeMapper extends TreeMapper<Office> {
      * @return
      */
     Office getEntity(Office office);
+
+	/**
+	 * 根据部门id修改erp属性
+	 * @param id
+	 * @param erpDeptNumber
+	 * @param erpDeptName
+	 */
+	void updateERP(@Param("id") String id, @Param("erpDeptNumber") String erpDeptNumber, @Param("erpDeptName") String erpDeptName);
 }

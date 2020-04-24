@@ -137,6 +137,15 @@ $(document).ready(function() {
 					   case "8":
 						   text = "库存等级查询";
 						   break;
+					   case "9":
+						   text = "部门信息查询";
+						   break;
+					   case "10":
+						   text = "职员信息查询";
+						   break;
+					   case "11":
+						   text = "部门信息查询总数";
+						   break;
                    }
                    return text != null && text != '' ? text : "-";
                }

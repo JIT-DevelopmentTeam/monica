@@ -32,7 +32,8 @@ public class Office extends TreeEntity<Office> {
 	private User deputyPerson;//副负责人
 	private List<String> childDeptList;//快速添加子部门
 	private String qyDeptId;	// 企业微信部门id
-    private String erpDeptId;    // erp部门id
+    private String erpDeptNumber;    // erp部门编码
+	private String erpDeptName;	// erp部门名称
 
 	public Office(){
 		super();
@@ -185,11 +186,19 @@ public class Office extends TreeEntity<Office> {
 		this.qyDeptId = qyDeptId;
 	}
 
-    public String getErpDeptId() {
-        return erpDeptId;
-    }
+	public String getErpDeptNumber() {
+		return erpDeptNumber;
+	}
 
-    public void setErpDeptId(String erpDeptId) {
-        this.erpDeptId = erpDeptId;
-    }
+	public void setErpDeptNumber(String erpDeptNumber) {
+		this.erpDeptNumber = erpDeptNumber;
+	}
+
+	public String getErpDeptName() {
+		return erpDeptName;
+	}
+
+	public void setErpDeptName(String erpDeptName) {
+		this.erpDeptName = erpDeptName;
+	}
 }
