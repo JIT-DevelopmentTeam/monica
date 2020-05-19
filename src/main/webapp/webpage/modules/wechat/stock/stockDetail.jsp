@@ -147,7 +147,9 @@
         created: function(){
             this.$http.get('${ctxf}/wechat/stock/detailData', {
                 params: {
-                    commodityNumber: "${commodityNumber}"
+                    commodityNumber: "${commodityNumber}",
+                    batchNumber: "${batchNumber}",
+                    warehouse: "${warehouse}"
                 }
             }).then(res => {
                 this.stock = res.body.body.data[0]

@@ -33,7 +33,11 @@ public class StockWechatController extends BaseController {
     @RequestMapping(value = "detail")
     public String stockDetail(HttpServletRequest request, Model model) {
         String commodityNumber = request.getParameter("commodityNumber");
+        String batchNumber = request.getParameter("batchNumber");
+        String warehouse = request.getParameter("warehouse");
         model.addAttribute("commodityNumber", commodityNumber);
+        model.addAttribute("batchNumber", batchNumber);
+        model.addAttribute("warehouse", warehouse);
         return "modules/wechat/stock/stockDetail";
     }
 
@@ -85,8 +89,10 @@ public class StockWechatController extends BaseController {
             return j;
         }
         String commodityNumber = request.getParameter("commodityNumber");
+        String batchNumber = request.getParameter("batchNumber");
+        String warehouse = request.getParameter("warehouse");
         JSONArray jsonarr =
-                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber,"POST");
+                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + warehouse,"POST");
         j.put("data", jsonarr);
         return j;
     }

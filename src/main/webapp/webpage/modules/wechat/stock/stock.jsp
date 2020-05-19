@@ -122,7 +122,7 @@
 <%--                                      <input class="weui-input" type="text" placeholder="请输入规格型号" value=""/>--%>
                                     </div>
                                 </div>
-                               <a class="weui-cell weui-cell_access" @click="item.total === 0 ? '' : goStockDetail(item.commodityNumber)">
+                               <a class="weui-cell weui-cell_access" @click="item.total === 0 ? '' : goStockDetail(item.commodityNumber, item.batchNumber, item.warehouse)">
                                    <div class="weui-cell__hd"><label class="weui-label">当前库存：</label></div>
                                    <div class="weui-cell__bd itemValue">
                                         {{item.total}}
@@ -274,8 +274,8 @@
         },
         methods: {
             // 跳转详情页面
-            goStockDetail:function(commodityNumber) {
-                window.location ="${ctxf}/wechat/stock/detail?commodityNumber=" + commodityNumber;
+            goStockDetail:function(commodityNumber, batchNumber, warehouse) {
+                window.location ="${ctxf}/wechat/stock/detail?commodityNumber=" + commodityNumber + "&batchNumber=" + batchNumber + "&warehouse=" + warehouse;
             },
             // 条件筛选显示与否
             showFixed: function () {
@@ -314,6 +314,7 @@
                     $("#loadDiv").hide();
                     console.log("itemList.size: " + res.body.body.stockList.length + "\ntotal: " + res.body.body.total)
                     this.itemList = res.body.body.stockList;
+                    console.log(this.itemList)
                     this.total = res.body.body.total;
                 })
             },
