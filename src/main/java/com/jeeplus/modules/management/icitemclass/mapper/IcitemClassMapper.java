@@ -25,7 +25,7 @@ public interface IcitemClassMapper extends TreeMapper<IcitemClass> {
      * 查询列表中最大的modifytime
      * @return
      */
-    String findMaxModifyTime();
+    Long findMaxModifyTime();
 
     /**
      * 批量插入数据

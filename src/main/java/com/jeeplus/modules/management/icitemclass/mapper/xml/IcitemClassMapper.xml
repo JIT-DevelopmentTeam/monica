@@ -136,8 +136,8 @@
 		ORDER BY a.sort ASC
 	</select>
 
-	<select id="findMaxModifyTime" resultType="java.lang.String">
-		SELECT MAX(f_modifytime+0) FROM tb_icitemclass
+	<select id="findMaxModifyTime" resultType="java.lang.Long">
+		SELECT MAX(f_modifytime) FROM tb_icitemclass
 	</select>
 	
 	<insert id="insert">

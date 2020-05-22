@@ -32,7 +32,7 @@ public interface IcitemMapper extends BaseMapper<Icitem> {
      * 查询列表中最大的modifytime
      * @return
      */
-    String findMaxModifyTime();
+    Long findMaxModifyTime();
 
     /**
      * 批量插入数据

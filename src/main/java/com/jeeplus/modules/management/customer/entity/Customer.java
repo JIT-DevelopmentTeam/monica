@@ -9,6 +9,8 @@ import com.jeeplus.core.persistence.DataEntity;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 
+import java.sql.Timestamp;
+
 /**
  * 客户管理Entity
  * @author commit
@@ -26,7 +28,7 @@ public class Customer extends DataEntity<Customer> {
 	private String erpNote;		// ERP备注
 	private Integer status;		// 状态
 	private String crediTamt;		// 信用证
-	private String modifyTime;
+	private Long modifyTime;
 	private String info;	// 客户信息（用途：条件搜索）
 	private Office office;
 	private User user;
@@ -128,11 +130,11 @@ public class Customer extends DataEntity<Customer> {
 		this.info = info;
 	}
 
-	public String getModifyTime() {
+	public Long getModifyTime() {
 		return modifyTime;
 	}
 
-	public void setModifyTime(String modifyTime) {
+	public void setModifyTime(Long modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 

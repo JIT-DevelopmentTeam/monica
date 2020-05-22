@@ -51,7 +51,7 @@ public class IcitemService extends CrudService<IcitemMapper, Icitem> {
 	 * 查询列表中最大的modifytime
 	 * @return
 	 */
-	public String findMaxModifyTime() {
+	public Long findMaxModifyTime() {
 		return icitemMapper.findMaxModifyTime();
 	}
 	

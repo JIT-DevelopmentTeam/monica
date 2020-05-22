@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public class CustomerService extends CrudService<CustomerMapper, Customer> {
 	 * 查询列表中最大的modifytime
 	 * @return
 	 */
-	public String findMaxModifyTime() {
+	public Long findMaxModifyTime() {
 		return customerMapper.findMaxModifyTime();
 	}
 	

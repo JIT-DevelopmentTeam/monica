@@ -98,13 +98,14 @@ public class IcitemClassController extends BaseController {
 			throw new Exception("同步出错,请检查接口配置是否准确!");
 		}
 		try {
+		    String url = apiUrl.getUrl() + "&modifyTime=";
 			Method method = Service.getClass().getMethod("findMaxModifyTime");
-			Object maxModifyTime = method.invoke(Service);
-			if (maxModifyTime == null) {
-				maxModifyTime = "";
+			Long maxModifyTime = (Long) method.invoke(Service);
+			if (maxModifyTime != null) {
+				url += maxModifyTime;
 			}
 			JSONArray jsonarr =
-					Common.executeInter(apiUrl.getUrl() + "&modifyTime=" + maxModifyTime, apiUrl.getProtocol());
+					Common.executeInter(url, apiUrl.getProtocol());
 			Method saveMethod = null;
 			switch (syncType){
 				case "1" :/* 保存物料分类 */
@@ -156,7 +157,7 @@ public class IcitemClassController extends BaseController {
 		icitemClass.setId(jsonObject.getString("f_itemid"));
 		icitemClass.setNumber(jsonObject.getString("f_number"));
 		icitemClass.setName(jsonObject.getString("f_name"));
-		icitemClass.setModifyTime(jsonObject.getString("f_modifytime"));
+		icitemClass.setModifyTime(jsonObject.getLong("f_modifytime"));
 		icitemClass.setIsNewRecord(true);
 		icitemClass.preInsert();
 		return icitemClass;
@@ -174,7 +175,7 @@ public class IcitemClassController extends BaseController {
 		icitem.setNumber(jsonObject.getString("f_number"));
 		icitem.setUnit(jsonObject.getString("f_unitname"));
 		icitem.setModel(jsonObject.getString("f_model"));
-		icitem.setModifyTime(jsonObject.getString("f_modifytime"));
+		icitem.setModifyTime(jsonObject.getLong("f_modifytime"));
 		IcitemClass icitemClass = new IcitemClass();
 		icitemClass.setId(jsonObject.getString("f_classid"));
 		icitem.setClassId(icitemClass);

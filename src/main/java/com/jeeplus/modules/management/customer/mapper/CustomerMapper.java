@@ -7,6 +7,8 @@ import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.customer.entity.Customer;
 
+import java.sql.Timestamp;
+
 /**
  * 客户管理MAPPER接口
  * @author commit
@@ -21,6 +23,6 @@ public interface CustomerMapper extends BaseMapper<Customer> {
      * 查询列表中最大的modifytime
      * @return
      */
-    String findMaxModifyTime();
+    Long findMaxModifyTime();
 	
 }

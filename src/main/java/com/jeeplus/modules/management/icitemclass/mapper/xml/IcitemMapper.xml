@@ -104,8 +104,8 @@
 		</where>
 	</select>
 
-	<select id="findMaxModifyTime" resultType="java.lang.String">
-		SELECT MAX(f_modifytime+0) FROM tb_icitem
+	<select id="findMaxModifyTime" resultType="java.lang.Long">
+		SELECT MAX(f_modifytime) FROM tb_icitem
 	</select>
 	
 	<insert id="insert">

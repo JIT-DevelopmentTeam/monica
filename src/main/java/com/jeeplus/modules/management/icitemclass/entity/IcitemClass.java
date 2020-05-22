@@ -20,7 +20,7 @@ public class IcitemClass extends TreeEntity<IcitemClass> {
 	private static final long serialVersionUID = 1L;
 	private String erpId;		// erp分类id
 	private String number;		// 编码
-	private String modifyTime;		// 同步时间戳
+	private Long modifyTime;		// 同步时间戳
 	private String erpNote;		// erp备注
 
 	private List<Icitem> icitemList = Lists.newArrayList();		// 子表列表
@@ -49,11 +49,11 @@ public class IcitemClass extends TreeEntity<IcitemClass> {
 		this.number = number;
 	}
 	
-	public String getModifyTime() {
+	public Long getModifyTime() {
 		return modifyTime;
 	}
 
-	public void setModifyTime(String modifyTime) {
+	public void setModifyTime(Long modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 	
