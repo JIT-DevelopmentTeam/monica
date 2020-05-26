@@ -123,7 +123,10 @@ $(document).ready(function() {
 		        field: 'status',
 		        title: '状态',
 		        sortable: true,
-		        sortName: 'status'
+		        sortName: 'status',
+			   formatter:function(value, row , index){
+				   return jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-");
+			   }
 		       
 		    }
 		     ]

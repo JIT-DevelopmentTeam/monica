@@ -59,7 +59,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">状态：</label></td>
 					<td class="width-35">
-						<form:input path="status" htmlEscape="false"    class="form-control "/>
+						<form:radiobuttons path="status" items="${fns:getDictList('use_status')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks "/>
 					</td>
 					<td class="width-15 active"></td>
 		   			<td class="width-35" ></td>
