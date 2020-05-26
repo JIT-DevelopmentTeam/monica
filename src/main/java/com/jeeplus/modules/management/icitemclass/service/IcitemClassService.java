@@ -40,7 +40,7 @@ public class IcitemClassService extends TreeService<IcitemClassMapper, IcitemCla
 	 * 查询列表中最大的modifytime
 	 * @return
 	 */
-	public String findMaxModifyTime() {
+	public Long findMaxModifyTime() {
 		return icitemClassMapper.findMaxModifyTime();
 	}
 	

@@ -294,8 +294,6 @@ public class OfficeController extends BaseController {
             List<Office> delList = new ArrayList<>();
             // 企业微信
             List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
-            // 排序机构列表
-            sortOfficeList(departmentList);
             // 新增/编辑
             for (Department department : departmentList) {
                 if (!"1".equals(department.getId())) {
@@ -347,6 +345,11 @@ public class OfficeController extends BaseController {
         if (office == null) {
             // 新增
             Office saveOffice = new Office();
+            saveOffice.setIsNewRecord(true);
+            saveOffice.setId(id);
+            Office parentOffice = new Office();
+            parentOffice.setId(parentId);
+            saveOffice.setParent(parentOffice);
             saveOffice.setQyDeptId(id);
             saveOffice.setName(name);
             // 中国
@@ -442,18 +445,6 @@ public class OfficeController extends BaseController {
             editUser.setMobile(mobile);
             userMapper.update(editUser);
         }
-    }
-
-    /**
-     * 排序企业微信机构列表
-     * @param officeList 企业微信机构列表
-     */
-    private void sortOfficeList(List<Department> officeList) {
-        Collections.sort(officeList, (o1, o2) -> {
-            Integer parentid1 = Integer.valueOf(o1.getParentid());
-            Integer parentid2 = Integer.valueOf(o2.getParentid());
-            return parentid1.compareTo(parentid2);
-        });
     }
 
 	/**

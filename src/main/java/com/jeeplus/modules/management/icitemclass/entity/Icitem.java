@@ -22,7 +22,7 @@ public class Icitem extends DataEntity<Icitem> {
 	private String model;		// 商品型号
 	private String unit;		// 商品计算单位
 	private String erpclassId;		// erp端分类id
-	private String modifyTime;		// 同步时间戳
+	private Long modifyTime;		// 同步时间戳
 	private String erpNote;		// erp备注
 	private String status;		// 状态
 	private String salePrice;	// 销售价格
@@ -109,11 +109,11 @@ public class Icitem extends DataEntity<Icitem> {
 	}
 	
 	@ExcelField(title="同步时间戳", align=2, sort=8)
-	public String getModifyTime() {
+	public Long getModifyTime() {
 		return modifyTime;
 	}
 
-	public void setModifyTime(String modifyTime) {
+	public void setModifyTime(Long modifyTime) {
 		this.modifyTime = modifyTime;
 	}
 	

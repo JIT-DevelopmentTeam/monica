@@ -70,11 +70,11 @@
 	<!-- 工具栏 -->
 	<div id="toolbar">
             <c:if test="${icitem.isSelect == null}">
-                <shiro:hasPermission name="management:icitemclass:icitem:add">
-                    <button id="add" class="btn btn-primary" onclick="add()">
-                        <i class="glyphicon glyphicon-plus"></i> 新建
-                    </button>
-                </shiro:hasPermission>
+                <%--<shiro:hasPermission name="management:icitemclass:icitem:add">--%>
+                    <%--<button id="add" class="btn btn-primary" onclick="add()">--%>
+                        <%--<i class="glyphicon glyphicon-plus"></i> 新建--%>
+                    <%--</button>--%>
+                <%--</shiro:hasPermission>--%>
                 <shiro:hasPermission name="management:icitemclass:icitem:edit">
                     <button id="edit" class="btn btn-success" disabled onclick="edit()">
                         <i class="glyphicon glyphicon-edit"></i> 修改

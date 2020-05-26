@@ -25,10 +25,14 @@ import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
+import com.jeeplus.modules.sys.entity.DictType;
+import com.jeeplus.modules.sys.entity.DictValue;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
+import com.jeeplus.modules.sys.service.DictTypeService;
 import com.jeeplus.modules.sys.service.OfficeService;
+import com.jeeplus.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -57,6 +61,9 @@ public class ReviewWechatController extends BaseController {
     // 消息发送
     @Autowired
     private MessagesendService messagesendService;
+
+    @Autowired
+    private DictTypeService dictTypeService;
 
     @Autowired
     private UserMapper userMapper;
@@ -136,7 +143,52 @@ public class ReviewWechatController extends BaseController {
             mv.addObject("sobill",sobill);
             mv.addObject("orderApproveList",orderApproveList);
         }
+        DictType sobillType = new DictType();
+        sobillType.setType("sobill_type");
+        List<DictType> sobillTypeDictType = dictTypeService.findList(sobillType);
+        List<DictValue> sobillTypeList = dictTypeService.get(sobillTypeDictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark01 = new DictType();
+        sobillRemark01.setType("sobill_remark01");
+        List<DictType> sobillRemark01DictType = dictTypeService.findList(sobillRemark01);
+        List<DictValue> sobillRemark01List = dictTypeService.get(sobillRemark01DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark02 = new DictType();
+        sobillRemark02.setType("sobill_remark02");
+        List<DictType> sobillRemark02DictType = dictTypeService.findList(sobillRemark02);
+        List<DictValue> sobillRemark02List = dictTypeService.get(sobillRemark02DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark03 = new DictType();
+        sobillRemark03.setType("sobill_remark03");
+        List<DictType> sobillRemark03DictType = dictTypeService.findList(sobillRemark03);
+        List<DictValue> sobillRemark03List = dictTypeService.get(sobillRemark03DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark04 = new DictType();
+        sobillRemark04.setType("sobill_remark04");
+        List<DictType> sobillRemark04DictType = dictTypeService.findList(sobillRemark04);
+        List<DictValue> sobillRemark04List = dictTypeService.get(sobillRemark04DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark05 = new DictType();
+        sobillRemark05.setType("sobill_remark05");
+        List<DictType> sobillRemark05DictType = dictTypeService.findList(sobillRemark05);
+        List<DictValue> sobillRemark05List = dictTypeService.get(sobillRemark05DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark06 = new DictType();
+        sobillRemark06.setType("sobill_remark06");
+        List<DictType> sobillRemark06DictType = dictTypeService.findList(sobillRemark06);
+        List<DictValue> sobillRemark06List = dictTypeService.get(sobillRemark06DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark07 = new DictType();
+        sobillRemark07.setType("sobill_remark07");
+        List<DictType> sobillRemark07DictType = dictTypeService.findList(sobillRemark07);
+        List<DictValue> sobillRemark07List = dictTypeService.get(sobillRemark07DictType.get(0).getId()).getDictValueList();
+        DictType sobillRemark08 = new DictType();
+        sobillRemark08.setType("sobill_remark08");
+        List<DictType> sobillRemark08DictType = dictTypeService.findList(sobillRemark08);
+        List<DictValue> sobillRemark08List = dictTypeService.get(sobillRemark08DictType.get(0).getId()).getDictValueList();
         mv.addObject("qyUserId",qyUserId);
+        mv.addObject("sobillTypeList",sobillTypeList);
+        mv.addObject("sobillRemark01List",sobillRemark01List);
+        mv.addObject("sobillRemark02List",sobillRemark02List);
+        mv.addObject("sobillRemark03List",sobillRemark03List);
+        mv.addObject("sobillRemark04List",sobillRemark04List);
+        mv.addObject("sobillRemark05List",sobillRemark05List);
+        mv.addObject("sobillRemark06List",sobillRemark06List);
+        mv.addObject("sobillRemark07List",sobillRemark07List);
+        mv.addObject("sobillRemark08List",sobillRemark08List);
         mv.setViewName("modules/wechat/review/applicationDetail");
         return mv;
     }
@@ -166,68 +218,98 @@ public class ReviewWechatController extends BaseController {
             List<OrderApprove> orderApproveList = orderApproveService.findList(orderApprove);
             boolean allow = false;
             Messagesend messagesend=null;
-            for (int i = 0; i < orderApproveList.size(); i++) {
-                if (orderApproveList.get(i).getApprovalEmplId().getId().equals(userId) && orderApproveList.get(i).getIsToapp() == 1) {
-                    OrderApprove currentApprove = orderApproveList.get(i);
+            if (orderApproveList.size() == 1) {
+                if (orderApproveList.get(0).getStatus() == 0) {
+                    OrderApprove currentApprove = orderApproveList.get(0);
                     currentApprove.setStatus(status);
                     currentApprove.setRemark(remark);
                     currentApprove.setIsToapp(0);
                     orderApproveService.save(currentApprove);
-                    String title="订单审核";
-                    String toUser=sobill.getEmplId();
-                    User user=new User(toUser);
-                    String userQyUserId=user.getQyUserId();
-                    String getEmplId=orderApproveList.get(i).getApprovalEmplId().getId(); // 发送人Id
-                    request_url += Global.getConfig("frontPath");// 跳转详情url
                     if (status == 2) {
                         // 审核不通过
                         sobill.setCheckStatus(3);
                         sobillService.save(sobill);
-                        // 消息发送到企业微信
-                        MessageTemplate msgRejectTemplate = msgReject;
-                        msgRejectTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
-                        break;
                     }
-                    // 走审核下一个节点
-                    if (currentApprove.getIsLast() != 1 && status != 2) {
-                        OrderApprove nextApprove = orderApproveList.get(i+1);
-                        nextApprove.setIsToapp(1);
-                        orderApproveService.save(nextApprove);
-                        /**
-                         * 提醒申请人
-                         */
-                        MessageTemplate msgRemindTemplate=msgRemind;
-                        msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
-                        /**
-                         * 发送下一个节点申请人
-                         */
-                        String nextToUserId=nextApprove.getApprovalEmplId().getQyUserId();// 下一个节点接收人
-                        MessageTemplate msgPassTemplate = msgPass;
-                        msgPassTemplate.send(getEmplId,title,nextToUserId,request_url,sobill.getId(),"1");// 消息发送到企业微信(下一个节点审批)
-
+                    allow = true;
+                    JSONObject jsonObject = syncOrder(sobill);
+                    if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
+                        JSONObject dataJson = jsonObject.getJSONObject("Data");
+                        // 审核通过
+                        sobill.setCheckStatus(1);
+                        sobill.setCheckerId(userId);
+                        sobill.setCheckTime(new Date());
+                        sobill.setErpCode(dataJson.get("BillNo").toString());
+                        sobill.setSynStatus(1);
+                        sobill.setSynTime(new Date());
+                        sobillService.save(sobill);
+                    } else {
+                        allow = false;
                     }
-                    // 审核已走到最后节点
-                    if (currentApprove.getIsLast() == 1 && status == 1) {
-                        allow = true;
-                        // 同步成功后才允许审核
-                        JSONObject jsonObject = syncOrder(sobill);
-                        if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
-                            JSONObject dataJson = jsonObject.getJSONObject("Data");
-                            // 审核通过
-                            sobill.setCheckStatus(1);
-                            sobill.setCheckerId(userId);
-                            sobill.setCheckTime(new Date());
-                            sobill.setErpCode(dataJson.get("BillNo").toString());
-                            sobill.setSynStatus(1);
-                            sobill.setSynTime(new Date());
+                }
+            } else {
+                for (int i = 0; i < orderApproveList.size(); i++) {
+                    if (orderApproveList.get(i).getApprovalEmplId().getId().equals(userId) && orderApproveList.get(i).getIsToapp() == 1) {
+                        OrderApprove currentApprove = orderApproveList.get(i);
+                        currentApprove.setStatus(status);
+                        currentApprove.setRemark(remark);
+                        currentApprove.setIsToapp(0);
+                        orderApproveService.save(currentApprove);
+                        String title="订单审核";
+                        String toUser=sobill.getEmplId();
+                        User user=new User(toUser);
+                        String userQyUserId=user.getQyUserId();
+                        String getEmplId=orderApproveList.get(i).getApprovalEmplId().getId(); // 发送人Id
+                        request_url += Global.getConfig("frontPath");// 跳转详情url
+                        if (status == 2) {
+                            // 审核不通过
+                            sobill.setCheckStatus(3);
                             sobillService.save(sobill);
+                            // 消息发送到企业微信
+                            MessageTemplate msgRejectTemplate = msgReject;
+                            msgRejectTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2"); // 驳回消息
+                            break;
+                        }
+                        // 走审核下一个节点
+                        if (currentApprove.getIsLast() != 1 && status != 2) {
+                            OrderApprove nextApprove = orderApproveList.get(i+1);
+                            nextApprove.setIsToapp(1);
+                            orderApproveService.save(nextApprove);
                             /**
                              * 提醒申请人
                              */
                             MessageTemplate msgRemindTemplate=msgRemind;
-                            msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
-                        } else {
-                            allow = false;
+                            msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
+                            /**
+                             * 发送下一个节点申请人
+                             */
+                            String nextToUserId=nextApprove.getApprovalEmplId().getQyUserId();// 下一个节点接收人
+                            MessageTemplate msgPassTemplate = msgPass;
+                            msgPassTemplate.send(getEmplId,title,nextToUserId,request_url,sobill.getId(),"1");// 消息发送到企业微信(下一个节点审批)
+
+                        }
+                        // 审核已走到最后节点
+                        if (currentApprove.getIsLast() == 1 && status == 1) {
+                            allow = true;
+                            // 同步成功后才允许审核
+                            JSONObject jsonObject = syncOrder(sobill);
+                            if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
+                                JSONObject dataJson = jsonObject.getJSONObject("Data");
+                                // 审核通过
+                                sobill.setCheckStatus(1);
+                                sobill.setCheckerId(userId);
+                                sobill.setCheckTime(new Date());
+                                sobill.setErpCode(dataJson.get("BillNo").toString());
+                                sobill.setSynStatus(1);
+                                sobill.setSynTime(new Date());
+                                sobillService.save(sobill);
+                                /**
+                                 * 提醒申请人
+                                 */
+                                MessageTemplate msgRemindTemplate=msgRemind;
+                                msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
+                            } else {
+                                allow = false;
+                            }
                         }
                     }
                 }
