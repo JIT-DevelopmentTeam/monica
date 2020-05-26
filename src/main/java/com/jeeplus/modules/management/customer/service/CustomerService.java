@@ -44,6 +44,10 @@ public class CustomerService extends CrudService<CustomerMapper, Customer> {
 	public String findMaxModifyTime() {
 		return customerMapper.findMaxModifyTime();
 	}
+
+	public Customer getByName(String clientName) {
+		return customerMapper.getByName(clientName);
+	}
 	
 	@Transactional(readOnly = false)
 	public void save(Customer customer) {

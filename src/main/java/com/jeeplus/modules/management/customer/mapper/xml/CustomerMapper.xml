@@ -88,6 +88,19 @@
 	<select id="findMaxModifyTime" resultType="java.lang.String">
 		SELECT MAX(f_modifytime+0) FROM tb_customer
 	</select>
+
+	<select id="getByName" resultType="Customer">
+		SELECT
+			<include refid="customerColumns"/>
+		FROM tb_customer a
+		<include refid="customerJoins"/>
+		<where>
+			1 = 1
+			<if test="clientName != null and clientName != ''">
+				and a.f_name = #{clientName}
+			</if>
+		</where>
+	</select>
 	
 	<insert id="insert">
 		INSERT INTO tb_customer(

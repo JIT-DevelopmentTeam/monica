@@ -1,6 +1,10 @@
 package com.jeeplus.modules.wxapi.jeecg.wechat.api;
 
 import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.*;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.exception.WebAuthAccessTokenException;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.resolver.TicketStorageResolver;
@@ -8,9 +12,6 @@ import com.jeeplus.modules.wxapi.jeecg.wechat.api.resolver.TokenStorageResolver;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.util.Base64Utils;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.util.CryptoUtils;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.util.HttpUtils;
-import com.google.gson.*;
-import com.jeeplus.modules.wxapi.jeecg.wechat.api.resolver.TicketStorageResolver;
-import com.jeeplus.modules.wxapi.jeecg.wechat.api.resolver.TokenStorageResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,6 +241,40 @@ public class WechatAPI {
     }
 
     /**
+     * 网页授权刷新token
+     * @param refresh_token 调用网页授权获取token返回的refreshToken
+     * @return
+     */
+    public WebAuthAccessToken refreshToken(String refresh_token) throws WebAuthAccessTokenException {
+        String url = this.WEB_AUTH_PREFIX + "oauth2/refresh_token?appid=" + this.getAppid() +
+                "&grant_type=refresh_token&refresh_token=" + refresh_token;
+
+        String dataStr = HttpUtils.sendGetRequest(url, null,"utf-8");
+        JsonObject data = (JsonObject) jsonParser.parse(dataStr);
+
+        if(!data.has("errcode")){
+
+            String accessToken = data.get("access_token").getAsString();
+            Integer expiresIn = data.get("expires_in").getAsInt();
+            String refreshToken = data.get("refresh_token").getAsString();
+            String openid = data.get("openid").getAsString();
+            String scope = data.get("scope").getAsString();
+
+            WebAuthAccessToken webAuthAccessToken = new WebAuthAccessToken()
+                    .setAccessToken(accessToken)
+                    .setExpiresIn(expiresIn)
+                    .setRefreshToken(refreshToken)
+                    .setOpenid(openid)
+                    .setScope(scope);
+
+            return webAuthAccessToken;
+
+        }else{
+            throw new WebAuthAccessTokenException("get access_token of webauth is failed, reason", dataStr);
+        }
+    }
+
+    /**
      * 通过网页授权获取用户信息
      *
      * @param accessToken 网页授权接口调用凭证
@@ -284,6 +319,23 @@ public class WechatAPI {
             }
         }
         return snsUserInfo;
+    }
+
+    /**
+     * 网页授权-验证token
+     * @param accessToken
+     * @param openid
+     * @return true为有效，false为无效
+     */
+    public Boolean verifyToken(String accessToken, String openid) {
+        String url = this.WEB_AUTH_PREFIX + "auth?access_token=" + accessToken + "&openid=" + openid;
+
+        com.alibaba.fastjson.JSONObject jsonObject =  JSON.parseObject(HttpUtils.sendGetRequest(url));
+
+        if (!"0".equals(jsonObject.getString("errcode"))) {
+            return false;
+        }
+        return true;
     }
 
 
