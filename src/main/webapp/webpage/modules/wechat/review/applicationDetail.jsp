@@ -48,7 +48,7 @@
                 <span>*</span>类型
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_type')}" varStatus="vs" var="var">
+                <c:forEach items="${sobillTypeList}" varStatus="vs" var="var">
                     <c:if test="${sobill.type == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
@@ -91,8 +91,8 @@
                 包装
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark01')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark01List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark01 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -101,8 +101,8 @@
                 镜面抛
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark02')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark02List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark02 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -111,8 +111,8 @@
                 胶水
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark03')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark03List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark03 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -121,8 +121,8 @@
                 标识要求
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark04')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark04List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark04 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -131,8 +131,8 @@
                 喷码
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark05')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark05List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark05 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -141,8 +141,8 @@
                 客户验货
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark06')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark06List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark06 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -151,8 +151,8 @@
                 跟柜物品
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark07')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark07List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark07 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
@@ -161,16 +161,16 @@
                 物流
             </div>
             <div class="addOrder-list_ft">
-                <c:forEach items="${fns:getDictList('sobill_remark08')}" varStatus="vs" var="var">
-                    <c:if test="${sobill.type == var.value}">${var.label}</c:if>
+                <c:forEach items="${sobillRemark08List}" varStatus="vs" var="var">
+                    <c:if test="${sobill.remark08 == var.value}">${var.label}</c:if>
                 </c:forEach>
             </div>
         </div>
         <div class="addOrder-list big-list">
-            <textarea readonly class="addOrder-textarea" cols="30" rows="10" placeholder="其他特殊要求"></textarea>
+            <textarea readonly class="addOrder-textarea" cols="30" rows="10" placeholder="其他特殊要求">${sobill.remark09}</textarea>
         </div>
         <div class="addOrder-list big-list">
-            <textarea readonly class="addOrder-textarea" cols="30" rows="10" placeholder="付款计划"></textarea>
+            <textarea readonly class="addOrder-textarea" cols="30" rows="10" placeholder="付款计划">${sobill.remark10}</textarea>
         </div>
     </div>
 

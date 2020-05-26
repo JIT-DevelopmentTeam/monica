@@ -61,12 +61,12 @@
             </div>
             <p class="weui-grid__label">{{ stock }}</p>
         </a>
-        <a v-bind:href="warningHref" class="weui-grid">
-            <div class="weui-grid__icon">
-                <img src="${ctxStatic}/image/wechat/appointment-missed.png" alt="">
-            </div>
-            <p class="weui-grid__label">{{ warning }}</p>
-        </a>
+        <%--<a v-bind:href="warningHref" class="weui-grid">--%>
+            <%--<div class="weui-grid__icon">--%>
+                <%--<img src="${ctxStatic}/image/wechat/appointment-missed.png" alt="">--%>
+            <%--</div>--%>
+            <%--<p class="weui-grid__label">{{ warning }}</p>--%>
+        <%--</a>--%>
         <a v-bind:href="reviewHref" class="weui-grid">
             <div class="weui-grid__icon">
                 <img src="${ctxStatic}/image/wechat/page_white_edit.png" alt="">
