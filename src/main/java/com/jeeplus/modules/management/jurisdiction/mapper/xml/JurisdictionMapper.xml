@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.management.jurisdiction.mapper.JurisdictionMapper">
+    
+	<sql id="jurisdictionColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.client_id AS "client.id",
+		a.warehouse_id AS "warehouse.id",
+		a.item_id AS "item.id"
+	</sql>
+	
+	<sql id="jurisdictionJoins">
+		
+		LEFT JOIN tb_customer client ON client.id = a.client_id
+		LEFT JOIN tb_warehouse warehouse ON warehouse.id = a.warehouse_id
+		LEFT JOIN tb_icitem item ON item.id = a.item_id
+	</sql>
+	
+    
+	<select id="get" resultType="Jurisdiction" >
+		SELECT 
+			<include refid="jurisdictionColumns"/>
+		FROM tb_jurisdiction a
+		<include refid="jurisdictionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Jurisdiction" >
+		SELECT 
+			<include refid="jurisdictionColumns"/>
+		FROM tb_jurisdiction a
+		<include refid="jurisdictionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Jurisdiction" >
+		SELECT 
+			<include refid="jurisdictionColumns"/>
+		FROM tb_jurisdiction a
+		<include refid="jurisdictionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_jurisdiction(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			client_id,
+			warehouse_id,
+			item_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{client.id},
+			#{warehouse.id},
+			#{item.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_jurisdiction SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			client_id = #{client.id},
+			warehouse_id = #{warehouse.id},
+			item_id = #{item.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tb_jurisdiction
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tb_jurisdiction SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Jurisdiction" statementType="STATEMENT">
+		select * FROM tb_jurisdiction  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

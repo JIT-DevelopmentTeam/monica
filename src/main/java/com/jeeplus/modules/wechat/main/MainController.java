@@ -6,6 +6,7 @@ import com.jeeplus.modules.management.wxuser.entity.WxUser;
 import com.jeeplus.modules.management.wxuser.service.WxUserService;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.WechatAPI;
+import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.JsConfig;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.SNSUserInfo;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.WebAuthAccessToken;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.exception.WebAuthAccessTokenException;
@@ -17,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Timestamp;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "${frontPath}/wechat/main")
@@ -116,6 +116,26 @@ public class MainController extends BaseController {
             aj.setMsg(e.getMessage());
             aj.setSuccess(false);
         }
+        return aj;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getJsApiTicket", method = RequestMethod.GET)
+    public AjaxJson getJsApiTicket(String url, Boolean debug, String jsApiList) {
+        AjaxJson aj = new AjaxJson();
+        WechatAPI wxAPI = new WechatAPI("wxf297fc64f92b7f99", "589360b4f89e26beebf605d6a20df2e5");
+        Map<String, Object> param = new HashMap<>();
+        List<String> jsList = new ArrayList<>();
+        String[] split = jsApiList.split(",");
+        for (String js : split) {
+            jsList.add(js);
+        }
+        param.put("url", url);
+        param.put("debug", debug);
+        param.put("jsApiList", jsList);
+        JsConfig jsConfig = wxAPI.getJsConfig(param);
+        aj.setSuccess(true);
+        aj.put("jsConfig", jsConfig);
         return aj;
     }
 
