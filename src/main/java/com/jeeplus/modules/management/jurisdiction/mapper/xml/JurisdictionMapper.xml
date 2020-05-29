@@ -12,7 +12,19 @@
 		a.del_flag AS "delFlag",
 		a.client_id AS "client.id",
 		a.warehouse_id AS "warehouse.id",
-		a.item_id AS "item.id"
+		a.item_id AS "item.id",
+				
+				
+				
+				
+				
+				
+				
+		client.f_name AS "client.name",
+				
+		warehouse.name AS "warehouse.name",
+				
+		item.f_name AS "item.name"
 	</sql>
 	
 	<sql id="jurisdictionJoins">
@@ -24,18 +36,46 @@
 	
     
 	<select id="get" resultType="Jurisdiction" >
-		SELECT 
-			<include refid="jurisdictionColumns"/>
+		SELECT
+			a.id AS "id",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.client_id AS "client.id",
+			a.warehouse_id AS "warehouse.id",
+			a.item_id AS "item.id",
+			client.f_name AS "client.name",
+			GROUP_CONCAT(DISTINCT warehouse.NAME) AS "warehouse.name",
+			GROUP_CONCAT(DISTINCT item.f_name) AS "item.name"
 		FROM tb_jurisdiction a
-		<include refid="jurisdictionJoins"/>
+		LEFT JOIN tb_customer client ON client.id = a.client_id
+		LEFT JOIN tb_warehouse warehouse ON INSTR(CONCAT(a.warehouse_id),CONCAT(warehouse.id))
+		LEFT JOIN tb_icitem item ON INSTR(CONCAT(a.item_id),CONCAT(item.id))
 		WHERE a.id = #{id}
 	</select>
 	
 	<select id="findList" resultType="Jurisdiction" >
-		SELECT 
-			<include refid="jurisdictionColumns"/>
+		SELECT
+			a.id AS "id",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.client_id AS "client.id",
+			a.warehouse_id AS "warehouse.id",
+			a.item_id AS "item.id",
+			client.f_name AS "client.name",
+			GROUP_CONCAT(DISTINCT warehouse.NAME) AS "warehouse.name",
+			GROUP_CONCAT(DISTINCT item.f_name) AS "item.name"
 		FROM tb_jurisdiction a
-		<include refid="jurisdictionJoins"/>
+		LEFT JOIN tb_customer client ON client.id = a.client_id
+		LEFT JOIN tb_warehouse warehouse ON INSTR(CONCAT(a.warehouse_id),CONCAT(warehouse.id))
+		LEFT JOIN tb_icitem item ON INSTR(CONCAT(a.item_id),CONCAT(item.id))
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
@@ -68,7 +108,20 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
+	<select id="findJurByClientId" resultType="Warehouse">
+		SELECT
+			A.*
+		FROM
+			tb_warehouse A
+			LEFT JOIN tb_jurisdiction B ON CONCAT( ',', B.warehouse_id, ',' ) LIKE CONCAT( '%,', A.id, ',%' )
+		WHERE
+		1=1
+		<if test="clientId != null and clientId != ''">
+			and B.client_id = #{clientId}
+		</if>
+	</select>
+
 	<insert id="insert">
 		INSERT INTO tb_jurisdiction(
 			id,

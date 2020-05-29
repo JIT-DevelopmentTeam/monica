@@ -30,7 +30,7 @@ public class Jurisdiction extends DataEntity<Jurisdiction> {
 		super(id);
 	}
 
-	@ExcelField(title="客户id", fieldType=Customer.class, value="", align=2, sort=7)
+	@ExcelField(title="客户id", fieldType=Customer.class, value="client.name", align=2, sort=7)
 	public Customer getClient() {
 		return client;
 	}
@@ -39,7 +39,7 @@ public class Jurisdiction extends DataEntity<Jurisdiction> {
 		this.client = client;
 	}
 	
-	@ExcelField(title="仓库id", fieldType=Warehouse.class, value="", align=2, sort=8)
+	@ExcelField(title="仓库id", fieldType=Warehouse.class, value="warehouse.name", align=2, sort=8)
 	public Warehouse getWarehouse() {
 		return warehouse;
 	}
@@ -48,7 +48,7 @@ public class Jurisdiction extends DataEntity<Jurisdiction> {
 		this.warehouse = warehouse;
 	}
 	
-	@ExcelField(title="商品id", fieldType=Icitem.class, value="", align=2, sort=9)
+	@ExcelField(title="商品id", fieldType=Icitem.class, value="item.name", align=2, sort=9)
 	public Icitem getItem() {
 		return item;
 	}

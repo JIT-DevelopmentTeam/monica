@@ -85,10 +85,10 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: '',
-		        title: '客户id',
+		        field: 'client.name',
+		        title: '客户名称',
 		        sortable: true,
-		        sortName: ''
+		        sortName: 'client.name'
 		        ,formatter:function(value, row , index){
 
 			   if(value == null || value ==""){
@@ -110,17 +110,17 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: '',
-		        title: '仓库id',
+		        field: 'warehouse.name',
+		        title: '仓库名称',
 		        sortable: true,
-		        sortName: ''
+		        sortName: 'warehouse.name'
 		       
 		    }
 			,{
-		        field: '',
-		        title: '商品id',
+		        field: 'item.name',
+		        title: '商品名称',
 		        sortable: true,
-		        sortName: ''
+		        sortName: 'item.name'
 		       
 		    }
 		     ]

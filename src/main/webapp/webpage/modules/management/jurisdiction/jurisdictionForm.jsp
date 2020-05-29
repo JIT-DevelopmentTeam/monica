@@ -37,25 +37,25 @@
 		<table class="table table-bordered">
 		   <tbody>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">客户id：</label></td>
+					<td class="width-15 active"><label class="pull-right">客户名称：</label></td>
 					<td class="width-35">
-						<sys:gridselect url="${ctx}/management/customer/customer/data" id="client" name="client.id" value="${jurisdiction.client.id}" labelName="" labelValue="${jurisdiction.}"
-							 title="选择客户id" cssClass="form-control " fieldLabels="客户名称" fieldKeys="name" searchLabels="客户名称" searchKeys="name" ></sys:gridselect>
-					</td>
-					<td class="width-15 active"><label class="pull-right">仓库id：</label></td>
-					<td class="width-35">
-						<sys:gridselect url="${ctx}/management/warehouse/warehouse/data" id="warehouse" name="warehouse.id" value="${jurisdiction.warehouse.id}" labelName="" labelValue="${jurisdiction.}"
-							 title="选择仓库id" cssClass="form-control " fieldLabels="仓库名称" fieldKeys="name" searchLabels="仓库名称" searchKeys="name" ></sys:gridselect>
+						<sys:gridselect url="${ctx}/management/customer/customer/data" id="client" name="client.id" value="${jurisdiction.client.id}" labelName="client.name" labelValue="${jurisdiction.client.name}"
+							 title="选择客户id" cssClass="form-control " fieldLabels="客户编码|客户名称" fieldKeys="number|name" searchLabels="客户编码|客户名称" searchKeys="number|name" ></sys:gridselect>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right">商品id：</label></td>
+					<td class="width-15 active"><label class="pull-right">仓库名称：</label></td>
 					<td class="width-35">
-						<sys:gridselect url="${ctx}/management/icitemclass/icitem/data" id="item" name="item.id" value="${jurisdiction.item.id}" labelName="" labelValue="${jurisdiction.}"
-							 title="选择商品id" cssClass="form-control " fieldLabels="商品名称" fieldKeys="name" searchLabels="商品名称" searchKeys="name" ></sys:gridselect>
+						<sys:gridselect url="${ctx}/management/warehouse/warehouse/data" id="warehouse" name="warehouse.id" value="${jurisdiction.warehouse.id}" labelName="warehouse.name" labelValue="${jurisdiction.warehouse.name}"
+							 title="选择仓库id" cssClass="form-control " fieldLabels="仓库编码|仓库名称" fieldKeys="number|name" searchLabels="仓库编码|仓库名称" searchKeys="number|name" isMultiSelected="true" ></sys:gridselect>
 					</td>
-					<td class="width-15 active"></td>
-		   			<td class="width-35" ></td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">商品名称：</label></td>
+					<td class="width-35">
+						<sys:gridselect url="${ctx}/management/icitemclass/icitem/data" id="item" name="item.id" value="${jurisdiction.item.id}" labelName="item.name" labelValue="${jurisdiction.item.name}"
+							 title="选择商品id" cssClass="form-control " fieldLabels="商品编码|商品名称|商品规格" fieldKeys="number|name|model" searchLabels="商品编码|商品名称|商品规格" searchKeys="number|name|model" isMultiSelected="true" ></sys:gridselect>
+					</td>
 		  		</tr>
 		 	</tbody>
 		</table>
