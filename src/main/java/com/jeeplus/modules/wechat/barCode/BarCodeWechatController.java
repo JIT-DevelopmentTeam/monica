@@ -1,13 +1,17 @@
 package com.jeeplus.modules.wechat.barCode;
 
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.management.icitemclass.entity.Icitem;
 import com.jeeplus.modules.management.icitemclass.service.IcitemService;
+import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.JsapiTicket;
 import com.jeeplus.modules.wxapi.utils.Sign;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +30,9 @@ public class BarCodeWechatController extends BaseController {
 
     @Autowired
     private IcitemService icitemService;
+
+    @Autowired
+    private ApiUrlService apiUrlService;
 
     /**
      * 条码追溯列表
@@ -66,9 +73,10 @@ public class BarCodeWechatController extends BaseController {
     @RequestMapping(value = "scanQRCode")
     public Map<String, Object> scanQRCode(HttpServletRequest request) {
         Map<String, Object> result = new HashMap<>();
-        String itemId = request.getParameter("data");
-        Icitem icitem = icitemService.findByNumber("0", itemId);
-        result.put("result", icitem);
+        String idCode = request.getParameter("idCode");
+        ApiUrl apiUrl = apiUrlService.getByUsefulness("12");
+        JSONArray jsonArray = Common.executeInter(apiUrl.getUrl() + "&idCode=" + idCode, apiUrl.getProtocol());
+        result.put("result", jsonArray);
         return result;
     }
 

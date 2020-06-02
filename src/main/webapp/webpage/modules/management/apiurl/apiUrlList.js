@@ -146,6 +146,9 @@ $(document).ready(function() {
 					   case "11":
 						   text = "部门信息查询总数";
 						   break;
+					   case "12":
+						   text = "二维码追溯查询";
+						   break;
                    }
                    return text != null && text != '' ? text : "-";
                }

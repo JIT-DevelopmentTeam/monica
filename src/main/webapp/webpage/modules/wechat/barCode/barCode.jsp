@@ -44,30 +44,37 @@
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>批&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</span>
+                <span id="batchNo"></span>
             </div>
             <div class="proValue-list_item">
                 <span>色&nbsp;&nbsp;&nbsp;号：</span>
+                <span id="colorNo"></span>
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>生产日期：</span>
+                <span id="proDate"></span>
             </div>
             <div class="proValue-list_item">
                 <span>等&nbsp;&nbsp;&nbsp;级：</span>
+                <span id="level"></span>
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>生产设备：</span>
+                <span id="proEqu"></span>
             </div>
             <div class="proValue-list_item">
                 <span>检查员：</span>
+                <span id="checker"></span>
             </div>
         </div>
         <div class="proValue-list">
             <div class="proValue-list_item">
                 <span>库存状态：</span>
+                <span id="total"></span>
             </div>
         </div>
     </div>
@@ -179,19 +186,35 @@
                 scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                 success: function (res) {
                     var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    let data = {
+                        idCode: ''
+                    }
+                    if (result.indexOf("A.004") != -1) {
+                        let arr = result.split(':');
+                        data.idCode = arr[arr.length-1];
+                    } else {
+                        data.idCode = result;
+                    }
                     //window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
                     // alert("扫一扫返回来的数据:" + result);
                     $.ajax({
                         url: "${ctxf}/wechat/barCode/scanQRCode",
-                        data: {"data": result},
+                        data: data,
                         type: "post",
                         dataType: "json",
                         success: function (data) {
                             // alert("查询出来的数据：" + data.result.number);
-                            $("#primaryNo").text(data.result.erpId);
-                            $("#itemNo").text(data.result.number);
-                            $("#itemName").text(data.result.name);
-                            $("#model").text(data.result.model);
+                            $("#primaryNo").text(data.result[0].FIDCode);
+                            $("#itemNo").text(data.result[0].FNumber);
+                            $("#itemName").text(data.result[0].FName);
+                            $("#model").text(data.result[0].FModel);
+                            $("#batchNo").text(data.result[0].FBatchNo);
+                            $("#colorNo").text(data.result[0].FColorNum);
+                            $("#proDate").text(data.result[0].FBillDate);
+                            $("#level").text(data.result[0].FGrade);
+                            $("#proEqu").text(data.result[0].FDevice);
+                            $("#checker").text(data.result[0].FChecker);
+                            $("#total").text(data.result[0].FStockStatus);
                         }
                     });
                 },
