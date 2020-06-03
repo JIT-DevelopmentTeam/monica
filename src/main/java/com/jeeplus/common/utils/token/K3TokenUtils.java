@@ -14,7 +14,7 @@ import org.springframework.util.ObjectUtils;
 public class K3TokenUtils {
 
     // 莫尔卡K/3测试账套授权码 authorityCode
-    private static final String MONICA_AUTHORITY_CODE = "2dc0c85f7faf448c9659d2ee6c5b14184db3eec5086834b9";
+    private static final String MONICA_AUTHORITY_CODE = "2dc0c85f7faf448c204178117d18c288109df6a189e6dbce";
 
     private static final String GET_TOKEN_URL = "http://139.9.6.165:800/K3API/Token/Create?authorityCode=AUTHORITY_CODE";
 
@@ -48,11 +48,6 @@ public class K3TokenUtils {
             }
         }
     }
-
-    public static void main(String[] args) {
-        updateK3Token();
-    }
-
 
 }
 

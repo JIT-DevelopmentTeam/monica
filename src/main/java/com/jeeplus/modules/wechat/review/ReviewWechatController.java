@@ -225,25 +225,29 @@ public class ReviewWechatController extends BaseController {
                     currentApprove.setRemark(remark);
                     currentApprove.setIsToapp(0);
                     orderApproveService.save(currentApprove);
-                    if (status == 2) {
-                        // 审核不通过
-                        sobill.setCheckStatus(3);
-                        sobillService.save(sobill);
-                    }
                     allow = true;
-                    JSONObject jsonObject = syncOrder(sobill);
-                    if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
-                        JSONObject dataJson = jsonObject.getJSONObject("Data");
-                        // 审核通过
-                        sobill.setCheckStatus(1);
-                        sobill.setCheckerId(userId);
-                        sobill.setCheckTime(new Date());
-                        sobill.setErpCode(dataJson.get("BillNo").toString());
-                        sobill.setSynStatus(1);
-                        sobill.setSynTime(new Date());
-                        sobillService.save(sobill);
-                    } else {
-                        allow = false;
+                    switch (status) {
+                        case 1:
+                            JSONObject jsonObject = syncOrder(sobill);
+                            if (!ObjectUtils.isEmpty(jsonObject.get("StatusCode")) && "200".equals(jsonObject.getString("StatusCode"))) {
+                                JSONObject dataJson = jsonObject.getJSONObject("Data");
+                                // 审核通过
+                                sobill.setCheckStatus(1);
+                                sobill.setCheckerId(userId);
+                                sobill.setCheckTime(new Date());
+                                sobill.setErpCode(dataJson.get("BillNo").toString());
+                                sobill.setSynStatus(1);
+                                sobill.setSynTime(new Date());
+                                sobillService.save(sobill);
+                            } else {
+                                allow = false;
+                            }
+                            break;
+                        case 2:
+                            // 审核不通过
+                            sobill.setCheckStatus(3);
+                            sobillService.save(sobill);
+                            break;
                     }
                 }
             } else {
