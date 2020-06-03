@@ -10,9 +10,7 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		a.name AS "name",
-		a.before_change AS "beforeChange",
-		a.after_change AS "afterChange",
+		a.original_quantity AS "originalQuantity",
 		a.change_version AS "changeVersion.id",
 		a.item_id AS "item.id",
 		item.f_number AS "item.number",
@@ -80,9 +78,7 @@
 			update_date,
 			remarks,
 			del_flag,
-			name,
-			before_change,
-			after_change,
+			original_quantity,
 			change_version,
 			item_id
 		) VALUES (
@@ -93,9 +89,7 @@
 			#{updateDate},
 			#{remarks},
 			#{delFlag},
-			#{name},
-			#{beforeChange},
-			#{afterChange},
+			#{originalQuantity},
 			#{changeVersion.id},
 			#{item.id}
 		)
@@ -106,9 +100,7 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			name = #{name},
-			before_change = #{beforeChange},
-			after_change = #{afterChange},
+			original_quantity = #{originalQuantity},
 			change_version = #{changeVersion.id},
 			item_id = #{item.id}
 		WHERE id = #{id}

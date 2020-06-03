@@ -1,12 +1,10 @@
 package com.jeeplus.modules.wechat.sobill;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
-import com.jeeplus.common.utils.CacheUtils;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.utils.IdGen;
+import com.jeeplus.common.utils.*;
 
 import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.base.ObjectUtil;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
@@ -96,9 +94,11 @@ public class SobillWechatController extends BaseController {
     public AjaxJson getSobillList(Page page,Sobill sobill, @RequestParam("qyUserId") String qyUserId){
         AjaxJson aj = new AjaxJson();
         User user = userMapper.getByQyUserId(qyUserId);
-        if (user != null) {
-            sobill.setEmplId(user.getId());
+        if (user == null) {
+            aj.setSuccess(false);
+            return aj;
         }
+        sobill.setEmplId(user.getId());
         Page<Sobill> sobillPage = sobillService.findPage(page,sobill);
         if (sobillPage.getList().isEmpty()) {
             aj.setSuccess(false);
@@ -422,9 +422,7 @@ public class SobillWechatController extends BaseController {
                             isChange = true;
                             Icitem item = icitemService.get(sobillentry.getItemId());
                             ChangeLog changeLog = new ChangeLog();
-                            changeLog.setName("数量");
-                            changeLog.setBeforeChange(sobillentry.getAuxqty().toString());
-                            changeLog.setAfterChange(newQty.toString());
+                            changeLog.setOriginalQuantity(sobillentry.getAuxqty());
                             changeLog.setChangeVersion(changeVersion);
                             changeLog.setItem(item);
                             changeLog.setId("");
