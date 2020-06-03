@@ -11,6 +11,8 @@ import com.jeeplus.modules.management.news.mapper.NewsMapper;
 import com.jeeplus.modules.management.news.schedule.NewsTask;
 import com.jeeplus.modules.management.newspush.entity.NewsPush;
 import com.jeeplus.modules.management.newspush.service.NewsPushService;
+import com.jeeplus.modules.management.wxuser.entity.WxUser;
+import com.jeeplus.modules.management.wxuser.service.WxUserService;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
@@ -44,6 +46,9 @@ public class NewsService extends CrudService<NewsMapper, News> {
 
 	@Autowired
 	private UserMapper userMapper;
+
+	@Autowired
+	private WxUserService wxUserService;
 
 	public News get(String id) {
 		return super.get(id);
@@ -82,8 +87,13 @@ public class NewsService extends CrudService<NewsMapper, News> {
 	public void task(News news){
 		JobDetail jobDetail = JobBuilder.newJob(NewsTask.class).withIdentity(news.getTitle(), news.getPushrule()).build();
 		jobDetail.getJobDataMap().put("newsJob", news);
-		List<User> userList = list(news);
-		jobDetail.getJobDataMap().put("userList", userList);
+		if ("0".equals(news.getSendType())) {// 服务号
+			List<WxUser> wxUserList = wxList(news);
+			jobDetail.getJobDataMap().put("wxUserList", wxUserList);
+		} else {// 企业微信
+			List<User> userList = list(news);
+			jobDetail.getJobDataMap().put("userList", userList);
+		}
 
 		SimpleTrigger trigger = (SimpleTrigger) newTrigger().withIdentity(news.getTitle(), news.getPushrule())
 				.startAt(news.getPush()).forJob(news.getTitle(), news.getPushrule()).build();
@@ -98,6 +108,20 @@ public class NewsService extends CrudService<NewsMapper, News> {
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<WxUser> wxList(News news) {
+		List<WxUser> wxUserList = Lists.newArrayList();
+		NewsPush push = new NewsPush();
+		push.setNewsId(news.getId());
+		List<NewsPush> newsPushList=newsPushService.findAllList(push);
+		for (NewsPush newsPush : newsPushList) {
+			WxUser wxUser = wxUserService.get(newsPush.getObjId());
+			if (wxUser != null) {
+				wxUserList.add(wxUser);
+			}
+		}
+		return wxUserList;
 	}
 
 	public List<User> list(News news){

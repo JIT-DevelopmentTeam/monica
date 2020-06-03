@@ -11,12 +11,14 @@ import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.SNSUserInfo;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.WebAuthAccessToken;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.exception.WebAuthAccessTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -75,7 +77,15 @@ public class MainController extends BaseController {
     @RequestMapping(value = "/getWXUserInfo", method = RequestMethod.GET)
     public AjaxJson getWXUserInfo(@RequestParam("code") String code) {
         AjaxJson aj = new AjaxJson();
-        WechatAPI wxAPI = new WechatAPI("wxf297fc64f92b7f99", "589360b4f89e26beebf605d6a20df2e5");
+        String appid = "";
+        String appsecret = "";
+        try {
+            appid = PropertiesLoaderUtils.loadAllProperties(("wechat/config.properties")).getProperty("wechat_appid");
+            appsecret = PropertiesLoaderUtils.loadAllProperties(("wechat/config.properties")).getProperty("wechat_appsecret");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        WechatAPI wxAPI = new WechatAPI(appid, appsecret);
         try {
             WebAuthAccessToken webAuthAccessToken = wxAPI.getWebAuthAccessToken(code);
             Boolean aBoolean = wxAPI.verifyToken(webAuthAccessToken.getAccessToken(), webAuthAccessToken.getOpenid());
@@ -123,7 +133,15 @@ public class MainController extends BaseController {
     @RequestMapping(value = "/getJsApiTicket", method = RequestMethod.GET)
     public AjaxJson getJsApiTicket(String url, Boolean debug, String jsApiList) {
         AjaxJson aj = new AjaxJson();
-        WechatAPI wxAPI = new WechatAPI("wxf297fc64f92b7f99", "589360b4f89e26beebf605d6a20df2e5");
+        String appid = "";
+        String appsecret = "";
+        try {
+            appid = PropertiesLoaderUtils.loadAllProperties(("wechat/config.properties")).getProperty("wechat_appid");
+            appsecret = PropertiesLoaderUtils.loadAllProperties(("wechat/config.properties")).getProperty("wechat_appsecret");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        WechatAPI wxAPI = new WechatAPI(appid, appsecret);
         Map<String, Object> param = new HashMap<>();
         List<String> jsList = new ArrayList<>();
         String[] split = jsApiList.split(",");

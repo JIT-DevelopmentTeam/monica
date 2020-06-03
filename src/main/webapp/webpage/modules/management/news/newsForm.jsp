@@ -85,6 +85,20 @@
                 $sendType_div.attr("class","iradio_square-blue ");
             }*/
 
+			$("input[name='sendType']").on("ifChecked", function() {
+				if (this.value == '0') {
+					$("select[name='pushrule']").html(
+							"<option value=''>请选择</option>" +
+							"<option value='1'>人员推送</option>")
+				} else if (this.value == '1') {
+					$("select[name='pushrule']").html(
+							"<option value=''>请选择</option>" +
+							"<option value='0'>全部推送</option>" +
+							"<option value='1'>人员推送</option>" +
+							"<option value='2'>部门推送</option>")
+				}
+			});
+
 
             // 判断是否推送，当前选中值
             $("input[name='isPush']").on('ifChecked', function () {
@@ -153,12 +167,21 @@
          * 新闻推送规则
          */
         function newsPushRule(val) {
+        	let sendType = $("input[name='sendType']:checked").val();
             if(val == ""){
                 return;
             }
             check(val);
             var option="";
-            jp.post("${ctx}/management/news/news/userOrOffice",{pushrule:val},function (data) {
+            jp.post("${ctx}/management/news/news/userOrOffice",{pushrule:val, sendType: sendType},function (data) {
+            	//微信人员列表
+				if (data.wxUserListInfo != null) {
+					if (data.wxUserListInfo.length > 0) {
+						$.each(data.wxUserListInfo, function (index, value) {
+							option +="<option  value=\""+value.id+"\"   data-tokens=\""+ value.nickName+"\">"+value.nickName+"</option>";
+						})
+					}
+				}
                 //人员列表
                 if(data.userListInfo != null){
                     if(data.userListInfo.length > 0){
@@ -304,10 +327,10 @@
 					<td class="width-15 active"><label class="pull-right">推送规则：</label></td>
 					<td class="width-35">
                         <form:select path="pushrule" htmlEscape="false" class="form-control " onchange="newsPushRule(this.value)">
-                            <form:option value="">请选择</form:option>
-                            <form:option value="0">全部推送</form:option>
-                            <form:option value="1">人员推送</form:option>
-                            <form:option value="2">部门推送</form:option>
+<%--                            <form:option value="">请选择</form:option>--%>
+<%--                            <form:option value="0">全部推送</form:option>--%>
+<%--                            <form:option value="1">人员推送</form:option>--%>
+<%--                            <form:option value="2">部门推送</form:option>--%>
                         </form:select>
 				</tr>
 				<tr>
