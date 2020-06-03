@@ -40,11 +40,11 @@
                 <thead>
                 <tr>
                     <th>机构名称</th>
-                    <th>ERP编码</th>
+                    <th>ERP部门编码</th>
+                    <th>ERP部门</th>
                     <th>归属区域</th>
                     <th>机构编码</th>
                     <th>机构类型</th>
-                    <th>备注</th>
                     <th>操作</th>
                 </tr>
                 </thead>

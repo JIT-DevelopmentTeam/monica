@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#apiUrlTable').bootstrapTable({
+	$('#wxUserTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -36,8 +36,8 @@ $(document).ready(function() {
                pageSize: 10,  
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
-               //这个需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/management/apiurl/apiUrl/data",
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               url: "${ctx}/management/wxuser/wxUser/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该管理记录吗？', function(){
+                        jp.confirm('确认要删除该微信用户记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/apiurl/apiUrl/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/wxuser/wxUser/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#apiUrlTable').bootstrapTable('refresh');
+                   	  			$('#wxUserTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -85,142 +85,61 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'name',
-		        title: '名称',
+		        field: 'nickName',
+		        title: '昵称',
 		        sortable: true,
-		        sortName: 'name'
-		        ,formatter:function(value, row , index){
-		        	value = jp.unescapeHTML(value);
+		        sortName: 'nickName'
+			   ,formatter:function(value, row , index){
+				   value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:apiurl:apiUrl:edit')}">
-					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:when test="${fns:hasPermission('management:apiurl:apiUrl:view')}">
-					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
-				      </c:when>
-					  <c:otherwise>
-					      return value;
-				      </c:otherwise>
+					   <c:when test="${fns:hasPermission('management:wxuser:wxUser:edit')}">
+						   return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+					   </c:when>
+					   <c:when test="${fns:hasPermission('management:wxuser:wxUser:view')}">
+						   return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
+					   </c:when>
+					   <c:otherwise>
+						   return value;
+					   </c:otherwise>
 				   </c:choose>
-		         }
+			   }
+		    }
+			,{
+		        field: 'sex',
+		        title: '性别',
+		        sortable: true,
+		        sortName: 'sex',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('sex'))}, value, "-");
+		        }
 		       
 		    }
-           ,{
-               field: 'usefulness',
-               title: '端口编码',
-               sortable: true,
-               sortName: 'usefulness',
-               formatter:function (value, row , index) {
-                   let text;
-                   switch (value) {
-                       case "1":
-                           text = "物料分类同步";
-                           break;
-                       case "2":
-                           text = "物料信息同步";
-                           break;
-                       case "3":
-                           text = "客户资料同步";
-                           break;
-                       case "4":
-                           text = "订单信息同步";
-                           break;
-                       case "5":
-                           text = "库存列表查询";
-                           break;
-                       case "6":
-                           text = "库存列表总量查询";
-                           break;
-                       case "7":
-                           text = "库存详情查询";
-                           break;
-					   case "8":
-						   text = "库存等级查询";
-						   break;
-					   case "9":
-						   text = "部门信息查询";
-						   break;
-					   case "10":
-						   text = "职员信息查询";
-						   break;
-					   case "11":
-						   text = "部门信息查询总数";
-						   break;
-					   case "12":
-						   text = "二维码追溯查询";
-						   break;
-                   }
-                   return text != null && text != '' ? text : "-";
-               }
+			,{
+		        field: 'country',
+		        title: '国家',
+		        sortable: true,
+		        sortName: 'country'
+		       
+		    }
+			,{
+		        field: 'province',
+		        title: '省份',
+		        sortable: true,
+		        sortName: 'province'
+		       
+		    }
+		   ,{
+			   field: 'city',
+			   title: '城市',
+			   sortable: true,
+			   sortName: 'city'
 
-           }
+		   }
 			,{
-		        field: 'number',
-		        title: '端口编码',
+		        field: 'client.name',
+		        title: '所属客户',
 		        sortable: true,
-		        sortName: 'number'
-		       
-		    }
-			,{
-		        field: 'domain',
-		        title: '域名',
-		        sortable: true,
-		        sortName: 'domain'
-		       
-		    }
-			,{
-		        field: 'port',
-		        title: '端口',
-		        sortable: true,
-		        sortName: 'port'
-		       
-		    }
-			,{
-		        field: 'url',
-		        title: 'url',
-		        sortable: true,
-		        sortName: 'url'
-		       
-		    }
-			,{
-		        field: 'protocol',
-		        title: '端口协议',
-		        sortable: true,
-		        sortName: 'protocol'
-		       
-		    }
-			,{
-		        field: 'describe',
-		        title: '描述',
-		        sortable: true,
-		        sortName: 'describe'
-		       
-		    }
-			,{
-		        field: 'status',
-		        title: '状态',
-		        sortable: true,
-		        sortName: 'status',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_status'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'isToken',
-		        title: '是否需要token',
-		        sortable: true,
-		        sortName: 'isToken',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_need_token'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
+		        sortName: 'client.name'
 		       
 		    }
 		     ]
@@ -231,13 +150,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#apiUrlTable').bootstrapTable("toggleView");
+		  $('#wxUserTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#apiUrlTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#wxUserTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#apiUrlTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#apiUrlTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#wxUserTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#wxUserTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -249,11 +168,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/apiurl/apiUrl/import/template');
+					  jp.downloadFile('${ctx}/management/wxuser/wxUser/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/apiurl/apiUrl/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/management/wxuser/wxUser/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -276,8 +195,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#wxUserTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#wxUserTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -286,37 +205,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/apiurl/apiUrl/export?'+values);
+			jp.downloadFile('${ctx}/management/wxuser/wxUser/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#apiUrlTable').bootstrapTable('refresh');
+		  $('#wxUserTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#apiUrlTable').bootstrapTable('refresh');
+		  $('#wxUserTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#apiUrlTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#wxUserTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该管理记录吗？', function(){
+		jp.confirm('确认要删除该微信用户记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/apiurl/apiUrl/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/wxuser/wxUser/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#apiUrlTable').bootstrapTable('refresh');
+         	  			$('#wxUserTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -328,11 +247,11 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#apiUrlTable').bootstrapTable('refresh');
+  	$('#wxUserTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增管理', "${ctx}/management/apiurl/apiUrl/form",'800px', '500px');
+	  jp.openSaveDialog('新增微信用户', "${ctx}/management/wxuser/wxUser/form",'800px', '500px');
   }
 
 
@@ -341,14 +260,14 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑微信用户', "${ctx}/management/wxuser/wxUser/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看微信用户', "${ctx}/management/wxuser/wxUser/form?id=" + id, '800px', '500px');
  }
 
 

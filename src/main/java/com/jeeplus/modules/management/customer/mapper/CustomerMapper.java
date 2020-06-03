@@ -6,6 +6,7 @@ package com.jeeplus.modules.management.customer.mapper;
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.customer.entity.Customer;
+import org.apache.ibatis.annotations.Param;
 
 import java.sql.Timestamp;
 
@@ -24,5 +25,7 @@ public interface CustomerMapper extends BaseMapper<Customer> {
      * @return
      */
     Long findMaxModifyTime();
-	
+
+    Customer getByName(@Param("clientName") String clientName);
+
 }

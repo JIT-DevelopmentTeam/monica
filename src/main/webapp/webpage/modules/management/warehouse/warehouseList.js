@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 $(document).ready(function() {
-	$('#apiUrlTable').bootstrapTable({
+	$('#warehouseTable').bootstrapTable({
 		 
 		  //请求方法
                method: 'post',
@@ -36,8 +36,8 @@ $(document).ready(function() {
                pageSize: 10,  
                //可供选择的每页的行数（*）    
                pageList: [10, 25, 50, 100],
-               //这个需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/management/apiurl/apiUrl/data",
+               //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+               url: "${ctx}/management/warehouse/warehouse/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -59,11 +59,11 @@ $(document).ready(function() {
                    }else if($el.data("item") == "view"){
                        view(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该管理记录吗？', function(){
+                        jp.confirm('确认要删除该库存记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/management/apiurl/apiUrl/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/management/warehouse/warehouse/delete?id="+row.id, function(data){
                    	  		if(data.success){
-                   	  			$('#apiUrlTable').bootstrapTable('refresh');
+                   	  			$('#warehouseTable').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
                    	  		}else{
                    	  			jp.error(data.msg);
@@ -92,10 +92,10 @@ $(document).ready(function() {
 		        ,formatter:function(value, row , index){
 		        	value = jp.unescapeHTML(value);
 				   <c:choose>
-					   <c:when test="${fns:hasPermission('management:apiurl:apiUrl:edit')}">
+					   <c:when test="${fns:hasPermission('management:warehouse:warehouse:edit')}">
 					      return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
-					  <c:when test="${fns:hasPermission('management:apiurl:apiUrl:view')}">
+					  <c:when test="${fns:hasPermission('management:warehouse:warehouse:view')}">
 					      return "<a href='javascript:view(\""+row.id+"\")'>"+value+"</a>";
 				      </c:when>
 					  <c:otherwise>
@@ -105,95 +105,18 @@ $(document).ready(function() {
 		         }
 		       
 		    }
-           ,{
-               field: 'usefulness',
-               title: '端口编码',
-               sortable: true,
-               sortName: 'usefulness',
-               formatter:function (value, row , index) {
-                   let text;
-                   switch (value) {
-                       case "1":
-                           text = "物料分类同步";
-                           break;
-                       case "2":
-                           text = "物料信息同步";
-                           break;
-                       case "3":
-                           text = "客户资料同步";
-                           break;
-                       case "4":
-                           text = "订单信息同步";
-                           break;
-                       case "5":
-                           text = "库存列表查询";
-                           break;
-                       case "6":
-                           text = "库存列表总量查询";
-                           break;
-                       case "7":
-                           text = "库存详情查询";
-                           break;
-					   case "8":
-						   text = "库存等级查询";
-						   break;
-					   case "9":
-						   text = "部门信息查询";
-						   break;
-					   case "10":
-						   text = "职员信息查询";
-						   break;
-					   case "11":
-						   text = "部门信息查询总数";
-						   break;
-					   case "12":
-						   text = "二维码追溯查询";
-						   break;
-                   }
-                   return text != null && text != '' ? text : "-";
-               }
-
-           }
+			,{
+		        field: 'erpid',
+		        title: 'erpid',
+		        sortable: true,
+		        sortName: 'erpid'
+		       
+		    }
 			,{
 		        field: 'number',
-		        title: '端口编码',
+		        title: '编码',
 		        sortable: true,
 		        sortName: 'number'
-		       
-		    }
-			,{
-		        field: 'domain',
-		        title: '域名',
-		        sortable: true,
-		        sortName: 'domain'
-		       
-		    }
-			,{
-		        field: 'port',
-		        title: '端口',
-		        sortable: true,
-		        sortName: 'port'
-		       
-		    }
-			,{
-		        field: 'url',
-		        title: 'url',
-		        sortable: true,
-		        sortName: 'url'
-		       
-		    }
-			,{
-		        field: 'protocol',
-		        title: '端口协议',
-		        sortable: true,
-		        sortName: 'protocol'
-		       
-		    }
-			,{
-		        field: 'describe',
-		        title: '描述',
-		        sortable: true,
-		        sortName: 'describe'
 		       
 		    }
 			,{
@@ -201,26 +124,9 @@ $(document).ready(function() {
 		        title: '状态',
 		        sortable: true,
 		        sortName: 'status',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_status'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'isToken',
-		        title: '是否需要token',
-		        sortable: true,
-		        sortName: 'isToken',
-		        formatter:function(value, row , index){
-		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('apiurl_need_token'))}, value, "-");
-		        }
-		       
-		    }
-			,{
-		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true,
-		        sortName: 'remarks'
+			   formatter:function(value, row , index){
+				   return jp.getDictLabel(${fns:toJson(fns:getDictList('use_status'))}, value, "-");
+			   }
 		       
 		    }
 		     ]
@@ -231,13 +137,13 @@ $(document).ready(function() {
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
 		 
-		  $('#apiUrlTable').bootstrapTable("toggleView");
+		  $('#warehouseTable').bootstrapTable("toggleView");
 		}
 	  
-	  $('#apiUrlTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	  $('#warehouseTable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
-            $('#remove').prop('disabled', ! $('#apiUrlTable').bootstrapTable('getSelections').length);
-            $('#view,#edit').prop('disabled', $('#apiUrlTable').bootstrapTable('getSelections').length!=1);
+            $('#remove').prop('disabled', ! $('#warehouseTable').bootstrapTable('getSelections').length);
+            $('#view,#edit').prop('disabled', $('#warehouseTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -249,11 +155,11 @@ $(document).ready(function() {
 			    content: "${ctx}/tag/importExcel" ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  jp.downloadFile('${ctx}/management/apiurl/apiUrl/import/template');
+					  jp.downloadFile('${ctx}/management/warehouse/warehouse/import/template');
 				  },
 			    btn2: function(index, layero){
 				        var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
-						iframeWin.contentWindow.importExcel('${ctx}/management/apiurl/apiUrl/import', function (data) {
+						iframeWin.contentWindow.importExcel('${ctx}/management/warehouse/warehouse/import', function (data) {
 							if(data.success){
 								jp.success(data.msg);
 								refresh();
@@ -276,8 +182,8 @@ $(document).ready(function() {
 	        var searchParam = $("#searchForm").serializeJSON();
 	        searchParam.pageNo = 1;
 	        searchParam.pageSize = -1;
-            var sortName = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortName;
-            var sortOrder = $('#apiUrlTable').bootstrapTable("getOptions", "none").sortOrder;
+            var sortName = $('#warehouseTable').bootstrapTable("getOptions", "none").sortName;
+            var sortOrder = $('#warehouseTable').bootstrapTable("getOptions", "none").sortOrder;
             var values = "";
             for(var key in searchParam){
                 values = values + key + "=" + searchParam[key] + "&";
@@ -286,37 +192,37 @@ $(document).ready(function() {
                 values = values + "orderBy=" + sortName + " "+sortOrder;
             }
 
-			jp.downloadFile('${ctx}/management/apiurl/apiUrl/export?'+values);
+			jp.downloadFile('${ctx}/management/warehouse/warehouse/export?'+values);
 	  })
 
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
-		  $('#apiUrlTable').bootstrapTable('refresh');
+		  $('#warehouseTable').bootstrapTable('refresh');
 		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
 		  $("#searchForm  select").val("");
 		  $("#searchForm  .select-item").html("");
-		  $('#apiUrlTable').bootstrapTable('refresh');
+		  $('#warehouseTable').bootstrapTable('refresh');
 		});
 		
 		
 	});
 		
   function getIdSelections() {
-        return $.map($("#apiUrlTable").bootstrapTable('getSelections'), function (row) {
+        return $.map($("#warehouseTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
     }
   
   function deleteAll(){
 
-		jp.confirm('确认要删除该管理记录吗？', function(){
+		jp.confirm('确认要删除该库存记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/management/apiurl/apiUrl/deleteAll?ids=" + getIdSelections(), function(data){
+			jp.get("${ctx}/management/warehouse/warehouse/deleteAll?ids=" + getIdSelections(), function(data){
          	  		if(data.success){
-         	  			$('#apiUrlTable').bootstrapTable('refresh');
+         	  			$('#warehouseTable').bootstrapTable('refresh');
          	  			jp.success(data.msg);
          	  		}else{
          	  			jp.error(data.msg);
@@ -328,11 +234,11 @@ $(document).ready(function() {
 
     //刷新列表
   function refresh(){
-  	$('#apiUrlTable').bootstrapTable('refresh');
+  	$('#warehouseTable').bootstrapTable('refresh');
   }
   
    function add(){
-	  jp.openSaveDialog('新增管理', "${ctx}/management/apiurl/apiUrl/form",'800px', '500px');
+	  jp.openSaveDialog('新增库存', "${ctx}/management/warehouse/warehouse/form",'800px', '500px');
   }
 
 
@@ -341,14 +247,29 @@ $(document).ready(function() {
        if(id == undefined){
 	      id = getIdSelections();
 	}
-	jp.openSaveDialog('编辑管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+	jp.openSaveDialog('编辑库存', "${ctx}/management/warehouse/warehouse/form?id=" + id, '800px', '500px');
   }
   
  function view(id){//没有权限时，不显示确定按钮
       if(id == undefined){
              id = getIdSelections();
       }
-        jp.openViewDialog('查看管理', "${ctx}/management/apiurl/apiUrl/form?id=" + id, '800px', '500px');
+        jp.openViewDialog('查看库存', "${ctx}/management/warehouse/warehouse/form?id=" + id, '800px', '500px');
+ }
+ 
+ function sync() {
+	 jp.confirm('您确定要同步仓库吗？', function(){
+		 var index = jp.loading("正在同步,请稍后...");
+		 jp.get("${ctx}/management/warehouse/warehouse/synWareHouse", function(res){
+			 jp.close(index);
+			 if (res.success) {
+				 refresh();
+				 jp.success(res.msg);
+			 } else {
+				 jp.error(res.msg);
+			 }
+		 })
+	 })
  }
 
 

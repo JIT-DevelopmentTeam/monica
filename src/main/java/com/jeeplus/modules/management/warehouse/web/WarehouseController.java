@@ -3,16 +3,16 @@
  */
 package com.jeeplus.modules.management.warehouse.web;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 import com.jeeplus.modules.management.warehouse.service.WarehouseService;
 import com.jeeplus.modules.monitor.utils.Common;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +56,7 @@ public class WarehouseController extends BaseController {
 	 * 同步仓库
 	 */
 	@ResponseBody
+	@RequiresPermissions("management:warehouse:warehouse:sync")
 	@RequestMapping(value = "synWareHouse")
 	public Map<String,Object>  synWareHouse(String parentId) throws Exception{
 		Map<String,Object> json = new HashMap<>();
@@ -90,18 +91,35 @@ public class WarehouseController extends BaseController {
 	/**
 	 * 库存管理列表页面
 	 */
+	@RequiresPermissions("management:warehouse:warehouse:list")
 	@RequestMapping(value = {"list", ""})
-	public String list(Warehouse warehouse,  HttpServletRequest request, HttpServletResponse response, Model model) {
-		
+	public String list(Warehouse warehouse, Model model) {
+		model.addAttribute("warehouse", warehouse);
 		return "modules/management/warehouse/warehouseList";
+	}
+
+	/**
+	 * 库存列表数据
+	 */
+	@ResponseBody
+	@RequiresPermissions("management:warehouse:warehouse:list")
+	@RequestMapping(value = "data")
+	public Map<String, Object> data(Warehouse warehouse, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<Warehouse> page = warehouseService.findPage(new Page<Warehouse>(request, response), warehouse);
+		return getBootstrapData(page);
 	}
 
 	/**
 	 * 查看，增加，编辑库存管理表单页面
 	 */
+	@RequiresPermissions(value={"management:warehouse:warehouse:view","management:warehouse:warehouse:add","management:warehouse:warehouse:edit"},logical= Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(Warehouse warehouse, Model model) {
-		if (warehouse.getParent()!=null && StringUtils.isNotBlank(warehouse.getParent().getId())){
+		model.addAttribute("warehouse", warehouse);
+		return "modules/management/warehouse/warehouseForm";
+
+
+		/*if (warehouse.getParent()!=null && StringUtils.isNotBlank(warehouse.getParent().getId())){
 			warehouse.setParent(warehouseService.get(warehouse.getParent().getId()));
 			// 获取排序号，最末节点排序号+30
 			if (StringUtils.isBlank(warehouse.getId())){
@@ -120,13 +138,14 @@ public class WarehouseController extends BaseController {
 			warehouse.setSort(30);
 		}
 		model.addAttribute("warehouse", warehouse);
-		return "itemClassForm";
+		return "itemClassForm";*/
 	}
 
 	/**
 	 * 保存库存管理
 	 */
 	@ResponseBody
+	@RequiresPermissions(value={"management:warehouse:warehouse:add","management:warehouse:warehouse:edit"},logical=Logical.OR)
 	@RequestMapping(value = "save")
 	public AjaxJson save(Warehouse warehouse, Model model) throws Exception{
 		AjaxJson j = new AjaxJson();
@@ -161,6 +180,7 @@ public class WarehouseController extends BaseController {
 	 * 删除库存管理
 	 */
 	@ResponseBody
+	@RequiresPermissions("management:warehouse:warehouse:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(Warehouse warehouse) {
 		AjaxJson j = new AjaxJson();
@@ -170,7 +190,23 @@ public class WarehouseController extends BaseController {
 		return j;
 	}
 
-	@RequiresPermissions("user")
+	/**
+	 * 批量删除库存
+	 */
+	@ResponseBody
+	@RequiresPermissions("management:warehouse:warehouse:del")
+	@RequestMapping(value = "deleteAll")
+	public AjaxJson deleteAll(String ids) {
+		AjaxJson j = new AjaxJson();
+		String idArray[] =ids.split(",");
+		for(String id : idArray){
+			warehouseService.delete(warehouseService.get(id));
+		}
+		j.setMsg("删除库存成功");
+		return j;
+	}
+
+	/*@RequiresPermissions("user")
 	@ResponseBody
 	@RequestMapping(value = "treeData")
 	public List<Map<String, Object>> treeData(@RequestParam(required=false) String extId, HttpServletResponse response) {
@@ -194,6 +230,6 @@ public class WarehouseController extends BaseController {
 			}
 		}
 		return mapList;
-	}
+	}*/
 	
 }

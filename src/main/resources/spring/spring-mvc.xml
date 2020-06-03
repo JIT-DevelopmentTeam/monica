@@ -3,7 +3,7 @@
 	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     
     <description>Spring MVC Configuration</description>
     
@@ -132,5 +132,15 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
 		<property name="maxUploadSize" value="${web.maxUploadSize}" />  
 	</bean>
+
+	<!-- 接口跨域配置 -->
+	<mvc:cors>
+		<mvc:mapping path="/**"
+					 allowed-origins="*"
+					 allowed-methods="POST, GET, OPTIONS, DELETE, PUT"
+					 allowed-headers="Content-Type, Access-Control-Allow-Headers, Authorization,
+					  Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, X-E4M-With, x-requested-with, text/plain;charset=UTF-8, application/json;charset=UTF-8, code, userId, token, pageNo"
+					 allow-credentials="true" />
+	</mvc:cors>
 	
 </beans>
