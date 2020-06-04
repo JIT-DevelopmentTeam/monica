@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.entity.*;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.exception.WebAuthAccessTokenException;
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.resolver.TicketStorageResolver;
@@ -168,6 +169,7 @@ public class WechatAPI {
 
         tokenStorageResolver.saveToken(token);
         tokenStorageResolver.setAccessToken(token);
+        CacheUtils.put("Wechat_AccessToken", token);
 
         return token;
     }
@@ -183,9 +185,14 @@ public class WechatAPI {
      */
     public AccessToken ensureAccessToken() {
         // 调用用户传入的获取token的异步方法，获得token之后使用（并缓存它）。
-        AccessToken token = tokenStorageResolver.getAccessToken();
+        AccessToken token = (AccessToken) CacheUtils.get("Wechat_AccessToken");
+//        AccessToken token = tokenStorageResolver.getAccessToken();
         if (token != null && token.isValid()) {
-            return token;
+            if (token.getExpireTime() > 0) {
+                return token;
+            } else {
+                CacheUtils.remove("Wechat_AccessToken");
+            }
         }
         return this.getAccessToken();
     }
