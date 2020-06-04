@@ -24,13 +24,33 @@ public class WxServiceSend {
         }
         WechatAPI wxAPI = new WechatAPI(appid, appsecret);
         Map<String, Object> data = new HashMap<>();
-        data.put("first", news.getTitle());
-        data.put("keyword1", "莫尔卡");
-        data.put("keyword2", news.getDescribe());
-        data.put("keyword3", news.getPush());
-        data.put("keyword4", "");
-        data.put("keyword5", "");
-        data.put("remark", "阅读次数：" + news.getReadCount());
+        Map<String, Object> first = new HashMap<>();
+        first.put("value", news.getTitle());
+        data.put("first", first);
+
+        Map<String, Object> keyword1 = new HashMap<>();
+        keyword1.put("value", "莫尔卡");
+        data.put("keyword1", keyword1);
+
+        Map<String, Object> keyword2 = new HashMap<>();
+        keyword2.put("value", news.getDescribe());
+        data.put("keyword2", keyword2);
+
+        Map<String, Object> keyword3 = new HashMap<>();
+        keyword3.put("value", news.getPush());
+        data.put("keyword3", keyword3);
+
+        Map<String, Object> keyword4 = new HashMap<>();
+        keyword4.put("value", "");
+        data.put("keyword4", keyword4);
+
+        Map<String, Object> keyword5 = new HashMap<>();
+        keyword5.put("value", "");
+        data.put("keyword5", keyword5);
+
+        Map<String, Object> remark = new HashMap<>();
+        remark.put("value", "阅读次数：" + news.getReadCount());
+        data.put("remark", remark);
         JsonObject jsonObject = wxAPI.sendTemplate(openId, templateId, "https://www.baidu.com", "", data, new HashMap<>());
         System.out.println("推送服务号成功：" + jsonObject);
     }
