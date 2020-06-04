@@ -308,8 +308,8 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>推送类型：</label></td>
 					<td class="width-35" id="sendType-div">
-						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"  disabled="true"/>服务号
-						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"  disabled="true"/>企业微信
+						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"  disabled="${news.id == undefined ? 'true': 'false'}"/>服务号
+						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"  disabled="${news.id == undefined ? 'true': 'false'}"/>企业微信
 						<label class="error" for="sendType" id="sendType"></label>
 					</td>
 				</tr>
@@ -317,7 +317,7 @@
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
 						<div class='input-group form_datetime' id='push'>
-							<input type='text'  name="push" class="form-control "  value="<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<input type='text'  name="push" class="form-control "  value="<%--<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>--%>"/>
 							<span class="input-group-addon" id="pushTime">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
