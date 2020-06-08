@@ -10,8 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.base.ObjectUtil;
+import com.jeeplus.common.utils.collection.ListUtil;
+import com.jeeplus.common.utils.http.HttpHelper;
+import com.jeeplus.core.persistence.BaseEntity;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeLog;
+import com.jeeplus.modules.management.erp.ERPUser;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+import com.jeeplus.modules.sys.entity.DataRule;
+import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +47,7 @@ import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
 import com.jeeplus.modules.management.changeversionandlog.service.ChangeVersionService;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 变更版本和记录Controller
@@ -78,14 +90,66 @@ public class ChangeVersionController extends BaseController {
 	@RequiresPermissions("management:changeversionandlog:changeVersion:list")
 	@RequestMapping(value = "data")
 	public Map<String, Object> data(ChangeVersion changeVersion, HttpServletRequest request, HttpServletResponse response, Model model) {
-        if (!ObjectUtils.isEmpty(changeVersion.getSobill())) {
-            Sobill sobill = new Sobill();
-            sobill.setId("0");
-            changeVersion.setSobill(sobill);
-        }
 		Page<ChangeVersion> page = changeVersionService.findPage(new Page<ChangeVersion>(request, response), changeVersion);
 		return getBootstrapData(page);
 	}
+
+    @RequestMapping(value = "/changeLogList")
+    public ModelAndView changeLogList(@RequestParam("changeVersionId") String changeVersionId) {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("changeVersionId",changeVersionId);
+        mv.setViewName("modules/management/changeversionandlog/changeLogList");
+        return mv;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/listChangeLog")
+    public Map<String, Object> listChangeLog(ChangeVersion changeVersion, HttpServletRequest request, HttpServletResponse response) {
+        ChangeLog changeLog = new ChangeLog();
+        Page<ChangeLog> page = findPage(new Page<ChangeLog>(request, response), changeLog, changeVersion.getChangeLogList());
+        return getBootstrapData(page);
+    }
+
+    /**
+     * 查询分页数据
+     * @param page 分页对象
+     * @return
+     */
+    public Page<ChangeLog> findPage(Page<ChangeLog> page, ChangeLog changeLog, List<ChangeLog> list) {
+        dataRuleFilter(changeLog);
+        changeLog.setPage(page);
+        page.setList(list);
+        return page;
+    }
+
+    /**
+     * 数据范围过滤
+     * @param entity 当前过滤的实体类
+     */
+    public static void dataRuleFilter(BaseEntity<?> entity) {
+
+        entity.setCurrentUser(UserUtils.getUser());
+        List<DataRule> dataRuleList = UserUtils.getDataRuleList();
+
+        // 如果是超级管理员，则不过滤数据
+        if (dataRuleList.size() == 0) {
+            return;
+        }
+
+        // 数据范围
+        StringBuilder sqlString = new StringBuilder();
+
+
+        for(DataRule dataRule : dataRuleList){
+            if(entity.getClass().getSimpleName().equals(dataRule.getClassName())){
+                sqlString.append(dataRule.getDataScopeSql());
+            }
+
+        }
+
+        entity.setDataScope(sqlString.toString());
+
+    }
 
 	/**
 	 * 查看，增加，编辑变更表单页面

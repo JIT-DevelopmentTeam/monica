@@ -23,7 +23,7 @@
 <body>
 <div id="page" class="page">
     <div style="background: white;position: fixed;top: 0px;z-index: 10000;width: 100%;height: 5%;background: #f6f6f6;">
-        <div style="float: left; width: 90%;">
+        <div style="float: left; width: 100%;">
             <input type="text" id="startTime" readonly class="weui-input"
                    placeholder="请选择开始时间" style="text-align: center;width:47%;"/>
             至
@@ -55,7 +55,7 @@
 
             <%-- 执行中 --%>
             <div id="inProgressDetail" style="margin-top: 20%;">
-                <div class="order-cell" v-for="inProgress in inProgressList">
+                <div class="order-cell inProgressCard" :id="'inProgressCard'+inProgress.id" @click="selectCard(1,inProgress.id)" v-for="inProgress in inProgressList">
                     <div class="weui-cells_radio">
                         <label class="weui-cell weui-check__label" :for="'inProgress'+inProgress.id">
                             <div class="order-cell_left">
@@ -565,6 +565,13 @@
             },
             backHome:function () {
                 window.location.href = '${ctxf}/wechat/main/index';
+            },
+            selectCard(type,id) {
+                switch (type) {
+                    case 1:
+                        $("#"+type+id).css("background-color","yellow");
+                        break;
+                }
             }
         }
     });

@@ -347,6 +347,12 @@ $(document).ready(function() {
         });
     }
 
+    function getChangeVersionSelections() {
+        return $.map($("#changeVersionListTable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
   function deleteAll(){
 
 		jp.confirm('确认要删除该订单记录吗？', function(){
@@ -432,20 +438,20 @@ $(document).ready(function() {
 	}
 
 	// 同步订单
-	function synchronization() {
-        jp.confirm("您确定要同步所有已审核订单吗?", function () {
-            var index = jp.loading("正在同步,请稍后!");
-            jp.get("${ctx}/management/sobillandentry/sobill/synchronization", function(data){
-                if(data.success){
-                    jp.success(data.msg);
-                    refresh();
-                }else{
-                    jp.error(data.msg);
-                }
-                jp.close(index);
-            });
-        });
-    }
+	// function synchronization() {
+    //     jp.confirm("您确定要同步所有已审核订单吗?", function () {
+    //         var index = jp.loading("正在同步,请稍后!");
+    //         jp.get("${ctx}/management/sobillandentry/sobill/synchronization", function(data){
+    //             if(data.success){
+    //                 jp.success(data.msg);
+    //                 refresh();
+    //             }else{
+    //                 jp.error(data.msg);
+    //             }
+    //             jp.close(index);
+    //         });
+    //     });
+    // }
 
 function init() {
     //订单明细列表表格
@@ -864,5 +870,10 @@ function init() {
             }
         ]
     });
+}
+
+function changeLogView(){
+    let versionId = getChangeVersionSelections();
+    jp.openViewDialog("变更记录","${ctx}/management/changeversionandlog/changeVersion/changeLogList?changeVersionId="+versionId,"800px","600px");
 }
 </script>

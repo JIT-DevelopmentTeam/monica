@@ -404,36 +404,39 @@ public class SobillWechatController extends BaseController {
     private void generateChangeLog(Sobill sobill,JSONArray jsonArray) {
         // 订单已提交审核通过/不通过后或
         if (sobill.getStatus() == 1 && (sobill.getCheckStatus() == 1 || sobill.getCheckStatus() == 3)){
+            ChangeVersion changeVersion = new ChangeVersion();
+            changeVersion.setSobill(sobill);
+            Integer maxVersion = changeVersionService.maxVersionBySobill(changeVersion);
+            maxVersion++;
             boolean isChange = false;
             User user = userMapper.get(sobill.getEmplId());
             // 新增
-            ChangeVersion changeVersion = new ChangeVersion();
-            changeVersion.setSobill(sobill);
-            changeVersion.setDate(new Date());
-            changeVersion.setUser(user);
-            changeVersion.setId(IdGen.uuid());
-            changeVersion.setIsNewRecord(true);
+            ChangeVersion addChangeVersion = new ChangeVersion();
+            addChangeVersion.setSobill(sobill);
+            addChangeVersion.setVersion(maxVersion);
+            addChangeVersion.setDate(new Date());
+            addChangeVersion.setUser(user);
+            addChangeVersion.setId(IdGen.uuid());
+            addChangeVersion.setIsNewRecord(true);
             List<ChangeLog> changeLogList = Lists.newArrayList();
             for (Sobillentry sobillentry : sobill.getSobillentryList()) {
                 for (int i = 0; i < jsonArray.size(); i++) {
                     if (StringUtils.equals(sobillentry.getItemId(),jsonArray.getJSONObject(i).getString("itemId"))) {
-                        Double newQty = jsonArray.getJSONObject(i).getDouble("auxqty");
-                        if (!sobillentry.getAuxqty().equals(newQty)) {
-                            isChange = true;
-                            Icitem item = icitemService.get(sobillentry.getItemId());
-                            ChangeLog changeLog = new ChangeLog();
-                            changeLog.setOriginalQuantity(sobillentry.getAuxqty());
-                            changeLog.setChangeVersion(changeVersion);
-                            changeLog.setItem(item);
-                            changeLog.setId("");
-                            changeLog.setIsNewRecord(true);
-                            changeLogList.add(changeLog);
-                        }
+                        isChange = true;
+                        Icitem item = icitemService.get(sobillentry.getItemId());
+                        ChangeLog changeLog = new ChangeLog();
+                        changeLog.setOriginalQuantity(sobillentry.getAuxqty());
+                        changeLog.setChangeVersion(addChangeVersion);
+                        changeLog.setDelFlag("0");
+                        changeLog.setItem(item);
+                        changeLog.setId("");
+                        changeLogList.add(changeLog);
                     }
                 }
             }
             if (isChange) {
-                changeVersionService.save(changeVersion);
+                addChangeVersion.setChangeLogList(changeLogList);
+                changeVersionService.save(addChangeVersion);
             }
         }
     }

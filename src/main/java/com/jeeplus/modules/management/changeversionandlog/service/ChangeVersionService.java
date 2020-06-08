@@ -5,6 +5,7 @@ package com.jeeplus.modules.management.changeversionandlog.service;
 
 import java.util.List;
 
+import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,9 @@ public class ChangeVersionService extends CrudService<ChangeVersionMapper, Chang
 		super.delete(changeVersion);
 		changeLogMapper.delete(new ChangeLog());
 	}
+
+	public Integer maxVersionBySobill(ChangeVersion changeVersion) {
+	    return mapper.maxVersionBySobill(changeVersion);
+    }
 	
 }

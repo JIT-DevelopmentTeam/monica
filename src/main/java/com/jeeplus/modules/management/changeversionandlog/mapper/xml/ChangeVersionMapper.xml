@@ -85,6 +85,7 @@
 			del_flag,
 			user_id,
 			date,
+			version,
 			sobill_id
 		) VALUES (
 			#{id},
@@ -96,6 +97,7 @@
 			#{delFlag},
 			#{user.id},
 			#{date},
+			#{version},
 			#{sobill.id}
 		)
 	</insert>
@@ -128,5 +130,16 @@
 	<select id="findUniqueByProperty" resultType="ChangeVersion" statementType="STATEMENT">
 		select * FROM ic_change_version  where ${propertyName} = '${value}'
 	</select>
+
+    <select id="maxVersionBySobill" parameterType="ChangeVersion" resultType="Integer">
+        select IFNULL(max(version),0) from ic_change_version a
+        <where>
+            <if test="sobill != null">
+                <if test="sobill.id != null and sobill.id != ''">
+                    AND a.sobill_id = #{sobill.id}
+                </if>
+            </if>
+        </where>
+    </select>
 	
 </mapper>

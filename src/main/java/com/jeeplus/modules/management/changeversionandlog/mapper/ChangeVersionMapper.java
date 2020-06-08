@@ -6,6 +6,7 @@ package com.jeeplus.modules.management.changeversionandlog.mapper;
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
 import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
+import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 
 /**
  * 变更版本和记录MAPPER接口
@@ -14,5 +15,11 @@ import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
  */
 @MyBatisMapper
 public interface ChangeVersionMapper extends BaseMapper<ChangeVersion> {
-	
+
+    /**
+     * 获取当前订单最高版本号
+     * @return
+     */
+    Integer maxVersionBySobill(ChangeVersion changeVersion);
+
 }

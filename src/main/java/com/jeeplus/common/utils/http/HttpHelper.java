@@ -72,7 +72,7 @@ public class HttpHelper {
         CloseableHttpResponse response = null;
         CloseableHttpClient httpClient = HttpClients.createDefault();
         RequestConfig requestConfig = RequestConfig.custom().
-                setSocketTimeout(9000).setConnectTimeout(9000).build();
+                setSocketTimeout(1000000000).setConnectTimeout(1000000000).build();
         httpPost.setConfig(requestConfig);
         httpPost.addHeader("Content-Type", "application/json");
 
