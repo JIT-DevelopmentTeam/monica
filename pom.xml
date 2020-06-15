@@ -12,7 +12,7 @@
     <!-- 项目属性 -->
     <properties>
         <!-- jeewx开始 -->
-        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-chain.version>1.2</commons-chain.version>
         <junit.version>4.7</junit.version>
         <commons-lang.version>2.6</commons-lang.version>
