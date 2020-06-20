@@ -52,7 +52,7 @@ public class WxServiceSend {
         Map<String, Object> remark = new HashMap<>();
         remark.put("value", news.getRemarks());
         data.put("remark", remark);
-        JsonObject jsonObject = wxAPI.sendTemplate(openId, templateId, "http://139.9.6.165:8080/monica/f/wechat/news/form?id=" + news.getId(), "", data, new HashMap<>());
+        JsonObject jsonObject = wxAPI.sendTemplate(openId, templateId, "http://218.13.165.158:8069/monica/f/wechat/news/form?id=" + news.getId(), "", data, new HashMap<>());
         System.out.println("推送服务号成功：" + jsonObject);
     }
 }
