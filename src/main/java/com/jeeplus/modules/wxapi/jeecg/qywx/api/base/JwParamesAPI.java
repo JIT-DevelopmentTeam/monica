@@ -15,9 +15,9 @@ public class JwParamesAPI {
 	public static String secret = "GCB1HLm-Ii0lfACOjoZmW9qMdjPIKV0pOyBda-DPMec";
 
 	//管理莫尔卡应用的凭证密钥
-	public static String monicaSecret="CGuqFlfBvK0CCHpQVz-DqIpNFqX5vdBWcD7J41A4YPU";
+	public static String monicaSecret="raHxSBrTG2AEGlO0lPvIG7DRXshTGhwMvPLnsadeWC4";
 	//企业应用的idt
-	public static int monicaAgentid=1000002;
+	public static int monicaAgentid=1000003;
 
 	//通讯录应用
 	public static String contactSecret = "ScREORvyXumlN1YYbzoC7mp-fE0QB30ZXnkkvJ7xGGc";

@@ -26,7 +26,7 @@
         if(agentId != null && agentId != "")
             pageCurr = pageCurr + "?agentId=" + agentId;
         pageCurr = java.net.URLEncoder.encode(pageCurr); //  url编码
-        String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww49c384af1f4dac63&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
+        String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww2855e7a6c692c93b&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
         url = url.replace("REDIRECT_URI",pageCurr);
         response.sendRedirect(url); //  调用回调
     } else {

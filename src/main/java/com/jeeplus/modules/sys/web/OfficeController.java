@@ -296,7 +296,7 @@ public class OfficeController extends BaseController {
             List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
             // 新增/编辑
             for (Department department : departmentList) {
-                if (!"1".equals(department.getId())) {
+//                if (!"1".equals(department.getId())) {
                     Office editOffice = new Office();
                     editOffice.setQyDeptId(department.getId());
                     editOffice = officeService.getEntity(editOffice);
@@ -305,7 +305,7 @@ public class OfficeController extends BaseController {
                     for (com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User qywxUser : qywxUserList) {
                         saveEnterpriseUser(qywxUser.getUserid(),qywxUser.getName(),qywxUser.getEmail(),null,qywxUser.getMobile(),qywxUser.getPosition(),qywxUser.getGender(),localOffice);
                     }
-                }
+//                }
             }
             // 删除
             Office office = new Office();
