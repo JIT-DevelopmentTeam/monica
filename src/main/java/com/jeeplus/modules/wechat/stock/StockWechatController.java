@@ -103,7 +103,7 @@ public class StockWechatController extends BaseController {
         String batchNumber = request.getParameter("batchNumber");
         String warehouse = request.getParameter("warehouse");
         JSONArray jsonarr =
-                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + warehouse,"POST");
+                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + warehouse, apiUrl.getProtocol());
         j.put("data", jsonarr);
         return j;
     }
