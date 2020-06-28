@@ -149,6 +149,9 @@ $(document).ready(function() {
 					   case "12":
 						   text = "二维码追溯查询";
 						   break;
+					   case "13":
+						   text = "仓库同步";
+						   break;
                    }
                    return text != null && text != '' ? text : "-";
                }

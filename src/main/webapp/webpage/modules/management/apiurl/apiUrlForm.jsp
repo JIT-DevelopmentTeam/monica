@@ -57,6 +57,7 @@
 							<form:option value="10" label="职员信息查询"/>
 							<form:option value="11" label="部门信息查询总数"/>
 							<form:option value="12" label="二维码追溯查询"/>
+							<form:option value="13" label="仓库同步"/>
                         </form:select>
                     </td>
 				</tr>
