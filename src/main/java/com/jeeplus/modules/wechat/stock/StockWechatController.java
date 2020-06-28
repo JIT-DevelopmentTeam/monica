@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Controller
@@ -91,7 +93,7 @@ public class StockWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "detailData")
-    public AjaxJson detailData(HttpServletRequest request, Stock stock) {
+    public AjaxJson detailData(HttpServletRequest request, Stock stock) throws UnsupportedEncodingException {
         AjaxJson j = new AjaxJson();
         ApiUrl apiUrl = apiUrlService.getByUsefulness("7");
         if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
@@ -103,7 +105,7 @@ public class StockWechatController extends BaseController {
         String batchNumber = request.getParameter("batchNumber");
         String warehouse = request.getParameter("warehouse");
         JSONArray jsonarr =
-                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + warehouse, apiUrl.getProtocol());
+                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + URLEncoder.encode(warehouse, "utf-8"), apiUrl.getProtocol());
         j.put("data", jsonarr);
         return j;
     }
