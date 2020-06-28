@@ -35,6 +35,14 @@ public class WarehouseService extends TreeService<WarehouseMapper, Warehouse> {
 		}
 		return super.findList(warehouse);
 	}
+
+	/**
+	 * 查询列表中最大的modifytime
+	 * @return
+	 */
+	public Long findMaxModifyTime() {
+		return warehouseMapper.findMaxModifyTime();
+	}
 	
 	@Transactional(readOnly = false)
 	public void save(Warehouse warehouse) {

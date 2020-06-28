@@ -70,10 +70,13 @@ public class WarehouseController extends BaseController {
 			aj.setMsg("同步出错,请检查接口配置是否准确!");
 			return aj;
 		}
-		JSONArray jsonarr =
-				Common.executeInter(apiUrl.getUrl(), apiUrl.getProtocol());
+		String url = apiUrl.getUrl() + "&modifyTime=";
+		Long maxModifyTime = warehouseService.findMaxModifyTime();
+		if (maxModifyTime != null) {
+			url += maxModifyTime;
+		}
+		JSONArray jsonarr = Common.executeInter(url, apiUrl.getProtocol());
 
-		warehouseService.deleteAll();		// 同步数据前先清空仓库表
 		JSONObject jsonObject;
 		for (int i = 0; i < jsonarr.size(); i++) {
 			jsonObject = jsonarr.getJSONObject(i);
@@ -91,6 +94,7 @@ public class WarehouseController extends BaseController {
 			} else if (status == "false") {
 				warehouse.setStatus(0);
 			}
+			warehouse.setModifytime(jsonObject.getLong("FModifyTime"));
 			warehouse.setIsNewRecord(true);
 			warehouseService.save(warehouse);
 		}
