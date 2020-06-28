@@ -72,6 +72,20 @@
 					$("input[name='push']").attr("disabled", "true");
 					$("#pushrule").attr("disabled", "true");
 					$("#objId").attr("disabled", "true");
+				} else {
+					$("input[name='sendType']").each(function () {
+						if ($("input[name='sendType']:checked").val() == '0') {
+							$("select[name='pushrule']").html(
+									"<option value=''>请选择</option>" +
+									"<option value='1'>人员推送</option>")
+						} else if ($("input[name='sendType']:checked").val() == '1') {
+							$("select[name='pushrule']").html(
+									"<option value=''>请选择</option>" +
+									"<option value='0'>全部推送</option>" +
+									"<option value='1'>人员推送</option>" +
+									"<option value='2'>部门推送</option>")
+						}
+					});
 				}
 			});
 
