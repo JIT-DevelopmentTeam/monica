@@ -25,8 +25,8 @@
                 scaleEnabled:true//设置不自动调整高度
                 //scaleEnabled {Boolean} [默认值：false]//是否可以拉伸长高，(设置true开启时，自动长高失效)
             });
-		    $("#obj").selectpicker({
-                'width': '300px',
+		    $("#objId").selectpicker({
+                'width': '337px',
                 'title': '请选择'
 			});
 
@@ -126,7 +126,7 @@
                     // 推送对象
                     var  objId = $("#objId");
                     objId.removeAttr("disabled");
-                    objId.attr("class","selectpicker required show-tick  form-control  required");
+                    objId.attr("class","selectpicker required show-tick ");
 
                     var $sendType = $("[name='sendType']");
                     $sendType.removeAttr("disabled");
@@ -212,10 +212,10 @@
             var  objId = $("#objId");
             if(val == '0'){
                 objId.attr("disabled","true");
-                objId.attr("class","selectpicker  show-tick  form-control");
+                objId.attr("class","selectpicker  show-tick ");
             }else if(val == '1' || val == '2'){
                 objId.removeAttr("disabled");
-                objId.attr("class","selectpicker required  show-tick  form-control");
+                objId.attr("class","selectpicker required  show-tick ");
             }
         }
 	</script>
@@ -337,7 +337,7 @@
                     <td  class="width-15 active"><label class="pull-right">推送对象：</label></td>
                     <td class="width-35">
 						<div>
-							<select id="objId" name="objId" class="selectpicker required show-tick form-control " multiple  data-live-search="true">
+							<select id="objId" name="objId" class="selectpicker required show-tick " multiple  data-live-search="true" data-actions-box="true" data-width="auto">
 
 							</select>
 						</div>
