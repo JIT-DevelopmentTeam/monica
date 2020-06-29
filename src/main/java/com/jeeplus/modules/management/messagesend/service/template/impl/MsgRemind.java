@@ -19,8 +19,7 @@ public class MsgRemind extends MessageTemplate {
     private UserMapper userMapper;
 
     public String fromUser(String fromUser){
-        User userInfo=new User(fromUser);
-        User user = userMapper.get(userInfo);
+        User user = userMapper.get(fromUser);
         String fromUserName=user.getName();
         return fromUserName;
     }

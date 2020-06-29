@@ -1,6 +1,5 @@
 package com.jeeplus.modules.wechat.review;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -32,7 +31,6 @@ import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.DictTypeService;
 import com.jeeplus.modules.sys.service.OfficeService;
-import com.jeeplus.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -42,7 +40,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单审核
@@ -258,6 +259,7 @@ public class ReviewWechatController extends BaseController {
                         currentApprove.setRemark(remark);
                         currentApprove.setIsToapp(0);
                         orderApproveService.save(currentApprove);
+                        allow = true;
                         String title="订单审核";
                         String toUser=sobill.getEmplId();
                         User user=new User(toUser);
