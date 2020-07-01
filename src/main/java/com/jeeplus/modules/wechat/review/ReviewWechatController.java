@@ -1,6 +1,5 @@
 package com.jeeplus.modules.wechat.review;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -32,7 +31,6 @@ import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
 import com.jeeplus.modules.sys.service.DictTypeService;
 import com.jeeplus.modules.sys.service.OfficeService;
-import com.jeeplus.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -42,7 +40,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单审核
@@ -204,7 +205,7 @@ public class ReviewWechatController extends BaseController {
     @ResponseBody
     public AjaxJson reviewOrder(@RequestParam("sobillId") String sobillId,@RequestParam("qyUserId") String qyUserId,@RequestParam("status") Integer status, String remark, HttpServletRequest request) {
         String path = request.getContextPath();
-        String request_url = request.getScheme()+"://"+request.getServerName()+path+"/";
+        String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
         AjaxJson aj = new AjaxJson();
         String userId = null;
         Sobill sobill = sobillService.get(sobillId);
@@ -258,10 +259,11 @@ public class ReviewWechatController extends BaseController {
                         currentApprove.setRemark(remark);
                         currentApprove.setIsToapp(0);
                         orderApproveService.save(currentApprove);
+                        allow = true;
                         String title="订单审核";
-                        String toUser=sobill.getEmplId();
-                        User user=new User(toUser);
+                        User user=userMapper.get(sobill.getEmplId());
                         String userQyUserId=user.getQyUserId();
+                        System.out.println("------> :" + userQyUserId);
                         String getEmplId=orderApproveList.get(i).getApprovalEmplId().getId(); // 发送人Id
                         request_url += Global.getConfig("frontPath");// 跳转详情url
                         if (status == 2) {
@@ -281,13 +283,14 @@ public class ReviewWechatController extends BaseController {
                             /**
                              * 提醒申请人
                              */
-                            MessageTemplate msgRemindTemplate=msgRemind;
+                            MessageTemplate msgRemindTemplate=msgPass;
                             msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信
                             /**
                              * 发送下一个节点申请人
                              */
                             String nextToUserId=nextApprove.getApprovalEmplId().getQyUserId();// 下一个节点接收人
-                            MessageTemplate msgPassTemplate = msgPass;
+                            System.out.println("--------> :" + nextToUserId);
+                            MessageTemplate msgPassTemplate = msgRemind;
                             msgPassTemplate.send(getEmplId,title,nextToUserId,request_url,sobill.getId(),"1");// 消息发送到企业微信(下一个节点审批)
 
                         }
@@ -309,7 +312,7 @@ public class ReviewWechatController extends BaseController {
                                 /**
                                  * 提醒申请人
                                  */
-                                MessageTemplate msgRemindTemplate=msgRemind;
+                                MessageTemplate msgRemindTemplate=msgPass;
                                 msgRemindTemplate.send(getEmplId,title,userQyUserId,request_url,sobill.getId(),"2");// 消息发送到企业微信(提醒申请人)
                             } else {
                                 allow = false;
@@ -333,16 +336,16 @@ public class ReviewWechatController extends BaseController {
     @ResponseBody
     public void test(){
         MessageTemplate msgRemindTemplate=msgRemind;
-        msgRemindTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
-                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
+        msgRemindTemplate.send("starrysky","审批订单","baduncle",""
+                ,"19079e11a47249d39d393588cb88f9ac","1");
 
         MessageTemplate msgPassTemplate = msgPass;
-        msgPassTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
-                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
+        msgPassTemplate.send("starrysky","审批订单","baduncle",""
+                ,"19079e11a47249d39d393588cb88f9ac","1");
 
         MessageTemplate msgRejectTemplate = msgReject;
-        msgRejectTemplate.send("5b874fb83d504d598fa6809074d444c8","审批订单","LiWeiHongKong","http://monica.justinit.cn/monica/f/"
-                ,"974b95221f2f4b37b4f7fdfec40355f9","1");
+        msgRejectTemplate.send("starrysky","审批订单","baduncle",""
+                ,"19079e11a47249d39d393588cb88f9ac","1");
     }
 
     /**

@@ -37,7 +37,8 @@ public abstract  class MessageTemplate {
         String title="审核信息推送";
         String date = DateUtils.get_yyy_MM_dd();  // 推送时间
         String description=description(fromUserName,date,titleCard);
-        String url= path + "/wechat/review/applicationDetail?id="+orderId+"&isApproval="+isApproval;   // 详情请求路径--url
+        String url= path + "/wechat/review/applicationDetail?id="+orderId+"&qyUserId="+toUser+"&isApproval="+isApproval;   // 详情请求路径--url
+        System.out.println("-----> :" + url);
         JSONObject jsonObject =sendTextcardMsg(title,description,toUser,url);
         return jsonObject;
     }

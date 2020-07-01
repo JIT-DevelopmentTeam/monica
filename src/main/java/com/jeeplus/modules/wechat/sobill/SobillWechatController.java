@@ -1,10 +1,10 @@
 package com.jeeplus.modules.wechat.sobill;
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
-import com.jeeplus.common.utils.*;
-
 import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.common.utils.base.ObjectUtil;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.IdGen;
+import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.approvenode.entity.Approvenode;
@@ -22,19 +22,13 @@ import com.jeeplus.modules.management.orderapprove.entity.OrderApprove;
 import com.jeeplus.modules.management.orderapprove.service.OrderApproveService;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
 import com.jeeplus.modules.management.sobillandentry.entity.Sobillentry;
-import com.jeeplus.modules.management.sobillandentry.mapper.SobillentryMapper;
 import com.jeeplus.modules.management.sobillandentry.service.SobillService;
 import com.jeeplus.modules.management.sobillandentry.web.SobillController;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
-import com.jeeplus.modules.sys.utils.UserUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.ibatis.annotations.Param;
-import org.apache.shiro.session.Session;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -184,7 +177,7 @@ public class SobillWechatController extends BaseController {
     @ResponseBody
     public AjaxJson saveSob(@RequestBody Object object,HttpServletRequest request){
         String path = request.getContextPath();
-        String request_url = request.getScheme()+"://"+request.getServerName()+path;
+        String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
         AjaxJson aj = new AjaxJson();
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.get("id") == null || "".equals(jsonObject.getString("id"))){
@@ -371,6 +364,7 @@ public class SobillWechatController extends BaseController {
                 }
                 orderApprove.setSobillId(sobill);
                 orderApproveService.save(orderApprove);
+                orderApprove = orderApproveService.get(orderApprove.getId());
                 if(i == 0 && orderApprove.getIsToapp()==1){
                     String title="订单审核";
                     // 获取发送给微信用户Id

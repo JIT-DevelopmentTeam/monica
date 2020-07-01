@@ -90,6 +90,10 @@
 		</where>
 		ORDER BY a.sort ASC
 	</select>
+
+	<select id="findMaxModifyTime" resultType="java.lang.Long">
+		SELECT MAX(f_modifytime) FROM tb_warehouse
+	</select>
 	
 	<select id="getChildren" parameterType="String" resultMap="warehouseResult">  
         select * from tb_warehouse where parent_id = #{id} ORDER BY sort 

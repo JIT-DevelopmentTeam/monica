@@ -25,8 +25,8 @@
                 scaleEnabled:true//设置不自动调整高度
                 //scaleEnabled {Boolean} [默认值：false]//是否可以拉伸长高，(设置true开启时，自动长高失效)
             });
-		    $("#obj").selectpicker({
-                'width': '300px',
+		    $("#objId").selectpicker({
+                'width': '337px',
                 'title': '请选择'
 			});
 
@@ -72,6 +72,20 @@
 					$("input[name='push']").attr("disabled", "true");
 					$("#pushrule").attr("disabled", "true");
 					$("#objId").attr("disabled", "true");
+				} else {
+					$("input[name='sendType']").each(function () {
+						if ($("input[name='sendType']:checked").val() == '0') {
+							$("select[name='pushrule']").html(
+									"<option value=''>请选择</option>" +
+									"<option value='1'>人员推送</option>")
+						} else if ($("input[name='sendType']:checked").val() == '1') {
+							$("select[name='pushrule']").html(
+									"<option value=''>请选择</option>" +
+									"<option value='0'>全部推送</option>" +
+									"<option value='1'>人员推送</option>" +
+									"<option value='2'>部门推送</option>")
+						}
+					});
 				}
 			});
 
@@ -84,6 +98,20 @@
                 var $sendType_div =$("#sendType-div div");
                 $sendType_div.attr("class","iradio_square-blue ");
             }*/
+
+			$("input[name='sendType']").on("ifChecked", function() {
+				if (this.value == '0') {
+					$("select[name='pushrule']").html(
+							"<option value=''>请选择</option>" +
+							"<option value='1'>人员推送</option>")
+				} else if (this.value == '1') {
+					$("select[name='pushrule']").html(
+							"<option value=''>请选择</option>" +
+							"<option value='0'>全部推送</option>" +
+							"<option value='1'>人员推送</option>" +
+							"<option value='2'>部门推送</option>")
+				}
+			});
 
 
             // 判断是否推送，当前选中值
@@ -112,10 +140,11 @@
                     // 推送对象
                     var  objId = $("#objId");
                     objId.removeAttr("disabled");
-                    objId.attr("class","selectpicker required show-tick  form-control  required");
+                    objId.attr("class","selectpicker required show-tick ");
 
                     var $sendType = $("[name='sendType']");
                     $sendType.removeAttr("disabled");
+					$sendType.attr("class","form-control  required");
 
                     var $sendType_div =$("#sendType-div div");
                     $sendType_div.attr("class","iradio_square-blue ");
@@ -153,12 +182,21 @@
          * 新闻推送规则
          */
         function newsPushRule(val) {
+        	let sendType = $("input[name='sendType']:checked").val();
             if(val == ""){
                 return;
             }
             check(val);
             var option="";
-            jp.post("${ctx}/management/news/news/userOrOffice",{pushrule:val},function (data) {
+            jp.post("${ctx}/management/news/news/userOrOffice",{pushrule:val, sendType: sendType},function (data) {
+            	//微信人员列表
+				if (data.wxUserListInfo != null) {
+					if (data.wxUserListInfo.length > 0) {
+						$.each(data.wxUserListInfo, function (index, value) {
+							option +="<option  value=\""+value.id+"\"   data-tokens=\""+ value.nickName+"\">"+value.nickName+"</option>";
+						})
+					}
+				}
                 //人员列表
                 if(data.userListInfo != null){
                     if(data.userListInfo.length > 0){
@@ -189,10 +227,10 @@
             var  objId = $("#objId");
             if(val == '0'){
                 objId.attr("disabled","true");
-                objId.attr("class","selectpicker  show-tick  form-control");
+                objId.attr("class","selectpicker  show-tick ");
             }else if(val == '1' || val == '2'){
                 objId.removeAttr("disabled");
-                objId.attr("class","selectpicker required  show-tick  form-control");
+                objId.attr("class","selectpicker required  show-tick ");
             }
         }
 	</script>
@@ -283,10 +321,10 @@
 						<form:radiobutton path="isPush" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"/>是
                         <label class="error" for="isPush" id="isPush"></label>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>推送类型：</label></td>
+					<td class="width-15 active"><label class="pull-right">推送类型：</label></td>
 					<td class="width-35" id="sendType-div">
-						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks required"  disabled="true"/>服务号
-						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks required"  disabled="true"/>企业微信
+						<form:radiobutton path="sendType" itemLabel="label" value="0" htmlEscape="false" class="i-checks "  disabled="${news.id == undefined ? 'true': 'false'}"/>服务号
+						<form:radiobutton path="sendType" itemLabel="label" value="1" htmlEscape="false" class="i-checks "  disabled="${news.id == undefined ? 'true': 'false'}"/>企业微信
 						<label class="error" for="sendType" id="sendType"></label>
 					</td>
 				</tr>
@@ -294,7 +332,7 @@
 					<td class="width-15 active"><label class="pull-right">推送时间：</label></td>
 					<td class="width-35">
 						<div class='input-group form_datetime' id='push'>
-							<input type='text'  name="push" class="form-control "  value="<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+							<input type='text'  name="push" class="form-control "  value="<%--<fmt:formatDate value="${news.push}" pattern="yyyy-MM-dd HH:mm:ss"/>--%>"/>
 							<span class="input-group-addon" id="pushTime">
 								<span class="glyphicon glyphicon-calendar"></span>
 							</span>
@@ -304,17 +342,17 @@
 					<td class="width-15 active"><label class="pull-right">推送规则：</label></td>
 					<td class="width-35">
                         <form:select path="pushrule" htmlEscape="false" class="form-control " onchange="newsPushRule(this.value)">
-                            <form:option value="">请选择</form:option>
-                            <form:option value="0">全部推送</form:option>
-                            <form:option value="1">人员推送</form:option>
-                            <form:option value="2">部门推送</form:option>
+<%--                            <form:option value="">请选择</form:option>--%>
+<%--                            <form:option value="0">全部推送</form:option>--%>
+<%--                            <form:option value="1">人员推送</form:option>--%>
+<%--                            <form:option value="2">部门推送</form:option>--%>
                         </form:select>
 				</tr>
 				<tr>
                     <td  class="width-15 active"><label class="pull-right">推送对象：</label></td>
                     <td class="width-35">
 						<div>
-							<select id="objId" name="objId" class="selectpicker required show-tick form-control " multiple  data-live-search="true">
+							<select id="objId" name="objId" class="selectpicker required show-tick " multiple  data-live-search="true" data-actions-box="true" data-width="auto">
 
 							</select>
 						</div>

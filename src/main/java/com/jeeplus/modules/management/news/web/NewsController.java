@@ -3,14 +3,6 @@
  */
 package com.jeeplus.modules.management.news.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -25,6 +17,8 @@ import com.jeeplus.modules.management.news.entity.News;
 import com.jeeplus.modules.management.news.service.NewsService;
 import com.jeeplus.modules.management.newspush.entity.NewsPush;
 import com.jeeplus.modules.management.newspush.service.NewsPushService;
+import com.jeeplus.modules.management.wxuser.entity.WxUser;
+import com.jeeplus.modules.management.wxuser.service.WxUserService;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.User;
 import com.jeeplus.modules.sys.mapper.UserMapper;
@@ -47,10 +41,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 新闻公告Controller
@@ -73,6 +73,9 @@ public class NewsController extends BaseController {
 
     @Autowired
     private NewsPushService newsPushService;
+
+    @Autowired
+    private WxUserService wxUserService;
 
     @ModelAttribute
     public News get(@RequestParam(required = false) String id) {
@@ -602,21 +605,26 @@ public class NewsController extends BaseController {
 
     @RequestMapping(value = "userOrOffice")
     @ResponseBody
-    public Map<String,Object> userOrOffice(@RequestParam(name = "pushrule") String pushrule){
+    public Map<String,Object> userOrOffice(@RequestParam(name = "pushrule") String pushrule, @RequestParam(name = "sendType") String sendType){
         Map<String,Object> result =new HashMap<>();
-        //判断推送规则 1:人员推送，2:部门推送，0:全部推送
-        if("1".equals(pushrule)){
-            User user=new User();
-            user.setDelFlag("0");
-            List<User> userList=userMapper.findAllList(user);
-            result.put("userListInfo",userList);
-        }else if("2".equals(pushrule)){
-            Office office=new Office();
-            office.setDelFlag("0");
-            List<Office> officeList=officeService.findAllList(office);
-            result.put("officeListInfo",officeList);
-        }else{
-            return result;
+        if ("0".equals(sendType)) {//服务号
+            List<WxUser> wxUserList = wxUserService.findAllList(new WxUser());
+            result.put("wxUserListInfo",wxUserList);
+        } else {// 企业微信
+            //判断推送规则 1:人员推送，2:部门推送，0:全部推送
+            if("1".equals(pushrule)){
+                User user=new User();
+                user.setDelFlag("0");
+                List<User> userList=userMapper.findAllList(user);
+                result.put("userListInfo",userList);
+            }else if("2".equals(pushrule)){
+                Office office=new Office();
+                office.setDelFlag("0");
+                List<Office> officeList=officeService.findAllList(office);
+                result.put("officeListInfo",officeList);
+            }else{
+                return result;
+            }
         }
         return result;
     }

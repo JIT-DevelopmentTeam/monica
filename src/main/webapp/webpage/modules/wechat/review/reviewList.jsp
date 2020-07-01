@@ -71,7 +71,7 @@
                 </div>
                 <div id="processedData" class="weui-tab__bd-item">
                     <div id="processedDataList">
-                        <div v-on:click="applicationDetail(processed.sobillId.id,1)" style="border-radius: 5px" class="review-list" v-for="processed in processedList">
+                        <div v-on:click="applicationDetail(processed.sobillId.id,2)" style="border-radius: 5px" class="review-list" v-for="processed in processedList">
                             <div class="reviewInfo">
                                 <p style="color: #b2b2b2;">销售名称：{{processed.sobillId.empName}}</p>
                                 <p style="color: #b2b2b2;">客户名称：{{processed.sobillId.cusName}}</p>

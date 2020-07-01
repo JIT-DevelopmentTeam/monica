@@ -8,7 +8,6 @@ import com.google.common.collect.Maps;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.CacheUtils;
-import com.jeeplus.common.utils.IdGen;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.common.utils.token.AccessTokenUtils;
 import com.jeeplus.core.persistence.BaseEntity;
@@ -35,6 +34,12 @@ import com.jeeplus.modules.wxapi.jeecg.qywx.api.department.vo.Department;
 import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +72,28 @@ public class OfficeController extends BaseController {
 	@Autowired
 	private ApiUrlService apiUrlService;
 
+	public String CNToPinyin(String ChineseLanguage) throws BadHanyuPinyinOutputFormatCombination {
+		char[] cl_chars = ChineseLanguage.trim().toCharArray();
+		String hanyupinyin = "";
+		HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+		defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);// 输出拼音全部小写
+		defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);// 不带声调
+		defaultFormat.setVCharType(HanyuPinyinVCharType.WITH_V) ;
+		try {
+			for (int i=0; i<cl_chars.length; i++){
+				if (String.valueOf(cl_chars[i]).matches("[\u4e00-\u9fa5]+")){// 如果字符是中文,则将中文转为汉语拼音
+					hanyupinyin += PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(0,1).toUpperCase()
+							+ PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(1);
+				} else {// 如果字符不是中文,则不转换
+					hanyupinyin += cl_chars[i];
+				}
+			}
+		} catch (BadHanyuPinyinOutputFormatCombination e) {
+			//hanyupinyin = ChineseLanguage+ ":字符不能转成汉语拼音";
+			System.out.println("字符不能转成汉语拼音");
+		}
+		return hanyupinyin;
+	}
 
 	@ModelAttribute("office")
 	public Office get(@RequestParam(required=false) String id) {
@@ -296,7 +323,7 @@ public class OfficeController extends BaseController {
             List<Department> departmentList = JwDepartmentAPI.getAllDepartment(addressBookAccessToken);
             // 新增/编辑
             for (Department department : departmentList) {
-                if (!"1".equals(department.getId())) {
+//                if (!"1".equals(department.getId())) {
                     Office editOffice = new Office();
                     editOffice.setQyDeptId(department.getId());
                     editOffice = officeService.getEntity(editOffice);
@@ -305,7 +332,7 @@ public class OfficeController extends BaseController {
                     for (com.jeeplus.modules.wxapi.jeecg.qywx.api.user.vo.User qywxUser : qywxUserList) {
                         saveEnterpriseUser(qywxUser.getUserid(),qywxUser.getName(),qywxUser.getEmail(),null,qywxUser.getMobile(),qywxUser.getPosition(),qywxUser.getGender(),localOffice);
                     }
-                }
+//                }
             }
             // 删除
             Office office = new Office();
@@ -413,7 +440,7 @@ public class OfficeController extends BaseController {
      * @param sex 性别(0:待定,1:男;2:女)
      * @param office 本地部门机构
      */
-    private void saveEnterpriseUser(String userId,String name,String email,String phone,String mobile,String position,String sex,Office office) {
+    private void saveEnterpriseUser(String userId,String name,String email,String phone,String mobile,String position,String sex,Office office) throws BadHanyuPinyinOutputFormatCombination {
         User editUser = userMapper.getByQyUserId(userId);
         if (editUser == null) {
             // 新增
@@ -429,7 +456,7 @@ public class OfficeController extends BaseController {
             saveUser.setPhone(phone);
             saveUser.setMobile(mobile);
             saveUser.setPhoto("/jitcrm/static/common/images/flat-avatar.png");
-            saveUser.setId(IdGen.uuid());
+            saveUser.setId(userId);
             saveUser.setIsNewRecord(true);
             saveUser.setCreateBy(UserUtils.getUser());
             saveUser.setCreateDate(new Date());

@@ -364,7 +364,7 @@ function formatTableUnit(value, row, index) {
   function getIdSelections() {
         return $.map($("#newsTable").bootstrapTable('getSelections'), function (row) {
                 if(row.isPush == 1){
-                $('#edit').prop('disabled',"true");
+                // $('#edit').prop('disabled',"true");
             }
 
             return row.id

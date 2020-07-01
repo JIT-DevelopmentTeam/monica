@@ -14,7 +14,6 @@ import com.jeeplus.common.utils.CacheUtils;
 import com.jeeplus.common.utils.DateUtils;
 import com.jeeplus.common.utils.FileUtils;
 import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.base.ObjectUtil;
 import com.jeeplus.common.utils.collection.ListUtil;
 import com.jeeplus.common.utils.excel.ExportExcel;
 import com.jeeplus.common.utils.excel.ImportExcel;
@@ -24,7 +23,6 @@ import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
 import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.management.erp.ERPUser;
-import com.jeeplus.modules.monitor.utils.Common;
 import com.jeeplus.modules.sys.entity.Office;
 import com.jeeplus.modules.sys.entity.Role;
 import com.jeeplus.modules.sys.entity.SystemConfig;
@@ -34,17 +32,6 @@ import com.jeeplus.modules.sys.service.OfficeService;
 import com.jeeplus.modules.sys.service.SystemConfigService;
 import com.jeeplus.modules.sys.service.SystemService;
 import com.jeeplus.modules.sys.utils.UserUtils;
-import com.jeeplus.modules.tools.utils.TwoDimensionCode;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwAccessTokenAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.base.JwParamesAPI;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.core.common.AccessToken;
-import com.jeeplus.modules.wxapi.jeecg.qywx.api.user.JwUserAPI;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +47,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,29 +72,6 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private OfficeService officeService;
-
-	public String CNToPinyin(String ChineseLanguage) throws BadHanyuPinyinOutputFormatCombination {
-		char[] cl_chars = ChineseLanguage.trim().toCharArray();
-		String hanyupinyin = "";
-		HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
-		defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);// 输出拼音全部小写
-		defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);// 不带声调
-		defaultFormat.setVCharType(HanyuPinyinVCharType.WITH_V) ;
-		try {
-			for (int i=0; i<cl_chars.length; i++){
-				if (String.valueOf(cl_chars[i]).matches("[\u4e00-\u9fa5]+")){// 如果字符是中文,则将中文转为汉语拼音
-					hanyupinyin += PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(0,1).toUpperCase()
-							+ PinyinHelper.toHanyuPinyinStringArray(cl_chars[i], defaultFormat)[0].substring(1);
-				} else {// 如果字符不是中文,则不转换
-					hanyupinyin += cl_chars[i];
-				}
-			}
-		} catch (BadHanyuPinyinOutputFormatCombination e) {
-			//hanyupinyin = ChineseLanguage+ ":字符不能转成汉语拼音";
-			System.out.println("字符不能转成汉语拼音");
-		}
-		return hanyupinyin;
-	}
 
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -196,13 +159,12 @@ public class UserController extends BaseController {
 		}
 		user.setRoleList(roleList);
 		//生成用户二维码，使用登录名
-		String realPath = Global.getAttachmentDir()+ "qrcode/";
-		FileUtils.createDirectory(realPath);
-		String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
-		String filePath = realPath + name;  //存放路径
-		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
-		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
-		user.setQyUserId(CNToPinyin(user.getName()));
+//		String realPath = Global.getAttachmentDir()+ "qrcode/";
+//		FileUtils.createDirectory(realPath);
+//		String name= user.getId()+".png"; //encoderImgId此处二维码的图片名
+//		String filePath = realPath + name;  //存放路径
+//		TwoDimensionCode.encoderQRCode(user.getLoginName(), filePath, "png");//执行生成二维码
+//		user.setQrCode(Global.getAttachmentUrl()  + "qrcode/"+name);
 		// 保存用户信息
 		systemService.saveUser(user);
 		// 清除当前用户缓存

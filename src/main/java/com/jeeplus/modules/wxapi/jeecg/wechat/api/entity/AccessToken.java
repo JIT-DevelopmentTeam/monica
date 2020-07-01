@@ -2,9 +2,10 @@ package com.jeeplus.modules.wxapi.jeecg.wechat.api.entity;
 
 import com.jeeplus.modules.wxapi.jeecg.wechat.api.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AccessToken {
+public class AccessToken implements Serializable {
 
     private String accessToken;
 

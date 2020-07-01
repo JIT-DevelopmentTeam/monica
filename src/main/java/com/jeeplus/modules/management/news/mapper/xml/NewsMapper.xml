@@ -26,12 +26,13 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		(SELECT `name` FROM sys_user AS usr WHERE usr.id= a.f_authorid) AS "user.name",
-		(SELECT `name` FROM sys_office AS off WHERE off.id = a.f_deptid) AS "office.name"
+		usr.name AS "user.name",
+		off.name AS "office.name"
 	</sql>
 	
 	<sql id="newsJoins">
-		
+		LEFT JOIN sys_user usr ON usr.id = a.f_authorid
+		LEFT JOIN sys_office off ON off.id = a.f_deptid
 	</sql>
 	
     <resultMap type="News" id="NewsResult" autoMapping="true">

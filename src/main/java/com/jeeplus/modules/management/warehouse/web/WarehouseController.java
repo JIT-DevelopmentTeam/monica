@@ -7,6 +7,8 @@ import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.common.utils.StringUtils;
 import com.jeeplus.core.persistence.Page;
 import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
 import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 import com.jeeplus.modules.management.warehouse.service.WarehouseService;
 import com.jeeplus.modules.monitor.utils.Common;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,9 @@ public class WarehouseController extends BaseController {
 
 	@Autowired
 	private WarehouseService warehouseService;
+
+	@Autowired
+	private ApiUrlService apiUrlService;
 	
 	@ModelAttribute
 	public Warehouse get(@RequestParam(required=false) String id) {
@@ -58,12 +62,21 @@ public class WarehouseController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions("management:warehouse:warehouse:sync")
 	@RequestMapping(value = "synWareHouse")
-	public Map<String,Object>  synWareHouse(String parentId) throws Exception{
-		Map<String,Object> json = new HashMap<>();
-		JSONArray jsonarr =
-				Common.executeInter("http://monica.justinit.cn/interface_monica/erp_get/erp_stock?token_value=20190603","POST");
+	public AjaxJson  synWareHouse(String parentId) throws Exception{
+		AjaxJson aj = new AjaxJson();
+		ApiUrl apiUrl = apiUrlService.getByUsefulness("13");
+		if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+			aj.setSuccess(false);
+			aj.setMsg("同步出错,请检查接口配置是否准确!");
+			return aj;
+		}
+		String url = apiUrl.getUrl() + "&modifyTime=";
+		Long maxModifyTime = warehouseService.findMaxModifyTime();
+		if (maxModifyTime != null) {
+			url += maxModifyTime;
+		}
+		JSONArray jsonarr = Common.executeInter(url, apiUrl.getProtocol());
 
-		warehouseService.deleteAll();		// 同步数据前先清空仓库表
 		JSONObject jsonObject;
 		for (int i = 0; i < jsonarr.size(); i++) {
 			jsonObject = jsonarr.getJSONObject(i);
@@ -81,11 +94,11 @@ public class WarehouseController extends BaseController {
 			} else if (status == "false") {
 				warehouse.setStatus(0);
 			}
+			warehouse.setModifytime(jsonObject.getLong("FModifyTime"));
 			warehouse.setIsNewRecord(true);
 			warehouseService.save(warehouse);
 		}
-		json.put("Data",jsonarr);
-		return json;
+		return aj;
 	}
 	
 	/**

@@ -3,12 +3,10 @@
  */
 package com.jeeplus.modules.management.warehouse.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 import com.jeeplus.core.persistence.TreeEntity;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ public class Warehouse extends TreeEntity<Warehouse> {
 	private static final long serialVersionUID = 1L;
 	private String erpid;		// erpid
 	private String number;		// 编码
-	private Date modifytime;		// 同步时间戳
+	private Long modifytime;		// 同步时间戳
 	private Integer status;		// 状态
 	
 	private List<Stock> stockList = Lists.newArrayList();		// 子表列表
@@ -50,12 +48,11 @@ public class Warehouse extends TreeEntity<Warehouse> {
 		this.number = number;
 	}
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date getModifytime() {
+	public Long getModifytime() {
 		return modifytime;
 	}
 
-	public void setModifytime(Date modifytime) {
+	public void setModifytime(Long modifytime) {
 		this.modifytime = modifytime;
 	}
 	

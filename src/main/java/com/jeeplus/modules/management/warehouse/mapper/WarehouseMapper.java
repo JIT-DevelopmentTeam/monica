@@ -20,4 +20,10 @@ public interface WarehouseMapper extends TreeMapper<Warehouse> {
      */
     void deleteAll();
 
+    /**
+     * 查询列表中最大的modifytime
+     * @return
+     */
+    Long findMaxModifyTime();
+
 }
