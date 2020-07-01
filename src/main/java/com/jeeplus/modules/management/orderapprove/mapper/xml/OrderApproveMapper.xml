@@ -22,7 +22,7 @@
 		a.f_sobillid AS "sobillId.id",
 	    date_format(a.create_date, '%Y-%m-%d %H:%m:%s') AS "createDateStr",
 	    approvalEmplId.name AS "approvalEmpName",
-	    approvalEmplId.qy_user_id AS "qyUserId"
+	    approvalEmplId.qy_user_id AS "approvalEmplId.qyUserId"
 	</sql>
 	
 	<sql id="orderApproveJoins">
