@@ -156,11 +156,11 @@
 
                     <!-- 变更日志 -->
                     <div role="tabpanel" class="tab-pane fade in" id="changeVersion">
-                        <shiro:hasPermission name="management:changeversionandlog:changeVersion:list">
+                        <%--<shiro:hasPermission name="management:changeversionandlog:changeVersion:list">
                             <button id="changeLogView" class="btn btn-default" disabled onclick="changeLogView()">
                                 <i class="fa fa-search-plus"></i> 变更记录
                             </button>
-                        </shiro:hasPermission>
+                        </shiro:hasPermission>--%>
                         <table id="changeVersionListTable" ></table>
                     </div>
                 </div>

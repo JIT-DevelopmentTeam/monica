@@ -3,24 +3,19 @@
  */
 package com.jeeplus.modules.management.changeversionandlog.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.jeeplus.common.utils.CacheUtils;
-import com.jeeplus.common.utils.base.ObjectUtil;
-import com.jeeplus.common.utils.collection.ListUtil;
-import com.jeeplus.common.utils.http.HttpHelper;
+import com.google.common.collect.Lists;
+import com.jeeplus.common.json.AjaxJson;
+import com.jeeplus.common.utils.DateUtils;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.common.utils.excel.ExportExcel;
+import com.jeeplus.common.utils.excel.ImportExcel;
 import com.jeeplus.core.persistence.BaseEntity;
-import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.web.BaseController;
+import com.jeeplus.modules.management.changeversionandlog.DTO.ChangeVersionLogDTO;
 import com.jeeplus.modules.management.changeversionandlog.entity.ChangeLog;
-import com.jeeplus.modules.management.erp.ERPUser;
-import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
+import com.jeeplus.modules.management.changeversionandlog.service.ChangeVersionService;
 import com.jeeplus.modules.sys.entity.DataRule;
 import com.jeeplus.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.Logical;
@@ -28,26 +23,18 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.collect.Lists;
-import com.jeeplus.common.utils.DateUtils;
-import com.jeeplus.common.config.Global;
-import com.jeeplus.common.json.AjaxJson;
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.web.BaseController;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.common.utils.excel.ExportExcel;
-import com.jeeplus.common.utils.excel.ImportExcel;
-import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
-import com.jeeplus.modules.management.changeversionandlog.service.ChangeVersionService;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 变更版本和记录Controller
@@ -89,8 +76,8 @@ public class ChangeVersionController extends BaseController {
 	@ResponseBody
 	@RequiresPermissions("management:changeversionandlog:changeVersion:list")
 	@RequestMapping(value = "data")
-	public Map<String, Object> data(ChangeVersion changeVersion, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<ChangeVersion> page = changeVersionService.findPage(new Page<ChangeVersion>(request, response), changeVersion);
+	public Map<String, Object> data(ChangeVersionLogDTO changeVersionLogDTO, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<ChangeVersionLogDTO> page = changeVersionService.findVersionLogList(new Page<ChangeVersionLogDTO>(request, response), changeVersionLogDTO);
 		return getBootstrapData(page);
 	}
 

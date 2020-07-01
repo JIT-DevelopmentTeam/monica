@@ -868,6 +868,18 @@ function init() {
                     return value.substring(0,10);
                 }
             }
+            ,{
+                field: 'item.name',
+                title: '商品名称',
+                sortName: 'item.name'
+
+            }
+            ,{
+                field: 'originalQuantity',
+                title: '原数量',
+                sortName: 'originalQuantity'
+
+            }
         ]
     });
 }

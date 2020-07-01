@@ -5,8 +5,10 @@ package com.jeeplus.modules.management.changeversionandlog.mapper;
 
 import com.jeeplus.core.persistence.BaseMapper;
 import com.jeeplus.core.persistence.annotation.MyBatisMapper;
+import com.jeeplus.modules.management.changeversionandlog.DTO.ChangeVersionLogDTO;
 import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
-import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+
+import java.util.List;
 
 /**
  * 变更版本和记录MAPPER接口
@@ -21,5 +23,7 @@ public interface ChangeVersionMapper extends BaseMapper<ChangeVersion> {
      * @return
      */
     Integer maxVersionBySobill(ChangeVersion changeVersion);
+
+    List<ChangeVersionLogDTO> findVersionLogList(ChangeVersionLogDTO changeVersionLogDTO);
 
 }

@@ -14,12 +14,17 @@
 		a.date AS "date",
 		a.version AS "version",
 		a.sobill_id AS "sobill.id",
-		user.name AS "user.name"
+		user.name AS "user.name",
+		changeLog.original_quantity AS "originalQuantity",
+		item.f_number AS "item.number",
+		item.f_name AS "item.name"
 	</sql>
 	
 	<sql id="changeVersionJoins">
 		INNER JOIN ic_sobill AS sobill ON sobill.id = a.sobill_id
 		LEFT JOIN sys_user AS user ON user.id = a.user_id
+		LEFT JOIN ic_change_log AS changeLog ON a.id = changeLog.change_version
+		LEFT JOIN tb_icitem AS item ON item.id = changeLog.item_id
 	</sql>
 	
     
@@ -44,6 +49,30 @@
                     AND a.sobill_id = #{sobill.id}
                 </if>
             </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.version DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findVersionLogList" resultType="com.jeeplus.modules.management.changeversionandlog.DTO.ChangeVersionLogDTO" >
+		SELECT
+		<include refid="changeVersionColumns"/>
+		FROM ic_change_version a
+		<include refid="changeVersionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="sobill != null">
+				<if test="sobill.id != null and sobill.id != ''">
+					AND a.sobill_id = #{sobill.id}
+				</if>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

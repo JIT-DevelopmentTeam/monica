@@ -3,20 +3,19 @@
  */
 package com.jeeplus.modules.management.changeversionandlog.service;
 
-import java.util.List;
-
-import com.jeeplus.modules.management.sobillandentry.entity.Sobill;
+import com.jeeplus.common.utils.StringUtils;
+import com.jeeplus.core.persistence.Page;
+import com.jeeplus.core.service.CrudService;
+import com.jeeplus.modules.management.changeversionandlog.DTO.ChangeVersionLogDTO;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeLog;
+import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
+import com.jeeplus.modules.management.changeversionandlog.mapper.ChangeLogMapper;
+import com.jeeplus.modules.management.changeversionandlog.mapper.ChangeVersionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeeplus.core.persistence.Page;
-import com.jeeplus.core.service.CrudService;
-import com.jeeplus.common.utils.StringUtils;
-import com.jeeplus.modules.management.changeversionandlog.entity.ChangeVersion;
-import com.jeeplus.modules.management.changeversionandlog.mapper.ChangeVersionMapper;
-import com.jeeplus.modules.management.changeversionandlog.entity.ChangeLog;
-import com.jeeplus.modules.management.changeversionandlog.mapper.ChangeLogMapper;
+import java.util.List;
 
 /**
  * 变更版本和记录Service
@@ -29,6 +28,9 @@ public class ChangeVersionService extends CrudService<ChangeVersionMapper, Chang
 
 	@Autowired
 	private ChangeLogMapper changeLogMapper;
+
+	@Autowired
+	private ChangeVersionMapper changeVersionMapper;
 	
 	public ChangeVersion get(String id) {
 		ChangeVersion changeVersion = super.get(id);
@@ -43,7 +45,15 @@ public class ChangeVersionService extends CrudService<ChangeVersionMapper, Chang
 	public Page<ChangeVersion> findPage(Page<ChangeVersion> page, ChangeVersion changeVersion) {
 		return super.findPage(page, changeVersion);
 	}
-	
+
+	public Page<ChangeVersionLogDTO> findVersionLogList(Page<ChangeVersionLogDTO> page, ChangeVersionLogDTO changeVersionLogDTO) {
+		dataRuleFilter(changeVersionLogDTO);
+		changeVersionLogDTO.setPage(page);
+		page.setList(changeVersionMapper.findVersionLogList(changeVersionLogDTO));
+		return page;
+	}
+
+
 	@Transactional(readOnly = false)
 	public void save(ChangeVersion changeVersion) {
 		super.save(changeVersion);
