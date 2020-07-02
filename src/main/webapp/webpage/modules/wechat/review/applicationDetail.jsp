@@ -235,24 +235,26 @@
         </div>
     </div>
 
-    <c:if test="${sobill.isApproval == 1}">
-        <br><br><br>
+    <c:forEach items="${orderApproveList}" var="var">
+        <c:if test="${(var.approvalEmplId.qyUserId eq qyUserId && (var.status == 0 && var.isToapp == 1))}">
+            <br><br><br>
 
-        <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
-            <a v-on:click="applicationApproved" class="weui-tabbar__item">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/receive.jpg" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{pass}}</p>
-            </a>
-            <a v-on:click="rejectApplication" class="weui-tabbar__item">
-                <div class="weui-tabbar__icon">
-                    <img src="${ctxStatic}/image/wechat/reject.jpg" alt="">
-                </div>
-                <p class="weui-tabbar__label">{{reject}}</p>
-            </a>
-        </div>
-    </c:if>
+            <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 500;">
+                <a v-on:click="applicationApproved" class="weui-tabbar__item">
+                    <div class="weui-tabbar__icon">
+                        <img src="${ctxStatic}/image/wechat/receive.jpg" alt="">
+                    </div>
+                    <p class="weui-tabbar__label">{{pass}}</p>
+                </a>
+                <a v-on:click="rejectApplication" class="weui-tabbar__item">
+                    <div class="weui-tabbar__icon">
+                        <img src="${ctxStatic}/image/wechat/reject.jpg" alt="">
+                    </div>
+                    <p class="weui-tabbar__label">{{reject}}</p>
+                </a>
+            </div>
+        </c:if>
+    </c:forEach>
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery-weui/1.2.1/js/jquery-weui.min.js"></script>
