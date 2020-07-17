@@ -75,12 +75,15 @@
                     data: {id : id},
                     dataType: "json",
                     success: function(data) {
-                        console.log(data);
-                        vm.title = data.news.title;
-                        vm.author = "—— " + data.news.user.name;
-                        vm.pushTime = data.news.push + " ——";
-                        vm.content = vm.decode(data.news.content);
-                        vm.readCount = "阅读次数：" + data.news.readCount;
+                        if (data.errorCode === "403") {
+                            $.toast(data.msg, "forbidden");
+                        } else {
+                            vm.title = data.body.news.title;
+                            vm.author = "—— " + data.body.news.user.name;
+                            vm.pushTime = (data.body.news.push == undefined ? '' : data.body.news.push) + " ——";
+                            vm.content = vm.decode(data.body.news.content);
+                            vm.readCount = "阅读次数：" + data.body.news.readCount;
+                        }
                     }
                 });
             },

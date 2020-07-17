@@ -1,5 +1,6 @@
 package com.jeeplus.modules.wechat.news;
 
+import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.news.entity.News;
 import com.jeeplus.modules.management.news.service.NewsService;
@@ -10,9 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping(value = "${frontPath}/wechat/news")
@@ -33,11 +33,21 @@ public class NewsWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "data")
-    public Map<String, Object> data(News news) {
-        Map<String, Object> map = new HashMap<>();
+    public AjaxJson data(News news, HttpServletRequest request) {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object qyUserId = session.getAttribute("qyUserId");
+        if (qyUserId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         List<News> newsList = newsService.findListWeChat(news);
-        map.put("newsList", newsList);
-        return map;
+        aj.setSuccess(true);
+        aj.setErrorCode("200");
+        aj.put("newsList", newsList);
+        return aj;
     }
 
     @RequestMapping(value = "form")
@@ -52,12 +62,20 @@ public class NewsWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "formData")
-    public Map<String, Object> formData(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>();
+    public AjaxJson formData(HttpServletRequest request) {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object qyUserId = session.getAttribute("qyUserId");
+        if (qyUserId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String id = request.getParameter("id");
         News news = newsService.get(id);
-        map.put("news", news);
-        return map;
+        aj.put("news", news);
+        return aj;
     }
 
     @RequestMapping(value = "moreList")
@@ -79,8 +97,16 @@ public class NewsWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "moreListData")
-    public Map<String, Object> moreListData(HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>();
+    public AjaxJson moreListData(HttpServletRequest request) {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object qyUserId = session.getAttribute("qyUserId");
+        if (qyUserId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String type = request.getParameter("type");
         News news = new News();
         if ("headlines".equals(type)) {
@@ -89,8 +115,8 @@ public class NewsWechatController extends BaseController {
             news.setHeadline(0);
         }
         List<News> newsList = newsService.findListWeChat(news);
-        map.put("newsList", newsList);
-        return map;
+        aj.put("newsList", newsList);
+        return aj;
     }
 
 }

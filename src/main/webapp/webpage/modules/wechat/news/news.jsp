@@ -166,12 +166,16 @@
                     data: {},
                     dataType: "json",
                     success: function(data) {
-                        vm.items = data.newsList;
-                        for (let i = 0; i < data.newsList.length; i++) {
-                            if (data.newsList[i].headline == '1') {
-                                vm.headlinesItems.push(data.newsList[i]);
-                            } else if (data.newsList[i].headline == '0') {
-                                vm.ordinaryItems.push(data.newsList[i]);
+                        if (data.errorCode === "403") {
+                            $.toast(data.msg, "forbidden");
+                        } else {
+                            vm.items = data.body.newsList;
+                            for (let i = 0; i < data.body.newsList.length; i++) {
+                                if (data.body.newsList[i].headline == '1') {
+                                    vm.headlinesItems.push(data.body.newsList[i]);
+                                } else if (data.body.newsList[i].headline == '0') {
+                                    vm.ordinaryItems.push(data.body.newsList[i]);
+                                }
                             }
                         }
                     }

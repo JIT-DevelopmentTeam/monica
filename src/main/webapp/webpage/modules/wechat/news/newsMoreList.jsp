@@ -99,7 +99,11 @@
                     data: {},
                     dataType: "json",
                     success: function(data) {
-                        vm.items = data.newsList;
+                        if (data.errorCode === "403") {
+                            $.toast(data.msg, "forbidden");
+                        } else {
+                            vm.items = data.body.newsList;
+                        }
                         /*for (let i = 0; i < data.newsList.length; i++) {
                             if (data.newsList[i].headline == vm.type) {
                                 vm.headlinesItems.push(data.newsList[i]);
