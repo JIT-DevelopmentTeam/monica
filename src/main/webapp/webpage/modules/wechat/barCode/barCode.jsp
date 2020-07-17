@@ -145,22 +145,26 @@
             type: "get",
             dataType: "json",
             success: function (res) {
-                var appId = res.config.appId;
-                var timestamp = res.config.timestamp;
-                var nonceStr = res.config.nonceStr;
-                var signature = res.config.signature;
-                // 通过config接口注入权限验证配置
-                wx.config({
-                    debug: false, // 开启调试模式。
-                    appId: appId, // 必填，公众号的唯一标识
-                    timestamp: timestamp, // 必填，生成签名的时间戳
-                    nonceStr: nonceStr, // 必填，生成签名的随机串
-                    signature: signature,// 必填，签名
-                    jsApiList: [
-                        'checkJsApi',// 基础
-                        'scanQRCode',// 微信扫一扫接口
-                    ] // 必填，配置功能按钮
-                });
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
+                    var appId = res.body.config.appId;
+                    var timestamp = res.body.config.timestamp;
+                    var nonceStr = res.body.config.nonceStr;
+                    var signature = res.body.config.signature;
+                    // 通过config接口注入权限验证配置
+                    wx.config({
+                        debug: false, // 开启调试模式。
+                        appId: appId, // 必填，公众号的唯一标识
+                        timestamp: timestamp, // 必填，生成签名的时间戳
+                        nonceStr: nonceStr, // 必填，生成签名的随机串
+                        signature: signature,// 必填，签名
+                        jsApiList: [
+                            'checkJsApi',// 基础
+                            'scanQRCode',// 微信扫一扫接口
+                        ] // 必填，配置功能按钮
+                    });
+                }
             }
         });
         // 通过ready接口处理成功验证
@@ -203,18 +207,22 @@
                         type: "post",
                         dataType: "json",
                         success: function (data) {
-                            // alert("查询出来的数据：" + data.result.number);
-                            $("#primaryNo").text(data.result[0].FIDCode);
-                            $("#itemNo").text(data.result[0].FNumber);
-                            $("#itemName").text(data.result[0].FName);
-                            $("#model").text(data.result[0].FModel);
-                            $("#batchNo").text(data.result[0].FBatchNo);
-                            $("#colorNo").text(data.result[0].FColorNum);
-                            $("#proDate").text(data.result[0].FBillDate);
-                            $("#level").text(data.result[0].FGrade);
-                            $("#proEqu").text(data.result[0].FDevice);
-                            $("#checker").text(data.result[0].FChecker);
-                            $("#total").text(data.result[0].FStockStatus);
+                            if (data.errorCode === "403") {
+                                $.toast(data.msg, "forbidden");
+                            } else {
+                                // alert("查询出来的数据：" + data.result.number);
+                                $("#primaryNo").text(data.body.result[0].FIDCode);
+                                $("#itemNo").text(data.body.result[0].FNumber);
+                                $("#itemName").text(data.body.result[0].FName);
+                                $("#model").text(data.body.result[0].FModel);
+                                $("#batchNo").text(data.body.result[0].FBatchNo);
+                                $("#colorNo").text(data.body.result[0].FColorNum);
+                                $("#proDate").text(data.body.result[0].FBillDate);
+                                $("#level").text(data.body.result[0].FGrade);
+                                $("#proEqu").text(data.body.result[0].FDevice);
+                                $("#checker").text(data.body.result[0].FChecker);
+                                $("#total").text(data.body.result[0].FStockStatus);
+                            }
                         }
                     });
                 },
@@ -236,10 +244,14 @@
                 type: "post",
                 dataType: "json",
                 success: function (data) {
-                    $("#primaryNo").text(data.result.erpId);
-                    $("#itemNo").text(data.result.number);
-                    $("#itemName").text(data.result.name);
-                    $("#model").text(data.result.model);
+                    if (data.errorCode === "403") {
+                        $.toast(data.msg, "forbidden");
+                    } else {
+                        $("#primaryNo").text(data.body.result.erpId);
+                        $("#itemNo").text(data.body.result.number);
+                        $("#itemName").text(data.body.result.name);
+                        $("#model").text(data.body.result.model);
+                    }
                 }
             });
         } else

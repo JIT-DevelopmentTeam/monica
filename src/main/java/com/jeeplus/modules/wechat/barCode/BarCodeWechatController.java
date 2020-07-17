@@ -1,5 +1,6 @@
 package com.jeeplus.modules.wechat.barCode;
 
+import com.jeeplus.common.json.AjaxJson;
 import com.jeeplus.core.web.BaseController;
 import com.jeeplus.modules.management.apiurl.entity.ApiUrl;
 import com.jeeplus.modules.management.apiurl.service.ApiUrlService;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -53,15 +54,23 @@ public class BarCodeWechatController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "config")
-    public Map<String, Object> config(HttpServletRequest request) throws UnsupportedEncodingException {
-        Map<String, Object> result = new HashMap<>();
+    public AjaxJson config(HttpServletRequest request) throws UnsupportedEncodingException {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         AccessToken token = JwAccessTokenAPI.getAccessToken(JwParamesAPI.corpId, JwParamesAPI.monicaSecret);
         JsapiTicket ticket = JwAccessTokenAPI.getJsapiTicket(token.getAccesstoken());
         String url = URLDecoder.decode(request.getParameter("url"), "gbk");
         System.out.println(url);
         Map<String, String> config = Sign.sign(ticket.getTicket(), url);
-        result.put("config", config);
-        return result;
+        aj.put("config", config);
+        return aj;
     }
 
     /**
@@ -71,13 +80,21 @@ public class BarCodeWechatController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "scanQRCode")
-    public Map<String, Object> scanQRCode(HttpServletRequest request) {
-        Map<String, Object> result = new HashMap<>();
+    public AjaxJson scanQRCode(HttpServletRequest request) {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String idCode = request.getParameter("idCode");
         ApiUrl apiUrl = apiUrlService.getByUsefulness("12");
         JSONArray jsonArray = Common.executeInter(apiUrl.getUrl() + "&idCode=" + idCode, apiUrl.getProtocol());
-        result.put("result", jsonArray);
-        return result;
+        aj.put("result", jsonArray);
+        return aj;
     }
 
     /**
@@ -87,12 +104,20 @@ public class BarCodeWechatController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "searchCode")
-    public Map<String, Object> searchCode(HttpServletRequest request) {
-        Map<String, Object> result = new HashMap<>();
+    public AjaxJson searchCode(HttpServletRequest request) {
+        AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String itemId = request.getParameter("QRCode");
         Icitem icitem = icitemService.findByNumber("0", itemId);
-        result.put("result", icitem);
-        return result;
+        aj.put("result", icitem);
+        return aj;
     }
 
 }
