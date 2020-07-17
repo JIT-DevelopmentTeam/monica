@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -58,6 +59,14 @@ public class StockWechatController extends BaseController {
     @RequestMapping(value = "listData")
     public AjaxJson listData(HttpServletRequest request, Stock stock) {
         AjaxJson j = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            j.setSuccess(false);
+            j.setErrorCode("403");
+            j.setMsg("您无权访问！");
+            return j;
+        }
         ApiUrl apiUrlList = apiUrlService.getByUsefulness("5");
         if (apiUrlList == null || StringUtils.isBlank(apiUrlList.getUrl())) {
             j.setSuccess(false);
@@ -95,6 +104,14 @@ public class StockWechatController extends BaseController {
     @RequestMapping(value = "detailData")
     public AjaxJson detailData(HttpServletRequest request, Stock stock) throws UnsupportedEncodingException {
         AjaxJson j = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            j.setSuccess(false);
+            j.setErrorCode("403");
+            j.setMsg("您无权访问！");
+            return j;
+        }
         ApiUrl apiUrl = apiUrlService.getByUsefulness("7");
         if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
             j.setSuccess(false);
@@ -112,8 +129,16 @@ public class StockWechatController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "getLeval")
-    public AjaxJson getLeval() {
+    public AjaxJson getLeval(HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            j.setSuccess(false);
+            j.setErrorCode("403");
+            j.setMsg("您无权访问！");
+            return j;
+        }
         ApiUrl apiUrl = apiUrlService.getByUsefulness("8");
         if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
             j.setSuccess(false);

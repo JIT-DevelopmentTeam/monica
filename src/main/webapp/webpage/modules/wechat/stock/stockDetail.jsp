@@ -152,7 +152,11 @@
                     warehouse: "${warehouse}"
                 }
             }).then(res => {
-                this.stock = res.body.body.data[0]
+                if (res.errorCode === "403") {
+                    $.toast(res.msg, "forbidden");
+                } else {
+                    this.stock = res.body.body.data[0]
+                }
             })
         }
     });

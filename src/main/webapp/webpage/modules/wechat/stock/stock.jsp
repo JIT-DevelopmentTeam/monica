@@ -250,10 +250,14 @@
                 endTime: vm.$refs.endTime.value
             }
         }).then(res => {
-            vm.loading = false;
-            result = res.body.body.stockList;
-            for (let i = 0; i < result.length; i++) {
-                vm.itemList.push(result[i]);
+            if (res.errorCode === "403") {
+                $.toast(res.msg, "forbidden");
+            } else {
+                vm.loading = false;
+                result = res.body.body.stockList;
+                for (let i = 0; i < result.length; i++) {
+                    vm.itemList.push(result[i]);
+                }
             }
         });
     }
@@ -311,11 +315,15 @@
                         endTime: this.$refs.endTime.value
                     }
                 }).then(res => {
-                    $("#loadDiv").hide();
-                    console.log("itemList.size: " + res.body.body.stockList.length + "\ntotal: " + res.body.body.total)
-                    this.itemList = res.body.body.stockList;
-                    console.log(this.itemList)
-                    this.total = res.body.body.total;
+                    if (res.errorCode === "403") {
+                        $.toast(res.msg, "forbidden");
+                    } else {
+                        $("#loadDiv").hide();
+                        console.log("itemList.size: " + res.body.body.stockList.length + "\ntotal: " + res.body.body.total)
+                        this.itemList = res.body.body.stockList;
+                        console.log(this.itemList)
+                        this.total = res.body.body.total;
+                    }
                 })
             },
             changeState: function (value) {
@@ -335,11 +343,15 @@
         created: function(){
             this.$http.get('${ctxf}/wechat/stock/getLeval')
                 .then(res => {
-                    var dataList = res.data.body.data
-                    for (let i = 0; i < dataList.length; i++) {
-                        dataList[i].checked = false;
+                    if (res.errorCode === "403") {
+                        $.toast(res.msg, "forbidden");
+                    } else {
+                        var dataList = res.data.body.data
+                        for (let i = 0; i < dataList.length; i++) {
+                            dataList[i].checked = false;
+                        }
+                        this.levelList = dataList
                     }
-                    this.levelList = dataList
                 })
         }
     });
