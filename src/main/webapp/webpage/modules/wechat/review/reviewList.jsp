@@ -125,7 +125,7 @@
             </div>
         </div>
 
-        <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 10000;">
+        <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;z-index: 10000;" v-if="errorCode !== '403'">
             <a v-on:click="backHome()" class="weui-tabbar__item">
                 <div class="weui-tabbar__icon">
                     <img src="${ctxStatic}/image/wechat/home.jpg" alt="">
@@ -222,7 +222,10 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.errorCode;
+                if (res.errorCode === "403") {
+                    $.toast(res.msg, "forbidden");
+                } else {
                     this.unprocessedList = res.body.body.myReviewList;
                 }
             });
@@ -237,7 +240,10 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.errorCode;
+                if (res.errorCode === "403") {
+                    $.toast(res.msg, "forbidden");
+                } else {
                     this.processedList = res.body.body.myReviewList;
                 }
             });
@@ -250,7 +256,10 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.errorCode;
+                if (res.errorCode === "403") {
+                    $.toast(res.msg, "forbidden");
+                } else {
                     this.submittedList = res.body.body.submittedList;
                 }
             });
@@ -264,7 +273,8 @@
             home:'首页',
             unprocessedList:[],
             processedList:[],
-            submittedList:[]
+            submittedList:[],
+            errorCode: ''
         },
         methods: {
             // 切换内容
@@ -375,79 +385,84 @@
                     data:data,
                     dataType:'json',
                     success:function (res) {
-                        var dataList = [];
-                        var listId;
-                        var templet = '';
-                        switch (type) {
-                            case 1:
-                                listId = 'unprocessedData';
-                                if (res.success) {
-                                    dataList = res.body.myReviewList;
-                                    $("#loadUnprocessed").hide();
-                                    $("#endUnprocessed").hide();
-                                }
-                                break;
-                            case 2:
-                                listId = 'processedData';
-                                if (res.success) {
-                                    dataList = res.body.myReviewList;
-                                    $("#loadProcessed").hide();
-                                    $("#endProcessed").hide();
-                                }
-                                break;
-                            case 3:
-                                listId = 'submitted';
-                                if (res.success) {
-                                    dataList = res.body.submittedList;
-                                    $("#loadSubmitted").hide();
-                                    $("#endSubmitted").hide();
-                                }
-                                break;
-                        }
-                        $("#"+listId+"List").empty();
-                        for (var i = 0; i < dataList.length; i++) {
-                            templet += '<div style="border-radius: 5px" class="review-list">' +
-                                '<div class="reviewInfo">';
+                        this.errorCode = res.errorCode;
+                        if (res.errorCode === "403") {
+                            $.toast(res.msg, "forbidden");
+                        } else {
+                            var dataList = [];
+                            var listId;
+                            var templet = '';
+                            switch (type) {
+                                case 1:
+                                    listId = 'unprocessedData';
+                                    if (res.success) {
+                                        dataList = res.body.myReviewList;
+                                        $("#loadUnprocessed").hide();
+                                        $("#endUnprocessed").hide();
+                                    }
+                                    break;
+                                case 2:
+                                    listId = 'processedData';
+                                    if (res.success) {
+                                        dataList = res.body.myReviewList;
+                                        $("#loadProcessed").hide();
+                                        $("#endProcessed").hide();
+                                    }
+                                    break;
+                                case 3:
+                                    listId = 'submitted';
+                                    if (res.success) {
+                                        dataList = res.body.submittedList;
+                                        $("#loadSubmitted").hide();
+                                        $("#endSubmitted").hide();
+                                    }
+                                    break;
+                            }
+                            $("#" + listId + "List").empty();
+                            for (var i = 0; i < dataList.length; i++) {
+                                templet += '<div style="border-radius: 5px" class="review-list">' +
+                                    '<div class="reviewInfo">';
                                 if (type == 1 || type == 2) {
-                                    templet += '<p style="color: #b2b2b2;">销售名称：'+dataList[i].sobillId.empName+'</p>' +
-                                        '<p style="color: #b2b2b2;">客户名称：'+dataList[i].sobillId.cusName+'</p>' +
-                                        '<p style="color: #b2b2b2;">订单编号：'+dataList[i].sobillId.billNo+'</p>';
-                                        if (dataList[i].type == 1) {
-                                            templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
-                                        }
-                                        switch (dataList[i].status) {
-                                            case 0:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
-                                                break;
-                                            case 1:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
-
-                                                break;
-                                            case 2:
-                                                templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
-                                                break;
-                                        }
-                                        templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].createDateStr+'</p>'
-                                } else {
-                                    templet += '<p style="color: #b2b2b2;">销售名称：'+dataList[i].empName+'</p>'+
-                                        '<p style="color: #b2b2b2;">客户名称：'+dataList[i].cusName+'</p>' +
-                                        '<p style="color: #b2b2b2;">订单编号：'+dataList[i].billNo+'</p>';
-                                        if (dataList[i].approveType == 1) {
-                                            templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
-                                        }
-                                        if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
-                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
-                                        } else if (dataList[i].approveStatus == 2) {
-                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
-                                        } else {
+                                    templet += '<p style="color: #b2b2b2;">销售名称：' + dataList[i].sobillId.empName + '</p>' +
+                                        '<p style="color: #b2b2b2;">客户名称：' + dataList[i].sobillId.cusName + '</p>' +
+                                        '<p style="color: #b2b2b2;">订单编号：' + dataList[i].sobillId.billNo + '</p>';
+                                    if (dataList[i].type == 1) {
+                                        templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
+                                    }
+                                    switch (dataList[i].status) {
+                                        case 0:
                                             templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
-                                        }
-                                    templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].initiateDateStr+'</p>';
+                                            break;
+                                        case 1:
+                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+
+                                            break;
+                                        case 2:
+                                            templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                                            break;
+                                    }
+                                    templet += '<p style="color: #b2b2b2;">发起时间：' + dataList[i].createDateStr + '</p>'
+                                } else {
+                                    templet += '<p style="color: #b2b2b2;">销售名称：' + dataList[i].empName + '</p>' +
+                                        '<p style="color: #b2b2b2;">客户名称：' + dataList[i].cusName + '</p>' +
+                                        '<p style="color: #b2b2b2;">订单编号：' + dataList[i].billNo + '</p>';
+                                    if (dataList[i].approveType == 1) {
+                                        templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
+                                    }
+                                    if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
+                                        templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                                    } else if (dataList[i].approveStatus == 2) {
+                                        templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                                    } else {
+                                        templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                                    }
+                                    templet += '<p style="color: #b2b2b2;">发起时间：' + dataList[i].initiateDateStr + '</p>';
                                 }
-                            templet += '</div>' +
-                                '</div>';
+                                templet += '</div>' +
+                                    '</div>';
+                            }
+                            $("#" + listId + "List").append(templet);
                         }
-                        $("#"+listId+"List").append(templet);
                     }
                 })
             },
@@ -500,102 +515,107 @@
            data:data,
            dataType:'json',
            success:function(res) {
-               var dataList = [];
-               var listId;
-               var templet = '';
-               switch (type) {
-                   case 1:
-                       listId = 'unprocessedData';
-                       if (res.success) {
-                           dataList = res.body.myReviewList;
-                           if (dataList.length < 20) {
-                               loadUnprocessed = true;
+               vm.errorCode = res.errorCode;
+               if (res.errorCode === "403") {
+                   $.toast(res.msg, "forbidden");
+               } else {
+                   var dataList = [];
+                   var listId;
+                   var templet = '';
+                   switch (type) {
+                       case 1:
+                           listId = 'unprocessedData';
+                           if (res.success) {
+                               dataList = res.body.myReviewList;
+                               if (dataList.length < 20) {
+                                   loadUnprocessed = true;
+                                   $("#loadUnprocessed").hide();
+                                   $("#endUnprocessed").show();
+                               } else {
+                                   $("#loadUnprocessed").hide();
+                               }
+                           } else {
                                $("#loadUnprocessed").hide();
                                $("#endUnprocessed").show();
+                           }
+                           break;
+                       case 2:
+                           listId = 'processedData';
+                           if (res.success) {
+                               dataList = res.body.myReviewList;
+                               if (dataList.length < 20) {
+                                   loadProcessed = true;
+                                   $("#loadProcessed").hide();
+                                   $("#endProcessed").show();
+                               } else {
+                                   $("#loadUnprocessed").hide();
+                               }
                            } else {
                                $("#loadUnprocessed").hide();
+                               $("#endUnprocessed").show();
                            }
-                       } else {
-                           $("#loadUnprocessed").hide();
-                           $("#endUnprocessed").show();
-                       }
-                       break;
-                   case 2:
-                       listId = 'processedData';
-                       if (res.success) {
-                           dataList = res.body.myReviewList;
-                           if (dataList.length < 20) {
-                               loadProcessed = true;
-                               $("#loadProcessed").hide();
-                               $("#endProcessed").show();
+                           break;
+                       case 3:
+                           listId = 'submitted';
+                           if (res.success) {
+                               dataList = res.body.submittedList;
+                               if (dataList.length < 20) {
+                                   loadSubmitted = true;
+                                   $("#loadSubmitted").hide();
+                                   $("#endSubmitted").show();
+                               } else {
+                                   $("#loadUnprocessed").hide();
+                               }
                            } else {
                                $("#loadUnprocessed").hide();
+                               $("#endUnprocessed").show();
                            }
-                       } else {
-                           $("#loadUnprocessed").hide();
-                           $("#endUnprocessed").show();
-                       }
-                       break;
-                   case 3:
-                       listId = 'submitted';
-                       if (res.success) {
-                           dataList = res.body.submittedList;
-                           if (dataList.length < 20) {
-                               loadSubmitted = true;
-                               $("#loadSubmitted").hide();
-                               $("#endSubmitted").show();
-                           } else {
-                               $("#loadUnprocessed").hide();
-                           }
-                       } else {
-                           $("#loadUnprocessed").hide();
-                           $("#endUnprocessed").show();
-                       }
-                       break;
-               }
-               for (var i = 0; i < dataList.length; i++) {
-                   templet += '<div style="border-radius: 5px" class="review-list">' +
-                       '<div class="reviewInfo">';
-                   if (type == 1 || type == 2) {
-                       templet += '<p style="color: #b2b2b2;">销售名称：'+dataList[i].sobillId.empName+'</p>' +
-                           '<p style="color: #b2b2b2;">客户名称：'+dataList[i].sobillId.cusName+'</p>' +
-                           '<p style="color: #b2b2b2;">订单编号：'+dataList[i].sobillId.billNo+'</p>';
-                       if (dataList[i].type == 1) {
-                           templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
-                       }
-                       switch (dataList[i].status) {
-                           case 0:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
-                               break;
-                           case 1:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
-
-                               break;
-                           case 2:
-                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
-                               break;
-                       }
-                       templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].createDateStr+'</p>'
-                   } else {
-                       templet += '<p style="color: #b2b2b2;">销售名称：'+dataList[i].empName+'</p>'+
-                           '<p style="color: #b2b2b2;">客户名称：'+dataList[i].cusName+'</p>' +
-                           '<p style="color: #b2b2b2;">订单编号：'+dataList[i].billNo+'</p>';
-                       if (dataList[i].approveType == 1) {
-                           templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
-                       }
-                       if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
-                       } else if (dataList[i].approveStatus == 2) {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
-                       } else {
-                           templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
-                       }
-                       templet += '<p style="color: #b2b2b2;">发起时间：'+dataList[i].initiateDateStr+'</p>';
+                           break;
                    }
-                   templet += '</div>' +
-                       '</div>';
+                   for (var i = 0; i < dataList.length; i++) {
+                       templet += '<div style="border-radius: 5px" class="review-list">' +
+                           '<div class="reviewInfo">';
+                       if (type == 1 || type == 2) {
+                           templet += '<p style="color: #b2b2b2;">销售名称：' + dataList[i].sobillId.empName + '</p>' +
+                               '<p style="color: #b2b2b2;">客户名称：' + dataList[i].sobillId.cusName + '</p>' +
+                               '<p style="color: #b2b2b2;">订单编号：' + dataList[i].sobillId.billNo + '</p>';
+                           if (dataList[i].type == 1) {
+                               templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
+                           }
+                           switch (dataList[i].status) {
+                               case 0:
+                                   templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                                   break;
+                               case 1:
+                                   templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+
+                                   break;
+                               case 2:
+                                   templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                                   break;
+                           }
+                           templet += '<p style="color: #b2b2b2;">发起时间：' + dataList[i].createDateStr + '</p>'
+                       } else {
+                           templet += '<p style="color: #b2b2b2;">销售名称：' + dataList[i].empName + '</p>' +
+                               '<p style="color: #b2b2b2;">客户名称：' + dataList[i].cusName + '</p>' +
+                               '<p style="color: #b2b2b2;">订单编号：' + dataList[i].billNo + '</p>';
+                           if (dataList[i].approveType == 1) {
+                               templet += '<p style="color: #b2b2b2;">申请类型：订单审批</p>';
+                           }
+                           if (dataList[i].approveStatus == 1 && dataList[i].isLast == 1) {
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-success">通过</i></p>';
+                           } else if (dataList[i].approveStatus == 2) {
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-warn">拒绝</i></p>';
+                           } else {
+                               templet += '<p style="color: #b2b2b2;">审批状态：<i style="font-size: 14px;line-height: 16px" class="weui-icon-waiting">审批中</i></p>';
+                           }
+                           templet += '<p style="color: #b2b2b2;">发起时间：' + dataList[i].initiateDateStr + '</p>';
+                       }
+                       templet += '</div>' +
+                           '</div>';
+                   }
+                   $("#" + listId + "List").before(templet);
                }
-               $("#"+listId+"List").before(templet);
            }
         });
 

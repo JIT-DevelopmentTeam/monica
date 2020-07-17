@@ -303,16 +303,13 @@
                     },
                     dataType:'json',
                     success:function (res) {
-                        if (res.success) {
+                        if (res.errorCode === "403") {
+                            $.toast(res.msg, "forbidden");
+                        } else {
                             setTimeout(function () {
                                 $.hideLoading();
                                 $.toast(res.msg);
                                 window.location.href=document.referrer;
-                            }, 3000);
-                        } else {
-                            setTimeout(function () {
-                                $.hideLoading();
-                                $.toast(res.msg,"cancel");
                             }, 3000);
                         }
                     },

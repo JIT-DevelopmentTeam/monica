@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,8 +107,16 @@ public class ReviewWechatController extends BaseController {
 
     @RequestMapping(value = "myReviewList")
     @ResponseBody
-    public AjaxJson myReviewList(OrderApprove orderApprove,@RequestParam("qyUserId") String qyUserId) {
+    public AjaxJson myReviewList(OrderApprove orderApprove,@RequestParam("qyUserId") String qyUserId, HttpServletRequest request) {
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         orderApprove.setDelFlag("0");
         User user = userMapper.getByQyUserId(qyUserId);
         if (user != null) {
@@ -207,6 +216,14 @@ public class ReviewWechatController extends BaseController {
         String path = request.getContextPath();
         String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object qy_userId = session.getAttribute("qyUserId");
+        if (qy_userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String userId = null;
         Sobill sobill = sobillService.get(sobillId);
         User loginUser = userMapper.getByQyUserId(qyUserId);

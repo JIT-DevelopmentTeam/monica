@@ -480,8 +480,16 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "submittedList")
     @ResponseBody
-    public AjaxJson submittedList(Sobill sobill,@RequestParam("qyUserId") String qyUserId){
+    public AjaxJson submittedList(Sobill sobill,@RequestParam("qyUserId") String qyUserId, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         sobill.setDelFlag("0");
         User user = userMapper.getByQyUserId(qyUserId);
         if (user != null) {
