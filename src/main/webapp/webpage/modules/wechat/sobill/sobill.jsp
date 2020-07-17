@@ -23,7 +23,7 @@
 <body>
 <div id="page" class="page">
     <div style="background: white;position: fixed;top: 0px;z-index: 10000;width: 100%;height: 5%;background: #f6f6f6;">
-        <div style="float: left; width: 100%;">
+        <div style="float: left; width: 90%;">
             <input type="text" id="startTime" readonly class="weui-input"
                    placeholder="请选择开始时间" style="text-align: center;width:47%;"/>
             至
@@ -544,9 +544,9 @@
                     dataType: 'json',
                     success: function (res) {
                         $("#"+detail).empty();
-                        this.errorCode = res.body.errorCode;
-                        if (res.body.errorCode === "403") {
-                            $.toast(res.body.msg, "forbidden");
+                        this.errorCode = res.errorCode;
+                        if (res.errorCode === "403") {
+                            $.toast(res.msg, "forbidden");
                         } else {
                             var sobillList = res.body.sobillList;
                             var template = '';
