@@ -32,6 +32,8 @@
     } else {
         //  得知CODE值,则解析出身份信息
         wxuser = JwUserAPI.getWxuserInfo(code);
+        HttpSession requestSession = request.getSession();
+        requestSession.setAttribute("qyUserId", wxuser.get("UserId"));
     }
 %>
 <input type="hidden" id="qyUserId" value="<%= wxuser.get("UserId") != null ? wxuser.get("UserId").toString() : null %>"/>
