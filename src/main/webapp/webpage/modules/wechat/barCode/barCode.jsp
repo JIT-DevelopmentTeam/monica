@@ -145,8 +145,8 @@
             type: "get",
             dataType: "json",
             success: function (res) {
-                if (res.body.errorCode === "403") {
-                    $.toast(res.body.msg, "forbidden");
+                if (res.errorCode === "403") {
+                    $.toast(res.msg, "forbidden");
                 } else {
                     var appId = res.body.config.appId;
                     var timestamp = res.body.config.timestamp;
