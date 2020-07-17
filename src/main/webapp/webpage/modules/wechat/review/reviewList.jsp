@@ -222,9 +222,9 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.errorCode = res.errorCode;
-                if (res.errorCode === "403") {
-                    $.toast(res.msg, "forbidden");
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
                 } else {
                     this.unprocessedList = res.body.body.myReviewList;
                 }
@@ -240,9 +240,9 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.errorCode = res.errorCode;
-                if (res.errorCode === "403") {
-                    $.toast(res.msg, "forbidden");
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
                 } else {
                     this.processedList = res.body.body.myReviewList;
                 }
@@ -256,9 +256,9 @@
                     qyUserId:'${qyUserId}'
                 }
             }).then(function (res) {
-                this.errorCode = res.errorCode;
-                if (res.errorCode === "403") {
-                    $.toast(res.msg, "forbidden");
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
                 } else {
                     this.submittedList = res.body.body.submittedList;
                 }
