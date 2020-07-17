@@ -152,8 +152,8 @@
                     warehouse: "${warehouse}"
                 }
             }).then(res => {
-                if (res.errorCode === "403") {
-                    $.toast(res.msg, "forbidden");
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
                 } else {
                     this.stock = res.body.body.data[0]
                 }

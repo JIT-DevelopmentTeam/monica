@@ -9,8 +9,7 @@
     <title>库存查询</title>
     <link rel="stylesheet" href="${ctxStatic}/css/weui.min.css">
     <link rel="stylesheet" href="${ctxStatic}/css/jquery-weui.css">
-    <script src="${ctxStatic}/common/vue/js/vue.js"></script>
-    <script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
+
     <style type="text/css">
         .weui-form-preview__bd {
             padding: 10px 15px 0px 15px;
@@ -208,6 +207,8 @@
     </div>
 <script src="${ctxStatic}/js/jquery-2.1.4.js"></script>
 <script src="${ctxStatic}/js/fastclick.js"></script>
+<script src="${ctxStatic}/common/vue/js/vue.js"></script>
+<script src="${ctxStatic}/common/vue/js/vue-resource.min.js"></script>
 <script>
     $(function() {
         FastClick.attach(document.body);
@@ -250,8 +251,8 @@
                 endTime: vm.$refs.endTime.value
             }
         }).then(res => {
-            if (res.errorCode === "403") {
-                $.toast(res.msg, "forbidden");
+            if (res.body.errorCode === "403") {
+                $.toast(res.body.msg, "forbidden");
             } else {
                 vm.loading = false;
                 result = res.body.body.stockList;
@@ -315,8 +316,8 @@
                         endTime: this.$refs.endTime.value
                     }
                 }).then(res => {
-                    if (res.errorCode === "403") {
-                        $.toast(res.msg, "forbidden");
+                    if (res.body.errorCode === "403") {
+                        $.toast(res.body.msg, "forbidden");
                     } else {
                         $("#loadDiv").hide();
                         console.log("itemList.size: " + res.body.body.stockList.length + "\ntotal: " + res.body.body.total)
@@ -343,10 +344,10 @@
         created: function(){
             this.$http.get('${ctxf}/wechat/stock/getLeval')
                 .then(res => {
-                    if (res.errorCode === "403") {
-                        $.toast(res.msg, "forbidden");
+                    if (res.body.errorCode === "403") {
+                        $.toast(res.body.msg, "forbidden");
                     } else {
-                        var dataList = res.data.body.data
+                        var dataList = res.body.body.data
                         for (let i = 0; i < dataList.length; i++) {
                             dataList[i].checked = false;
                         }
