@@ -58,7 +58,11 @@
            el:'#page',
            created: function () {
                this.$http.get('${ctx}/management/icitemclass/icitem/getItemsList',{}).then(function (res) {
-                   this.icitemList = res.data.body.icitemList;
+                   if (res.body.errorCode === "403") {
+                       $.toast(res.body.msg, "forbidden");
+                   } else {
+                       this.icitemList = res.data.body.icitemList;
+                   }
                });
            },
            data:{
@@ -91,23 +95,27 @@
                    },
                    dataType:'json',
                    success:function (res) {
-                        var icitemList = res.body.icitemList;
-                        $("#items").empty();
-                        var temple = '';
-                       for (var i = 0; i < icitemList.length; i++) {
-                           temple += '<div class="weui-cells weui-cells_checkbox">';
-                           temple += '<label class="weui-cell weui-check__label" for="'+icitemList[i].id+'">';
-                           temple += '<div class="weui-cell__hd">';
-                           temple += '<input type="checkbox" class="weui-check" name="item" id="'+icitemList[i].id+'" value="'+icitemList[i].id+'">';
-                           temple += '<i class="weui-icon-checked"></i>';
-                           temple += '</div>';
-                           temple += '<div class="weui-cell__bd">';
-                           temple += '<span>名称:'+icitemList[i].name+'&emsp;分类:'+icitemList[i].itemClassName+'&emsp;单位:'+icitemList[i].unit+'</span>';
-                           temple += '</div>'
-                           temple += '</label>';
-                           temple += '</div>';
+                       if (res.body.errorCode === "403") {
+                           $.toast(res.body.msg, "forbidden");
+                       } else {
+                           var icitemList = res.body.icitemList;
+                           $("#items").empty();
+                           var temple = '';
+                           for (var i = 0; i < icitemList.length; i++) {
+                               temple += '<div class="weui-cells weui-cells_checkbox">';
+                               temple += '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '">';
+                               temple += '<div class="weui-cell__hd">';
+                               temple += '<input type="checkbox" class="weui-check" name="item" id="' + icitemList[i].id + '" value="' + icitemList[i].id + '">';
+                               temple += '<i class="weui-icon-checked"></i>';
+                               temple += '</div>';
+                               temple += '<div class="weui-cell__bd">';
+                               temple += '<span>名称:' + icitemList[i].name + '&emsp;分类:' + icitemList[i].itemClassName + '&emsp;单位:' + icitemList[i].unit + '</span>';
+                               temple += '</div>'
+                               temple += '</label>';
+                               temple += '</div>';
+                           }
+                           $("#items").append(temple);
                        }
-                       $("#items").append(temple);
                    }
                 });
             }

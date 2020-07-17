@@ -455,13 +455,25 @@
         el: '#page',
         created: function () {
             this.$http.get('${ctxf}/wechat/icitem/getItemClass', null).then(function (res) {
-                this.icitemClassList = res.data.body.icitemClassList;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
+                    this.icitemClassList = res.data.body.icitemClassList;
+                }
             });
             this.$http.get('${ctxf}/wechat/customer/getCustomerListByEmpId?emplId=${sobill.emplId}', null).then(function (res) {
-                this.customerList = res.body.body.customerList;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
+                    this.customerList = res.body.body.customerList;
+                }
             });
             this.$http.get('${ctxf}/wechat/user/getUserList', null).then(function (res) {
-                this.followerList = res.body.body.userList;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
+                    this.followerList = res.body.body.userList;
+                }
             });
             /* 订单类型 */
             this.$http.get('${ctxf}/wechat/sys/dict/listData?type=sobill_type', {}).then(function (res) {
@@ -675,50 +687,54 @@
                     },
                     dataType: 'json',
                     success: function (res) {
-                        var template = '';
-                        var icitemList = res.body.icitemList;
-                        for (var i = 0; i < icitemList.length; i++) {
-                            template += '<div id="' + icitemList[i].id + 'Detail" class="weui-cells_checkbox">' +
-                                '<div class="pro-cell">' +
-                                '<div class="pro-list">' +
-                                '<div class="pro-item_left">' +
-                                '<span>商品编号：</span>  ' + icitemList[i].number +
-                                '</div>' +
-                                '<label class="weui-check__label" for="' + icitemList[i].id + 'Select">' +
-                                '<div class="weui-cell__hd">' +
-                                '<input id="' + icitemList[i].id + 'Select" name="selectItems" type="checkbox" class="weui-check" value="' + icitemList[i].id + '"/>' +
-                                '<i class="weui-icon-checked"></i>' +
-                                '</div>' +
-                                '</label>' +
-                                '</div>' +
-                                '<div class="pro-list">' +
-                                '<div class="pro-item_left">' +
-                                '<span>商品名称：</span>  ' + icitemList[i].name +
-                                '</div>' +
-                                '<div class="pro-item_right">' +
-                                '<span>单位：</span>  ' + icitemList[i].unit +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="pro-list">' +
-                                '<div class="pro-item_left">' +
-                                '<span>规格型号：</span>  ' + icitemList[i].model +
-                                '</div>' +
-                                '<div class="pro-item_right">' +
-                                '<span>单价：</span>  ' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="pro-list">' +
-                                '<div class="pro-item_left">' +
-                                '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\'' + icitemList[i].id + 'Qty\')" id="' + icitemList[i].id + 'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>' +
-                                '</div>' +
-                                '<div class="pro-item_right">' +
-                                '<span>金额：</span>  <span class="total"></span>元' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>';
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            var template = '';
+                            var icitemList = res.body.icitemList;
+                            for (var i = 0; i < icitemList.length; i++) {
+                                template += '<div id="' + icitemList[i].id + 'Detail" class="weui-cells_checkbox">' +
+                                    '<div class="pro-cell">' +
+                                    '<div class="pro-list">' +
+                                    '<div class="pro-item_left">' +
+                                    '<span>商品编号：</span>  ' + icitemList[i].number +
+                                    '</div>' +
+                                    '<label class="weui-check__label" for="' + icitemList[i].id + 'Select">' +
+                                    '<div class="weui-cell__hd">' +
+                                    '<input id="' + icitemList[i].id + 'Select" name="selectItems" type="checkbox" class="weui-check" value="' + icitemList[i].id + '"/>' +
+                                    '<i class="weui-icon-checked"></i>' +
+                                    '</div>' +
+                                    '</label>' +
+                                    '</div>' +
+                                    '<div class="pro-list">' +
+                                    '<div class="pro-item_left">' +
+                                    '<span>商品名称：</span>  ' + icitemList[i].name +
+                                    '</div>' +
+                                    '<div class="pro-item_right">' +
+                                    '<span>单位：</span>  ' + icitemList[i].unit +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="pro-list">' +
+                                    '<div class="pro-item_left">' +
+                                    '<span>规格型号：</span>  ' + icitemList[i].model +
+                                    '</div>' +
+                                    '<div class="pro-item_right">' +
+                                    '<span>单价：</span>  ' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="pro-list">' +
+                                    '<div class="pro-item_left">' +
+                                    '<span><span style="color: red;">*</span>数量：</span><input type="number" onchange="verificationNum(\'' + icitemList[i].id + 'Qty\')" id="' + icitemList[i].id + 'Qty" name="quantity" min="0" step="1" placeholder="请输入数量" class="weui-input"/>' +
+                                    '</div>' +
+                                    '<div class="pro-item_right">' +
+                                    '<span>金额：</span>  <span class="total"></span>元' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
+                            }
+                            $("#detail").append(template);
                         }
-                        $("#detail").append(template);
                     }
                 });
             },
@@ -735,39 +751,43 @@
                     },
                     dataType: 'json',
                     success: function (res) {
-                        var icitemList = res.body.icitemList;
-                        var template = '<div class="weui-cells weui-cells_checkbox">';
-                        $("#" + index).empty();
-                        for (var i = 0; i < icitemList.length; i++) {
-                            var check = false;
-                            for (var j = 0; j < itemIds.length; j++) {
-                                if (itemIds[j] == icitemList[i].id) {
-                                    check = true;
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            var icitemList = res.body.icitemList;
+                            var template = '<div class="weui-cells weui-cells_checkbox">';
+                            $("#" + index).empty();
+                            for (var i = 0; i < icitemList.length; i++) {
+                                var check = false;
+                                for (var j = 0; j < itemIds.length; j++) {
+                                    if (itemIds[j] == icitemList[i].id) {
+                                        check = true;
+                                    }
                                 }
+                                template += '<div class="pro-cell">' +
+                                    '<div class="pro-list" style="padding: 0px;font-size: 12px;">' +
+                                    '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '" style="padding:0%;margin-bottom: 2%;">';
+                                if (check) {
+                                    template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" checked class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
+                                } else {
+                                    template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
+                                }
+                                template += '<i class="weui-icon-checked"></i>' +
+                                    '<div class="weui-cell__bd">' +
+                                    '<p>编码:' + icitemList[i].number + '</p>' +
+                                    '<p>名称:' + icitemList[i].name + '</p>' +
+                                    '<p>单位:' + icitemList[i].unit + '</p>' +
+                                    '<p>型号:' + icitemList[i].model + '</p>' +
+                                    '<p>单价:</p>' +
+                                    '</div>' +
+                                    '</label>' +
+                                    '</div>' +
+                                    '</div>';
                             }
-                            template += '<div class="pro-cell">' +
-                                '<div class="pro-list" style="padding: 0px;font-size: 12px;">' +
-                                '<label class="weui-cell weui-check__label" for="' + icitemList[i].id + '" style="padding:0%;margin-bottom: 2%;">';
-                            if (check) {
-                                template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" checked class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
-                            } else {
-                                template += '<input id="' + icitemList[i].id + '" v-on:click="selectItems(\'' + icitemList[i].id + '\');" type="checkbox" class="weui-check" name="items" value="' + icitemList[i].id + '"/>';
-                            }
-                            template += '<i class="weui-icon-checked"></i>' +
-                                '<div class="weui-cell__bd">' +
-                                '<p>编码:' + icitemList[i].number + '</p>' +
-                                '<p>名称:' + icitemList[i].name + '</p>' +
-                                '<p>单位:' + icitemList[i].unit + '</p>' +
-                                '<p>型号:' + icitemList[i].model + '</p>' +
-                                '<p>单价:</p>' +
-                                '</div>' +
-                                '</label>' +
-                                '</div>'+
-                                '</div>';
+                            template += '</div>';
+                            template += '</div>';
+                            $("#" + index).append(template);
                         }
-                        template += '</div>';
-                        template += '</div>';
-                        $("#" + index).append(template);
                     }
                 });
             },
@@ -845,7 +865,11 @@
                    },
                    dataType:'json',
                    success:function (res) {
-                       $("#cusName").val(res.body.customer.name);
+                       if (res.body.errorCode === "403") {
+                           $.toast(res.body.msg, "forbidden");
+                       } else {
+                           $("#cusName").val(res.body.customer.name);
+                       }
                    }
                 });
             },
@@ -863,23 +887,24 @@
                    dataType:'json',
                    success:function (res) {
                        $("#customerList").empty();
-                       if (!res.success) {
-                           return;
+                       if (res.body.errorCode === "403") {
+                           $.toast(res.body.msg, "forbidden");
+                       } else {
+                           var templet = '';
+                           var customerList = res.body.customerList;
+                           for (var i = 0; i < customerList.length; i++) {
+                               templet += '<label class="weui-cell weui-check__label" id="customer' + customerList[i].id + '" name="customerLabel" for="' + customerList[i].id + '">' +
+                                   '<div class="weui-cell__bd">' +
+                                   '<p>' + customerList[i].name + '</p>' +
+                                   '</div>' +
+                                   '<div class="weui-cell__ft">' +
+                                   '<input type="radio" class="weui-check" onclick="selectCustomer(\'' + customerList[i].id + '\')" name="customer" id="' + customerList[i].id + '" value="' + customerList[i].id + '">' +
+                                   '<span class="weui-icon-checked"></span>' +
+                                   '</div>' +
+                                   '</label>';
+                           }
+                           $("#customerList").append(templet);
                        }
-                       var templet = '';
-                       var customerList = res.body.customerList;
-                       for (var i = 0; i < customerList.length; i++) {
-                           templet += '<label class="weui-cell weui-check__label" id="customer'+customerList[i].id+'" name="customerLabel" for="'+customerList[i].id+'">' +
-                               '<div class="weui-cell__bd">' +
-                               '<p>'+customerList[i].name+'</p>' +
-                               '</div>' +
-                               '<div class="weui-cell__ft">' +
-                               '<input type="radio" class="weui-check" onclick="selectCustomer(\''+customerList[i].id+'\')" name="customer" id="'+customerList[i].id+'" value="'+customerList[i].id+'">' +
-                               '<span class="weui-icon-checked"></span>' +
-                               '</div>' +
-                               '</label>';
-                       }
-                       $("#customerList").append(templet);
                    }
                 });
             },
@@ -895,23 +920,24 @@
                     dataType:'json',
                     success:function (res) {
                         $("#followerList").empty();
-                        if (!res.success) {
-                            return;
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            var templet = '';
+                            var followerList = res.body.userList;
+                            for (var i = 0; i < followerList.length; i++) {
+                                templet += '<label class="weui-cell weui-check__label" id="follower' + followerList[i].id + '" name="followerLabel" for="' + followerList[i].id + '">' +
+                                    '<div class="weui-cell__bd">' +
+                                    '<p>' + followerList[i].name + '</p>' +
+                                    '</div>' +
+                                    '<div class="weui-cell__ft">' +
+                                    '<input type="radio" class="weui-check" onclick="selectFollower(\'' + followerList[i].id + '\')" name="follower" id="' + followerList[i].id + '" value="' + followerList[i].id + '">' +
+                                    '<span class="weui-icon-checked"></span>' +
+                                    '</div>' +
+                                    '</label>';
+                            }
+                            $("#followerList").append(templet);
                         }
-                        var templet = '';
-                        var followerList = res.body.userList;
-                        for (var i = 0; i < followerList.length; i++) {
-                            templet += '<label class="weui-cell weui-check__label" id="follower'+followerList[i].id+'" name="followerLabel" for="'+followerList[i].id+'">' +
-                                '<div class="weui-cell__bd">' +
-                                '<p>'+followerList[i].name+'</p>' +
-                                '</div>' +
-                                '<div class="weui-cell__ft">' +
-                                '<input type="radio" class="weui-check" onclick="selectFollower(\''+followerList[i].id+'\')" name="follower" id="'+followerList[i].id+'" value="'+followerList[i].id+'">' +
-                                '<span class="weui-icon-checked"></span>' +
-                                '</div>' +
-                                '</label>';
-                        }
-                        $("#followerList").append(templet);
                     }
                 });
             },
@@ -928,7 +954,11 @@
                     },
                     dataType:'json',
                     success:function (res) {
-                        $("#followerName").val(res.body.user.name);
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            $("#followerName").val(res.body.user.name);
+                        }
                     }
                 });
             },
@@ -1084,10 +1114,12 @@
             processData: false,
             dataType: 'json',
             success: function (res) {
-                if (res.success) {
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
                     setTimeout(function () {
                         $.hideLoading();
-                        $.toast(res.msg);
+                        $.toast(res.body.msg);
                         window.location.href=document.referrer;
                     }, 3000);
                 }

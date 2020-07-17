@@ -1,4 +1,5 @@
 package com.jeeplus.modules.wechat.sobill;
+
 import com.google.common.collect.Lists;
 import com.jeeplus.common.config.Global;
 import com.jeeplus.common.json.AjaxJson;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -84,8 +86,16 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "getSobillList")
     @ResponseBody
-    public AjaxJson getSobillList(Page page,Sobill sobill, @RequestParam("qyUserId") String qyUserId){
+    public AjaxJson getSobillList(Page page,Sobill sobill, @RequestParam("qyUserId") String qyUserId, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         User user = userMapper.getByQyUserId(qyUserId);
         if (user == null) {
             aj.setSuccess(false);
@@ -151,8 +161,16 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "delectByIds")
     @ResponseBody
-    public AjaxJson delectById(@RequestParam("idsStr") String idsStr){
+    public AjaxJson delectById(@RequestParam("idsStr") String idsStr, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String[] ids = idsStr.split(",");
         boolean delect = true;
         for (String id : ids) {
@@ -179,6 +197,14 @@ public class SobillWechatController extends BaseController {
         String path = request.getContextPath();
         String request_url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         JSONObject jsonObject = JSONObject.fromObject(object);
         if (jsonObject.get("id") == null || "".equals(jsonObject.getString("id"))){
             Sobill sobill = new Sobill();
@@ -437,8 +463,16 @@ public class SobillWechatController extends BaseController {
 
     @RequestMapping(value = "getById")
     @ResponseBody
-    public AjaxJson getById(@RequestParam("id") String id){
+    public AjaxJson getById(@RequestParam("id") String id, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         Sobill sobill = sobillService.get(id);
         aj.put("sobill",sobill);
         return aj;

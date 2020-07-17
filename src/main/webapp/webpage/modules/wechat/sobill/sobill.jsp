@@ -251,7 +251,7 @@
 
     <br><br><br>
 
-    <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;">
+    <div id="footer" class="weui-tabbar" style="position:fixed;bottom: 0px;" v-if="errorCode !== '403'">
         <a v-on:click="backHome()" class="weui-tabbar__item">
             <div class="weui-tabbar__icon">
                 <img src="${ctxStatic}/image/wechat/home.jpg" alt="">
@@ -312,7 +312,10 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
                     this.inProgressList = res.body.body.sobillList;
                     if (res.body.body.sobillList.length < 10) {
                         loadingInProgress = true;
@@ -331,7 +334,10 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
                     this.toAuditList = res.body.body.sobillList;
                     if (res.body.body.sobillList.length < 10) {
                         loadingToAudit = true;
@@ -350,7 +356,10 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
                     this.pendingList = res.body.body.sobillList;
                     if (res.body.body.sobillList.length < 10) {
                         loadingPending = true;
@@ -367,7 +376,10 @@
                     qyUserId: '${qyUserId}'
                 }
             }).then(function (res) {
-                if (res.body.success) {
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
                     this.closedList = res.body.body.sobillList;
                     if (res.body.body.sobillList.length < 10) {
                         loadingClosed = true;
@@ -385,7 +397,8 @@
             inProgressList: [],
             toAuditList: [],
             pendingList: [],
-            closedList: []
+            closedList: [],
+            errorCode: ''
         },
         methods: {
             editHref: function () {
@@ -426,8 +439,13 @@
                     },
                     dataType: 'json',
                     success: function (res) {
-                        var sobill = res.body.sobill;
-                        window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + id;
+                        this.errorCode = res.body.errorCode;
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            var sobill = res.body.sobill;
+                            window.location.href = '${ctxf}/wechat/sobill/goEdit?id=' + id;
+                        }
                     }
                 });
             },
@@ -467,13 +485,14 @@
                         },
                         dataType: 'json',
                         success: function (res) {
-                            if (res.success) {
-                                $.alert(res.msg);
+                            this.errorCode = res.body.errorCode;
+                            if (res.body.errorCode === "403") {
+                                $.toast(res.body.msg, "forbidden");
+                            } else {
+                                $.alert(res.body.msg);
                                 setTimeout(function () {
                                     window.location.reload();
                                 }, 3000);
-                            } else {
-                                $.alert(res.msg);
                             }
                         }
                     });
@@ -525,41 +544,43 @@
                     dataType: 'json',
                     success: function (res) {
                         $("#"+detail).empty();
-                        if (!res.success) {
-                            return;
-                        }
-                        var sobillList = res.body.sobillList;
-                        var template = '';
-                        for (var i = 0; i < sobillList.length; i++) {
-                            template += '<div class="order-cell">' +
-                                '<div class="weui-cells_radio">' +
-                                '<label class="weui-cell weui-check__label" for="'+ head + sobillList[i].id + '">' +
-                                '<div class="order-cell_left">' +
-                                '<div class="order-list">' +
-                                '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                                '<input type="checkbox" class="weui-check" name="'+ head +'" id="'+ head + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
-                                '<span class="weui-icon-checked"></span>' +
-                                '</div>' +
+                        this.errorCode = res.body.errorCode;
+                        if (res.body.errorCode === "403") {
+                            $.toast(res.body.msg, "forbidden");
+                        } else {
+                            var sobillList = res.body.sobillList;
+                            var template = '';
+                            for (var i = 0; i < sobillList.length; i++) {
+                                template += '<div class="order-cell">' +
+                                    '<div class="weui-cells_radio">' +
+                                    '<label class="weui-cell weui-check__label" for="' + head + sobillList[i].id + '">' +
+                                    '<div class="order-cell_left">' +
+                                    '<div class="order-list">' +
+                                    '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
+                                    '<input type="checkbox" class="weui-check" name="' + head + '" id="' + head + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                                    '<span class="weui-icon-checked"></span>' +
+                                    '</div>' +
 
-                                '<div class="order-cell_bg">' +
-                                '<div class="order-list">' +
-                                '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
-                                '</div>' +
-                                '<div class="order-list">' +
-                                '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
-                                '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
-                                '</div>' +
-                                '<div class="order-list">' +
-                                '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
-                                '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</label>' +
-                                '</div>' +
-                                '</div>';
+                                    '<div class="order-cell_bg">' +
+                                    '<div class="order-list">' +
+                                    '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
+                                    '</div>' +
+                                    '<div class="order-list">' +
+                                    '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
+                                    '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
+                                    '</div>' +
+                                    '<div class="order-list">' +
+                                    '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
+                                    '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</label>' +
+                                    '</div>' +
+                                    '</div>';
+                            }
+                            $("#" + detail).append(template);
                         }
-                        $("#"+detail).append(template);
                     }
                 });
             },
@@ -657,66 +678,68 @@
             data: data,
             dataType: 'json',
             success: function (res) {
-                if (!res.success) {
-                    return;
-                }
-                var sobillList = res.body.sobillList;
-                var template = '';
-                for (let i = 0; i < sobillList.length; i++) {
-                    template += '<div class="order-cell">' +
-                        '<div class="weui-cells_radio">' +
-                        '<label class="weui-cell weui-check__label" for="'+ Id + sobillList[i].id + '">' +
-                        '<div class="order-cell_left">' +
-                        '<div class="order-list">' +
-                        '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
-                        '<input type="checkbox" class="weui-check" name="'+ Id +'" id="'+ Id + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
-                        '<span class="weui-icon-checked"></span>' +
-                        '</div>' +
+                this.errorCode = res.body.errorCode;
+                if (res.body.errorCode === "403") {
+                    $.toast(res.body.msg, "forbidden");
+                } else {
+                    var sobillList = res.body.sobillList;
+                    var template = '';
+                    for (let i = 0; i < sobillList.length; i++) {
+                        template += '<div class="order-cell">' +
+                            '<div class="weui-cells_radio">' +
+                            '<label class="weui-cell weui-check__label" for="' + Id + sobillList[i].id + '">' +
+                            '<div class="order-cell_left">' +
+                            '<div class="order-list">' +
+                            '<div class="order-list_item"><span>客户：</span>  ' + (sobillList[i].cusName != null && sobillList[i].cusName != '' ? sobillList[i].cusName : "") + '</div>' +
+                            '<input type="checkbox" class="weui-check" name="' + Id + '" id="' + Id + sobillList[i].id + '" value="' + sobillList[i].id + '"/>' +
+                            '<span class="weui-icon-checked"></span>' +
+                            '</div>' +
 
-                        '<div class="order-cell_bg">' +
-                        '<div class="order-list">' +
-                        '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
-                        '</div>' +
-                        '<div class="order-list">' +
-                        '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
-                        '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
-                        '</div>' +
-                        '<div class="order-list">' +
-                        '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
-                        '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</label>' +
-                        '</div>' +
-                        '</div>';
-                }
-                if (sobillList.length < 10) {
-                    switch (Id) {
-                        case 'inProgress':
-                            loadingInProgress = true;
-                            $("#loadInProgress").hide();
-                            $("#endInProgress").show();
-                            $("#loadInProgress").before(template);
-                            break;
-                        case 'toAudit':
-                            loadingToAudit = true;
-                            $("#loadToAudit").hide();
-                            $("#endToAudit").show();
-                            $("#loadToAudit").before(template);
-                            break;
-                        case 'pending':
-                            loadingPending = true;
-                            $("#loadPending").hide();
-                            $("#endPending").show();
-                            $("#loadPending").before(template);
-                            break;
-                        case "closed":
-                            loadingClosed = true;
-                            $("#loadClosed").hide();
-                            $("#endClosed").show();
-                            $("#loadClosed").before(template);
-                            break;
+                            '<div class="order-cell_bg">' +
+                            '<div class="order-list">' +
+                            '<div class="order-list_item"><span>编号：</span>  ' + (sobillList[i].billNo != null && sobillList[i].billNo != '' ? sobillList[i].billNo : "") + '</div>' +
+                            '</div>' +
+                            '<div class="order-list">' +
+                            '<div class="order-list_item"><span>跟单：</span>  ' + (sobillList[i].followerName != null && sobillList[i].followerName != '' ? sobillList[i].followerName : "") + '</div>' +
+                            '<div class="order-list_item"><span>日期：</span>  ' + (sobillList[i].needTimeStr != null && sobillList[i].needTimeStr != '' ? sobillList[i].needTimeStr : "") + '</div>' +
+                            '</div>' +
+                            '<div class="order-list">' +
+                            '<div class="order-list_item"><span>同步：</span>  ' + (sobillList[i].synStatus != null && sobillList[i].synStatus == 1 ? "<span style='color: green;'>同步</span>" : "<span style='color: red;'>未同步</span>") + '</div>' +
+                            '<div class="order-list_item"><span>状态：</span>  ' + (sobillList[i].status != null && sobillList[i].status == 1 ? "<span style='color: green;'>提交</span>" : "<span style='color: red;'>草稿</span>") + '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</label>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                    if (sobillList.length < 10) {
+                        switch (Id) {
+                            case 'inProgress':
+                                loadingInProgress = true;
+                                $("#loadInProgress").hide();
+                                $("#endInProgress").show();
+                                $("#loadInProgress").before(template);
+                                break;
+                            case 'toAudit':
+                                loadingToAudit = true;
+                                $("#loadToAudit").hide();
+                                $("#endToAudit").show();
+                                $("#loadToAudit").before(template);
+                                break;
+                            case 'pending':
+                                loadingPending = true;
+                                $("#loadPending").hide();
+                                $("#endPending").show();
+                                $("#loadPending").before(template);
+                                break;
+                            case "closed":
+                                loadingClosed = true;
+                                $("#loadClosed").hide();
+                                $("#endClosed").show();
+                                $("#loadClosed").before(template);
+                                break;
+                        }
                     }
                 }
             }

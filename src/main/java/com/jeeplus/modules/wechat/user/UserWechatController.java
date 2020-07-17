@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -24,8 +26,16 @@ public class UserWechatController {
 
     @RequestMapping("/getUserList")
     @ResponseBody
-    public AjaxJson getUserList(User user) {
+    public AjaxJson getUserList(User user, HttpServletRequest request) {
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         // 过滤超级管理员
         User filter = new User();
         filter.setId("0");
@@ -40,8 +50,16 @@ public class UserWechatController {
 
     @RequestMapping("/getUserById")
     @ResponseBody
-    public AjaxJson getUserById(@RequestParam("id") String id) {
+    public AjaxJson getUserById(@RequestParam("id") String id, HttpServletRequest request) {
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         aj.put("user",userMapper.get(id));
         return aj;
     }

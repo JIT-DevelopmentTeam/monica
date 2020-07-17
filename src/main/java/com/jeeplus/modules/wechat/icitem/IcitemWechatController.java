@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -33,8 +35,16 @@ public class IcitemWechatController extends BaseController {
 
     @RequestMapping(value = "getItemsListByClassId")
     @ResponseBody
-    public AjaxJson getItemsListByClassId(Icitem icitem){
+    public AjaxJson getItemsListByClassId(Icitem icitem, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         icitem.setDelFlag("0");
         List<Icitem> icitemList = icitemService.findList(icitem);
         aj.put("icitemList",icitemList);
@@ -43,8 +53,16 @@ public class IcitemWechatController extends BaseController {
 
     @RequestMapping(value = "getItemClass")
     @ResponseBody
-    public AjaxJson getItemClass(IcitemClass icitemClass){
+    public AjaxJson getItemClass(IcitemClass icitemClass, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         icitemClass.setDelFlag("0");
         List<IcitemClass> icitemClassList = icitemClassService.findListForWechat(icitemClass);
         aj.put("icitemClassList",icitemClassList);
@@ -53,8 +71,16 @@ public class IcitemWechatController extends BaseController {
 
     @RequestMapping(value = "getListByName")
     @ResponseBody
-    public AjaxJson getListByName(@Param("name") String name){
+    public AjaxJson getListByName(@Param("name") String name, HttpServletRequest request){
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         Icitem icitem = new Icitem();
         icitem.setDelFlag("0");
         icitem.setName(name.trim());
@@ -65,10 +91,18 @@ public class IcitemWechatController extends BaseController {
 
     @RequestMapping(value = "findItemListByIds")
     @ResponseBody
-    public AjaxJson findItemListByIds(@RequestParam(value = "idsStr") String idsStr){
+    public AjaxJson findItemListByIds(@RequestParam(value = "idsStr") String idsStr, HttpServletRequest request){
         LinkedHashMap<String, Object> body = new LinkedHashMap<String, Object>();
         Icitem icitem = new Icitem();
         AjaxJson aj = new AjaxJson();
+        HttpSession session = request.getSession();
+        Object userId = session.getAttribute("qyUserId");
+        if (userId == null) {
+            aj.setSuccess(false);
+            aj.setErrorCode("403");
+            aj.setMsg("您无权访问！");
+            return aj;
+        }
         String[] ids = idsStr.split(",");
         StringBuffer idsSql = new StringBuffer();
         for (String id : ids) {
