@@ -11,6 +11,8 @@ import com.jeeplus.modules.management.warehouse.entity.Warehouse;
 import com.jeeplus.modules.management.wxuser.entity.WxUser;
 import com.jeeplus.modules.management.wxuser.service.WxUserService;
 import com.jeeplus.modules.monitor.utils.Common;
+import com.jeeplus.modules.sys.entity.User;
+import com.jeeplus.modules.sys.mapper.UserMapper;
 import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class StockWechatController extends BaseController {
     @Autowired
     private JurisdictionService jurisdictionService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @RequestMapping(value = "list")
     public String list(HttpServletRequest request, Model model) {
         return "modules/wechat/stock/stock";
@@ -61,42 +66,45 @@ public class StockWechatController extends BaseController {
         AjaxJson j = new AjaxJson();
         HttpSession session = request.getSession();
         Object userId = session.getAttribute("qyUserId");
-        if (userId == null) {
+        User userMapperByQyUserId = userMapper.getByQyUserId(userId.toString());
+        if (userId == null || userMapperByQyUserId.getSelectStockFlag() == null || "0".equals(userMapperByQyUserId.getSelectStockFlag())) {
             j.setSuccess(false);
             j.setErrorCode("403");
             j.setMsg("您无权访问！");
             return j;
         }
-        ApiUrl apiUrlList = apiUrlService.getByUsefulness("5");
-        if (apiUrlList == null || StringUtils.isBlank(apiUrlList.getUrl())) {
-            j.setSuccess(false);
-            j.setMsg("请检查库存列表查询接口配置是否准确!");
-            return j;
+        if ("1".equals(userMapperByQyUserId.getSelectStockFlag())) {
+            ApiUrl apiUrlList = apiUrlService.getByUsefulness("5");
+            if (apiUrlList == null || StringUtils.isBlank(apiUrlList.getUrl())) {
+                j.setSuccess(false);
+                j.setMsg("请检查库存列表查询接口配置是否准确!");
+                return j;
+            }
+            ApiUrl apiUrlTotal = apiUrlService.getByUsefulness("6");
+            if (apiUrlTotal == null || StringUtils.isBlank(apiUrlTotal.getUrl())) {
+                j.setSuccess(false);
+                j.setMsg("请检查库存列表总量查询接口配置是否准确!");
+                return j;
+            }
+            String pageNo = request.getParameter("pageNo");
+            String item = request.getParameter("item");
+            item = item.replace("%", "%25");
+            String[] levelArr = request.getParameterValues("levelArr[]");
+            String color = request.getParameter("color");
+            String startTime = request.getParameter("startTime");
+            String endTime = request.getParameter("endTime");
+            String level = "";
+            if (levelArr != null) {
+                level = levelArr[0];
+            }
+            JSONArray jsonarr =
+                    Common.executeInter(apiUrlList.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color + "&currentPage=" + pageNo,"POST");
+            JSONArray jsonarrTotal =
+                    Common.executeInter(apiUrlTotal.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color,"POST");
+            List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
+            j.put("stockList", stockList);
+            j.put("total", jsonarrTotal.get(0));
         }
-        ApiUrl apiUrlTotal = apiUrlService.getByUsefulness("6");
-        if (apiUrlTotal == null || StringUtils.isBlank(apiUrlTotal.getUrl())) {
-            j.setSuccess(false);
-            j.setMsg("请检查库存列表总量查询接口配置是否准确!");
-            return j;
-        }
-        String pageNo = request.getParameter("pageNo");
-        String item = request.getParameter("item");
-        item = item.replace("%", "%25");
-        String[] levelArr = request.getParameterValues("levelArr[]");
-        String color = request.getParameter("color");
-        String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
-        String level = "";
-        if (levelArr != null) {
-            level = levelArr[0];
-        }
-        JSONArray jsonarr =
-                Common.executeInter(apiUrlList.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color + "&currentPage=" + pageNo,"POST");
-        JSONArray jsonarrTotal =
-                Common.executeInter(apiUrlTotal.getUrl() + "&item=" + item + "&level=" + level + "&colorNum=" + color,"POST");
-        List<Stock> stockList = JSONArray.toList(jsonarr, stock, new JsonConfig());
-        j.put("stockList", stockList);
-        j.put("total", jsonarrTotal.get(0));
         return j;
     }
 
@@ -106,24 +114,27 @@ public class StockWechatController extends BaseController {
         AjaxJson j = new AjaxJson();
         HttpSession session = request.getSession();
         Object userId = session.getAttribute("qyUserId");
-        if (userId == null) {
+        User userMapperByQyUserId = userMapper.getByQyUserId(userId.toString());
+        if (userId == null || userMapperByQyUserId.getSelectStockFlag() == null || "0".equals(userMapperByQyUserId.getSelectStockFlag())) {
             j.setSuccess(false);
             j.setErrorCode("403");
             j.setMsg("您无权访问！");
             return j;
         }
-        ApiUrl apiUrl = apiUrlService.getByUsefulness("7");
-        if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
-            j.setSuccess(false);
-            j.setMsg("同步出错,请检查接口配置是否准确!");
-            return j;
+        if ("1".equals(userMapperByQyUserId.getSelectStockFlag())) {
+            ApiUrl apiUrl = apiUrlService.getByUsefulness("7");
+            if (apiUrl == null || StringUtils.isBlank(apiUrl.getUrl())) {
+                j.setSuccess(false);
+                j.setMsg("同步出错,请检查接口配置是否准确!");
+                return j;
+            }
+            String commodityNumber = request.getParameter("commodityNumber");
+            String batchNumber = request.getParameter("batchNumber");
+            String warehouse = request.getParameter("warehouse");
+            JSONArray jsonarr =
+                    Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + URLEncoder.encode(warehouse, "utf-8"), apiUrl.getProtocol());
+            j.put("data", jsonarr);
         }
-        String commodityNumber = request.getParameter("commodityNumber");
-        String batchNumber = request.getParameter("batchNumber");
-        String warehouse = request.getParameter("warehouse");
-        JSONArray jsonarr =
-                Common.executeInter(apiUrl.getUrl() + "&commodityNumber=" + commodityNumber + "&batchNum=" + batchNumber + "&warehouse=" + URLEncoder.encode(warehouse, "utf-8"), apiUrl.getProtocol());
-        j.put("data", jsonarr);
         return j;
     }
 

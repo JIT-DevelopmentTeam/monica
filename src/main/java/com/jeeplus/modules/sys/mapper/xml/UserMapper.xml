@@ -12,6 +12,7 @@
 		<result property="email" column="email" />
 		<result property="phone" column="phone" />
 		<result property="mobile" column="mobile" />
+		<result property="selectStockFlag" column="select_stock_flag" />
 		<result property="photo" column="photo"/>
 		<result property="openId" column="openId"/>
 		<result property="qyUserId" column="qyUserId"/>
@@ -45,6 +46,7 @@
 		a.login_date,
 		a.remarks,
 		a.login_flag,
+		a.select_stock_flag,
 		a.photo,
 		a.qrcode,
 		a.sign,
@@ -265,7 +267,8 @@
 			update_by, 
 			update_date, 
 			remarks, 
-			login_flag, 
+			login_flag,
+			select_stock_flag,
 			photo, 
 			qrcode,
 			open_id,
@@ -287,7 +290,8 @@
 			#{updateBy.id}, 
 			#{updateDate}, 
 			#{remarks}, 
-			#{loginFlag}, 
+			#{loginFlag},
+			#{selectStockFlag},
 			#{photo}, 
 			#{qrCode},
 			#{openId},
@@ -312,6 +316,7 @@
 			update_date = #{updateDate}, 
 			remarks = #{remarks},
 			login_flag = #{loginFlag},
+			select_stock_flag = #{selectStockFlag},
 			photo = #{photo},
 			qrcode = #{qrCode},
 			open_id = #{openId},

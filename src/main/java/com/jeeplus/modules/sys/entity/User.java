@@ -39,6 +39,7 @@ public class User extends DataEntity<User> {
 	private String loginIp;	// 最后登陆IP
 	private Date loginDate;	// 最后登陆日期
 	private String loginFlag;	// 是否允许登陆
+	private String selectStockFlag;	// 是否允许查询库存
 	private String photo;	// 头像
 	private String qrCode;	//二维码
 	private String oldLoginName;// 原登录名
@@ -92,6 +93,14 @@ public class User extends DataEntity<User> {
 
 	public void setLoginFlag(String loginFlag) {
 		this.loginFlag = loginFlag;
+	}
+
+	public String getSelectStockFlag() {
+		return selectStockFlag;
+	}
+
+	public void setSelectStockFlag(String selectStockFlag) {
+		this.selectStockFlag = selectStockFlag;
 	}
 
 	public String getId() {

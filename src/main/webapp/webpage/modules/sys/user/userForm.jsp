@@ -103,6 +103,10 @@
 		         	<form:checkboxes path="roleIdList" items="${allRoles}" itemLabel="name" itemValue="id" htmlEscape="false" cssClass="i-checks required"/>
 		         	<label id="roleIdList-error" class="error" for="roleIdList"></label>
 		         </td>
+				  <td class="active"><label class="pull-right"><font color="red">*</font>是否允许查询库存:</label></td>
+				  <td>
+					  <form:radiobuttons path="selectStockFlag" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false" cssClass="i-checks required"/>
+				  </td>
 		      </tr>
 
 			  <tr>
