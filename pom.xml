@@ -14,7 +14,7 @@
         <!-- jeewx开始 -->
         <commons-collections.version>3.2.1</commons-collections.version>
         <commons-chain.version>1.2</commons-chain.version>
-        <junit.version>4.7</junit.version>
+        <junit.version>4.13.1</junit.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-logging.version>1.0.4</commons-logging.version>
         <fastjson-lib.version>1.2.31</fastjson-lib.version>
@@ -866,7 +866,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
