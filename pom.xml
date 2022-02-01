@@ -48,7 +48,7 @@
         <jackson.version>2.10.1</jackson.version>
         <fastjson.version>1.2.45</fastjson.version>
         <json-lib.version>2.1</json-lib.version>
-        <xstream.version>1.4.9</xstream.version>
+        <xstream.version>1.4.19</xstream.version>
         <dozer.version>5.5.1</dozer.version>
         <poi.version>3.9</poi.version>
         <freemarker.version>2.3.25-incubating</freemarker.version>
